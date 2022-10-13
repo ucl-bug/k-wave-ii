@@ -1,4 +1,6 @@
 %% TestType
+% *Package:* kwave.tests
+%
 % Enumeration class to specify test types.
 %
 %% Syntax
