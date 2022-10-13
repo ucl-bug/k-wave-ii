@@ -1,0 +1,25 @@
+###########
+# Folders #
+###########
+
++kwave/+tests/unit-test-artifacts
+helpfiles/*
+
+######################
+# OS generated files #
+######################
+
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+################
+# MATLAB files #
+################
+
+.mat
+.asv
