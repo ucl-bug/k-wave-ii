@@ -1,3 +1,11 @@
+---
+name: Merge to main
+about: Merge a feature branch with main
+title: ''
+labels: ''
+assignees: ''
+---
+
 ## Summary
 
 - Description of the code being merged, including any relevant implementation details.

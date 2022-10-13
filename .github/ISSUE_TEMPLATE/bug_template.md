@@ -1,3 +1,11 @@
+---
+name: Bug report
+about: Report something not working
+title: ''
+labels: ''
+assignees: ''
+---
+
 ## Bug details
 
 ### Description
