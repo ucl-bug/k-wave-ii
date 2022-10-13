@@ -31,6 +31,7 @@ classdef GenerateDocumentation
             obj.createHelpDir;
 
             % Generate HTML files.
+            obj.generateHTML('/+kwave/+docfiles', 'kwave.docfiles.');
             initialValueProblemsFilenames = obj.generateHTML('/+kwave/+examples/+initialvalueproblems', 'kwave.examples.initialvalueproblems.', evalCode=true, showCode=true);
             toolboxFilenames = obj.generateHTML('/+kwave/+toolbox', 'kwave.toolbox.');
             testFilenames = obj.generateHTML('/+kwave/+tests', 'kwave.tests.');
