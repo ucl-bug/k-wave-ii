@@ -22,11 +22,15 @@ classdef GenerateDocumentation
     methods(Static)
         function obj = GenerateDocumentation()
 
-            % Setup paths - toolbox root directory is two levels above
-            % +kwave/+utilities.
+            % Setup paths. The toolbox root directory is two levels above
+            % +kwave/+utilities. Add back forward slash to directory if on
+            % linux or mac.
             [mFilePath, ~, ~] = fileparts(mfilename('fullpath'));
             mFilePathParts = split(mFilePath, filesep);
             obj.rootPath = fullfile(mFilePathParts{1:end-2});
+            if isunix
+                obj.rootPath = [filesep obj.rootPath];
+            end
             obj.helpDir = fullfile(obj.rootPath, 'helpfiles');
             obj.createHelpDir;
 
@@ -76,7 +80,7 @@ classdef GenerateDocumentation
             % sub-directories.
             disp(['Generating HTML for ' relativeFolder '...']);
             absolutePath = fullfile(obj.rootPath, relativeFolder);
-            mFilenames = dir(fullfile(absolutePath, '**\*.m'));
+            mFilenames = dir(fullfile(absolutePath, '**/*.m'));
             numFiles = length(mFilenames);
             [mFilenames(:).isClassMethod] = deal(false);
             [mFilenames(:).isClass] = deal(false);
