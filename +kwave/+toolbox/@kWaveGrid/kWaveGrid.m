@@ -33,10 +33,12 @@
 % centre of the spectrum. These should be transformed using |ifftshift|
 % before using with the MATLAB FFT functions (which are based on FFTW).
 %
-% Optionally, |gridPadding| can be specified in grid points. This defines
-% an additional padding on the outside of the grid defined by |gridSize|.
-% The padding is added to each side of the grid in each Cartesian
-% direction.
+% Optionally, the |gridPadding| can be specified in grid points. This
+% defines an additional padding on the outside of the grid defined by
+% |gridSize|. The padding is added to each side of the grid in each
+% Cartesian direction, so the total grid size including padding will be
+% |gridSize + 2*gridPadding|. Note, the grid and wavevector properties are
+% defined relative to |gridSize|, not including the |gridPadding|.
 %
 %% Input Arguments
 % * |gridSize| - (double) Number of grid points in each Cartesian direction
