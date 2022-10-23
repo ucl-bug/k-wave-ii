@@ -5,6 +5,7 @@
 %
 %% Syntax
 %   kgrid = kWaveGrid(gridSize, gridSpacing)
+%   kgrid = kWaveGrid(gridSize, gridSpacing, gridPadding)
 %
 %% Description
 % |kWaveGrid| is the grid class used across the k-Wave Toolbox. An object
@@ -32,6 +33,11 @@
 % centre of the spectrum. These should be transformed using |ifftshift|
 % before using with the MATLAB FFT functions (which are based on FFTW).
 %
+% Optionally, |gridPadding| can be specified in grid points. This defines
+% an additional padding on the outside of the grid defined by |gridSize|.
+% The padding is added to each side of the grid in each Cartesian
+% direction.
+%
 %% Input Arguments
 % * |gridSize| - (double) Number of grid points in each Cartesian direction
 %   [grid points].
@@ -39,6 +45,8 @@
 %   scalar value, or the spacing in each Cartesian direction. Be careful if
 %   specifying different spacings in each direction, as the maximum
 %   supported frequency depends on the grid spacing.
+% * |gridPadding| - (double) Grid padding [grid points]. Can be specified
+%   as a scalar value, or the padding in each Cartesian direction.
 %
 %% Properties
 % Properties which can be queried, but not modified, after the object is
@@ -51,6 +59,9 @@
 % * |gridSpacing| - (double) Grid point spacing in each direction defined
 %   as a 3-element row vector [m]. For 1D and 2D grids, the higher
 %   dimensions have a spacing of 0.
+% * |gridPadding| - (double) Grid padding in each direction defined
+%   as a 3-element row vector [gridPoints]. For 1D and 2D grids, the higher
+%   dimensions have a padding of 0.
 % * |Nx|, |Ny|, |Nz| - (double) Individual components of |gridSize|.
 % * |dx|, |dy|, |dz| - (double) Individual components of |gridSpacing|.
 % * |xVec|, |yVec|, |zVec| - (double) Grid coordinates in each direction
@@ -70,7 +81,6 @@
 %   [rad/m].
 %
 %% Methods
-%
 % * |highestPrimeFactors|
 
 classdef kWaveGrid < handle
@@ -86,14 +96,9 @@ classdef kWaveGrid < handle
         
         % Grid point spacing [m].
       	gridSpacing(1,3) double {mustBeNonnegative, mustBeFinite} = [0, 0, 0];
-        
-        % 1D vector of wavevector components [rad/m].
-        kxVec double = 0;
-        kyVec double = 0;
-        kzVec double = 0;
 
-        % Nx by Ny by Nz matrix of scalar wavenumber [rad/m].
-        k;
+        % Grid padding size [grid points].
+        gridPadding(1,3) double {mustBeInteger, mustBeNonnegative, mustBeFinite} = [0, 0, 0];
 
     end
     
@@ -130,6 +135,11 @@ classdef kWaveGrid < handle
         % Total number of grid points.
         totalGridPoints;
 
+        % 1D vector of wavevector components [rad/m].
+        kxVec;
+        kyVec;
+        kzVec;
+
         % Nx by Ny by Nz matrix containing repeated copies of wavevector
         % components [rad/m].
         kx;
@@ -141,6 +151,9 @@ classdef kWaveGrid < handle
         kyMax;
         kzMax;
         
+        % Nx by Ny by Nz matrix of scalar wavenumber [rad/m].
+        k;
+
         % Maximum supported spatial frequency in all directions [rad/m].
         kMax;
 
@@ -148,55 +161,26 @@ classdef kWaveGrid < handle
     
     % Constructor.
     methods
-        function kgrid = kWaveGrid(gridSize, gridSpacing)
+        function obj = kWaveGrid(gridSize, gridSpacing, gridPadding)
             
             % Set grid dimensions based on length of gridSize vector.
-            kgrid.dimensions = numel(gridSize);
+            obj.dimensions = numel(gridSize);
 
             % Assign gridSize and gridSpacing.
-            kgrid.gridSize(1:kgrid.dimensions) = gridSize;
-            if (numel(gridSpacing) ~= 1) && (numel(gridSpacing) ~= kgrid.dimensions) 
+            obj.gridSize(1:obj.dimensions) = gridSize;
+            if (numel(gridSpacing) ~= 1) && (numel(gridSpacing) ~= obj.dimensions)
                 error('kWaveGrid:incorrectSize', 'gridSpacing must be a scalar or the same length as gridSize.');
             end
-            kgrid.gridSpacing(1:kgrid.dimensions) = gridSpacing;
+            obj.gridSpacing(1:obj.dimensions) = gridSpacing;
 
-            % Assign wavenumber variables.
-            switch kgrid.dimensions
-                case 1
-                    
-                    % Compute wavevector components.
-                    kgrid.kxVec = kgrid.makeDim(kgrid.Nx, kgrid.dx);
-                   
-                    % Compute scalar wavenumber based on wavevector.
-                    kgrid.k = abs(kgrid.kxVec);
-                    
-                case 2
-                    
-                    % Compute wavevector components.
-                    kgrid.kxVec = kgrid.makeDim(kgrid.Nx, kgrid.dx);
-                    kgrid.kyVec = kgrid.makeDim(kgrid.Ny, kgrid.dy);
-
-                    % Compute scalar wavenumber based on wavevector.
-                    kgrid.k = zeros(kgrid.gridSize);
-                    kgrid.k = bsxfun(@plus, (reshape(kgrid.kxVec, [], 1, 1).^2), kgrid.k);
-                    kgrid.k = bsxfun(@plus, (reshape(kgrid.kyVec, 1, [], 1).^2), kgrid.k);
-                    kgrid.k = sqrt(kgrid.k);
-                    
-                case 3
-                    
-                    % Compute wavevector components.
-                    kgrid.kxVec = kgrid.makeDim(kgrid.Nx, kgrid.dx);
-                    kgrid.kyVec = kgrid.makeDim(kgrid.Ny, kgrid.dy);
-                    kgrid.kzVec = kgrid.makeDim(kgrid.Nz, kgrid.dz);
-
-                    % Compute scalar wavenumber based on wavevector.
-                    kgrid.k = zeros(kgrid.gridSize);
-                    kgrid.k = bsxfun(@plus, (reshape(kgrid.kxVec, [], 1, 1).^2), kgrid.k);
-                    kgrid.k = bsxfun(@plus, (reshape(kgrid.kyVec, 1, [], 1).^2), kgrid.k);
-                    kgrid.k = bsxfun(@plus, (reshape(kgrid.kzVec, 1, 1, []).^2), kgrid.k);
-                    kgrid.k = sqrt(kgrid.k);                   
-                   
+            % Assign gridPadding.
+            if nargin == 3
+                if (numel(gridPadding) ~= 1) && (numel(gridPadding) ~= obj.dimensions)
+                    error('kWaveGrid:incorrectSize', 'gridSpacing must be a scalar or the same length as gridSize.');
+                end
+                obj.gridPadding(1:obj.dimensions) = gridPadding;
             end
+
         end
     end
     
@@ -229,17 +213,17 @@ classdef kWaveGrid < handle
         end
 
         % 1D vector of grid coordinates.
-        function x_vec = get.xVec(obj)
-            x_vec = ((1:obj.Nx).' - ceil((obj.Nx + 1)/2)) .* obj.dx;
+        function xVec = get.xVec(obj)
+            xVec = ((1:obj.Nx).' - ceil((obj.Nx + 1)/2)) .* obj.dx;
         end
 
-        function y_vec = get.yVec(obj)
-            y_vec = ((1:obj.Ny).' - ceil((obj.Ny + 1)/2)) .* obj.dy;
+        function yVec = get.yVec(obj)
+            yVec = ((1:obj.Ny).' - ceil((obj.Ny + 1)/2)) .* obj.dy;
         end
 
-        function z_vec = get.zVec(obj)
-            z_vec = ((1:obj.Nz).' - ceil((obj.Nz + 1)/2)) .* obj.dz;
-        end   
+        function zVec = get.zVec(obj)
+            zVec = ((1:obj.Nz).' - ceil((obj.Nz + 1)/2)) .* obj.dz;
+        end
 
         % Nx by Ny by Nz matrix containing repeated copies of the grid
         % coordinates.
@@ -277,23 +261,55 @@ classdef kWaveGrid < handle
         end
 
         % Physical size of grid.
-        function x_size = get.xSize(obj)
-            x_size = obj.Nx .* obj.dx;
+        function xSize = get.xSize(obj)
+            xSize = obj.Nx .* obj.dx;
         end
 
-        function y_size = get.ySize(obj)
-            y_size = obj.Ny .* obj.dy;
+        function ySize = get.ySize(obj)
+            ySize = obj.Ny .* obj.dy;
         end
 
-        function z_size = get.zSize(obj)
-            z_size = obj.Nz .* obj.dz;
-        end     
+        function zSize = get.zSize(obj)
+            zSize = obj.Nz .* obj.dz;
+        end
                 
         % Total number of grid points.
         function N = get.totalGridPoints(obj)
             N = prod(obj.gridSize);
         end
-        
+
+        % 1D vector of wavevector components.
+        function kxVec = get.kxVec(obj)
+            kxVec = obj.makeDim(obj.Nx, obj.dx);
+        end
+
+        function kyVec = get.kyVec(obj)
+            kyVec = obj.makeDim(obj.Ny, obj.dy);
+        end
+
+        function kzVec = get.kzVec(obj)
+            kzVec = obj.makeDim(obj.Nz, obj.dz);
+        end
+
+        % Nx by Ny by Nz matrix of scalar wavenumber.
+        function k = get.k(obj)
+            switch obj.dimensions
+                case 1
+                    k = abs(obj.kxVec);
+                case 2
+                    k = zeros(obj.gridSize);
+                    k = k + reshape(obj.kxVec, [], 1, 1).^2;
+                    k = k + reshape(obj.kyVec, 1, [], 1).^2;
+                    k = sqrt(k);
+                case 3
+                    k = zeros(obj.gridSize);
+                    k = k + reshape(obj.kxVec, [], 1, 1).^2;
+                    k = k + reshape(obj.kyVec, 1, [], 1).^2;
+                    k = k + reshape(obj.kzVec, 1, 1, []).^2;
+                    k = sqrt(k);
+            end
+        end
+
         % Nx by Ny by Nz matrix containing repeated copies of wavevector
         % components [rad/m].
         function kx = get.kx(obj)
@@ -363,12 +379,22 @@ classdef kWaveGrid < handle
 
             % Define the discretisation of the spatial dimension such that
             % there is always a DC component.
-            if rem(Nx, 2) == 0
+            if Nx == 1
+
+                % One grid point, so only DC component.
+                kVec = 0;
+                return
+
+            elseif rem(Nx, 2) == 0
+
                 % Grid dimension has an even number of points.
                 nx = ((-Nx/2:Nx/2-1)/Nx).';
+
             else
+
                 % Grid dimension has an odd number of points.
                 nx = ((-(Nx-1)/2:(Nx-1)/2)/Nx).';
+
             end
 
             % Force middle value to be zero in case 1/Nx is a recurring
