@@ -372,7 +372,7 @@ classdef kWaveGrid < handle
        
     % General class methods.
     methods
-        highestPrimeFactors = highestPrimeFactors(obj, axisymmetric); 
+        highestPrimeFactors = highestPrimeFactors(obj);
     end
     
     % Methods that can only be accessed by class members.
