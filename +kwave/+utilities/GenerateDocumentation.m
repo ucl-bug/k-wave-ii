@@ -7,9 +7,27 @@
 %   GenerateDocumentation.
 %
 %% Description
-% GenerateDocumentation is a static class that is called to generate the
-% help files that appear in the MATLAB help browser. This only needs to be
-% called once after installing, updating, or modifying k-Wave.
+% |GenerateDocumentation| is a static class that is called to generate the
+% help files that appear in the MATLAB help browser. The documentation is
+% generated in several stages: 
+%
+% # The .m files in specified directories are converted directly to .html
+%   using the MATLAB <matlab:doc('publish') publish> function. Text should
+%   be written using MATLAB publishing markup, which is parsed as headings,
+%   code, etc.
+% # The generated .html files are modified to add html links between
+%   related functions and classes.
+% # A helptoc.xml file is automatically created, adding links to the
+%   generated .html files.
+% # The documentation search database is created using
+%   <matlab:doc('builddocsearchdb') builddocsearchdb>.
+% 
+% This class is provided for generating documentation during development,
+% and for preparing the documentation packaged with a release. If you have
+% downloaded a packaged release, there should be no need to call this
+% class. However, if you have directly cloned the repository and are
+% working with bleeding-edge changes, you can call |GenerateDocumentation|
+% to (re-)generate the help files.
 
 classdef GenerateDocumentation
 
