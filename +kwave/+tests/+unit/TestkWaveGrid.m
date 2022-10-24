@@ -113,28 +113,6 @@ classdef TestkWaveGrid < matlab.unittest.TestCase
             testCase.verifyEqual(testCase.kgrid.highestPrimeFactors, primeFactors);
         end
 
-        % Test largest prime factors are correct for axisymmetry.
-        function testAxisymmetricPrimeFactors(testCase, gridSizePadded, primeFactors)
-        
-            % Skip test if grid is not 2D.
-            testCase.assumeTrue(testCase.kgrid.dimensions == 2, 'Grid size is not 2D, so cannot be axisymmetric. Skipping parameterized test.');
-
-            % Manually compute prime factors in radial direction.
-            primeFactorsWSWA = primeFactors;
-            primeFactorsWSWA(2) = max(factor(gridSizePadded(2) * 4));
-
-            primeFactorsWSWS = primeFactors;
-            primeFactorsWSWS(2) = max(factor(gridSizePadded(2) * 2 - 2));
-
-            % Verify.
-            testCase.verifyEqual(testCase.kgrid.highestPrimeFactors('WSWA'), primeFactorsWSWA);
-            testCase.verifyEqual(testCase.kgrid.highestPrimeFactors('WSWS'), primeFactorsWSWS);
-
-            % Verify incorrect symmetry input.
-            verifyError(testCase, @() testCase.kgrid.highestPrimeFactors('Nonsense'), 'kWaveGrid:unknownInput');
-
-        end
-
         % Test wavenumbers are correct.
         function testWavenumbers(testCase, gridSizePadded, gridSpacingPadded)
 
