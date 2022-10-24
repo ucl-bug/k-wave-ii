@@ -12,7 +12,9 @@ classdef TestkWaveGrid < matlab.unittest.TestCase
 
     properties(MethodSetupParameter)
 
-        % Grid size and spacing to loop over.
+        % Grid size and spacing to loop over. These test different possible
+        % inputs for 1D, 2D and 3D domains with both odd and even grid
+        % dimensions.
         gridSize = {10, 11, [10, 12], [11, 13], [10, 12, 14], [11, 13, 15], [10, 12], [10, 12, 14]};
         gridSpacing = {0.1, 0.1, 0.1, 0.1, 0.1, 0.1, [0.1, 0.2], [0.1, 0.2, 0.3]};
 
@@ -174,7 +176,8 @@ classdef TestkWaveGrid < matlab.unittest.TestCase
     % Single tests.
     methods(Test)
 
-        % Test incorrect grid spacing input throws error.
+        % Test that a mismatch between the length of the grid size and grid
+        % spacing inputs throws an error.
         function testIncorrectGridSpacing(testCase)
             import kwave.toolbox.*;
             sz = [10, 10];
