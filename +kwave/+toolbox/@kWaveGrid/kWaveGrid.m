@@ -80,7 +80,9 @@
 % * |kxMax|, |kyMax|, |kzMax| - (double) Maximum supported spatial
 %   frequency in each direction [rad/m].
 % * |kMax| - (double) Maximum supported spatial frequency in all directions
-%   [rad/m].
+%   [rad/m]. If the grid spacing is different in each direction, |kMax| is
+%   given as the maximum spatial frequency that is supported in all
+%   directions, i.e., the minimum of [kxMax, kyMax, kzMax].
 %
 %% Methods
 % * |highestPrimeFactors|
