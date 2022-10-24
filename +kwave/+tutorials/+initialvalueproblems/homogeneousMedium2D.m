@@ -4,8 +4,8 @@
 % This example demonstrates how to run a simple initial value problem using
 % k-Wave II.
 %
-% * <matlab:edit('kwave.examples.initialvalueproblems.homogeneousMedium2D') Open the file in the MATLAB Editor>
-% * <matlab:run('kwave.examples.initialvalueproblems.homogeneousMedium2D.m') Run the file in MATLAB>
+% * <matlab:edit('kwave.tutorials.initialvalueproblems.homogeneousMedium2D') Open the file in the MATLAB Editor>
+% * <matlab:run('kwave.tutorials.initialvalueproblems.homogeneousMedium2D.m') Run the file in MATLAB>
 %
 %% Setup
 % k-Wave uses package folders to separate the toolbox, examples, tests, and
