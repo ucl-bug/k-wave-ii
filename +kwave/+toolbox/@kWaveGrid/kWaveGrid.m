@@ -173,14 +173,14 @@ classdef kWaveGrid < handle
             % Assign gridSize and gridSpacing.
             obj.gridSize(1:obj.dimensions) = gridSize;
             if (numel(gridSpacing) ~= 1) && (numel(gridSpacing) ~= obj.dimensions)
-                error('kWaveGrid:incorrectSize', 'gridSpacing must be a scalar or the same length as gridSize.');
+                error('kWaveGrid:incorrectInputSize', 'gridSpacing must be a scalar or the same length as gridSize.');
             end
             obj.gridSpacing(1:obj.dimensions) = gridSpacing;
 
             % Assign gridPadding.
             if nargin == 3
                 if (numel(gridPadding) ~= 1) && (numel(gridPadding) ~= obj.dimensions)
-                    error('kWaveGrid:incorrectSize', 'gridSpacing must be a scalar or the same length as gridSize.');
+                    error('kWaveGrid:incorrectInputSize', 'gridSpacing must be a scalar or the same length as gridSize.');
                 end
                 obj.gridPadding(1:obj.dimensions) = gridPadding;
             end

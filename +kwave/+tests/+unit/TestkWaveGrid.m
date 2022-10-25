@@ -169,6 +169,14 @@ classdef TestkWaveGrid < matlab.unittest.TestCase
             testCase.verifyEqual(testCase.kgrid.ky(1, :, 1), reshape(testCase.kgrid.kyVec, 1, [], 1), RelTol=1e-15);
             testCase.verifyEqual(testCase.kgrid.kz(1, 1, :), reshape(testCase.kgrid.kzVec, 1, 1, []), RelTol=1e-15);
 
+            % Test scalar wavenumber has DC in the centre.
+            centerPos = ceil((gridSizePadded + 1)/2);
+            testCase.verifyEqual(testCase.kgrid.k(centerPos(1), centerPos(2), centerPos(3)), 0);
+
+            % Test scalar wavenumber has correct corner value.
+            cornerVal = norm(kMaxVec);
+            testCase.verifyEqual(testCase.kgrid.k(1, 1, 1), cornerVal, RelTol=1e-15);
+
         end
 
     end
@@ -182,7 +190,26 @@ classdef TestkWaveGrid < matlab.unittest.TestCase
             import kwave.toolbox.*;
             sz = [10, 10];
             spacing = [1, 1, 1];
-            verifyError(testCase, @() kWaveGrid(sz, spacing), 'kWaveGrid:incorrectSize');
+            testCase.verifyError(@() kWaveGrid(sz, spacing), 'kWaveGrid:incorrectInputSize');
+        end
+
+        % Test that a mismatch between the length of the grid size and grid
+        % padding inputs throws an error.
+        function testIncorrectGridPadding(testCase)
+            import kwave.toolbox.*;
+            sz = [10, 10];
+            spacing = [1, 1];
+            padding = [1, 1, 1];
+            testCase.verifyError(@() kWaveGrid(sz, spacing, padding), 'kWaveGrid:incorrectInputSize');
+        end
+
+        % Test assigning grid padding.
+        function testAssignGridPadding(testCase)
+            import kwave.toolbox.*;
+            sz = [10, 10];
+            spacing = [1, 1];
+            padding = [1, 1];
+            testCase.verifyWarningFree(@() kWaveGrid(sz, spacing, padding));
         end
 
     end
