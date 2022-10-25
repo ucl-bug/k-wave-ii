@@ -1,0 +1,14 @@
+name: Run MATLAB tests
+on: [push]
+
+jobs:
+  matlab-tests:
+    name: Run unit tests
+    runs-on: Windows
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Run tests
+        run: |
+          matlab -batch kwave.tests.runTests
