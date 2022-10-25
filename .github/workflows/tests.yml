@@ -12,3 +12,8 @@ jobs:
       - name: Run tests
         run: |
           matlab -batch kwave.tests.runTests
+
+      - name: Upload code coverage
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./+kwave/+tests/unit-tests-artifacts/cobertura.xml
