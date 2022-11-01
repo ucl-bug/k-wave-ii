@@ -127,7 +127,7 @@ classdef GenerateDocumentation
                 end
                 if (strncmp(mFileRelativeFolder, "@", 1)) && (~mFilenames(ind).isClass)
                     mFilenames(ind).isClassMethod = true;
-                    mFilenames(ind).className = [mFileRelativeFolder(2:end) '.m']; % Convert folder name to class name.
+                    mFilenames(ind).className = [mFileRelativeFolder(2:end) '.m']; % Convert folder name to class name by removing the leading "@" character.
                     cd(mFilenames(ind).folder);
                     filename = [filename '.m']; %#ok<AGROW>
                 elseif (strncmp(mFileRelativeFolder, "+", 1))
