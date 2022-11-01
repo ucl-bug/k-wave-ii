@@ -179,6 +179,16 @@ classdef TestkWaveGrid < matlab.unittest.TestCase
 
         end
 
+        % Test size validation.
+        function testValidateSize(testCase)
+            import kwave.toolbox.*;
+            matrix = rand(testCase.kgrid.gridSize);
+            matrixPadded = rand(testCase.kgrid.gridSize + 2*testCase.kgrid.gridPadding);
+            testCase.verifyWarningFree(@() testCase.kgrid.validateSize(matrix));
+            testCase.verifyWarningFree(@() testCase.kgrid.validateSize(matrix, FunctionName='myFunction', VariableName='myVariable'));
+            testCase.verifyWarningFree(@() testCase.kgrid.validateSize(matrixPadded, IncludePadding=true));
+        end
+
     end
 
     % Single tests.
