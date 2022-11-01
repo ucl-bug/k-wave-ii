@@ -23,11 +23,25 @@
 %% See Also
 % * |TestType|
 
-function runTests(testType)
+function runTests(varargin)
+
+% Check for MATLAB version 2022a = 9.12.
+% See https://en.wikipedia.org/wiki/MATLAB for a list of version numbers.
+if verLessThan('matlab', '9.12')
+    error('MATLAB 2022a or later is required to use k-Wave-II.');
+end
+
+runTestsInternal(varargin{:})
+
+end
+
+function runTestsInternal(testType)
 
 arguments
     testType kwave.tests.TestType = kwave.tests.TestType.unit;
 end
+
+
 
 import matlab.unittest.TestRunner
 import matlab.unittest.Verbosity
@@ -57,3 +71,5 @@ runner.addPlugin(CodeCoveragePlugin.forFolder([testsFolder '/../../+toolbox'], .
 
 results = runner.run(suite);
 assertSuccess(results);
+
+end
