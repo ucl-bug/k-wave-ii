@@ -1,0 +1,18 @@
+name: Checks code quality
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  matlab-tests:
+    name: Run MATLAB Code Quality check
+    runs-on: Windows
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Run tests
+        run: |
+          matlab -batch "kwave.tests.runTests('linting')"
