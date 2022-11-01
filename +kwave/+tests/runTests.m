@@ -63,5 +63,3 @@ runner.addPlugin(CodeCoveragePlugin.forFolder([testsFolder '/../../+toolbox'], .
 
 results = runner.run(suite);
 assertSuccess(results);
-
-end
