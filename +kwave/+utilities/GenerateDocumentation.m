@@ -100,8 +100,11 @@ classdef GenerateDocumentation
             absolutePath = fullfile(obj.rootPath, relativeFolder);
             mFilenames = dir(fullfile(absolutePath, '**/*.m'));
             numFiles = length(mFilenames);
+
+            % Initialise additional properties that we will set.
             [mFilenames(:).isClassMethod] = deal(false);
             [mFilenames(:).isClass] = deal(false);
+            [mFilenames(:).className] = deal('');
             
             % Loop over m-files. 
             for ind = 1:numFiles
@@ -124,8 +127,9 @@ classdef GenerateDocumentation
                 end
                 if (strncmp(mFileRelativeFolder, "@", 1)) && (~mFilenames(ind).isClass)
                     mFilenames(ind).isClassMethod = true;
+                    mFilenames(ind).className = [mFileRelativeFolder(2:end) '.m']; % Convert folder name to class name.
                     cd(mFilenames(ind).folder);
-                    filename = [filename '.m']; %#ok<AGROW> 
+                    filename = [filename '.m']; %#ok<AGROW>
                 elseif (strncmp(mFileRelativeFolder, "+", 1))
                     filename = [nameSpace extractAfter(mFileRelativeFolder, 1) '.' filename]; %#ok<AGROW> 
                 else
@@ -134,11 +138,18 @@ classdef GenerateDocumentation
             
                 % Publish.
                 disp(['Converting ', filename, ' to HTML (', int2str(ind), '/', int2str(numFiles), ')']);
-                publish(filename, ...
+                publishedFile = publish(filename, ...
                     'format', 'html', ...
                     'outputDir', obj.helpDir, ...
                     'evalCode', options.evalCode, ...
                     'showCode', options.showCode);
+
+                % Rename to include classname if a class method.
+                if ~isempty(mFilenames(ind).className)
+                    [~, htmlFilename, ~] = fileparts(publishedFile);
+                    [~, className, ~] = fileparts(mFilenames(ind).className);
+                    movefile(publishedFile, fullfile(obj.helpDir, [className '-' htmlFilename '.html']));
+                end
             
                 % Change back to root directory.
                 cd(obj.rootPath);
@@ -148,7 +159,7 @@ classdef GenerateDocumentation
             % Add relative links to class methods from class documentation.
             for ind1 = 1:numFiles
                 for ind2 = 1:numFiles
-                    if mFilenames(ind1).isClass && mFilenames(ind2).isClassMethod
+                    if mFilenames(ind1).isClass && mFilenames(ind2).isClassMethod && strcmp(mFilenames(ind2).className, mFilenames(ind1).name)
             
                         disp(['Replacing links to method ', mFilenames(ind2).name, ' from class ', mFilenames(ind1).name]);
                         [~, className, ~] = fileparts(mFilenames(ind1).name);
@@ -160,8 +171,14 @@ classdef GenerateDocumentation
                         fileContents = fread(fid, '*char');
                         fclose(fid);
             
-                        % Replace links, and save to HTML file replacing contents.
-                        fileContents = strrep(fileContents.', methodName, obj.generateLink(methodName));
+                        % Replace links, and save to HTML file replacing
+                        % contents. The |methodName| syntax is published as
+                        % <tt>methodName</tt>. The html flags are included
+                        % in the search to avoid adding links to code
+                        % snippets.
+                        fileContents = strrep(fileContents.', ...
+                            ['<tt>' methodName '</tt>'], ...
+                            ['<tt>' obj.generateLink([className '-' methodName], methodName) '</tt>']);
                         fid = fopen(htmlFilename, 'w');
                         fprintf(fid, '%s', fileContents.');
                         fclose(fid);
@@ -204,8 +221,8 @@ classdef GenerateDocumentation
         end
         
         % Convenience function to generate HTML link to file.
-        function link = generateLink(~, filename)
-            link = ['<a href="' filename '.html">' filename '</a>'];
+        function link = generateLink(~, htmlFilename, methodName)
+            link = ['<a href="' htmlFilename '.html">' methodName '</a>'];
         end
 
     end
