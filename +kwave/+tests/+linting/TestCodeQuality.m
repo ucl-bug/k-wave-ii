@@ -30,6 +30,7 @@ classdef TestCodeQuality < matlab.unittest.TestCase
         mfile = fullfile(mfiles(i).folder, mfiles(i).name);
 
         % Run `checkcode` on the file.
+        disp("Checking " + mfile)
         [problems, ~] = checkcode(mfile, "-id");
 
         % Display problems if there are before failing the test
