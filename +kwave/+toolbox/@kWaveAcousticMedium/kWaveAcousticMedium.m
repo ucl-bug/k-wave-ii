@@ -38,6 +38,9 @@
 %   [dB/(MHz^y cm)]. 
 % * |alphaPower| - (single) Power law attenuation power.
 % * |BonA| - (single) Parameter of nonlinearity.
+%
+%% See Also
+% * |kWaveInput|
 
 classdef kWaveAcousticMedium < kwave.toolbox.kWaveInput
 

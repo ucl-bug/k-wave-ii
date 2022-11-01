@@ -30,7 +30,7 @@
 %     kgrid.validateSize(matrix, VariableName='myInput', IncludePadding=true);
 %
 %% Input Arguments
-% * |matrix| - (numeric) Matrix to check size of.
+% * |matrix| - (numeric) Matrix to check size of. Must be real and finite.
 %
 %% Name-Value Arguments
 % Specify optional pairs of arguments as |Name1=Value1,...,NameN=ValueN|,
@@ -60,11 +60,11 @@ end
 if (numel(matrix) ~= 1)
     if (options.IncludePadding)
         validateattributes(matrix, {'numeric'}, ...
-            {'size', obj.gridSize + 2 * obj.gridPadding}, ...
+            {'size', obj.gridSize + 2 * obj.gridPadding, 'real', 'finite'}, ...
             options.FunctionName, options.VariableName);
     else
         validateattributes(matrix, {'numeric'}, ...
-            {'size', obj.gridSize}, ...
+            {'size', obj.gridSize, 'real', 'finite'}, ...
             options.FunctionName, options.VariableName);
     end
 end

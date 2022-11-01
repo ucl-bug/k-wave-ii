@@ -35,6 +35,9 @@
 % * |density| - (single) Mass density [kg/m^2].
 % * |specificHeat| - (single) Mass density [kg/m^2].
 % * |thermalConductivity| - (single) Mass density [kg/m^2].
+%
+%% See Also
+% * |kWaveInput|
 
 classdef kWaveThermalMedium < kwave.toolbox.kWaveInput
 
