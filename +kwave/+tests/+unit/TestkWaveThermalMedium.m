@@ -7,10 +7,10 @@
 classdef TestkWaveThermalMedium < kwave.tests.unit.TestInput
 
     properties
-        mediumClass = 'kWaveThermalMedium'
-        mediumProperties = {'density', 'specificHeat', 'thermalConductivity'}
-        mediumPropertiesPadded = {'densityPadded', 'specificHeatPadded', 'thermalConductivityPadded'}
-        mediumPropertiesScalar = {}
+        inputClass = 'kWaveThermalMedium'
+        inputProperties = {'density', 'specificHeat', 'thermalConductivity'}
+        inputPropertiesPadded = {'densityPadded', 'specificHeatPadded', 'thermalConductivityPadded'}
+        inputPropertiesScalar = {}
     end
 
     methods(Test)

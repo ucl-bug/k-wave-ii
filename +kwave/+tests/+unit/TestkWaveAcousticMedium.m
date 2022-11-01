@@ -7,10 +7,10 @@
 classdef TestkWaveAcousticMedium < kwave.tests.unit.TestInput
 
     properties
-        mediumClass = 'kWaveAcousticMedium'
-        mediumProperties = {'soundSpeed', 'density', 'alphaCoeff', 'BonA'}
-        mediumPropertiesPadded = {'soundSpeedPadded', 'densityPadded', 'alphaCoeffPadded', 'BonAPadded'}
-        mediumPropertiesScalar = {'soundSpeedReference', 'alphaPower'}
+        inputClass = 'kWaveAcousticMedium'
+        inputProperties = {'soundSpeed', 'density', 'alphaCoeff', 'BonA'}
+        inputPropertiesPadded = {'soundSpeedPadded', 'densityPadded', 'alphaCoeffPadded', 'BonAPadded'}
+        inputPropertiesScalar = {'soundSpeedReference', 'alphaPower'}
     end
 
     methods(Test)

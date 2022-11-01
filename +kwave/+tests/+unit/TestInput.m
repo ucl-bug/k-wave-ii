@@ -10,17 +10,17 @@
 % first defines the medium class name, and the others define cell arrays of
 % the medium properties names for the class under test:
 %
-% * |mediumClass| - (char) Name of medium class.
-% * |mediumProperties| - Cell array of property names defined on the
+% * |inputClass| - (char) Name of input class.
+% * |inputProperties| - Cell array of property names defined on the
 %   non-padded grid that can be either scalar values or spatially varying.
-%   For example, |mediumProperties = {'soundSpeed', 'density'}.
-% * |mediumPropertiesPadded| - Cell array of property names defined on the
+%   For example, |inputProperties = {'soundSpeed', 'density'}.
+% * |inputPropertiesPadded| - Cell array of property names defined on the
 %   padded grid that can be either scalar values or spatially varying. For
-%   example, |mediumPropertiesPadded = {'soundSpeedPadded',
+%   example, |inputPropertiesPadded = {'soundSpeedPadded',
 %   'densityPadded'}.
-% * |mediumPropertiesScalar| - Cell array of property names for values that
-%   must be scalar values. For 
-%   example, |mediumPropertiesScalar = {'soundSpeedReference'}.
+% * |inputPropertiesScalar| - Cell array of property names for values that
+%   must be scalar values. For example, |inputPropertiesScalar =
+%   {'soundSpeedReference'}.
 %
 % Derived classes must also contain a test methods block (which can be
 % empty) so that the tests run:
@@ -35,15 +35,15 @@
 classdef(Abstract) TestInput < matlab.unittest.TestCase
 
     properties(Abstract)
-        mediumClass
-        mediumProperties
-        mediumPropertiesPadded
-        mediumPropertiesScalar
+        inputClass
+        inputProperties
+        inputPropertiesPadded
+        inputPropertiesScalar
     end
 
     properties
         kgrid kwave.toolbox.kWaveGrid
-        medium
+        input
     end
 
     properties(MethodSetupParameter)
@@ -61,7 +61,7 @@ classdef(Abstract) TestInput < matlab.unittest.TestCase
         % Create grid and medium objects used by tests.
         function createGrid(testCase, gridSize, gridSpacing, gridPadding)
             testCase.kgrid = kwave.toolbox.kWaveGrid(gridSize, gridSpacing, gridPadding);
-            testCase.medium = kwave.toolbox.(testCase.mediumClass)(testCase.kgrid);
+            testCase.input = kwave.toolbox.(testCase.inputClass)(testCase.kgrid);
         end
 
     end
@@ -70,7 +70,9 @@ classdef(Abstract) TestInput < matlab.unittest.TestCase
 
         % Test not defining required properties throws an error.
         function testMissingProperties(testCase)
-            testCase.verifyError(@() testCase.medium.checkRequiredProperties, 'kWaveInput:missingInput');
+            if ~isempty(testCase.input.requiredProperties)
+                testCase.verifyError(@() testCase.input.checkRequiredProperties, 'kWaveInput:missingInput');
+            end
         end
 
         % Test homogeneous parameter assignment gives correct property
@@ -78,21 +80,21 @@ classdef(Abstract) TestInput < matlab.unittest.TestCase
         function testHomogeneousProperties(testCase)
 
             % Combine properties and scalar properties.
-            mediumPropertiesAll = [testCase.mediumProperties, testCase.mediumPropertiesScalar];
+            mediumPropertiesAll = [testCase.inputProperties, testCase.inputPropertiesScalar];
 
             % Assign medium properties and check size is 1.
             for ind = 1:length(mediumPropertiesAll)
-                testCase.medium.(mediumPropertiesAll{ind}) = rand;
-                testCase.verifyEqual(numel(testCase.medium.(mediumPropertiesAll{ind})), 1);
+                testCase.input.(mediumPropertiesAll{ind}) = rand;
+                testCase.verifyEqual(numel(testCase.input.(mediumPropertiesAll{ind})), 1);
             end
 
             % Check size of padded properties is also 1.
-            for ind = 1:length(testCase.mediumPropertiesPadded)
-                testCase.verifyEqual(numel(testCase.medium.(testCase.mediumPropertiesPadded{ind})), 1);
+            for ind = 1:length(testCase.inputPropertiesPadded)
+                testCase.verifyEqual(numel(testCase.input.(testCase.inputPropertiesPadded{ind})), 1);
             end
 
             % Test required properties are set.
-            testCase.verifyWarningFree(@() testCase.medium.checkRequiredProperties);
+            testCase.verifyWarningFree(@() testCase.input.checkRequiredProperties);
 
         end
 
@@ -109,14 +111,14 @@ classdef(Abstract) TestInput < matlab.unittest.TestCase
 
             % Assign medium properties and check size with and without
             % padding.
-            for ind = 1:length(testCase.mediumProperties)
-                testCase.medium.(testCase.mediumProperties{ind}) = rand(testCase.medium.gridSize);
-                testCase.verifyEqual(size(testCase.medium.(testCase.mediumProperties{ind})), gridSize);
-                testCase.verifyEqual(size(testCase.medium.(testCase.mediumPropertiesPadded{ind})), paddedSize);
+            for ind = 1:length(testCase.inputProperties)
+                testCase.input.(testCase.inputProperties{ind}) = rand(testCase.input.gridSize);
+                testCase.verifyEqual(size(testCase.input.(testCase.inputProperties{ind})), gridSize);
+                testCase.verifyEqual(size(testCase.input.(testCase.inputPropertiesPadded{ind})), paddedSize);
             end
 
             % Test required properties are set.
-            testCase.verifyWarningFree(@() testCase.medium.checkRequiredProperties);
+            testCase.verifyWarningFree(@() testCase.input.checkRequiredProperties);
 
         end
 
