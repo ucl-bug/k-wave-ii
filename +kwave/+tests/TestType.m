@@ -22,6 +22,8 @@
 %   time.
 % * *kwave.tests.TestType.benchmarks:* Tests for performance.
 %
+%
+% The test folder must be the same the test type name.
 %% See Also
 % * |runTests|
 
@@ -31,16 +33,12 @@ classdef TestType
     end
     methods
         function folder = testsFolderName(obj)
-            switch obj
-                case kwave.tests.TestType.unit
-                    folder = '+unit';
-            end
+            folder = '+' + string(obj);
         end
+
         function folder = artifactsFolderName(obj)
-            switch obj
-                case kwave.tests.TestType.unit
-                    folder = 'unit-tests-artifacts';
-            end
-        end        
+            folder = string(obj) + '-tests-artifacts';
+        end     
+
     end
 end
