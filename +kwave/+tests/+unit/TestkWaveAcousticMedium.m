@@ -4,7 +4,7 @@
 %
 % Unit tests for the kWaveAcousticMedium class using the TestMedium class.
 
-classdef TestkWaveAcousticMedium < kwave.tests.unit.TestMedium
+classdef TestkWaveAcousticMedium < kwave.tests.unit.TestInput
 
     properties
         mediumClass = 'kWaveAcousticMedium'

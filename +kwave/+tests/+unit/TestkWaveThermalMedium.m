@@ -4,7 +4,7 @@
 %
 % Unit tests for the kWaveThermalMedium class using the TestMedium class.
 
-classdef TestkWaveThermalMedium < kwave.tests.unit.TestMedium
+classdef TestkWaveThermalMedium < kwave.tests.unit.TestInput
 
     properties
         mediumClass = 'kWaveThermalMedium'

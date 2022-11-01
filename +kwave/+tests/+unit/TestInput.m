@@ -1,4 +1,4 @@
-%% TestkWaveGrid
+%% TestInput
 % *Package:* kwave.tests.unit
 % *Superclasses:* matlab.unittest.TestCase
 %
@@ -32,7 +32,7 @@
 % property assignment, padded and non-padded size checks, and error states
 % for grid sizes in 1D, 2D, and 3D.
 
-classdef(Abstract) TestMedium < matlab.unittest.TestCase
+classdef(Abstract) TestInput < matlab.unittest.TestCase
 
     properties(Abstract)
         mediumClass
