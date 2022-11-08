@@ -34,9 +34,9 @@ classdef TestCodeQuality < matlab.unittest.TestCase
             testCase.assertGreaterThan(size(mfiles), 0);
 
             % Check each one with `checkcode`.
-            for i = 1:numel(mfiles)
+            for fileInd = 1:numel(mfiles)
                 % Get the full path to the file.
-                mfile = fullfile(mfiles(i).folder, mfiles(i).name);
+                mfile = fullfile(mfiles(fileInd).folder, mfiles(fileInd).name);
 
                 % Run `checkcode` on the file.
                 disp("Checking " + mfile)
@@ -46,8 +46,8 @@ classdef TestCodeQuality < matlab.unittest.TestCase
                 if ~isempty(problems)
                     % If there are problems, print them.
                     disp("Linting Errors:")
-                    for j = 1:numel(problems)
-                        disp(testCase.problemToString(problems(j), mfile));
+                    for probInd = 1:numel(problems)
+                        disp(testCase.problemToString(problems(probInd), mfile));
                     end
                 end
 
