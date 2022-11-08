@@ -72,16 +72,17 @@ end
 
 % Check to see if a value for expansionValue has been given, if not, extend
 % the edge values.
-if nargin == 3
-    extendEdges = false;
-elseif nargin == 2
-    extendEdges = true;
-end
+extendEdges = (nargin == 2);
 
 % Extract the class of the input matrix.
 dataType = class(matrix);
 
-if isvector(matrix)
+% Force the expansionValue to be logical if the matrix is logical
+if islogical(matrix)
+    expansionValue = logical(expansionValue);
+end
+
+if isvector(matrix) % 1D vector
     
     % Extract expansion sizes.
     if length(expansionSize) == 2
@@ -102,28 +103,24 @@ if isvector(matrix)
         matrixExpanded = ones(xSize, 1, dataType);
     end
 
-    % Fill expanded matrix with expansion value if specified.
-    if ~extendEdges
-        if islogical(matrix)
-            matrixExpanded(:) = logical(expansionValue);
-        else
-            matrixExpanded = expansionValue * matrixExpanded;
-        end
-    end
-    
     % Create indices to allow the original matrix to be placed into the
     % expanded matrix.
     x1 = 1 + x1Expansion;
     x2 = xSize - x2Expansion;
-    matrixExpanded(x1:x2) = matrix;
-    
-    % Replace the remaining values by extending the edges.
+
+    % Fill expanded matrix by extending the edges, or with expansion value
+    % if specified.
     if extendEdges
         matrixExpanded(1:(x1 - 1)) = matrix(1);
         matrixExpanded((x2 + 1):end) = matrix(end); 
+    else
+        matrixExpanded(:) = expansionValue;
     end
 
-elseif ismatrix(matrix)
+    % Put back original matrix inside expanded matrix.
+    matrixExpanded(x1:x2) = matrix;
+
+elseif ismatrix(matrix) % 2D matrix
     
     % Extract expansion sizes.
     if length(expansionSize) == 4
@@ -150,26 +147,17 @@ elseif ismatrix(matrix)
     ySize = size(matrix, 2) + y1Expansion + y2Expansion;
     matrixExpanded = ones(xSize, ySize, dataType);
 
-    % Fill expanded matrix with expansion value if specified.
-    if ~extendEdges
-        if islogical(matrix)
-            matrixExpanded(:) = logical(expansionValue);
-        else
-            matrixExpanded = expansionValue * matrixExpanded;
-        end
-    end
-
     % Create indices to allow the original matrix to be placed into the
     % expanded matrix.
     x1 = 1 + x1Expansion;
     x2 = xSize - x2Expansion;
     y1 = 1 + y1Expansion;
     y2 = ySize - y2Expansion;
-    matrixExpanded(x1:x2, y1:y2) = matrix;        
 
-    % Replace the remaining values by extending the edges.
-    if extendEdges        
-                    
+    % Fill expanded matrix by extending the edges, or with expansion value
+    % if specified.
+    if extendEdges
+
         % Extend edge values.
         matrixExpanded(1:x1-1, y1:y2) = repmat(matrix(1, :), x1Expansion, 1);
         matrixExpanded(x2+1:end, y1:y2) = repmat(matrix(end, :), x2Expansion, 1);
@@ -182,9 +170,14 @@ elseif ismatrix(matrix)
         matrixExpanded(x2+1:end, 1:y1-1) = matrix(end, 1) * ones(x2Expansion, y1Expansion, dataType);
         matrixExpanded(x2+1:end, y2+1:end) = matrix(end, end) * ones(x2Expansion, y2Expansion, dataType);
 
+    else
+        matrixExpanded(:) = expansionValue;
     end
 
-else
+    % Put back original matrix inside expanded matrix.
+    matrixExpanded(x1:x2, y1:y2) = matrix;
+
+else % 3D matrix
 
     % Extract expansion sizes.
     if length(expansionSize) == 6
@@ -218,15 +211,6 @@ else
     zSize = size(matrix, 3) + z1Expansion + z2Expansion;
     matrixExpanded = ones(xSize, ySize, zSize, dataType);
 
-    % Fill expanded matrix with expansion value if specified.
-    if ~extendEdges
-        if islogical(matrix)
-            matrixExpanded(:) = logical(expansionValue);
-        else
-            matrixExpanded = expansionValue * matrixExpanded;
-        end
-    end
-
     % Create indices to allow the original matrix to be placed into the
     % expanded matrix.
     x1 = 1 + x1Expansion;
@@ -235,11 +219,11 @@ else
     y2 = ySize - y2Expansion;        
     z1 = 1 + z1Expansion;
     z2 = zSize - z2Expansion;
-    matrixExpanded(x1:x2, y1:y2, z1:z2) = matrix; 
 
-    % Replace the remaining values by extending the edges.
-    if extendEdges        
-                    
+    % Fill expanded matrix by extending the edges, or with expansion value
+    % if specified.
+    if extendEdges
+
         % Extend face values.
         matrixExpanded(1:x1-1, y1:y2, z1:z2) = repmat(matrix(1, :, :), [x1Expansion, 1, 1]);
         matrixExpanded(x2+1:end, y1:y2, z1:z2) = repmat(matrix(end, :, :), [x2Expansion, 1, 1]);
@@ -272,6 +256,11 @@ else
         matrixExpanded(x2+1:end, 1:y1-1, z2+1:end) = matrix(end, 1, end)*ones(x2Expansion, y1Expansion, z2Expansion, dataType);
         matrixExpanded(x2+1:end, y2+1:end, z2+1:end) = matrix(end, end, end)*ones(x2Expansion, y2Expansion, z2Expansion, dataType);
 
-    end        
+    else
+        matrixExpanded(:) = expansionValue;
+    end
+
+    % Put back original matrix inside expanded matrix.
+    matrixExpanded(x1:x2, y1:y2, z1:z2) = matrix;
 
 end
