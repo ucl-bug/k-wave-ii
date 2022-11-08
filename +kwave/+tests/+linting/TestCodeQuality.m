@@ -46,8 +46,8 @@ classdef TestCodeQuality < matlab.unittest.TestCase
         if ~isempty(problems)
           % If there are problems, print them.
           disp("Linting Errors:")
-          for i = 1:numel(problems)
-            disp(testCase.problemToString(problems(i), mfile));
+          for j = 1:numel(problems)
+            disp(testCase.problemToString(problems(j), mfile));
           end
         end
 
