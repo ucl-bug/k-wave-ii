@@ -1,3 +1,12 @@
+%% TestCodeQuality
+% *Package:* kwave.tests.unit
+% *Superclasses:* matlab.unittest.TestCase
+%
+% Code quality tests for the k-wave II code base.
+%
+% For each file in +kwave/+toolbox this uses the built in `checkcode`
+% function to make sure there are no code quality errors in the files.
+
 classdef TestCodeQuality < matlab.unittest.TestCase
 
   methods
