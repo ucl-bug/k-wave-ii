@@ -26,7 +26,7 @@
 % Define the grid and medium objects, and assign the thermal properties.
 %
 %    kgrid = kwave.toolbox.kWaveGrid([128, 128], 1e-3);
-%    medium = kwave.toolbox.kWaveAcousticMedium(kgrid);
+%    medium = kwave.toolbox.kWaveThermalMedium(kgrid);
 %    medium.density = rand(medium.gridSize);
 %    medium.specificHeat = rand(medium.gridSize);
 %    medium.thermalConductivity = rand(medium.gridSize);

@@ -1,4 +1,4 @@
-%% TestkWaveAcousticSource
+%% TestkWaveThermalSource
 % *Package:* kwave.tests.unit
 % *Superclasses:* kwave.tests.unit.TestMedium
 %
