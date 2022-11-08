@@ -29,7 +29,7 @@ classdef TestCodeQuality < matlab.unittest.TestCase
 
       % Get all m-files in `mypackage`, recursively.
       % Keep the full path, so we can use it later.
-      mfiles = dir(fullfile(mfilename('fullpath'), '..', '..', '..', '+toolbox', '**', '*.m'));
+      mfiles = dir(fullfile(mfilename('fullpath'), '..', '..', '..', '..', '+kwave', '**', '*.m'));
       % Check that at least one file is collected
       testCase.assertGreaterThan(size(mfiles), 0);
 
