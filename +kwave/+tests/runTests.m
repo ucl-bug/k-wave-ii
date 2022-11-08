@@ -1,9 +1,9 @@
 %% runTests
-% Run specified type of tests.
+% Run tests.
 %
 %% Syntax
 %   kwave.tests.runTests()
-%   kwave.tests.runTests(testType)
+%   kwave.tests.runTests(testType=type)
 %
 %% Description
 % |runTests| uses the MATLAB class-based unit testing framework to set up a
@@ -23,10 +23,11 @@
 %% See Also
 % * |TestType|
 
-function runTests(testType)
+function runTests(options)
+
 
 arguments
-    testType kwave.tests.TestType = kwave.tests.TestType.unit;
+    options.testType kwave.tests.TestType;
 end
 
 import matlab.unittest.TestRunner
@@ -37,9 +38,17 @@ import matlab.unittest.plugins.codecoverage.CoberturaFormat
 import kwave.toolbox.*
 import kwave.tests.*
 
+if isempty(fieldnames(options))
+    TestTypes = enumeration('kwave.tests.TestType');
+    for typeInd = 1:length(TestTypes)
+        runTests(testType=TestTypes(typeInd))
+    end
+    return
+end
+
 % Setup testing suite for specified type of test.
-testsFolder = fullfile(fileparts(which(mfilename)), testType.testsFolderName);
-artifactFolder = fullfile(fileparts(which(mfilename)), testType.artifactsFolderName);
+testsFolder = fullfile(fileparts(which(mfilename)), options.testType.testsFolderName);
+artifactFolder = fullfile(fileparts(which(mfilename)), options.testType.artifactsFolderName);
 suite = testsuite(testsFolder, 'IncludeSubfolders', false);
 
 % Generate clean artifact directory.
