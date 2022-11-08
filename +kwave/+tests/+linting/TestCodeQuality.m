@@ -40,7 +40,8 @@ classdef TestCodeQuality < matlab.unittest.TestCase
                 disp("Checking " + mfile)
                 [problems, ~] = checkcode(mfile, "-id");
 
-                % Display problems if there are before failing the test.
+                % Display any problems identified by checkcode before
+                % failing the test.
                 if ~isempty(problems)
                     disp("Linting Errors:")
                     for probInd = 1:numel(problems)
