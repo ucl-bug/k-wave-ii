@@ -1,4 +1,4 @@
-%% TestkWaveGrid
+%% TestExpandMatrix
 % *Package:* kwave.tests.unit
 % *Superclasses:* matlab.unittest.TestCase
 %
