@@ -15,4 +15,4 @@ jobs:
 
       - name: Run tests
         run: |
-          matlab -batch "kwave.tests.runTests('linting')"
+          matlab -batch "kwave.tests.runTests(testType='linting')"
