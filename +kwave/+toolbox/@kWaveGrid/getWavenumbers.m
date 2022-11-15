@@ -5,46 +5,49 @@
 % Create vector of wavenumbers.
 %
 %% Syntax
-%   kVec = getWavenumbers(gridPoints, gridSpacing)
+%   kVec = getWavenumbers(numGridPoints, gridSpacing)
 %
 %% Description
-% Pads an input matrix using |expandMatrix| to account for the
-% |gridPadding| of the associated |kWaveGrid| object.
+% Creates the vector of wavenumbers (spatial frequencies) for use with the
+% MATLAB fft functions. Internally, MATLAB uses FFTW, so the frequency bins
+% match those used by FFTW. The DC component is returned in the centre of
+% the spectrum. Use |ifftshift| to transform this so the DC component is
+% the first element.
 %
 %% Input Arguments
-% * |gridPoints| - (double) Number of grid points.
+% * |numGridPoints| - (double) Number of grid points.
 % * |gridSpacing| - (double) Grid point spacing [m].
 
-function kVec = getWavenumbers(gridPoints, gridSpacing)
+function kVec = getWavenumbers(numGridPoints, gridSpacing)
 
 arguments
-    gridPoints(1,1) {mustBeInteger,mustBePositive}
+    numGridPoints(1,1) {mustBeInteger,mustBePositive}
     gridSpacing(1,1) {mustBeFinite,mustBeNonnegative}
 end
 
 % Define the discretisation of the spatial dimension such that
 % there is always a DC component.
-if gridPoints == 1
+if numGridPoints == 1
 
     % One grid point, so only DC component.
     kVec = 0;
     return
 
-elseif rem(gridPoints, 2) == 0
+elseif rem(numGridPoints, 2) == 0
 
     % Grid dimension has an even number of points.
-    nx = ((-gridPoints/2:gridPoints/2-1)/gridPoints).';
+    nx = ((-numGridPoints/2:numGridPoints/2-1)/numGridPoints).';
 
 else
 
     % Grid dimension has an odd number of points.
-    nx = ((-(gridPoints-1)/2:(gridPoints-1)/2)/gridPoints).';
+    nx = ((-(numGridPoints-1)/2:(numGridPoints-1)/2)/numGridPoints).';
 
 end
 
 % Force middle value to be zero in case 1/Nx is a recurring
 % number and the series doesn't give exactly zero.
-nx(floor(gridPoints/2) + 1) = 0;
+nx(floor(numGridPoints/2) + 1) = 0;
 
 % Define the wavenumber vector components.
 kVec = (2*pi/gridSpacing) .* nx;       
