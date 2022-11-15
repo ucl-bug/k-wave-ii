@@ -1,5 +1,5 @@
 %% TestCodeQuality
-% *Package:* kwave.tests.unit
+% *Package:* kwave.tests.linting
 % *Superclasses:* matlab.unittest.TestCase
 %
 % Code quality tests for the k-wave II code base.
@@ -21,18 +21,22 @@ classdef TestCodeQuality < matlab.unittest.TestCase
                 problem.column, ...
                 problem.id, ...
                 problem.message);
+
         end
     end
 
     methods(Test)
 
         function testCodeQuality(testCase)
-            mfiles = dir(fullfile(mfilename('fullpath'), '..', '..', '..', '..', '+kwave', '**', '*.m'));
+
+            mfiles = dir(fullfile(mfilename('fullpath'), '..', '..', '..', '..', '+kwave/+toolbox', '**', '*.m'));
+
             % Check that at least one file is collected.
             testCase.assertGreaterThan(size(mfiles), 0);
 
             % Check each one with `checkcode`.
             for fileInd = 1:numel(mfiles)
+
                 % Get the full path to the file.
                 mfile = fullfile(mfiles(fileInd).folder, mfiles(fileInd).name);
 
@@ -48,8 +52,8 @@ classdef TestCodeQuality < matlab.unittest.TestCase
                         disp(testCase.problemToString(problems(probInd), mfile));
                     end
                 end
-
                 testCase.verifyEmpty(problems);
+
             end
         end
     end

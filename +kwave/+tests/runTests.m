@@ -10,6 +10,8 @@
 % suite of tests, and then run these using a test runner. The test type is
 % specified by the optional |testType| input, which determines which folder
 % is used to search for the tests, and where the test artifacts are saved.
+% If no input is given for |testType|, all test types defined by the
+% |TestType| class are run.
 %
 % All functions and classes should be accompanied by a test. Test files
 % should be named 'Test' followed by the function or class name, e.g.,
@@ -17,14 +19,12 @@
 % |matlab.unittest.TestCase|.
 %
 %% Input Arguments
-% * |testType| - (kwave.tests.TestType) Test type. Default =
-%   kwave.tests.TestType.unit.
+% * |testType| - (kwave.tests.TestType) Test type.
 %
 %% See Also
 % * |TestType|
 
 function runTests(options)
-
 
 arguments
     options.testType kwave.tests.TestType;
@@ -38,6 +38,8 @@ import matlab.unittest.plugins.codecoverage.CoberturaFormat
 import kwave.toolbox.*
 import kwave.tests.*
 
+% If no input is given for testType, run all test types specified by the
+% TestType class.
 if isempty(fieldnames(options))
     TestTypes = enumeration('kwave.tests.TestType');
     for typeInd = 1:length(TestTypes)
