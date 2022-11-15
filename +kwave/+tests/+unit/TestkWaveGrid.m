@@ -222,6 +222,12 @@ classdef TestkWaveGrid < matlab.unittest.TestCase
             testCase.verifyWarningFree(@() kWaveGrid(sz, spacing, padding));
         end
 
+        % Test size check for vector fields.
+        function testValidateSizeForVectors(testCase)
+            a = rand([testCase.kgrid.gridSize, testCase.kgrid.dimensions]);
+            testCase.verifyWarningFree(@() testCase.kgrid.validateSize(a, VectorField=true));
+        end
+
     end
 
 end
