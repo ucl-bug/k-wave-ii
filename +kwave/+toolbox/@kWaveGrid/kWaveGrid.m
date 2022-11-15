@@ -40,6 +40,9 @@
 % |gridSize + 2*gridPadding|. Note, the grid and wavevector properties are
 % defined relative to |gridSize|, not including the |gridPadding|.
 %
+% To check if an input matrix matches the grid size specified by a
+% |kWaveGrid| object, the |validateSize| method can be used.
+%
 %% Input Arguments
 % * |gridSize| - (double) Number of grid points in each Cartesian direction
 %   [grid points].
@@ -48,7 +51,8 @@
 %   specifying different spacings in each direction, as the maximum
 %   supported frequency depends on the grid spacing.
 % * |gridPadding| - (double) Grid padding [grid points]. Can be specified
-%   as a scalar value, or the padding in each Cartesian direction.
+%   as a scalar value, or the padding in each Cartesian direction. If not
+%   specified, the padding is set to [0, 0, 0].
 %
 %% Properties
 % Properties which can be queried, but not modified, after the object is
@@ -85,7 +89,10 @@
 %   directions, i.e., the minimum of [kxMax, kyMax, kzMax].
 %
 %% Methods
+% * |assignWithGridPadding|
 % * |highestPrimeFactors|
+% * |returnWithoutGridPadding|
+% * |validateSize|
 
 classdef kWaveGrid < handle
     
@@ -284,15 +291,15 @@ classdef kWaveGrid < handle
 
         % 1D vector of wavevector components.
         function kxVec = get.kxVec(obj)
-            kxVec = obj.makeDim(obj.Nx, obj.dx);
+            kxVec = obj.getWavenumbers(obj.Nx, obj.dx);
         end
 
         function kyVec = get.kyVec(obj)
-            kyVec = obj.makeDim(obj.Ny, obj.dy);
+            kyVec = obj.getWavenumbers(obj.Ny, obj.dy);
         end
 
         function kzVec = get.kzVec(obj)
-            kzVec = obj.makeDim(obj.Nz, obj.dz);
+            kzVec = obj.getWavenumbers(obj.Nz, obj.dz);
         end
 
         % Nx by Ny by Nz matrix of scalar wavenumber.
@@ -373,42 +380,13 @@ classdef kWaveGrid < handle
     % General class methods.
     methods
         highestPrimeFactors = highestPrimeFactors(obj);
+        validateSize(obj, matrix, options);
+        matrix = assignWithGridPadding(obj, matrix, edgeValues);
+        matrix = returnWithoutGridPadding(obj, matrix);
     end
     
     % Methods that can only be accessed by class members.
     methods (Access='protected', Static=true, Hidden=true) 
-        
-        % Create the wavevector components for a single spatial direction.
-        function kVec = makeDim(Nx, dx)
-
-            % Define the discretisation of the spatial dimension such that
-            % there is always a DC component.
-            if Nx == 1
-
-                % One grid point, so only DC component.
-                kVec = 0;
-                return
-
-            elseif rem(Nx, 2) == 0
-
-                % Grid dimension has an even number of points.
-                nx = ((-Nx/2:Nx/2-1)/Nx).';
-
-            else
-
-                % Grid dimension has an odd number of points.
-                nx = ((-(Nx-1)/2:(Nx-1)/2)/Nx).';
-
-            end
-
-            % Force middle value to be zero in case 1/Nx is a recurring
-            % number and the series doesn't give exactly zero.
-            nx(floor(Nx/2) + 1) = 0;
-            
-            % Define the wavenumber vector components.
-            kVec = (2*pi/dx) .* nx;       
-
-        end
-        
+        kVec = getWavenumbers(Nx, dx)
     end
 end
