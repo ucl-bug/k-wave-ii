@@ -4,8 +4,9 @@
 % Superclass of all kwave.toolbox input classes.
 %
 %% Description
-% Abstract class used to define grid-based inputs. Input classes used for
-% the k-Wave simulation functions should be derived from this class.
+% Abstract class used as a container to define grid-based inputs for k-Wave
+% simulation functions. Input classes used for the k-Wave simulation
+% functions should be derived from this class.
 %
 % Simulations in k-Wave are often performed on a padded grid, for example,
 % to incorporate a perfectly matched layer. The expansion of the grid-based
