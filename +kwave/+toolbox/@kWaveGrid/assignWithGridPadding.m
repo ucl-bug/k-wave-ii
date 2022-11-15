@@ -26,9 +26,5 @@ arguments
 end
 
 if (numel(matrix) > 1) && (any(obj.gridPadding ~= 0))
-    if isempty(expansionValue)
-        matrix = kwave.toolbox.expandMatrix(matrix, obj.gridPadding(1:obj.dimensions));
-    else
-        matrix = kwave.toolbox.expandMatrix(matrix, obj.gridPadding(1:obj.dimensions), expansionValue);
-    end
+    matrix = kwave.toolbox.expandMatrix(matrix, obj.gridPadding(1:obj.dimensions), expansionValue);
 end

@@ -63,7 +63,7 @@ function matrixExpanded = expandMatrix(matrix, expansionSize, expansionValue)
 arguments
     matrix
     expansionSize {mustBeInteger, mustBeNonnegative, mustBeNonempty}
-    expansionValue(1,1) = 0;
+    expansionValue {mustBeScalarOrEmpty} = []
 end
 
 if ndims(matrix) > 3
@@ -72,7 +72,7 @@ end
 
 % Check to see if a value for expansionValue has been given, if not, extend
 % the edge values.
-extendEdges = (nargin == 2);
+extendEdges = isempty(expansionValue);
 
 % Extract the class of the input matrix.
 dataType = class(matrix);
