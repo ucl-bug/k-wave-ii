@@ -1,4 +1,4 @@
-%% kWaveGrid
+%% GenerateDocumentation
 % *Package:* kwave.utilities
 %
 % Generate help documentation.
@@ -105,6 +105,7 @@ classdef GenerateDocumentation
             [mFilenames(:).isClassMethod] = deal(false);
             [mFilenames(:).isClass] = deal(false);
             [mFilenames(:).className] = deal('');
+            [mFilenames(:).title] = deal('');
             
             % Loop over m-files. 
             for ind = 1:numFiles
@@ -113,7 +114,8 @@ classdef GenerateDocumentation
                 [~, filename, ~] = fileparts(mFilenames(ind).name);
 
                 % Get relative folder (may be empty if in root folder).
-                mFileRelativeFolder = erase(mFilenames(ind).folder, [absolutePath, filesep]);
+                mFileRelativeFolder = erase(mFilenames(ind).folder, absolutePath);
+                mFileRelativeFolder = erase(mFileRelativeFolder, filesep);
             
                 % We need to treat class methods that are in separate files
                 % slightly differently, as these can only be compiled if we
@@ -122,7 +124,7 @@ classdef GenerateDocumentation
                 % Otherwise, we need to prepend the namespace to the
                 % filename. If there is a nested namespace, this also needs
                 % prepending.
-                if (strcmp(extractAfter(mFileRelativeFolder, 1), filename))
+                if (~isempty(mFileRelativeFolder)) && (strcmp(extractAfter(mFileRelativeFolder, 1), filename))
                     mFilenames(ind).isClass = true;
                 end
                 if (strncmp(mFileRelativeFolder, "@", 1)) && (~mFilenames(ind).isClass)
@@ -135,9 +137,15 @@ classdef GenerateDocumentation
                 else
                     filename = [nameSpace filename]; %#ok<AGROW> 
                 end
-            
-                % Publish.
+
+                % Extract title used for entry in helptoc.xml from first
+                % line of code documentation.
+                mFilenames(ind).title = obj.parseTitle(fullfile(mFilenames(ind).folder, mFilenames(ind).name));
+
+                % Print details of conversions.
                 disp(['Converting ', filename, ' to HTML (', int2str(ind), '/', int2str(numFiles), ')']);
+
+                % Publish.
                 publishedFile = publish(filename, ...
                     'format', 'html', ...
                     'outputDir', obj.helpDir, ...
@@ -150,7 +158,7 @@ classdef GenerateDocumentation
                     [~, className, ~] = fileparts(mFilenames(ind).className);
                     movefile(publishedFile, fullfile(obj.helpDir, [className '-' htmlFilename '.html']));
                 end
-            
+
                 % Change back to root directory.
                 cd(obj.rootPath);
             
@@ -202,7 +210,7 @@ classdef GenerateDocumentation
             for ind = 1:length(mFilenames)
                 if ~mFilenames(ind).isClassMethod
                     [~, className, ~] = fileparts(mFilenames(ind).name);
-                    obj.addToXML(['<tocitem target="' className '.html">' className '</tocitem>']);
+                    obj.addToXML(['<tocitem target="' className '.html">' mFilenames(ind).title '</tocitem>']);
                 end
             end
             obj.addToXML('</tocitem>');
@@ -223,6 +231,19 @@ classdef GenerateDocumentation
         % Convenience function to generate HTML link to file.
         function link = generateLink(~, htmlFilename, methodName)
             link = ['<a href="' htmlFilename '.html">' methodName '</a>'];
+        end
+
+        % Convenience function to extract the text appearing on the first
+        % line of an m-file after the characters "%% ".
+        function titleString = parseTitle(~, filename)
+            fid = fopen(filename);
+            titleLine = fgetl(fid);
+            if any(strfind(titleLine, "%% "))
+                titleString = erase(titleLine, "%% ");
+            else
+                titleString = '';
+            end
+            fclose(fid);
         end
 
     end
