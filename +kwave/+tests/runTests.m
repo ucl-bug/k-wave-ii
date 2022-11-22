@@ -1,15 +1,17 @@
 %% runTests
-% Run specified type of tests.
+% Run tests.
 %
 %% Syntax
 %   kwave.tests.runTests()
-%   kwave.tests.runTests(testType)
+%   kwave.tests.runTests(testType=type)
 %
 %% Description
 % |runTests| uses the MATLAB class-based unit testing framework to set up a
 % suite of tests, and then run these using a test runner. The test type is
 % specified by the optional |testType| input, which determines which folder
 % is used to search for the tests, and where the test artifacts are saved.
+% If no input is given for |testType|, all test types defined by the
+% |TestType| class are run.
 %
 % All functions and classes should be accompanied by a test. Test files
 % should be named 'Test' followed by the function or class name, e.g.,
@@ -17,16 +19,15 @@
 % |matlab.unittest.TestCase|.
 %
 %% Input Arguments
-% * |testType| - (kwave.tests.TestType) Test type. Default =
-%   kwave.tests.TestType.unit.
+% * |testType| - (kwave.tests.TestType) Test type.
 %
 %% See Also
 % * |TestType|
 
-function runTests(testType)
+function runTests(options)
 
 arguments
-    testType kwave.tests.TestType = kwave.tests.TestType.unit;
+    options.testType kwave.tests.TestType;
 end
 
 % Check for MATLAB version 2022a = 9.12.
@@ -43,9 +44,19 @@ import matlab.unittest.plugins.codecoverage.CoberturaFormat
 import kwave.toolbox.*
 import kwave.tests.*
 
+% If no input is given for testType, run all test types specified by the
+% TestType class.
+if isempty(fieldnames(options))
+    TestTypes = enumeration('kwave.tests.TestType');
+    for typeInd = 1:length(TestTypes)
+        runTests(testType=TestTypes(typeInd))
+    end
+    return
+end
+
 % Setup testing suite for specified type of test.
-testsFolder = fullfile(fileparts(which(mfilename)), testType.testsFolderName);
-artifactFolder = fullfile(fileparts(which(mfilename)), testType.artifactsFolderName);
+testsFolder = fullfile(fileparts(which(mfilename)), options.testType.testsFolderName);
+artifactFolder = fullfile(fileparts(which(mfilename)), options.testType.artifactsFolderName);
 suite = testsuite(testsFolder, 'IncludeSubfolders', false);
 
 % Generate clean artifact directory.
@@ -57,7 +68,7 @@ mkdir(artifactFolder);
 % Setup and launch runner.
 runner = TestRunner.withTextOutput('OutputDetail', Verbosity.Detailed);
 runner.addPlugin(XMLPlugin.producingJUnitFormat(fullfile(artifactFolder, 'results.xml')));
-runner.addPlugin(CodeCoveragePlugin.forFolder([testsFolder '/../../+toolbox'], ...
+runner.addPlugin(CodeCoveragePlugin.forFolder(fullfile(testsFolder + '/../../+toolbox'), ...
     'IncludingSubfolders', true, ...
     'Producing', CoberturaFormat(fullfile(artifactFolder, 'cobertura.xml'))));
 
