@@ -7,8 +7,12 @@
 % * Function names and script filenames  use |camelCase|.
 % * Test classes use |TestMyClassName| or |TestMyFunctionName|.
 % * Variables use |camelCase|.
-% * Descriptive naming should be used where possible, e.g., |soundSpeed|
-%   rather than |c|.
+% * Descriptive naming should be used for the using-facing API where
+%   possible, e.g., |soundSpeed| rather than |c|. Break this rule for
+%   internal variables for commonly used symbols (e.g. |c| for sound speed,
+%   |p| for pressure), as long as the symbol is well known and stays within
+%   a limited scope (e.g., a function) where a short comment at the top
+%   says what the single letter stands for.
 %
 %% Code
 % * Each line of code should only contain one statement.
@@ -121,12 +125,6 @@ end
 %   |functionName:errorIdentifier|.
 
 error('kWaveGrid:incorrectInputSize', 'gridSpacing must be a scalar or the same length as gridSize.');
-
-%%
-% * Error identifiers currently used are:
-%
-%    incorrectInputSize
-%    gridMismatch
 
 %% Class and Function Documentation
 % Documentation should be written using
