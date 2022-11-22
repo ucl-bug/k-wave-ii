@@ -65,12 +65,16 @@ if exist(artifactFolder, 'dir')
 end
 mkdir(artifactFolder);
 
-% Setup and launch runner.
+% Setup test runner
 runner = TestRunner.withTextOutput('OutputDetail', Verbosity.Detailed);
-runner.addPlugin(XMLPlugin.producingJUnitFormat(fullfile(artifactFolder, 'results.xml')));
-runner.addPlugin(CodeCoveragePlugin.forFolder(fullfile(testsFolder + '/../../+toolbox'), ...
-    'IncludingSubfolders', true, ...
-    'Producing', CoberturaFormat(fullfile(artifactFolder, 'cobertura.xml'))));
+% Configure code coverage collection
+cobertura_output_file = fullfile(artifactFolder, 'cobertura.xml');
+runner.addPlugin( ...
+    CodeCoveragePlugin.forFolder( ...
+        fullfile(testsFolder + '/../../+toolbox'), ...
+        'IncludingSubfolders', true, ...
+        'Producing', CoberturaFormat(cobertura_output_file)));
 
+% Run tests
 results = runner.run(suite);
 assertSuccess(results);
