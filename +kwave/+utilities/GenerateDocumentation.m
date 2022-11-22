@@ -241,7 +241,7 @@ classdef GenerateDocumentation
             if any(strfind(titleLine, "%% "))
                 titleString = erase(titleLine, "%% ");
             else
-                error('GenerateDocumentation:missingTitleComment', [filename ' is missing a title comment.']);
+                error('GenerateDocumentation:missingTitleComment', '%s is missing a title comment.', filename);
             end
             fclose(fid);
         end
