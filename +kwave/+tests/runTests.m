@@ -41,6 +41,7 @@ import matlab.unittest.Verbosity
 import matlab.unittest.plugins.CodeCoveragePlugin
 import matlab.unittest.plugins.XMLPlugin
 import matlab.unittest.plugins.codecoverage.CoberturaFormat
+import matlab.unittest.plugins.codecoverage.CoverageReport
 import kwave.toolbox.*
 import kwave.tests.*
 
@@ -65,15 +66,23 @@ if exist(artifactFolder, 'dir')
 end
 mkdir(artifactFolder);
 
-% Setup test runner
+% Setup test runner.
 runner = TestRunner.withTextOutput('OutputDetail', Verbosity.Detailed);
 % Configure code coverage collection
-cobertura_output_file = fullfile(artifactFolder, 'cobertura.xml');
+if isenv('CI')
+    % Generate a cobertura report that codecov understands when running
+    % on continuous integration.
+    coverage_file = fullfile(artifactFolder, 'cobertura.xml');
+    report = CoberturaFormat(coverage_file);
+else
+    % Generate a human readable HTML file otherwise.
+    report = CoverageReport(artifactFolder);
+end
 runner.addPlugin( ...
     CodeCoveragePlugin.forFolder( ...
         fullfile(testsFolder + '/../../+toolbox'), ...
         'IncludingSubfolders', true, ...
-        'Producing', CoberturaFormat(cobertura_output_file)));
+        'Producing', report));
 
 % Run tests
 results = runner.run(suite);
