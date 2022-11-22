@@ -138,12 +138,12 @@ classdef GenerateDocumentation
                     filename = [nameSpace filename]; %#ok<AGROW> 
                 end
 
+                % Print details of conversions.
+                disp(['Converting ', filename, ' to HTML (', int2str(ind), '/', int2str(numFiles), ')']);
+
                 % Extract title used for entry in helptoc.xml from first
                 % line of code documentation.
                 mFilenames(ind).title = obj.parseTitle(fullfile(mFilenames(ind).folder, mFilenames(ind).name));
-
-                % Print details of conversions.
-                disp(['Converting ', filename, ' to HTML (', int2str(ind), '/', int2str(numFiles), ')']);
 
                 % Publish.
                 publishedFile = publish(filename, ...
