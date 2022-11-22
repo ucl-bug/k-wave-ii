@@ -241,7 +241,7 @@ classdef GenerateDocumentation
             if any(strfind(titleLine, "%% "))
                 titleString = erase(titleLine, "%% ");
             else
-                titleString = '';
+                error('kwave.utilities.GenerateDocumentation:missingTitleComment', [filename ' is missing a title comment.']);
             end
             fclose(fid);
         end
