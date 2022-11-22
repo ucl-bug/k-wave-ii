@@ -22,3 +22,4 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
           files: ./+kwave/+tests/unit-tests-artifacts/cobertura.xml
+          flags: unit
