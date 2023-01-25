@@ -84,6 +84,6 @@ runner.addPlugin( ...
         'IncludingSubfolders', true, ...
         'Producing', report));
 
-% Run tests
+% Run tests.
 results = runner.run(suite);
 assertSuccess(results);
