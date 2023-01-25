@@ -70,13 +70,17 @@ mkdir(artifactFolder);
 runner = TestRunner.withTextOutput('OutputDetail', Verbosity.Detailed);
 % Configure code coverage collection
 if isenv('CI')
+
     % Generate a cobertura report that codecov understands when running
     % on continuous integration.
     coverage_file = fullfile(artifactFolder, 'cobertura.xml');
     report = CoberturaFormat(coverage_file);
+
 else
+
     % Generate a human readable HTML file otherwise.
     report = CoverageReport(artifactFolder);
+
 end
 runner.addPlugin( ...
     CodeCoveragePlugin.forFolder( ...
