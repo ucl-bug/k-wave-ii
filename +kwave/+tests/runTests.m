@@ -13,6 +13,10 @@
 % If no input is given for |testType|, all test types defined by the
 % |TestType| class are run.
 %
+% If the 'CI' environment variable is set to any value, a cobertura coverage
+% XML file is saved. If this is not set a HTML code coverage page is
+% generated that can be viewed in a web browser.
+%
 % All functions and classes should be accompanied by a test. Test files
 % should be named 'Test' followed by the function or class name, e.g.,
 % |TestMyClass|. Individual tests must derive from
@@ -41,6 +45,7 @@ import matlab.unittest.Verbosity
 import matlab.unittest.plugins.CodeCoveragePlugin
 import matlab.unittest.plugins.XMLPlugin
 import matlab.unittest.plugins.codecoverage.CoberturaFormat
+import matlab.unittest.plugins.codecoverage.CoverageReport
 import kwave.toolbox.*
 import kwave.tests.*
 
@@ -65,12 +70,28 @@ if exist(artifactFolder, 'dir')
 end
 mkdir(artifactFolder);
 
-% Setup and launch runner.
+% Setup test runner.
 runner = TestRunner.withTextOutput('OutputDetail', Verbosity.Detailed);
-runner.addPlugin(XMLPlugin.producingJUnitFormat(fullfile(artifactFolder, 'results.xml')));
-runner.addPlugin(CodeCoveragePlugin.forFolder(fullfile(testsFolder + '/../../+toolbox'), ...
-    'IncludingSubfolders', true, ...
-    'Producing', CoberturaFormat(fullfile(artifactFolder, 'cobertura.xml'))));
+% Configure code coverage collection
+if isenv('CI')
 
+    % Generate a cobertura report that codecov understands when running
+    % on continuous integration.
+    coverage_file = fullfile(artifactFolder, 'cobertura.xml');
+    report = CoberturaFormat(coverage_file);
+
+else
+
+    % Generate a human readable HTML file otherwise.
+    report = CoverageReport(artifactFolder);
+
+end
+runner.addPlugin( ...
+    CodeCoveragePlugin.forFolder( ...
+        fullfile(testsFolder + '/../../+toolbox'), ...
+        'IncludingSubfolders', true, ...
+        'Producing', report));
+
+% Run tests.
 results = runner.run(suite);
 assertSuccess(results);
