@@ -9,7 +9,7 @@
 %% Description
 % |GenerateDocumentation| is a static class that is called to generate the
 % help files that appear in the MATLAB help browser. The documentation is
-% generated in several stages: 
+% generated in several stages:
 %
 % # The .m files in specified directories are converted directly to .html
 %   using the MATLAB <matlab:doc('publish') publish> function. Text should
@@ -21,7 +21,7 @@
 %   generated .html files.
 % # The documentation search database is created using
 %   <matlab:doc('builddocsearchdb') builddocsearchdb>.
-% 
+%
 % This class is provided for generating documentation during development,
 % and for preparing the documentation packaged with a release. If you have
 % downloaded a packaged release, there should be no need to call this
@@ -106,17 +106,17 @@ classdef GenerateDocumentation
             [mFilenames(:).isClass] = deal(false);
             [mFilenames(:).className] = deal('');
             [mFilenames(:).title] = deal('');
-            
-            % Loop over m-files. 
+
+            % Loop over m-files.
             for ind = 1:numFiles
-            
+
                 % Get filename without extension.
                 [~, filename, ~] = fileparts(mFilenames(ind).name);
 
                 % Get relative folder (may be empty if in root folder).
                 mFileRelativeFolder = erase(mFilenames(ind).folder, absolutePath);
                 mFileRelativeFolder = erase(mFileRelativeFolder, filesep);
-            
+
                 % We need to treat class methods that are in separate files
                 % slightly differently, as these can only be compiled if we
                 % change directories. To do this, check if the m-file is in
@@ -133,9 +133,9 @@ classdef GenerateDocumentation
                     cd(mFilenames(ind).folder);
                     filename = [filename '.m']; %#ok<AGROW>
                 elseif (strncmp(mFileRelativeFolder, "+", 1))
-                    filename = [nameSpace extractAfter(mFileRelativeFolder, 1) '.' filename]; %#ok<AGROW> 
+                    filename = [nameSpace extractAfter(mFileRelativeFolder, 1) '.' filename]; %#ok<AGROW>
                 else
-                    filename = [nameSpace filename]; %#ok<AGROW> 
+                    filename = [nameSpace filename]; %#ok<AGROW>
                 end
 
                 % Print details of conversions.
@@ -143,7 +143,7 @@ classdef GenerateDocumentation
 
                 % Extract title used for entry in helptoc.xml from first
                 % line of code documentation.
-                mFilenames(ind).title = obj.parseTitle(fullfile(mFilenames(ind).folder, mFilenames(ind).name));
+                mFilenames(ind).title = kwave.utilities.parseTitle(fullfile(mFilenames(ind).folder, mFilenames(ind).name));
 
                 % Publish.
                 publishedFile = publish(filename, ...
@@ -161,24 +161,24 @@ classdef GenerateDocumentation
 
                 % Change back to root directory.
                 cd(obj.rootPath);
-            
+
             end
-            
+
             % Add relative links to class methods from class documentation.
             for ind1 = 1:numFiles
                 for ind2 = 1:numFiles
                     if mFilenames(ind1).isClass && mFilenames(ind2).isClassMethod && strcmp(mFilenames(ind2).className, mFilenames(ind1).name)
-            
+
                         disp(['Replacing links to method ', mFilenames(ind2).name, ' from class ', mFilenames(ind1).name]);
                         [~, className, ~] = fileparts(mFilenames(ind1).name);
                         [~, methodName, ~] = fileparts(mFilenames(ind2).name);
                         htmlFilename = fullfile(obj.helpDir, [className '.html']);
-            
+
                         % Read in HTML file.
                         fid = fopen(htmlFilename, 'r');
                         fileContents = fread(fid, '*char');
                         fclose(fid);
-            
+
                         % Replace links, and save to HTML file replacing
                         % contents. The |methodName| syntax is published as
                         % <tt>methodName</tt>. The html flags are included
@@ -190,7 +190,7 @@ classdef GenerateDocumentation
                         fid = fopen(htmlFilename, 'w');
                         fprintf(fid, '%s', fileContents.');
                         fclose(fid);
-            
+
                     end
                 end
             end
@@ -203,7 +203,7 @@ classdef GenerateDocumentation
             obj.addToXML('<toc version="2.0">');
             obj.addToXML('<tocitem target="kWave.html">k-Wave II');
         end
-        
+
         % Add links to html for all functions, excluding class methods.
         function helpTocAddSection(obj, mFilenames, heading)
             obj.addToXML(['<tocitem>' heading]);
@@ -227,23 +227,10 @@ classdef GenerateDocumentation
             filename = fullfile(obj.helpDir, 'helptoc.xml');
             writelines(line, filename, 'WriteMode','append');
         end
-        
+
         % Convenience function to generate HTML link to file.
         function link = generateLink(~, htmlFilename, methodName)
             link = ['<a href="' htmlFilename '.html">' methodName '</a>'];
-        end
-
-        % Convenience function to extract the text appearing on the first
-        % line of an m-file after the characters "%% ".
-        function titleString = parseTitle(~, filename)
-            fid = fopen(filename);
-            titleLine = fgetl(fid);
-            if any(strfind(titleLine, "%% "))
-                titleString = erase(titleLine, "%% ");
-            else
-                error('GenerateDocumentation:missingTitleComment', '%s is missing a title comment.', filename);
-            end
-            fclose(fid);
         end
 
     end
