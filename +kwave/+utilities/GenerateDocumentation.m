@@ -49,6 +49,7 @@ classdef GenerateDocumentation
             if isunix
                 obj.rootPath = [filesep obj.rootPath];
             end
+            addpath(obj.rootPath);
             obj.helpDir = fullfile(obj.rootPath, 'helpfiles');
             obj.createHelpDir;
 
