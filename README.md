@@ -9,11 +9,11 @@
 k-Wave-II is a major re-write of the original k-Wave Toolbox, developed
 with the following aims:
 
-1. Re-engineering the code base to leverage object orientated programming 
+1. Re-engineering the code base to leverage object orientated programming
 and differentiable functions for deep learning and coupled physics problems
 2. Extending the algorithms to facilitate general boundary conditions on
 arbitrary surfaces, and to increase performance for narrow-band simulations
-3. Improving the development and release process to incorporate good 
+3. Improving the development and release process to incorporate good
 practice and advance long-term sustainability
 4. Improving training, user engagement, and support.
 
@@ -42,8 +42,8 @@ practice and advance long-term sustainability
 
 ### Building the documentation
 
-- All documentation (including developer documentation) is written in `.m` files and automatically compiled to `.html` viewable in the MATLAB help browser. 
-- The documentation can be compiled by calling `kWaveInstaller` in the root folder. This calls `+kwave/+utilities/GenerateDocumentation.m`.
+- All documentation (including developer documentation) is written in `.m` files and automatically compiled to `.html` viewable in the MATLAB help browser.
+- The documentation can be compiled by calling `kwave.utilities.GenerateDocumentation` in the root folder.
 - After compiling, the documentation can be viewed by opening the MATLAB help browser and selecting **k-Wave II** from the list of supplemental software.
 
 ### Running the tests
