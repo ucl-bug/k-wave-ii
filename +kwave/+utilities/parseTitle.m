@@ -3,6 +3,17 @@
 %
 % Convenience function to extract the text appearing on the first
 % line of an m-file after the characters "%% ".
+%
+%% Syntax
+%   titleParsed = parseTitle(filename)
+%
+%% Description
+%  |parseTitle| extracts the text appearing on the first
+%       line of an m-file after the characters "%% ".
+%
+%% Input Arguments
+% * |filename| - (string) Filename to get title from.
+
 function titleString = parseTitle(filename)
     fid = fopen(filename);
     titleLine = fgetl(fid);
