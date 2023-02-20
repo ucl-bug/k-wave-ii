@@ -135,17 +135,17 @@ classdef GenerateDocumentation
                 % Otherwise, we need to prepend the namespace to the
                 % filename. If there is a nested namespace, this also needs
                 % prepending.
-                if (~isempty(mFileRelativeFolder)) && (strcmp(extractAfter(mFileRelativeFolder, 1), filename))
+                if obj.isClass(mFileRelativeFolder, filename)
                     mFilenames(ind).isClass = true;
                 end
-                if (strncmp(mFileRelativeFolder, "@", 1)) && (~mFilenames(ind).isClass)
+
+                if obj.isClassMethod(mFileRelativeFolder, filename)
                     mFilenames(ind).isClassMethod = true;
                     mFilenames(ind).className = [mFileRelativeFolder(2:end) '.m']; % Convert folder name to class name by removing the leading "@" character.
                     cd(mFilenames(ind).folder);
                     filename = [filename '.m']; %#ok<AGROW>
-                elseif (strncmp(mFileRelativeFolder, "+", 1))
-                    filename = [nameSpace extractAfter(mFileRelativeFolder, 1) '.' filename]; %#ok<AGROW>
                 else
+                    % Not a class or class method
                     filename = [nameSpace filename]; %#ok<AGROW>
                 end
 
@@ -223,6 +223,20 @@ classdef GenerateDocumentation
                 nameSpace = [nameSpace, '.'];
             end
 
+        end
+
+        % Given a folder (e.g. '@kWaveGrid') and a filename (e.g.
+        % 'kWaveGrid.m'), return true if the file represents the class
+        % itself (as opposed to a class method)
+        function isClass = isClass(~, mFileRelativeFolder, filename)
+            isClass = ~isempty(mFileRelativeFolder) && strcmp(extractAfter(mFileRelativeFolder, 1), filename);
+        end
+
+        % Given a folder (e.g. '@kWaveGrid') and a filename (e.g.
+        % 'validateSize.m'), return true if the file represents a class
+        % method
+        function isClassMethod = isClassMethod(obj, mFileRelativeFolder, filename)
+            isClassMethod = ~isempty(mFileRelativeFolder) && ~obj.isClass(mFileRelativeFolder, filename);
         end
 
         % Start generation of helptoc.xml.
