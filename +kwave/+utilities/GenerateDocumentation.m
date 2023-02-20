@@ -164,7 +164,7 @@ classdef GenerateDocumentation
                     'showCode', options.showCode);
 
                 % Rename to include classname if a class method.
-                if ~isempty(mFilenames(ind).className)
+                if mFilenames(ind).isClassMethod
                     [~, htmlFilename, ~] = fileparts(publishedFile);
                     [~, className, ~] = fileparts(mFilenames(ind).className);
                     movefile(publishedFile, fullfile(obj.helpDir, [className '-' htmlFilename '.html']));
