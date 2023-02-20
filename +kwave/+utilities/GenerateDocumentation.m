@@ -117,6 +117,7 @@ classdef GenerateDocumentation
             [mFilenames(:).isClass] = deal(false);
             [mFilenames(:).className] = deal('');
             [mFilenames(:).title] = deal('');
+            [mFilenames(:).htmlFileName] = deal('');
 
             % Loop over m-files.
             for ind = 1:numFiles
@@ -157,7 +158,7 @@ classdef GenerateDocumentation
                 mFilenames(ind).title = kwave.utilities.parseTitle(fullfile(mFilenames(ind).folder, mFilenames(ind).name));
 
                 % Publish.
-                publishedFile = publish(filename, ...
+                htmlFile = publish(filename, ...
                     'format', 'html', ...
                     'outputDir', obj.helpDir, ...
                     'evalCode', options.evalCode, ...
@@ -165,10 +166,14 @@ classdef GenerateDocumentation
 
                 % Rename to include classname if a class method.
                 if mFilenames(ind).isClassMethod
-                    [~, htmlFilename, ~] = fileparts(publishedFile);
+                    [~, htmlFilename, ~] = fileparts(htmlFile);
                     [~, className, ~] = fileparts(mFilenames(ind).className);
-                    movefile(publishedFile, fullfile(obj.helpDir, [className '-' htmlFilename '.html']));
+                    newHtmlFile = fullfile(obj.helpDir, [className '-' htmlFilename '.html']);
+                    movefile(htmlFile, newHtmlFile);
+                    htmlFile = newHtmlFile;
                 end
+                [~, fileName, ext] = fileparts(htmlFile);
+                mFilenames(ind).htmlFileName = [fileName, ext];
 
                 % Change back to root directory.
                 cd(obj.rootPath);
@@ -181,12 +186,12 @@ classdef GenerateDocumentation
                     if mFilenames(ind1).isClass && mFilenames(ind2).isClassMethod && strcmp(mFilenames(ind2).className, mFilenames(ind1).name)
 
                         disp(['Replacing links to method ', mFilenames(ind2).name, ' from class ', mFilenames(ind1).name]);
-                        [~, className, ~] = fileparts(mFilenames(ind1).name);
                         [~, methodName, ~] = fileparts(mFilenames(ind2).name);
-                        htmlFilename = fullfile(obj.helpDir, [className '.html']);
+                        htmlFileName = mFilenames(ind1).htmlFileName;
+                        htmlFile = fullfile(obj.helpDir, htmlFileName);
 
                         % Read in HTML file.
-                        fid = fopen(htmlFilename, 'r');
+                        fid = fopen(htmlFile, 'r');
                         fileContents = fread(fid, '*char');
                         fclose(fid);
 
@@ -197,8 +202,8 @@ classdef GenerateDocumentation
                         % snippets.
                         fileContents = strrep(fileContents.', ...
                             ['<tt>' methodName '</tt>'], ...
-                            ['<tt>' obj.generateLink([className '-' methodName], methodName) '</tt>']);
-                        fid = fopen(htmlFilename, 'w');
+                            ['<tt>' obj.generateLink(mFilenames(ind2).htmlFileName, methodName) '</tt>']);
+                        fid = fopen(htmlFile, 'w');
                         fprintf(fid, '%s', fileContents.');
                         fclose(fid);
 
@@ -252,8 +257,7 @@ classdef GenerateDocumentation
             obj.addToXML(['<tocitem>' heading]);
             for ind = 1:length(mFilenames)
                 if ~mFilenames(ind).isClassMethod
-                    [~, className, ~] = fileparts(mFilenames(ind).name);
-                    obj.addToXML(['<tocitem target="' className '.html">' mFilenames(ind).title '</tocitem>']);
+                    obj.addToXML(['<tocitem target="' mFilenames(ind).htmlFileName '">' mFilenames(ind).title '</tocitem>']);
                 end
             end
             obj.addToXML('</tocitem>');
@@ -272,8 +276,10 @@ classdef GenerateDocumentation
         end
 
         % Convenience function to generate HTML link to file.
+        %
+        % htmlFilename should include the .html file extension
         function link = generateLink(~, htmlFilename, methodName)
-            link = ['<a href="' htmlFilename '.html">' methodName '</a>'];
+            link = ['<a href="' htmlFilename '">' methodName '</a>'];
         end
 
     end
