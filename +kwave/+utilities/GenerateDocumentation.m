@@ -57,19 +57,20 @@ classdef GenerateDocumentation
             obj.createHelpDir;
 
             % Generate HTML files.
-            obj.generateHTML('/+kwave/+docfiles/+general', 'kwave.docfiles.general.');
-            initialValueProblemsFilenames = obj.generateHTML('/+kwave/+tutorials/+initialvalueproblems', 'kwave.tutorials.initialvalueproblems.', evalCode=true, showCode=true);
-            toolboxFilenames = obj.generateHTML('/+kwave/+toolbox', 'kwave.toolbox.');
-            testFilenames = obj.generateHTML('/+kwave/+tests', 'kwave.tests.');
-            utilityFilenames = obj.generateHTML('/+kwave/+utilities', 'kwave.utilities.');
-            developerFilenames = obj.generateHTML('/+kwave/+docfiles/+developer', 'kwave.docfiles.developer.', showCode=true);
+            obj.generateHTML('/+kwave/+docfiles/+general');
+            initialValueProblemsFilenames = obj.generateHTML('/+kwave/+tutorials/+initialvalueproblems', evalCode=true, showCode=true);
+            toolboxFilenames = obj.generateHTML('/+kwave/+toolbox');
+            testFilenames = obj.generateHTML('/+kwave/+tests');
+            utilityFilenames = obj.generateHTML('/+kwave/+utilities');
+            developerFilenames = obj.generateHTML('/+kwave/+docfiles/+developer', showCode=true);
 
             % Build helptoc.
             obj.helpTocStart;
             obj.helpTocAddSection(initialValueProblemsFilenames, 'Initial Value Problems');
             obj.helpTocAddSection(toolboxFilenames, 'Toolbox Functions');
             obj.helpTocAddSection(testFilenames, 'Test Functions');
-            obj.helpTocAddSection([developerFilenames, utilityFilenames], 'Developer Documentation');
+            obj.helpTocAddSection(utilityFilenames, 'Utility Functions');
+            obj.helpTocAddSection(developerFilenames, 'Developer Documentation');
             obj.helpTocFinish;
 
             % Build searchable docs.
@@ -93,14 +94,16 @@ classdef GenerateDocumentation
         end
 
         % Convert m-files in specified directory to HTML using publish.
-        function mFilenames = generateHTML(obj, relativeFolder, nameSpace, options)
+        function mFilenames = generateHTML(obj, relativeFolder, options)
             arguments
                 obj
                 relativeFolder
-                nameSpace
                 options.showCode = false;
                 options.evalCode = false;
             end
+
+            % Get namespace from folder
+            nameSpace = obj.folderToNamespace(relativeFolder);
 
             % Find all m-files contained in relativeFolder and
             % sub-directories.
@@ -202,6 +205,24 @@ classdef GenerateDocumentation
                     end
                 end
             end
+        end
+
+        % Given a directory (e.g. '/+kwave/+utils'), convert to the
+        % corresponding namespace (e.g. 'kwave.utils')
+        function nameSpace = folderToNamespace(~, folder)
+
+            nameSpace = replace(folder, '/+', '.');
+
+            % Strip any leading .
+            if strcmp(nameSpace(1), '.')
+                nameSpace = nameSpace(2:end);
+            end
+
+            % Add a trailing .
+            if ~isempty(nameSpace)
+                nameSpace = [nameSpace, '.'];
+            end
+
         end
 
         % Start generation of helptoc.xml.
