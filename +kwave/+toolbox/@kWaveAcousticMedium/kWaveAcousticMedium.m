@@ -31,8 +31,9 @@
 %
 %% Properties
 % * |soundSpeed| - (single) Compressional sound speed [m/s].
-% * |soundSpeedReference| - (single) Reference Compressional sound speed
-%   used in the k-space correction [m/s]. 
+% * |soundSpeedReference| - (single) Reference compressional sound speed
+%   used in the k-space correction [m/s]. Automatically defined in
+%   kWaveAcoustic if not defined by the user.
 % * |density| - (single) Mass density [kg/m^2].
 % * |alphaCoeff| - (single) Power law attenuation coefficient
 %   [dB/(MHz^y cm)]. 
