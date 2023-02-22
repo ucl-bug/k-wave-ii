@@ -62,13 +62,15 @@ classdef GenerateDocumentation
             toolboxFilenames = obj.generateHTML('/+kwave/+toolbox');
             testFilenames = obj.generateHTML('/+kwave/+tests');
             utilityFilenames = obj.generateHTML('/+kwave/+utilities');
+            developerFilenames = obj.generateHTML('/+kwave/+docfiles/+developer', showCode=true);
 
             % Build helptoc.
             obj.helpTocStart;
             obj.helpTocAddSection(initialValueProblemsFilenames, 'Initial Value Problems');
             obj.helpTocAddSection(toolboxFilenames, 'Toolbox Functions');
             obj.helpTocAddSection(testFilenames, 'Test Functions');
-            obj.helpTocAddSection([developerFilenames, utilityFilenames], 'Developer Documentation');
+            obj.helpTocAddSection(utilityFilenames, 'Utility Functions');
+            obj.helpTocAddSection(developerFilenames, 'Developer Documentation');
             obj.helpTocFinish;
 
             % Build searchable docs.
@@ -142,9 +144,9 @@ classdef GenerateDocumentation
                     cd(mFilenames(ind).folder);
                     filename = [filename '.m']; %#ok<AGROW>
                 elseif (strncmp(mFileRelativeFolder, "+", 1))
-                    filename = [nameSpace '.' extractAfter(mFileRelativeFolder, 1) '.' filename]; %#ok<AGROW>
+                    filename = [nameSpace extractAfter(mFileRelativeFolder, 1) '.' filename]; %#ok<AGROW>
                 else
-                    filename = [nameSpace '.' filename]; %#ok<AGROW>
+                    filename = [nameSpace filename]; %#ok<AGROW>
                 end
 
                 % Print details of conversions.
@@ -208,11 +210,19 @@ classdef GenerateDocumentation
         % Given a directory (e.g. '/+kwave/+utils'), convert to the
         % corresponding namespace (e.g. 'kwave.utils')
         function nameSpace = folderToNamespace(~, folder)
+
             nameSpace = replace(folder, '/+', '.');
+
             % Strip any leading .
             if strcmp(nameSpace(1), '.')
                 nameSpace = nameSpace(2:end);
             end
+
+            % Add a trailing .
+            if ~isempty(nameSpace)
+                nameSpace = [nameSpace, '.'];
+            end
+
         end
 
         % Start generation of helptoc.xml.
