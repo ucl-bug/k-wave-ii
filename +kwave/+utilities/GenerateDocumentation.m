@@ -53,18 +53,19 @@ classdef GenerateDocumentation
             obj.createHelpDir;
 
             % Generate HTML files.
-            obj.generateHTML('/+kwave/+docfiles', 'kwave.docfiles.');
+            obj.generateHTML('/+kwave/+docfiles/+general', 'kwave.docfiles.general.');
             initialValueProblemsFilenames = obj.generateHTML('/+kwave/+tutorials/+initialvalueproblems', 'kwave.tutorials.initialvalueproblems.', evalCode=true, showCode=true);
             toolboxFilenames = obj.generateHTML('/+kwave/+toolbox', 'kwave.toolbox.');
             testFilenames = obj.generateHTML('/+kwave/+tests', 'kwave.tests.');
             utilityFilenames = obj.generateHTML('/+kwave/+utilities', 'kwave.utilities.');
+            developerFilenames = obj.generateHTML('/+kwave/+docfiles/+developer', 'kwave.docfiles.developer.', showCode=true);
 
             % Build helptoc.
             obj.helpTocStart;
             obj.helpTocAddSection(initialValueProblemsFilenames, 'Initial Value Problems');
             obj.helpTocAddSection(toolboxFilenames, 'Toolbox Functions');
             obj.helpTocAddSection(testFilenames, 'Test Functions');
-            obj.helpTocAddSection(utilityFilenames, 'Utility Functions');
+            obj.helpTocAddSection([developerFilenames, utilityFilenames], 'Developer Documentation');
             obj.helpTocFinish;
 
             % Build searchable docs.
