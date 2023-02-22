@@ -7,6 +7,7 @@
 % * Function names and script filenames  use |camelCase|.
 % * Test classes use |TestMyClassName| or |TestMyFunctionName|.
 % * Variables use |camelCase|.
+% * Name-Value arguments use |TitleCase|.
 % * Descriptive naming should be used for the using-facing API where
 %   possible, e.g., |soundSpeed| rather than |c|. Break this rule for
 %   internal variables for commonly used symbols (e.g. |c| for sound speed,

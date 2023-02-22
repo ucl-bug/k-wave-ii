@@ -35,9 +35,8 @@
 % Name-value arguments must appear after other arguments, but the order of
 % the pairs does not matter.
 %
-% * |inputArg1| - (dataType) Description of input. Include units if
-%   applicable. For descriptions that span multiple lines, align with three
-%   space.
+% * |Name1| - (dataType) Description of input. Include units if applicable.
+%   For descriptions that span multiple lines, align with three spaces.
 %
 %% Output Arguments
 % * |outputArg1| - (dataType) Description of output. Include units if
