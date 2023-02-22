@@ -22,7 +22,7 @@
 % # The documentation search database is created using
 %   <matlab:doc('builddocsearchdb') builddocsearchdb>.
 %
-% Once the documentaiton is generated, the home page is opened in the
+% Once the documentation is generated, the home page is opened in the
 % MATLAB help browser.
 %
 % This class is provided for generating documentation during development,
