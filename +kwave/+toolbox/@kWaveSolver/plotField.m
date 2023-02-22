@@ -41,7 +41,7 @@ switch obj.dimensions
         set(gca, 'YLim', obj.settings.plotScale)
     case 2
         imagesc(obj.kgrid.yVec, obj.kgrid.xVec, f, obj.settings.plotScale);
-        colormap(obj.settings.colormap);
+        colormap(obj.settings.colorMap);
         ylabel('x-position [m]');
         xlabel('y-position [m]');
         axis image;
@@ -61,6 +61,6 @@ switch obj.dimensions
         imagesc(obj.kgrid.zVec, obj.kgrid.yVec, squeeze(f(round(end/2), :, :)), obj.settings.plotScale);
         title('y-z plane');
         axis image;
-        colormap(obj.settings.colormap);
+        colormap(obj.settings.colorMap);
 end
 drawnow;
