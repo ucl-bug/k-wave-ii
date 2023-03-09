@@ -5,40 +5,29 @@
 %
 %% Description
 % Abstract class used to define time-domain solvers. Solvers classes should
-% be derived from this class.
+% be derived from this class. Derived classes must provide a concrete
+% implementation of
+% * |takeTimeStep|
+% * |setInitialConditions|
 %
-% Methods are provided for calculating the gradient and divergence. These
-% are calculated using the Fourier collocation spectral method, and allow
-% for grid staggering. Calculations are always performed on the padded
-% grid.
-%
-% To include k-space dispersion correction in the gradient calculation, the
-% property kappa should be defined. As this is a computational parameter,
-% kappa must be defined on the padded grid, or be scalar. If kappa is
-% scalar or not defined, gradient calculations use 1D FFTs, otherwise, ND
-% FFTs are used.
-%
-% Vector fields are stored by concatenating the Cartesian components in the
-% fourth dimension. For example, in 2D, a vector field has size |(Nx, Ny,
-% 1, 2)|, where |(:, :, 1, 1)| is the x-component, and |(:, :, 1, 2)| is
-% the y-component.
-%
-% The constructor calls the |checkRequiredProperties| method for the input
-% medium, source, and sensor objects. It then assigns the gradient
-% operators, and calls the |setInitialConditions| method. The default
-% implementation for |setInitialConditions| is blank, and derived classes
-% should reimplement this as appropriate to initialise variables used in
-% the time loop.
-%
-% Derived classes must provide a concrete implementation of the
-% |takeTimeStep| method which implements the numerical solution to the PDE.
-% This must also update the |timeStepsTaken| and |tArray| properties.
-% 
-% Similar to classes derived from |kWaveInput|, classes derived from
-% |kWaveSolver| should define padded variants of any PDE variables that can
+% They must also define padded variants of PDE variables that can
 % be accessed by the user, and implement set and get methods that add and
 % remove the grid padding. See the |kWaveInput| documentation for further
 % details.
+%
+% Methods are provided for calculating the gradient and divergence, along
+% with support for the k-space dispersion correction when the property
+% |kappa| is set.
+%
+%% Abstract methods
+% |takeTimeStep|
+%
+% Implements the numerical solution to the PDE. Must also update the
+% |timeStepsTaken| and |tArray| properties.
+%
+% |setInitialConditions|
+%
+% Initialises variables used in the time loop.
 %
 %% Input Arguments
 % * |kgrid| - (kWaveGrid) Object which defines the simulation grid size.
