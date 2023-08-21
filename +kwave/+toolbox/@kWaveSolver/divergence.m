@@ -19,18 +19,18 @@
 % support by always looping over the fourth dimension.
 %
 % If obj.kappa is defined, a k-space correction is applied as part of the
-% gradient calulation. If kappa is a scalar (single frequency correction)
-% or empty, the gradient components are calculated using 1D FFTs. If kappa
-% is a matrix, the gradient components are calculated using ND FFTs, and
-% kappa is applied in the Fourier domain.
+% divergence calulation. If kappa is a scalar (single frequency correction)
+% or empty, the contributions to the divergence for each of the Cartesian
+% coordinates are calculated using 1D FFTs. If kappa is a matrix, they are
+% calculated using ND FFTs, and kappa is applied in the Fourier domain.
 %
 % The output can be returned on a spatially staggered grid by setting the
 % optional Staggering argument. This selects the correct derivative
 % operator from those defined in kWaveSolver.
 %
-% The gradient operations (and kappa if defined) are defined on the padded
-% grid. Thus, the inputs to this function must also be defined on the
-% padded grid.
+% The divergence operations (and kappa if defined) are defined on the
+% padded grid. Thus, the inputs to this function must also be defined on
+% the padded grid.
 %
 %% Input Arguments
 % * |f| - (numeric) Vector field to compute divergence of.

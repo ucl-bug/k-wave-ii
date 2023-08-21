@@ -14,8 +14,8 @@
 %   settings.plotSimulation = 'off';
 %
 %% Properties
-% * |colorMap| - (numeric) Color map used for 2D plots. Default is the
-%   k-Wave color map.
+% * |colorMap| - (numeric) Color map used for 2D plots (see
+%   <matlab:doc('colormap') colormap>). Default is the k-Wave color map.
 % * |plotFrequency| - (integer) The number of iterations which must pass 
 %   before the simulation plot is updated. Default = 10.
 % * |plotScale| - (numeric) [min, max] values used to control the scaling
@@ -23,7 +23,7 @@
 % * |plotSimulation| - ('on', 'off') Option to progressively display the
 %   running simulation. Default = 'on'.
 % * |simulationDataType| - ('single', 'double') Data-type used for
-%   simulation calculations.
+%   simulation calculations. Default = 'single'.
 
 % Copyright (C) 2022- University College London.
 %

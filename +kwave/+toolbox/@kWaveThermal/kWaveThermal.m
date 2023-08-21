@@ -8,10 +8,11 @@
 % |kWaveThermal| implements a time-domain solution to the diffusion
 % equation in the form:
 %
-% $$\rho_0 C_0 \frac{\partial T}{\partial t} = \nabla \cdot (K \nabla(T))$$
+% $$\rho_0 C_p \frac{\partial T}{\partial t} = \nabla \cdot (K \nabla T)$$
 %
-% where $\rho_0$ is the density, $C_0$ is the specific heat capacity, $K$
-% is the thermal conductivity, $T$ is the temperature, and $t$ is time.
+% where $\rho_0$ is the density, $C_p$ is the specific heat capacity at
+% constant pressure, $K$ is the thermal conductivity, $T$ is the
+% temperature, and $t$ is time.
 %
 % The computation is based on a k-space pseudospectral scheme in which
 % spatial gradients are calculated using the Fourier collocation spectral
@@ -49,7 +50,7 @@
 %     
 %   % Source.
 %   source = kWaveThermalSource(kgrid);
-%   source.initialTemperature = exp( -kgrid.xVec.^2 / (10 * kgrid.dx)^2 );
+%   source.initialTemperature = exp( -kgrid.xVec.^2 ./ (10 * kgrid.dx).^2 );
 %     
 %   % Solve.
 %   solver = kWaveThermal(kgrid, medium, source, []);

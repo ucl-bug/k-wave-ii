@@ -15,7 +15,7 @@
 % To include k-space dispersion correction in the gradient calculation, the
 % property kappa should be defined. As this is a computational parameter,
 % kappa must be defined on the padded grid, or be scalar. If kappa is
-% scalar or not defined, gradient calculations use 1D FFTs, otherwise, ND
+% scalar or not defined, derivative calculations use 1D FFTs, otherwise, ND
 % FFTs are used.
 %
 % Vector fields are stored by concatenating the Cartesian components in the
@@ -175,8 +175,7 @@ classdef(Abstract) kWaveSolver < handle
             obj.ddyShiftNeg = reshape(ifftshift(-1i * obj.kgridPadded.kyVec .* exp(-1i.*obj.kgridPadded.kyVec * obj.kgridPadded.dy/2)), 1, [], 1);
             obj.ddzShiftNeg = reshape(ifftshift(-1i * obj.kgridPadded.kzVec .* exp(-1i.*obj.kgridPadded.kzVec * obj.kgridPadded.dz/2)), 1, 1, []);
 
-            % Set initial conditions (sub-classes must have a concrete
-            % implementation of abstract method).
+            % Set initial conditions.
             obj.setInitialConditions;
 
         end
@@ -185,12 +184,10 @@ classdef(Abstract) kWaveSolver < handle
     % Set and get methods.
     methods
         function set.kappa(obj, val)
-            if numel(val) == 1
-                obj.kappa = val;
-            else
-                obj.kgrid.validateSize(val, IncludePadding=true, VariableName='kappa'); %#ok<MCSUP> 
-                obj.kappa = val;
+            if numel(val) ~= 1
+                obj.kgrid.validateSize(val, IncludePadding=true, VariableName='kappa'); %#ok<MCSUP>
             end
+            obj.kappa = val;
         end
     end
 

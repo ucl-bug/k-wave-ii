@@ -8,12 +8,9 @@
 %   setInitialConditions(obj)
 %
 %% Description
-% Iteratively updates the solution for the temperature field for the given
-% number of time steps and time step size.
-%
-%% Input Arguments
-% * |Nt| - (integer) Number of time steps.
-% * |dt| - (numeric) Size of each time step. 
+% Initialises |obj.temperaturePadded| using
+% |obj.source.initialTemperaturePadded| if defined, or zeros if not. Also
+% assigns the reference diffusion coefficient if not provided.
 
 % Copyright (C) 2022- University College London.
 %

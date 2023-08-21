@@ -48,18 +48,18 @@ switch obj.dimensions
     case 3
         subplot(2, 2, 1);
         imagesc(obj.kgrid.yVec, obj.kgrid.xVec, squeeze(f(:, :, round(end/2))), obj.settings.plotScale);
-        title('x-y plane');
+        title('x-y plane (central slice)');
         axis image;
         
         subplot(2, 2, 2);
         imagesc(obj.kgrid.zVec, obj.kgrid.xVec, squeeze(f(:, round(end/2), :)), obj.settings.plotScale);
-        title('x-z plane');
+        title('x-z plane (central slice)');
         axis image;
         xlabel(['(All axes in ' 'm)']);
         
         subplot(2, 2, 3);
         imagesc(obj.kgrid.zVec, obj.kgrid.yVec, squeeze(f(round(end/2), :, :)), obj.settings.plotScale);
-        title('y-z plane');
+        title('y-z plane (central slice)');
         axis image;
         colormap(obj.settings.colorMap);
 end

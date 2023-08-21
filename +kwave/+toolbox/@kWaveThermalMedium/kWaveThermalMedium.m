@@ -36,8 +36,9 @@
 % * |diffusionReference| - (single) Reference diffusion coefficient used in
 %   the k-space correction term [m^2/s]. Automatically defined in
 %   kWaveThermal if not defined by the user.
-% * |specificHeat| - (single) Mass density [kg/m^2].
-% * |thermalConductivity| - (single) Mass density [kg/m^2].
+% * |specificHeat| - (single) Specific heat capacity at constant pressure
+%   [J/kg/K].
+% * |thermalConductivity| - (single) Thermal conductivity [W/m/K].
 %
 %% See Also
 % * |kWaveInput|
