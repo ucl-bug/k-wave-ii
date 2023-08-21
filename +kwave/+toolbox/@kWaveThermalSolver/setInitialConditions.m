@@ -1,5 +1,5 @@
 %% setInitialConditions
-% *Class:* kwave.toolbox.kWaveThermal
+% *Class:* kwave.toolbox.kWaveThermalSolver
 % *Package:* kwave.toolbox
 %
 % Set initial conditions.

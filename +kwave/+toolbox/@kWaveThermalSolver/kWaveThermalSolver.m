@@ -1,11 +1,11 @@
-%% kWaveThermal
+%% kWaveThermalSolver
 % *Package:* kwave.toolbox
 % *Superclasses:* kwave.toolbox.kWaveSolver
 %
 % Thermal solver.
 %
 %% Description
-% |kWaveThermal| implements a time-domain solution to the diffusion
+% |kWaveThermalSolver| implements a time-domain solution to the diffusion
 % equation in the form:
 %
 % $$\rho_0 C_p \frac{\partial T}{\partial t} = \nabla \cdot (K \nabla T)$$
@@ -53,7 +53,7 @@
 %   source.initialTemperature = exp( -kgrid.xVec.^2 ./ (10 * kgrid.dx).^2 );
 %     
 %   % Solve.
-%   solver = kWaveThermal(kgrid, medium, source, []);
+%   solver = kWaveThermalSolver(kgrid, medium, source, []);
 %   solver.takeTimeStep(500, 0.5);
 %     
 %   % Plot.
@@ -99,7 +99,7 @@
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
-classdef kWaveThermal < kwave.toolbox.kWaveSolver
+classdef kWaveThermalSolver < kwave.toolbox.kWaveSolver
 
     % PDE variables.
     properties(SetAccess=private, Dependent=true)
@@ -113,7 +113,7 @@ classdef kWaveThermal < kwave.toolbox.kWaveSolver
 
     % Constructor.
     methods
-        function obj = kWaveThermal(kgrid, medium, source, sensor, settings)
+        function obj = kWaveThermalSolver(kgrid, medium, source, sensor, settings)
             arguments
                 kgrid(1,1) kwave.toolbox.kWaveGrid
                 medium(1,1) kwave.toolbox.kWaveThermalMedium
