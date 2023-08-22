@@ -1,43 +1,10 @@
 %% TestkWaveThermalSolver
 % *Package:* kwave.tests.unit
-% *Superclasses:* matlab.unittest.TestCase
+% *Superclasses:* kwave.tests.unit.TestGrid
 %
 % Unit tests for the kWaveThermalSolver class.
 
-classdef TestkWaveThermalSolver < matlab.unittest.TestCase
-
-    properties
-        kgrid kwave.toolbox.kWaveGrid
-        actualSolution single
-        referenceSolution single
-        tol matlab.unittest.constraints.AbsoluteTolerance
-    end
-
-    properties(MethodSetupParameter)
-        gridSize = {64, 65, [32, 48], [33, 49], [24, 28, 32], [25, 29, 33]};
-        gridSpacing = {1e-3, 1e-3, 1e-3, 1e-3, 1e-3, 1e-3};
-    end
-
-    methods(TestMethodSetup, ParameterCombination="sequential")
-
-        % Create kWaveGrid object used by tests.
-        function createSource(testCase, gridSize, gridSpacing)
-
-            import kwave.toolbox.*
-            import matlab.unittest.constraints.AbsoluteTolerance
-
-            % Create grid.
-            testCase.kgrid = kWaveGrid(gridSize, gridSpacing);
-
-            % Define tolerance for field comparisons.
-            testCase.tol = AbsoluteTolerance(single(1e-6));
-
-            % Add diagnostic for test failure.
-            testCase.onFailure(@()kwave.utilities.plotFieldsDiff(testCase.actualSolution, testCase.referenceSolution));
-
-        end
-
-    end
+classdef TestkWaveThermalSolver < kwave.tests.unit.TestGrid
 
     % Parameterized tests.
     methods(Test, ParameterCombination="sequential")
