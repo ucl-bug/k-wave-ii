@@ -9,7 +9,9 @@
 %% Description
 % |plotFieldsDiff| takes two fields and plots them, along with the
 % different between them. The fields must be the same size, and can be in
-% 1D, 2D, or 3D. In 3D, the central slice is plotted.
+% 1D to 4D. In 3D, the central slice in each Cartesian direction is
+% plotted. If the input is 4D, the function is recursively called with 3D
+% inputs.
 %
 %% Input Arguments
 % * |referenceField| - (numeric) Reference field.
@@ -21,8 +23,16 @@
 function f = plotFieldsDiff(actual, expected)
 
 arguments
-    actual (:,:,:) {mustBeNumeric}
+    actual (:,:,:,:) {mustBeNumeric}
     expected {mustBeNumeric, kwave.utilities.mustBeEqualSize(expected, actual)}
+end
+
+% If input is 4D, make recursive call with each component.
+if size(actual, 4) > 1
+    for ind = 1:size(actual, 4)
+        f = kwave.utilities.plotFieldsDiff(actual(:, :, :, ind), expected(:, :, :, ind));
+        return
+    end
 end
 
 diff = actual - expected;
