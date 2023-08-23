@@ -111,7 +111,7 @@ if isempty(obj.kappa) || (numel(obj.kappa) == 1)
     end
 
     if (numel(obj.kappa) == 1)
-        f = f .* kappa;
+        f = f .* obj.kappa;
     end
 
 % ND k-space correction, so use ND FFTs.

@@ -105,7 +105,7 @@ if isempty(obj.kappa) || (numel(obj.kappa) == 1)
     end
 
     if (numel(obj.kappa) == 1)
-        df = df .* kappa;
+        df = df .* obj.kappa;
     end
 
 % ND k-space correction, so use ND FFTs.
