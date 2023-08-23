@@ -124,7 +124,7 @@ classdef(Abstract) kWaveSolver < handle
         timeArray single
     end
 
-    properties(Access=protected, Hidden=true)
+    properties(Access={?kwave.toolbox.kWaveSolver, ?kwave.tests.unit.TestkWaveSolver}, Hidden=true)
         kappa single
     end
 
@@ -136,7 +136,7 @@ classdef(Abstract) kWaveSolver < handle
                 medium(1,1) kwave.toolbox.kWaveInput
                 source(1,1) kwave.toolbox.kWaveInput
                 sensor
-                settings(1,1) kwave.toolbox.kWaveSettings = kwave.toolbox.kWaveSettings
+                settings(1,1) kwave.toolbox.kWaveSettings
             end
 
             % Check inputs reference the same grid object.
@@ -163,17 +163,17 @@ classdef(Abstract) kWaveSolver < handle
             obj.kgridPadded = kwave.toolbox.kWaveGrid(kgrid.gridSize(1:kgrid.dimensions) + 2 * kgrid.gridPadding(1:kgrid.dimensions), kgrid.gridSpacing(1:kgrid.dimensions));
 
             % Assign derivative operators.
-            obj.ddxNoShift = reshape(ifftshift(-1i * obj.kgridPadded.kxVec), [], 1, 1);
-            obj.ddyNoShift = reshape(ifftshift(-1i * obj.kgridPadded.kyVec), 1, [], 1);
-            obj.ddzNoShift = reshape(ifftshift(-1i * obj.kgridPadded.kzVec), 1, 1, []);
+            obj.ddxNoShift = reshape(ifftshift(1i * obj.kgridPadded.kxVec), [], 1, 1);
+            obj.ddyNoShift = reshape(ifftshift(1i * obj.kgridPadded.kyVec), 1, [], 1);
+            obj.ddzNoShift = reshape(ifftshift(1i * obj.kgridPadded.kzVec), 1, 1, []);
             
-            obj.ddxShiftPos = reshape(ifftshift(-1i * obj.kgridPadded.kxVec .* exp( 1i.*obj.kgridPadded.kxVec * obj.kgridPadded.dx/2)), [], 1, 1);
-            obj.ddyShiftPos = reshape(ifftshift(-1i * obj.kgridPadded.kyVec .* exp( 1i.*obj.kgridPadded.kyVec * obj.kgridPadded.dy/2)), 1, [], 1);
-            obj.ddzShiftPos = reshape(ifftshift(-1i * obj.kgridPadded.kzVec .* exp( 1i.*obj.kgridPadded.kzVec * obj.kgridPadded.dz/2)), 1, 1, []);
+            obj.ddxShiftPos = reshape(ifftshift(1i * obj.kgridPadded.kxVec .* exp( 1i.*obj.kgridPadded.kxVec * obj.kgridPadded.dx/2)), [], 1, 1);
+            obj.ddyShiftPos = reshape(ifftshift(1i * obj.kgridPadded.kyVec .* exp( 1i.*obj.kgridPadded.kyVec * obj.kgridPadded.dy/2)), 1, [], 1);
+            obj.ddzShiftPos = reshape(ifftshift(1i * obj.kgridPadded.kzVec .* exp( 1i.*obj.kgridPadded.kzVec * obj.kgridPadded.dz/2)), 1, 1, []);
 
-            obj.ddxShiftNeg = reshape(ifftshift(-1i * obj.kgridPadded.kxVec .* exp(-1i.*obj.kgridPadded.kxVec * obj.kgridPadded.dx/2)), [], 1, 1);
-            obj.ddyShiftNeg = reshape(ifftshift(-1i * obj.kgridPadded.kyVec .* exp(-1i.*obj.kgridPadded.kyVec * obj.kgridPadded.dy/2)), 1, [], 1);
-            obj.ddzShiftNeg = reshape(ifftshift(-1i * obj.kgridPadded.kzVec .* exp(-1i.*obj.kgridPadded.kzVec * obj.kgridPadded.dz/2)), 1, 1, []);
+            obj.ddxShiftNeg = reshape(ifftshift(1i * obj.kgridPadded.kxVec .* exp(-1i.*obj.kgridPadded.kxVec * obj.kgridPadded.dx/2)), [], 1, 1);
+            obj.ddyShiftNeg = reshape(ifftshift(1i * obj.kgridPadded.kyVec .* exp(-1i.*obj.kgridPadded.kyVec * obj.kgridPadded.dy/2)), 1, [], 1);
+            obj.ddzShiftNeg = reshape(ifftshift(1i * obj.kgridPadded.kzVec .* exp(-1i.*obj.kgridPadded.kzVec * obj.kgridPadded.dz/2)), 1, 1, []);
 
             % Set initial conditions.
             obj.setInitialConditions;
