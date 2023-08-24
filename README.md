@@ -37,7 +37,7 @@ practice and advance long-term sustainability
 
 ### Minimum requirements
 
-- k-Wave-II requires MATLAB 2022a or later.
+- k-Wave-II requires MATLAB 2022b or later.
 - If importing the k-Wave-II namespace (using `import kwave.toolbox.*`) it is recommended that k-Wave-I is NOT on the MATLAB path to avoid naming conflicts.
 
 ### Building the documentation
@@ -48,4 +48,7 @@ practice and advance long-term sustainability
 
 ### Running the tests
 
-- Tests are written using the MATLAB unit testing framework. To run the tests locally, call `+kwave/+tests/runTests.m`.
+- Tests are written using the MATLAB unit testing framework. To run the tests locally, call:
+   - `kwave.tests.runTests(TestType=kwave.tests.TestType.unit)`
+   - `kwave.tests.runTests(TestType=kwave.tests.TestType.linting)`
+- Running the unit tests requires the signal processing toolbox for the reference `sinc` function.
