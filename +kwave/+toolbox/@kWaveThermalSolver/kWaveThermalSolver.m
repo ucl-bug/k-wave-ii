@@ -99,7 +99,7 @@
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
-classdef kWaveThermalSolver < kwave.toolbox.kWaveSolver
+classdef kWaveThermalSolver < kwave.toolbox.kWaveTimeDomainSolver
 
     % PDE variables.
     properties(SetAccess=private, Dependent=true)
@@ -123,7 +123,7 @@ classdef kWaveThermalSolver < kwave.toolbox.kWaveSolver
             end
 
             % Pass input arguments to superclass constructor.
-            obj@kwave.toolbox.kWaveSolver(kgrid, medium, source, sensor, settings)
+            obj@kwave.toolbox.kWaveTimeDomainSolver(kgrid, medium, source, sensor, settings)
 
         end
     end
