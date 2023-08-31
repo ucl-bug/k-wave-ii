@@ -3,6 +3,12 @@
 % *Superclasses:* kwave.tests.unit.TestGrid
 %
 % Unit tests for the kWaveThermalSolver class.
+%
+%% Description
+% Runs the following tests for the kWaveThermalSolver:
+% * Verifies simulations in homogeneous media match exact solution
+% * Verifies that simulations using input parameters with a different grid
+%   throw errors.
 
 classdef TestkWaveThermalSolver < kwave.tests.unit.TestGrid
 
@@ -63,6 +69,42 @@ classdef TestkWaveThermalSolver < kwave.tests.unit.TestGrid
             % Turn on plotting and take a step.
             solver.settings.plotSimulation = 'on';
             solver.takeTimeStep(1, dt);
+
+        end
+
+        % Define medium and source inputs on a different grid, and test for
+        % input errors.
+        function testInputErrors(testCase)
+
+            import kwave.toolbox.*
+
+            kgridIncorrect = kWaveGrid(10, 2e-3);
+
+            % Medium using correct kgrid.
+            medium = kWaveThermalMedium(testCase.kgrid);
+            medium.thermalConductivity = 0.52;
+            medium.specificHeat = 3540;
+            medium.density = 1000;
+
+            % Medium using incorrect kgrid.
+            mediumIncorrect = kWaveThermalMedium(kgridIncorrect);
+            mediumIncorrect.thermalConductivity = 0.52;
+            mediumIncorrect.specificHeat = 3540;
+            mediumIncorrect.density = 1000;
+
+            % Source using correct kgrid.
+            source = kWaveThermalSource(testCase.kgrid);
+
+            % Source using incorrect kgrid.
+            sourceIncorrect = kWaveThermalSource(kgridIncorrect);
+
+            testCase.verifyError(@() ...
+                kWaveThermalSolver(testCase.kgrid, mediumIncorrect, source, []), ...
+                'kWaveSolver:gridMismatch');
+
+            testCase.verifyError(@() ...
+                kWaveThermalSolver(testCase.kgrid, medium, sourceIncorrect, []), ...
+                'kWaveSolver:gridMismatch');
 
         end
 
