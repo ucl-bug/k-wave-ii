@@ -1,39 +1,26 @@
-%% TestkWaveSolver
+%% TestkWaveFourierCollocation
 % *Package:* kwave.tests.unit
 % *Superclasses:* kwave.tests.unit.TestGrid
 %
-% Unit tests for the kWaveSolver class.
+% Unit tests for the kWaveFourierCollocation class.
 %
 %% Description
-% Tests the gradient and divergence functions of the kWaveSolver against
-% simple analytical functions that are periodic on the test grid. All
-% dimensions and grid staggering options are tested.
-%
-% Note, as kWaveSolver is an abstract class, we must use one of the
-% concrete implementations to test it. Here, we use kWaveThermalSolver
-% setup with dummy medium and source properties (which aren't used in the
-% tests).
+% Tests the gradient and divergence functions of the
+% kWaveFourierCollocation against simple analytical functions that are
+% periodic on the test grid. All dimensions and grid staggering options are
+% tested.
 
-classdef TestkWaveSolver < kwave.tests.unit.TestGrid
+classdef TestkWaveFourierCollocation < kwave.tests.unit.TestGrid
 
     % Add solver to class properties so we can pass it to each testCase.
     properties
-        solver kwave.toolbox.kWaveThermalSolver
+        solver kwave.toolbox.kWaveFourierCollocation
     end
 
     % Setup solver for each test.
     methods(TestMethodSetup, ParameterCombination="sequential")
         function createSolver(testCase)
-            import kwave.toolbox.*
-
-            medium = kWaveThermalMedium(testCase.kgrid);
-            medium.thermalConductivity = 0.52;
-            medium.specificHeat = 3540;
-            medium.density = 1000;
-            
-            source = kWaveThermalSource(testCase.kgrid);
-
-            testCase.solver = kWaveThermalSolver(testCase.kgrid, medium, source, []);
+            testCase.solver = kwave.toolbox.kWaveFourierCollocation(testCase.kgrid);
         end
     end
 
@@ -108,30 +95,6 @@ classdef TestkWaveSolver < kwave.tests.unit.TestGrid
             testCase.actualSolution = testCase.solver.sinc(pi * x);
             testCase.referenceSolution = sinc(x);
             testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));
-        end
-
-        % Define medium and source inputs on a different grid, and test for
-        % input errors.
-        function testInputErrors(testCase)
-            import kwave.toolbox.*
-
-            kgrid = kWaveGrid(10, 2e-3);
-
-            medium = kWaveThermalMedium(kgrid);
-            medium.thermalConductivity = 0.52;
-            medium.specificHeat = 3540;
-            medium.density = 1000;
-            
-            source = kWaveThermalSource(kgrid);
-
-            testCase.verifyError(@() ...
-                kWaveThermalSolver(testCase.kgrid, medium, testCase.solver.source, []), ...
-                'kWaveSolver:gridMismatch');
-
-                testCase.verifyError(@() ...
-                kWaveThermalSolver(testCase.kgrid, testCase.solver.medium, source, []), ...
-                'kWaveSolver:gridMismatch');
-
         end
 
     end

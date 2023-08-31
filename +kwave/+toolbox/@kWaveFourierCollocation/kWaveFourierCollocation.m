@@ -112,7 +112,7 @@ classdef kWaveFourierCollocation < handle
     end
 
     % k-Space correction term.
-    properties(Access={?kwave.toolbox.kWaveTimeDomainSolver, ?kwave.tests.unit.TestkWaveSolver}, Hidden=true)
+    properties
         kappa single
     end
 
