@@ -1,10 +1,10 @@
-%% kWaveSolver
+%% kWaveFourierCollocation
 % *Package:* kwave.toolbox
 %
 % Superclass of all kwave.toolbox solver classes.
 %
 %% Description
-% Abstract class used to define time-domain solvers. Solvers classes should
+% Class used to define time-domain solvers. Solvers classes should
 % be derived from this class.
 %
 % Methods are provided for calculating the gradient and divergence. These
@@ -52,16 +52,10 @@
 % Input objects:
 %
 % * |kgrid| - (kWaveGrid) Handle for grid object.
-% * |medium| - (kWaveInput) Handle for medium object.
-% * |source| - (kWaveInput) Handle for source object.
-% * |sensor| - ...Not yet implemented...
-% * |settings| - (kWaveSettings) Handle for settings object.
 %
 % Other properties:
 %
 % * |dimensions| - (double) Number of grid dimensions (1, 2, or 3).
-% * |timeArray| - (double) Time points at which update steps were taken.
-% * |timeStepsTaken| - (integer) Number of time steps taken.
 %
 %% Methods
 % * |divergence|
@@ -86,17 +80,15 @@
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
-classdef(Abstract) kWaveSolver < handle
+classdef kWaveFourierCollocation < handle
 
+    % Properties that can be set internally or by derived classes.
     properties(SetAccess=immutable)
         dimensions
         kgrid
-        medium
-        source
-        sensor
-        settings
     end
 
+    % Hidden properties that can be set internally or by derived classes.
     properties(SetAccess=immutable, Hidden=true)
         kgridPadded kwave.toolbox.kWaveGrid
     end
@@ -119,44 +111,20 @@ classdef(Abstract) kWaveSolver < handle
         ddzShiftNeg single
     end
 
-    properties(SetAccess=protected)
-        timeStepsTaken uint64 = 0
-        timeArray single
-    end
-
-    properties(Access={?kwave.toolbox.kWaveSolver, ?kwave.tests.unit.TestkWaveSolver}, Hidden=true)
+    % k-Space correction term.
+    properties(Access={?kwave.toolbox.kWaveTimeDomainSolver, ?kwave.tests.unit.TestkWaveSolver}, Hidden=true)
         kappa single
     end
 
     % Constructor.
     methods
-        function obj = kWaveSolver(kgrid, medium, source, sensor, settings)
+        function obj = kWaveFourierCollocation(kgrid)
             arguments
                 kgrid(1,1) kwave.toolbox.kWaveGrid
-                medium(1,1) kwave.toolbox.kWaveInput
-                source(1,1) kwave.toolbox.kWaveInput
-                sensor
-                settings(1,1) kwave.toolbox.kWaveSettings
             end
-
-            % Check inputs reference the same grid object.
-            if (medium.kgrid ~= kgrid)
-                error('kWaveSolver:gridMismatch', 'The medium input references a different kWaveGrid object to the kgrid input.');
-            end
-            if (source.kgrid ~= kgrid)
-                error('kWaveSolver:gridMismatch', 'The source input references a different kWaveGrid object to the kgrid input.');
-            end
-
-            % Check the required input properties have been defined.
-            medium.checkRequiredProperties;
-            source.checkRequiredProperties;
 
             % Assign properties.
             obj.dimensions = kgrid.dimensions;
-            obj.medium = medium;
-            obj.source = source;
-            obj.sensor = sensor;
-            obj.settings = settings;
 
             % Assign grid and expanded grid.
             obj.kgrid = kgrid;
@@ -174,9 +142,6 @@ classdef(Abstract) kWaveSolver < handle
             obj.ddxShiftNeg = reshape(ifftshift(1i * obj.kgridPadded.kxVec .* exp(-1i.*obj.kgridPadded.kxVec * obj.kgridPadded.dx/2)), [], 1, 1);
             obj.ddyShiftNeg = reshape(ifftshift(1i * obj.kgridPadded.kyVec .* exp(-1i.*obj.kgridPadded.kyVec * obj.kgridPadded.dy/2)), 1, [], 1);
             obj.ddzShiftNeg = reshape(ifftshift(1i * obj.kgridPadded.kzVec .* exp(-1i.*obj.kgridPadded.kzVec * obj.kgridPadded.dz/2)), 1, 1, []);
-
-            % Set initial conditions.
-            obj.setInitialConditions;
 
         end
     end
@@ -202,18 +167,6 @@ classdef(Abstract) kWaveSolver < handle
     % Static class methods with a concrete implementation.
     methods(Static)
         y = sinc(x);
-    end
-
-    % Abstract methods that must be implemented by sub-classes.
-    methods(Abstract)
-        takeTimeStep(obj, Nt, dt);
-    end
-
-    % Internal class methods with an empty implementation. These can
-    % optionally be implemented by sub-classes.
-    methods(Access=protected)
-        function setInitialConditions(~)
-        end
     end
 
 end
