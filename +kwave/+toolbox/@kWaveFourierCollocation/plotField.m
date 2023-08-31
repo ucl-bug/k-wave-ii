@@ -1,5 +1,5 @@
 %% plotField
-% *Class:* kwave.toolbox.kWaveSolver
+% *Class:* kwave.toolbox.kWaveFourierCollocation
 % *Package:* kwave.toolbox
 %
 % Plot field.
