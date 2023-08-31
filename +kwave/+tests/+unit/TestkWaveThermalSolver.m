@@ -98,6 +98,9 @@ classdef TestkWaveThermalSolver < kwave.tests.unit.TestGrid
             % Source using incorrect kgrid.
             sourceIncorrect = kWaveThermalSource(kgridIncorrect);
 
+            testCase.verifyWarningFree(@() ...
+                kWaveThermalSolver(testCase.kgrid, medium, source, []));
+
             testCase.verifyError(@() ...
                 kWaveThermalSolver(testCase.kgrid, mediumIncorrect, source, []), ...
                 'kWaveSolver:gridMismatch');
