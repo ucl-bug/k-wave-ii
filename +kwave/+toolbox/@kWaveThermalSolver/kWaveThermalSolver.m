@@ -1,6 +1,6 @@
 %% kWaveThermalSolver
 % *Package:* kwave.toolbox
-% *Superclasses:* kwave.toolbox.kWaveSolver
+% *Superclasses:* kwave.toolbox.kWaveTimeDomainSolver
 %
 % Thermal solver.
 %

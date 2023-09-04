@@ -1,6 +1,6 @@
-%% kWaveSolver
+%% kWaveTimeDomainSolver
 % *Package:* kwave.toolbox
-% *Superclasses:* kwave.toolbox.kWaveFourierCollocation.
+% *Superclasses:* kwave.toolbox.kWaveFourierCollocation
 %
 % Superclass of all kwave.toolbox time domain solver classes.
 %
@@ -20,10 +20,10 @@
 % This must also update the |timeStepsTaken| and |tArray| properties.
 % 
 % Similar to classes derived from |kWaveInput|, classes derived from
-% |kWaveSolver| should define padded variants of any PDE variables that can
-% be accessed by the user, and implement set and get methods that add and
-% remove the grid padding. See the |kWaveInput| documentation for further
-% details.
+% |kWaveTimeDomainSolver| should define padded variants of any PDE
+% variables that can be accessed by the user, and implement set and get
+% methods that add and remove the grid padding. See the |kWaveInput|
+% documentation for further details.
 %
 %% Input Arguments
 % * |kgrid| - (kWaveGrid) Object which defines the simulation grid size.
@@ -36,7 +36,6 @@
 %% Properties
 % Input objects:
 %
-% * |kgrid| - (kWaveGrid) Handle for grid object.
 % * |medium| - (kWaveInput) Handle for medium object.
 % * |source| - (kWaveInput) Handle for source object.
 % * |sensor| - ...Not yet implemented...
@@ -44,16 +43,14 @@
 %
 % Other properties:
 %
-% * |dimensions| - (double) Number of grid dimensions (1, 2, or 3).
 % * |timeArray| - (double) Time points at which update steps were taken.
 % * |timeStepsTaken| - (integer) Number of time steps taken.
 %
-%% Methods
-% * |divergence|
-% * |divergenceSplit|
-% * |gradient|
-% * |plotField|
-% * |sinc|
+%% See Also
+% * |kWaveFourierCollocation|
+% * |kWaveGrid|
+% * |kWaveInput|
+% * |kWaveSettings|
 
 % Copyright (C) 2022- University College London.
 %
