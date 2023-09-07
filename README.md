@@ -30,7 +30,7 @@ practice and advance long-term sustainability
 - All documentation (including developer documentation) is written in `.m` files and automatically compiled to `.html` viewable in the MATLAB help browser.
 - The documentation can be compiled by calling `kwave.utilities.GenerateDocumentation` in the root folder.
 - After compiling, the documentation can be viewed by opening the MATLAB help browser and selecting **k-Wave II** from the list of supplemental software.
-- New developers should read `Developer Documentation / Developer Introduction`.
+- New developers should read the [`Developer Introduction`](+kwave/+docfiles/+developer/developerIntroduction.m).
 
 ### Running the tests
 

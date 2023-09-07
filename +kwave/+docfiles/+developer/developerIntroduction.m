@@ -6,10 +6,10 @@
 % k-Wave II is an open-source MATLAB toolbox used to solve differential
 % equations, with a particular focus on wave problems in acoustics. The
 % unifying thread for the solvers is that spatial gradients are computed
-% using a Fourier collocation spectral method on a Cartesian grid. This has
-% many advantages, including spectral convergence for smooth functions, and
-% a known analytical form for the band-limited interpolant, which is useful
-% for implementing stair-case free sources, for example.
+% using a Fourier collocation spectral method. This has many advantages,
+% including spectral convergence for smooth functions, and a known
+% analytical form for the band-limited interpolant, which is useful for
+% implementing stair-case free sources, for example.
 % 
 % The main components of the toolbox are written using an object-orientated
 % programming design approach, primarily using |handle| classes. Sets of
