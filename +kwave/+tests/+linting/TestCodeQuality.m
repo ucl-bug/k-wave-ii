@@ -4,57 +4,70 @@
 %
 % Code quality tests for the k-wave II code base.
 %
-% For each file in +kwave/+toolbox this uses the built in `checkcode`
-% function to make sure there are no code quality errors in the files.
+%% Description
+% The following tests are performed for all .m files in +kwave/+toolbox:
+%
+% # |codeIssues| is called to make sure there are no code quality
+% errors in the files.
+% # A dependency check is performed to make sure the files don't depend on
+% any MATLAB toolboxes.
 
 classdef TestCodeQuality < matlab.unittest.TestCase
 
-    methods
-        function string_representation = problemToString(~, problem, mfile)
+    properties
+        toolboxFileNames;
+    end
 
-            % Convert a problem to a string. This is used to print the
-            % problems.
-            string_representation = sprintf(...
-                "%s:%d:%d - Error: %s %s\n", ...
-                mfile, ...
-                problem.line, ...
-                problem.column, ...
-                problem.id, ...
-                problem.message);
+    methods(TestClassSetup)
+        function getFileNames(testCase)
+
+            % Get all the m-files in the toolbox namespace.
+            mfiles = dir(fullfile(mfilename('fullpath'), '..', '..', '..', '..', '+kwave/+toolbox', '**', '*.m'));
+
+            % Check that at least one file is collected.
+            testCase.assertGreaterThan(size(mfiles), 0);
+
+            % Full pathnames to each file.
+            testCase.toolboxFileNames = cellfun(@(x,y) fullfile(x,y), {mfiles.folder}, {mfiles.name}, 'UniformOutput', false);
 
         end
     end
 
     methods(Test)
 
+        % Check for problems identified by codeIssues.
         function testCodeQuality(testCase)
 
-            mfiles = dir(fullfile(mfilename('fullpath'), '..', '..', '..', '..', '+kwave/+toolbox', '**', '*.m'));
+            % Check for code issues.
+            issues = codeIssues(testCase.toolboxFileNames);
 
-            % Check that at least one file is collected.
-            testCase.assertGreaterThan(size(mfiles), 0);
+            % Display any problems identified before failing the test.
+            if ~isempty(issues.Issues)
+                issues.Issues;
+            end
+            testCase.verifyEmpty(issues.Issues);
 
-            % Check each one with `checkcode`.
-            for fileInd = 1:numel(mfiles)
+        end
 
-                % Get the full path to the file.
-                mfile = fullfile(mfiles(fileInd).folder, mfiles(fileInd).name);
+        % Check for MATLAB toolbox dependencies.
+        function checkDependencies(testCase)
 
-                % Run `checkcode` on the file.
-                disp("Checking " + mfile)
-                [problems, ~] = checkcode(mfile, "-id");
+            % Check for dependencies.
+            [~, productList] = matlab.codetools.requiredFilesAndProducts(testCase.toolboxFileNames, 'toponly');
 
-                % Display any problems identified by checkcode before
-                % failing the test.
-                if ~isempty(problems)
-                    disp("Linting Errors:")
-                    for probInd = 1:numel(problems)
-                        disp(testCase.problemToString(problems(probInd), mfile));
+            % Display any required toolboxes before failing the test. The
+            % product list will always contain 'MATLAB', so check for > 1.
+            if numel(productList) > 1
+                disp('The following MATLAB toolbox dependencies have been introduced and should be removed:');
+                for depInd = 1:(numel(productList))
+                    if ~strcmp(productList(depInd).Name, 'MATLAB')
+                        disp(['- ' productList(depInd).Name]);
                     end
                 end
-                testCase.verifyEmpty(problems);
-
             end
+            testCase.verifyEqual(numel(productList), 1);
+
         end
+
     end
 end
