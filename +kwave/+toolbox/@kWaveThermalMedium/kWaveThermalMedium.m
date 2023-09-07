@@ -33,13 +33,21 @@
 %
 %% Properties
 % * |density| - (single) Mass density [kg/m^2].
-% * |specificHeat| - (single) Mass density [kg/m^2].
-% * |thermalConductivity| - (single) Mass density [kg/m^2].
+% * |diffusionReference| - (single) Reference diffusion coefficient used in
+%   the k-space correction term [m^2/s]. Automatically defined in
+%   kWaveThermal if not defined by the user.
+% * |specificHeat| - (single) Specific heat capacity at constant pressure
+%   [J/kg/K].
+% * |thermalConductivity| - (single) Thermal conductivity [W/m/K].
 %
 %% See Also
 % * |kWaveInput|
 
 classdef kWaveThermalMedium < kwave.toolbox.kWaveInput
+
+    properties
+        diffusionReference single
+    end
 
     properties(Hidden=true)
         densityPadded single
@@ -59,6 +67,11 @@ classdef kWaveThermalMedium < kwave.toolbox.kWaveInput
 
     % Set and get methods.
     methods
+
+        function set.diffusionReference(obj, val)
+            validateattributes(val, {'numeric'}, {'numel', 1}, '', 'diffusionReference');
+            obj.diffusionReference = val;
+        end
         
         function set.specificHeat(obj, val)
             obj.kgrid.validateSize(val, VariableName='specificHeat');

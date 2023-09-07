@@ -1,6 +1,6 @@
 %% TestkWaveThermalMedium
 % *Package:* kwave.tests.unit
-% *Superclasses:* kwave.tests.unit.TestMedium
+% *Superclasses:* kwave.tests.unit.TestInput
 %
 % Unit tests for the kWaveThermalMedium class using the TestMedium class.
 

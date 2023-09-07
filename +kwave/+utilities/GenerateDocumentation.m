@@ -61,6 +61,7 @@ classdef GenerateDocumentation
             initialValueProblemsFilenames = obj.generateHTML('/+kwave/+tutorials/+initialvalueproblems', evalCode=true, showCode=true);
             toolboxFilenames = obj.generateHTML('/+kwave/+toolbox');
             testFilenames = obj.generateHTML('/+kwave/+tests');
+            unitTestFilenames = obj.generateHTML('/+kwave/+tests/+unit');
             utilityFilenames = obj.generateHTML('/+kwave/+utilities');
             developerFilenames = obj.generateHTML('/+kwave/+docfiles/+developer', showCode=true);
 
@@ -69,6 +70,7 @@ classdef GenerateDocumentation
             obj.helpTocAddSection(initialValueProblemsFilenames, 'Initial Value Problems');
             obj.helpTocAddSection(toolboxFilenames, 'Toolbox Functions');
             obj.helpTocAddSection(testFilenames, 'Test Functions');
+            obj.helpTocAddSection(unitTestFilenames, 'Unit Tests');
             obj.helpTocAddSection(utilityFilenames, 'Utility Functions');
             obj.helpTocAddSection(developerFilenames, 'Developer Documentation');
             obj.helpTocFinish;

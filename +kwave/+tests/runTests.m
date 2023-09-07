@@ -34,10 +34,10 @@ arguments
     options.testType kwave.tests.TestType;
 end
 
-% Check for MATLAB version 2022a = 9.12.
+% Check for MATLAB version 2022b = 9.13.
 % See https://en.wikipedia.org/wiki/MATLAB for a list of version numbers.
-if verLessThan('matlab', '9.12')
-    error('MATLAB 2022a or later is required to use k-Wave-II.');
+if verLessThan('matlab', '9.13')
+    error('MATLAB 2022b or later is required to use k-Wave-II.');
 end
 
 import matlab.unittest.TestRunner
@@ -72,7 +72,8 @@ mkdir(artifactFolder);
 
 % Setup test runner.
 runner = TestRunner.withTextOutput('OutputDetail', Verbosity.Detailed);
-% Configure code coverage collection
+
+% Configure code coverage collection.
 if isenv('CI')
 
     % Generate a cobertura report that codecov understands when running
