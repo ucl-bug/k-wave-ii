@@ -1,5 +1,5 @@
 %% sinc
-% *Class:* kwave.toolbox.kWaveSolver
+% *Class:* kwave.toolbox.kWaveFourierCollocation
 % *Package:* kwave.toolbox
 %
 % Sin(x)/x function.
