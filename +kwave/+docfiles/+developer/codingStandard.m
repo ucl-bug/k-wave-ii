@@ -3,12 +3,13 @@
 % MATLAB coding standard used for k-Wave II.
 %
 %% Naming
+% * Namespaces uses |+lowercase|.
 % * Class names use |TitleCase|.
 % * Function names and script filenames  use |camelCase|.
 % * Test classes use |TestMyClassName| or |TestMyFunctionName|.
 % * Variables use |camelCase|.
 % * Name-Value arguments use |TitleCase|.
-% * Descriptive naming should be used for the using-facing API where
+% * Descriptive naming should be used for the user-facing API where
 %   possible, e.g., |soundSpeed| rather than |c|. Break this rule for
 %   internal variables for commonly used symbols (e.g. |c| for sound speed,
 %   |p| for pressure), as long as the symbol is well known and stays within
@@ -53,11 +54,13 @@ x = 0.5 + 1i;
 %%
 % * Align multiple similar lines of code if it makes sense for readability
 %   (similarly for comments).
-% * If long lines of code become difficult to read, then break lines of
-%   code using |...| and align for readability.
 
 windSpeed        = exp( x -   w .* t);
 waterTemperature = exp(-x - 3*w .* t);
+
+%%
+% * If long lines of code become difficult to read, then break lines of
+%   code using |...| and align for readability.
 
 %% Brackets and Commas
 % * Brackets should have no interior spaces. Break this rule if needed for
@@ -128,9 +131,14 @@ end
 error('kWaveGrid:incorrectInputSize', 'gridSpacing must be a scalar or the same length as gridSize.');
 
 %% Class and Function Documentation
-% Documentation should be written using
+% Classes should be written using
+% <https://uk.mathworks.com/help/matlab/matlab_oop/methods-in-separate-files.html
+% methods in separate files>. Class and function documentation should be
+% written using
 % <https://uk.mathworks.com/help/matlab/matlab_prog/marking-up-matlab-comments-for-publishing.html
 % publishing markup>. The following structure and headings should be used.
+% <matlab:edit('kwave.docfiles.general.classDocsExample') Open template in
+% MATLAB Editor>.
 %
 % * functionName or className
 % * Syntax
@@ -142,5 +150,3 @@ error('kWaveGrid:incorrectInputSize', 'gridSpacing must be a scalar or the same 
 % * Properties (classes only)
 % * Methods (classes only)
 % * See Also
-%
-% <matlab:edit('kwave.docfiles.developer.classDocsExample') Open template MATLAB Editor>

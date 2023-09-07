@@ -42,11 +42,11 @@
 % * |outputArg1| - (dataType) Description of output. Include units if
 %   applicable.
 %
-%% Properties (Classes only)
+%% Properties (Classes Only)
 % * |property1| - (propertyDataType) Description of property. Include units
 %   if applicable.
 %
-%% Methods (Classes only)
+%% Methods (Classes Only)
 % * |doSomething|
 %
 %% See Also
