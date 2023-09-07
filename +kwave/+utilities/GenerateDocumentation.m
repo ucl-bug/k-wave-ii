@@ -4,7 +4,7 @@
 % Generate help documentation.
 %
 %% Syntax
-%   GenerateDocumentation.
+%   kwave.utilities.GenerateDocumentation
 %
 %% Description
 % |GenerateDocumentation| is a static class that is called to generate the
@@ -21,9 +21,6 @@
 %   generated .html files.
 % # The documentation search database is created using
 %   <matlab:doc('builddocsearchdb') builddocsearchdb>.
-%
-% Once the documentation is generated, the home page is opened in the
-% MATLAB help browser.
 %
 % This class is provided for generating documentation during development,
 % and for preparing the documentation packaged with a release. If you have
@@ -77,10 +74,7 @@ classdef GenerateDocumentation
 
             % Build searchable docs.
             disp('Generating search database...');
-            builddocsearchdb(obj.helpDir)
-
-            % Opening in MATLAB browser.
-            web('helpfiles/kWave.html', '-new');
+            builddocsearchdb(obj.helpDir);
 
         end
     end
