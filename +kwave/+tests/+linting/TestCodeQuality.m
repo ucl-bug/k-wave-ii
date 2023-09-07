@@ -28,7 +28,7 @@ classdef TestCodeQuality < matlab.unittest.TestCase
             testCase.assertGreaterThan(size(mfiles), 0);
 
             % Full pathnames to each file.
-            testCase.toolboxFileNames = cellfun(@(x,y) fullfile(x,y), {mfiles.folder}, {mfiles.name}, 'UniformOutput', false);
+            testCase.toolboxFileNames = cellfun(@(x, y) fullfile(x, y), {mfiles.folder}, {mfiles.name}, 'UniformOutput', false);
 
         end
     end
