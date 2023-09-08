@@ -69,5 +69,44 @@ classdef TestCodeQuality < matlab.unittest.TestCase
 
         end
 
+        % Check cyclomatic complexity for modified functions.
+        function testCyclomaticComplexity(~)
+
+            % Get list of changed files.
+            changedFiles = kwave.utilities.gitChangedFiles(true);
+
+            % Exclude any files not in the toolbox folder.
+            changedFiles(~contains(changedFiles, '+toolbox')) = [];
+
+            % Folder to store output.
+            outputFileName = fullfile( ...
+                fileparts(fileparts(mfilename('fullpath'))), ...
+                kwave.tests.TestType.linting.artifactsFolderName, ...
+                'cyclomatic-complexity.txt');
+
+            % Open the file in write mode to clear its contents, then close
+            % it.
+            fid_clear = fopen(outputFileName, 'w');
+            fclose(fid_clear);
+
+            % Open the file again in append mode.
+            fid = fopen(outputFileName, 'a');
+
+            % Loop over files.
+            for ind = 1:numel(changedFiles)
+
+                % Calculate complexity.
+                msg = strtrim(checkcode(changedFiles{ind}, "-cyc", '-string'));
+                
+                % Append the message to the file.
+                fprintf(fid, '%s\n', msg);
+
+            end
+
+            % Close the file.
+            fclose(fid);
+
+        end
+
     end
 end
