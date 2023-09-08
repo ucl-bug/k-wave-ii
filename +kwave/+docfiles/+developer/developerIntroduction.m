@@ -154,3 +154,12 @@
 % different sized grids.
 % * |matlab.unittest.TestCase| for general tests.
 % * |matlab.perftest.TestCase| for performance tests.
+%
+% The linting tests check for code complexity using
+% <https://uk.mathworks.com/help/matlab/matlab_prog/measure-code-complexity-using-cyclomatic-complexity.html
+% cylomatic complexity>, which is a measure of the decision structure
+% complexity of the code. The complexity of all files changed in a pull
+% request is automatically added to pull requests as part of the code
+% checks action. While a particular number isn't enforced, both developers
+% and reviewers should consider whether a re-factoring is appropriate if
+% the cylomatic complexity is above 10.
