@@ -18,6 +18,7 @@ jobs:
           matlab -batch "kwave.tests.runTests(testType='linting')"
 
       - name: Comment PR
-        uses: thollander/actions-comment-pull-request@v2
+        uses: mshick/add-pr-comment@v2
         with:
-          filePath: ./+kwave/+tests/linting-tests-artifacts/cyclomatic-complexity.txt
+          message-path: |
+            ./+kwave/+tests/linting-tests-artifacts/cyclomatic-complexity.txt
