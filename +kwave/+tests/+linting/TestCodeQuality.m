@@ -91,6 +91,7 @@ classdef TestCodeQuality < matlab.unittest.TestCase
 
             % Open the file again in append mode.
             fid = fopen(outputFileName, 'a');
+            fprintf(fid, '%s\n', '# Cyclomatic Complexity Check');
 
             % Loop over files.
             for ind = 1:numel(changedFiles)
