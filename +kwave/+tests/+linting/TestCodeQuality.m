@@ -103,6 +103,11 @@ classdef TestCodeQuality < matlab.unittest.TestCase
 
             end
 
+            % Add a message if no files changed.
+            if isempty(changedFiles)
+                fprintf(fid, '%s\n', 'No changed files. Skipping cyclomatic complexity checks.');
+            end
+
             % Close the file.
             fclose(fid);
 
