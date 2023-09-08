@@ -17,12 +17,15 @@
 %% Input Arguments
 % * |numGridPoints| - (double) Number of grid points.
 % * |gridSpacing| - (double) Grid point spacing [m].
+%
+%% Output Arguments
+% * |kVec| - (double) Wavenumber vector.
 
 function kVec = getWavenumbers(numGridPoints, gridSpacing)
 
 arguments
-    numGridPoints(1,1) {mustBeInteger,mustBePositive}
-    gridSpacing(1,1) {mustBeFinite,mustBeNonnegative}
+    numGridPoints(1,1) double {mustBeInteger,mustBePositive}
+    gridSpacing(1,1) double {mustBeFinite,mustBeNonnegative}
 end
 
 % Define the discretisation of the spatial dimension such that

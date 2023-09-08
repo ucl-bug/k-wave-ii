@@ -15,19 +15,6 @@
 % size in each Cartesian direction. If an input for |expansionValue| is
 % given, all expanded matrix elements will have this value.
 %
-%% Input Arguments
-% * |matrix| - (numeric) A 1D, 2D, or 3D matrix to expand.
-% * |expansionSize| - (integer) The expansion size. There are several ways
-%   to specify the size. If a scalar value is given, this expansion is
-%   added to all sides of the matrix. In 1D, the expansion size at each end
-%   can also be specified as |[xStartExp, xEndExp]|. In 2D and 3D, the
-%   expansion size in each Cartesian direction can be specified as |[xExp,
-%   yExp]| or |[xExp, yExp, zExp]|, or for each side in each Cartesian
-%   direction as |[xStartExp, xEndExp, yStartExp, yEndExp]| or |[xStartExp,
-%   xEndExp, yStartExp, yEndExp, zStartExp, zEndExp]|.
-% * |expansionValue| - (numeric) Scalar value to use in the matrix
-%   expansion.
-%
 %% Examples
 %
 %   matrix = magic(3)
@@ -57,6 +44,22 @@
 %        0     8     1     6
 %        0     3     5     7
 %        0     4     9     2
+%
+%% Input Arguments
+% * |matrix| - (numeric) A 1D, 2D, or 3D matrix to expand.
+% * |expansionSize| - (integer) The expansion size. There are several ways
+%   to specify the size. If a scalar value is given, this expansion is
+%   added to all sides of the matrix. In 1D, the expansion size at each end
+%   can also be specified as |[xStartExp, xEndExp]|. In 2D and 3D, the
+%   expansion size in each Cartesian direction can be specified as |[xExp,
+%   yExp]| or |[xExp, yExp, zExp]|, or for each side in each Cartesian
+%   direction as |[xStartExp, xEndExp, yStartExp, yEndExp]| or |[xStartExp,
+%   xEndExp, yStartExp, yEndExp, zStartExp, zEndExp]|.
+% * |expansionValue| - (numeric) Scalar value to use in the matrix
+%   expansion.
+%
+%% Output Arguments
+% * |matrixExpanded| - (numeric) Expanded matrix.
 
 function matrixExpanded = expandMatrix(matrix, expansionSize, expansionValue)
 

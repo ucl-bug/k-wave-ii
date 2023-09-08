@@ -4,12 +4,20 @@
 % Derivative calculation using the Fourier collocation spectral method.
 %
 %% Description
-% Class used to calculate derivatives on a regular Cartesian grid using the
-% Fourier collocation spectral method.
+% Class used to calculate differential operators using the Fourier
+% collocation spectral method. The class constructor takes a
+% |kwave.toolbox.kWaveGrid| object which defines the discrete locations
+% where the input field is defined. Calculations are always performed on
+% the padded grid. Methods are provided for calculating the gradient of a
+% scalar field, and the divergence of a vector field.
 %
-% Methods are provided for calculating the gradient and divergence. These
-% allow for grid staggering. Calculations are always performed on the
-% padded grid.
+% Vector fields are stored by concatenating the Cartesian components in the
+% fourth dimension. For example, in 2D, a vector field has size |(Nx, Ny,
+% 1, 2)|, where |(:, :, 1, 1)| is the x-component, and |(:, :, 1, 2)| is
+% the y-component. The |divergence| method acts on each vector component
+% individually using |divergenceSplit|, and then sums the results. The
+% calculations allow shifting to and from the staggered grid by setting the
+% |Staggering| option.
 %
 % To include k-space dispersion correction in the derivative calculations,
 % the property kappa should be defined. As this is a computational
@@ -17,10 +25,62 @@
 % kappa is scalar or not defined, derivative calculations use 1D FFTs,
 % otherwise, ND FFTs are used.
 %
-% Vector fields are stored by concatenating the Cartesian components in the
-% fourth dimension. For example, in 2D, a vector field has size |(Nx, Ny,
-% 1, 2)|, where |(:, :, 1, 1)| is the x-component, and |(:, :, 1, 2)| is
-% the y-component.
+%% Examples
+% Calculate the gradient of a scalar field in 2D, and compare with the
+% MATLAB |<matlab:doc('gradient') gradient>| function.
+%
+%   % Define input field.
+%   [x, y] = meshgrid(-2:.2:2, -2:.2:2);
+%   z = x .* exp(-x.^2 - y.^2);
+%   
+%   % Define input field.
+%   kgrid = kwave.toolbox.kWaveGrid([40, 40], 0.2);
+%   f = kgrid.x .* exp(-kgrid.x.^2 - kgrid.y.^2);
+%   
+%   % Compute gradient using k-Wave.
+%   fourierDiffOps = kwave.toolbox.kWaveFourierCollocation(kgrid);
+%   gradf = fourierDiffOps.gradient(f);
+%   
+%   % Compute gradient using finite differences with MATLAB gradient function.
+%   [fy, fx] = gradient(f, kgrid.dx);
+%   
+%   % Plot.
+%   figure;
+%   subplot(2, 3, 1);
+%   imagesc(gradf(:, :, :, 1));
+%   colorbar;
+%   axis image;
+%   title('k-Wave \partialf/\partialx');
+%   
+%   subplot(2, 3, 2);
+%   imagesc(fx);
+%   colorbar;
+%   axis image;
+%   title('Finite Difference \partialf/\partialx');
+%   
+%   subplot(2, 3, 3);
+%   imagesc(abs(gradf(:, :, :, 1) - fx));
+%   colorbar;
+%   axis image;
+%   title('Difference');
+%   
+%   subplot(2, 3, 4);
+%   imagesc(gradf(:, :, :, 2));
+%   colorbar;
+%   axis image;
+%   title('k-Wave \partialf/\partialy');
+%   
+%   subplot(2, 3, 5);
+%   imagesc(fy);
+%   colorbar;
+%   axis image;
+%   title('Finite Difference \partialf/\partialy');
+%   
+%   subplot(2, 3, 6);
+%   imagesc(abs(gradf(:, :, :, 2) - fy));
+%   colorbar;
+%   axis image;
+%   title('Difference');
 %
 %% Input Arguments
 % * |kgrid| - (kWaveGrid) Object which defines the simulation grid size.

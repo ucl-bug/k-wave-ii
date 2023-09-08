@@ -50,5 +50,5 @@
 % * |doSomething|
 %
 %% See Also
-% * |relatedkWaveFunction|
+% * |kwave.namespace.relatedkWaveFunction|
 % * <matlab:doc('plot') plot>
