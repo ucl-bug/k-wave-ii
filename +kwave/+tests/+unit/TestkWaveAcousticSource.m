@@ -2,7 +2,7 @@
 % *Package:* kwave.tests.unit
 % *Superclasses:* kwave.tests.unit.TestInput
 %
-% Unit tests for the kWaveAcousticSource class using the TestMedium class.
+% Unit tests for the kWaveAcousticSource class using the TestInput class.
 
 classdef TestkWaveAcousticSource < kwave.tests.unit.TestInput
 
@@ -11,6 +11,7 @@ classdef TestkWaveAcousticSource < kwave.tests.unit.TestInput
         inputProperties = {'initialPressure'}
         inputPropertiesPadded = {'initialPressurePadded'}
         inputPropertiesScalar = {}
+        inputPropertiesComplex = {}
     end
 
     methods(Test)
