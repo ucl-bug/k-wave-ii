@@ -41,23 +41,6 @@ classdef TestkWaveComplexSource < kwave.tests.unit.TestInput
           testCase.verifyEqual(source.sourceFieldPhase, expectedPhase, 'AbsTol', 1e-6);
       end
 
-      function testToAcousticSourceNotImplemented(testCase)
-          kgrid = kwave.toolbox.kWaveGrid([32, 32], 1e-3);
-          source = kwave.toolbox.kWaveComplexSource(kgrid);
-          testCase.verifyError(@() source.toAcousticSource(1.0), 'Error:NotImplemented');
-      end
-
-      function testToAcousticSourceFrequencyMustBePositive(testCase)
-          kgrid = kwave.toolbox.kWaveGrid([32, 32], 1e-3);
-          source = kwave.toolbox.kWaveComplexSource(kgrid);
-          
-          % Test with negative frequency
-          testCase.verifyError(@() source.toAcousticSource(-1.0), 'MATLAB:validators:mustBePositive');
-          
-          % Test with zero frequency
-          testCase.verifyError(@() source.toAcousticSource(0.0), 'MATLAB:validators:mustBePositive');
-      end
-
   end
 
 end

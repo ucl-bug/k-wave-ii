@@ -78,21 +78,4 @@ classdef kWaveComplexSource < kwave.toolbox.kWaveInput
     
     end
 
-    % Methods not implemented yet
-    methods
-
-        function obj = toAcousticSource(obj, frequency)
-            arguments
-                obj
-                frequency (1,1) {mustBeNumeric, mustBePositive}
-            end
-            
-            % Throw an error since this is not implemented yet
-            eid = 'Error:NotImplemented';
-            msg = 'The .toAcousticSource method is not implemented yet.';
-            throwAsCaller(MException(eid,msg))
-        end
-
-    end
-
 end
