@@ -104,7 +104,7 @@
 % publishing markup>. Similar to k-Wave I, concepts introduced in other
 % tutorials do not need to be re-introduced. Try and
 % focus on a relatively small number of new concepts in each tutorial. The
-% tutorial code should generally run fast on basic hardward (< 1 min).
+% tutorial code should generally run fast on basic hardware (< 1 min).
 % # *Examples:* These are illustrative examples stored as |.m| files in the
 % |kwave.examples| name space. Examples have a wider scope than tutorials,
 % and may demonstrate a real-world simulation using realistic grid sizes
@@ -154,6 +154,10 @@
 % different sized grids.
 % * |matlab.unittest.TestCase| for general tests.
 % * |matlab.perftest.TestCase| for performance tests.
+%
+% The filenames for all tests should start with |Test|. Unit tests should
+% be named |TestClassName| or |TestFunctionName|. Other tests should be
+% given sensible descriptive names.
 %
 % The linting tests check for code complexity using
 % <https://uk.mathworks.com/help/matlab/matlab_prog/measure-code-complexity-using-cyclomatic-complexity.html

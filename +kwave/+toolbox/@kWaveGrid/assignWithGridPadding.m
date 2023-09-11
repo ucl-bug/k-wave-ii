@@ -16,6 +16,12 @@
 % * |matrix| - (numeric) Matrix to pad.
 % * |expansionValue| - (numeric) Value to assign within grid expansion,
 %   passed to |expandMatrix|.
+%
+%% Output Arguments
+% * |matrix| - (numeric) Padded matrix.
+%
+%% See Also
+% * |kwave.toolbox.kWaveGrid.returnWithoutGridPadding|
 
 function matrix = assignWithGridPadding(obj, matrix, expansionValue)
 

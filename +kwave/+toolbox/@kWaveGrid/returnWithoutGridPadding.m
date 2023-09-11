@@ -13,6 +13,12 @@
 %
 %% Input Arguments
 % * |matrix| - (numeric) Matrix to trim.
+%
+%% Output Arguments
+% * |matrix| - (numeric) Trimmed matrix.
+%
+%% See Also
+% * |kwave.toolbox.kWaveGrid.assignWithGridPadding|
 
 function matrix = returnWithoutGridPadding(obj, matrix)
 

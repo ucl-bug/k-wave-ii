@@ -24,13 +24,10 @@
 % is a matrix, the gradient components are calculated using ND FFTs, and
 % kappa is applied in the Fourier domain.
 % 
-% The output can be returned on a spatially staggered grid by setting the
-% optional Staggering argument. This selects the correct derivative
-% operator from those defined in kWaveSolver.
-%
 % The gradient operations (and kappa if defined) are defined on the padded
 % grid. Thus, the inputs to this function must also be defined on the
-% padded grid.
+% padded grid. The output can be returned on a spatially staggered grid by
+% setting the optional |Staggering| argument.
 %
 %% Input Arguments
 % * |f| - (numeric) Scalar field to compute gradient of.

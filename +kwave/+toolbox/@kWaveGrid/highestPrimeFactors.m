@@ -20,6 +20,8 @@
 %    
 %          2    31     1
 %
+%% Output Arguments
+% * |primeFacs| - (numeric) Highest prime factor in [x, y, z].
 
 function primeFacs = highestPrimeFactors(obj)
 
