@@ -1,13 +1,14 @@
-%% mustBeComplex
+%% mustBeEmptyOrComplex
 % *Package:* kwave.utilities
 %
-% Validate that an input is complex.
+% Validate that an input is an empty array or
+% a complex array / scalar.
 %
 %% Syntax
-%   mustBeComplex(a)
+%   mustBeEmptyOrComplex(a)
 %
 %% Description
-% |mustBeComplex| throws an error if |a| is not complex.
+% |mustBeEmptyOrComplex| throws an error if |a| is not empty or complex.
 % This function does not return a value. 
 %
 %% Input Arguments
