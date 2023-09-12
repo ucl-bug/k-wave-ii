@@ -47,18 +47,17 @@ classdef kWaveComplexSource < kwave.toolbox.kWaveInput
     methods
 
         function set.sourceFieldPadded(obj, value)
-            obj.kgrid.validateSize(value, variableName='sourceFieldPadded', ...
-                Complex=true, IncludePadding=true)
+            obj.kgrid.validateSize(value, variableName='sourceFieldPadded', IncludePadding=true)
             obj.sourceFieldPadded = value;
         end
         
         function set.sourceField(obj, value)
-            obj.kgrid.validateSize(value, variableName='sourceField', Complex=true)
+            obj.kgrid.validateSize(value, variableName='sourceField')
             obj.sourceFieldPadded = obj.kgrid.assignWithGridPadding(value);
         end
 
         function sourceField = get.sourceField(obj)
-            sourceField = obj.kgrid.returnWithoutGridPadding(obj.sourceFieldPadded, Complex=true);
+            sourceField = obj.kgrid.returnWithoutGridPadding(obj.sourceFieldPadded);
         end
     
     end
