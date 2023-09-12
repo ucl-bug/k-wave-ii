@@ -46,22 +46,22 @@
 classdef kWaveAcousticMedium < kwave.toolbox.kWaveInput
 
     properties
-        soundSpeedReference single
-        alphaPower single
+        soundSpeedReference single {mustBeReal, mustBeFinite}
+        alphaPower single {mustBeReal, mustBeFinite}
     end
 
     properties(Hidden=true)
-        soundSpeedPadded single
-        densityPadded single
-        alphaCoeffPadded single
-        BonAPadded single
+        soundSpeedPadded single {mustBeReal, mustBeFinite}
+        densityPadded single {mustBeReal, mustBeFinite}
+        alphaCoeffPadded single {mustBeReal, mustBeFinite}
+        BonAPadded single {mustBeReal, mustBeFinite}
     end
 
     properties(Dependent=true)
-        soundSpeed single
-        density single
-        alphaCoeff single
-        BonA single
+        soundSpeed single {mustBeReal, mustBeFinite}
+        density single {mustBeReal, mustBeFinite}
+        alphaCoeff single {mustBeReal, mustBeFinite}
+        BonA single {mustBeReal, mustBeFinite}
     end
 
     properties(Constant, Hidden=true)

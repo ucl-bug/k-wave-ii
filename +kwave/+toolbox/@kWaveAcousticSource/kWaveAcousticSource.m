@@ -31,11 +31,11 @@
 classdef kWaveAcousticSource < kwave.toolbox.kWaveInput
 
     properties(Dependent=true)
-        initialPressure single
+        initialPressure single {mustBeReal, mustBeFinite}
     end
 
     properties(Hidden=true)
-        initialPressurePadded single
+        initialPressurePadded single {mustBeReal, mustBeFinite}
     end
 
     properties(Constant, Hidden=true)

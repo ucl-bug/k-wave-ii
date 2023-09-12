@@ -20,20 +20,18 @@
 %% See Also
 % * |kwave.toolbox.kWaveGrid.assignWithGridPadding|
 
-function matrix = returnWithoutGridPadding(obj, matrix, options)
+function matrix = returnWithoutGridPadding(obj, matrix)
 
 arguments
     obj
     matrix
-    options.Complex(1,1) logical = false
 end
 
 if (numel(matrix) > 1) && (any(obj.gridPadding ~= 0))
 
     % Check size of matrix matches padded grid size. Allow for vector
     % fields where vector components are stored in the fourth dimension.
-    obj.validateSize(matrix, IncludePadding=true, VectorField=(size(matrix, 4) > 1), ...
-        Complex=options.Complex)
+    obj.validateSize(matrix, IncludePadding=true, VectorField=(size(matrix, 4) > 1));
 
     % Trim padding.
     matrix = matrix(1 + obj.gridPadding(1):end - obj.gridPadding(1), ...
