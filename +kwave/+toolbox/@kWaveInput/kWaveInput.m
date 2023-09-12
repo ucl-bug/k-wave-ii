@@ -26,6 +26,11 @@
 % provides the |assignWithGridPadding| method for automatically padding an
 % input, and |returnWithoutGridPadding| for automatically contracting it.
 %
+% Inputs should list required attributes as part of their declaration. For
+% example, if a property must be real and finite, this should be declared.
+% In general, properties should also be defined in single precision, unless
+% there is a specific precision requirement.
+%
 % Derived classes must also define a cell array of |requiredProperties| as
 % a |Constant| property. A check that these properties are not empty is
 % done within the |kWaveSolver| constructor using the
@@ -41,10 +46,10 @@
 %
 %   classdef MyMedium < kwave.toolbox.kWaveInput  
 %       properties(Hidden=true)
-%           myPropertyPadded single
+%           myPropertyPadded single {mustBeReal, mustBeFinite}
 %       end
 %       properties(Dependent=true)
-%           myProperty single
+%           myProperty single {mustBeReal, mustBeFinite}
 %       end
 %       properties(Constant, Hidden=true)
 %           requiredProperties = {'myProperty'};

@@ -29,11 +29,11 @@
 classdef kWaveThermalSource < kwave.toolbox.kWaveInput
 
     properties(Dependent=true)
-        initialTemperature single
+        initialTemperature single {mustBeReal, mustBeFinite}
     end
 
     properties(Hidden=true)
-        initialTemperaturePadded single
+        initialTemperaturePadded single {mustBeReal, mustBeFinite}
     end
 
     properties(Constant, Hidden=true)

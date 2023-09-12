@@ -46,19 +46,19 @@
 classdef kWaveThermalMedium < kwave.toolbox.kWaveInput
 
     properties
-        diffusionReference single
+        diffusionReference single {mustBeReal, mustBeFinite}
     end
 
     properties(Hidden=true)
-        densityPadded single
-        specificHeatPadded single
-        thermalConductivityPadded single
+        densityPadded single {mustBeReal, mustBeFinite}
+        specificHeatPadded single {mustBeReal, mustBeFinite}
+        thermalConductivityPadded single {mustBeReal, mustBeFinite}
     end
 
     properties(Dependent=true)
-        density single
-        specificHeat single
-        thermalConductivity single
+        density single {mustBeReal, mustBeFinite}
+        specificHeat single {mustBeReal, mustBeFinite}
+        thermalConductivity single {mustBeReal, mustBeFinite}
     end
 
     properties(Constant, Hidden=true)

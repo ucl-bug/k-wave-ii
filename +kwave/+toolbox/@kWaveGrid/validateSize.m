@@ -39,8 +39,6 @@
 % Name-value arguments must appear after other arguments, but the order of
 % the pairs does not matter.
 %
-% * |Complex| - (logical) Flags that the input to be checked is complex.
-%   Default = false.
 % * |IncludePadding| - (logical) Option to include |gridPadding| in the
 %   grid size comparison. Default = false.
 % * |VectorField| - (logical) Option check the size of a vector field
@@ -56,7 +54,6 @@ function validateSize(obj, matrix, options)
 arguments
     obj
     matrix
-    options.Complex(1,1) logical = false
     options.IncludePadding(1,1) logical = false
     options.VectorField(1,1) logical = false
     options.VariableName(1,:) char = ''
@@ -75,15 +72,10 @@ if (numel(matrix) ~= 1)
         expectedGridSize = [expectedGridSize, obj.dimensions];
     end
     
-    attributes = {'size', expectedGridSize, 'finite'};
-
-    if (~options.Complex)
-        attributes = [attributes, {'real'}];
-    end
-    
     validateattributes(matrix, ...
         {'numeric'}, ...
-        attributes, ...
-        options.FunctionName, options.VariableName);
+        {'size', expectedGridSize}, ...
+        options.FunctionName, ...
+        options.VariableName);
 
 end
