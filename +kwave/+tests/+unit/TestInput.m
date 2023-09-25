@@ -13,17 +13,19 @@
 % * |inputClass| - (char) Name of input class.
 % * |inputProperties| - Cell array of property names defined on the
 %   non-padded grid that can be either scalar values or spatially varying.
-%   For example, |inputProperties = {'soundSpeed', 'density'}.
+%   For example, |inputProperties = {'soundSpeed', 'density'}|.
 % * |inputPropertiesComplex| - Cell array of property names defined on the
-%   padded grid that must be complex valued. For
-%   example, |inputPropertiesPadded = {'sourceField'}.
+%   padded grid that must be complex valued. For example,
+%   |inputPropertiesComplex = {'sourceField'}|. Properties declared as
+%   complex must also be defined in one of the other input arrays, e.g.,
+%   |inputPropertiesPadded|.
 % * |inputPropertiesPadded| - Cell array of property names defined on the
 %   padded grid that can be either scalar values or spatially varying. For
 %   example, |inputPropertiesPadded = {'soundSpeedPadded',
-%   'densityPadded'}.
+%   'densityPadded'}|.
 % * |inputPropertiesScalar| - Cell array of property names for values that
 %   must be scalar values. For example, |inputPropertiesScalar =
-%   {'soundSpeedReference'}.
+%   {'soundSpeedReference'}|.
 %
 % Derived classes must also contain a test methods block (which can be
 % empty) so that the tests run:
@@ -72,7 +74,8 @@ classdef(Abstract) TestInput < matlab.unittest.TestCase
 
     methods
 
-        % Checks if a property must be complex, to e.g. help setting test values
+        % Checks if a property must be complex, to e.g. help setting test 
+        % values
         function isComplex =  mustBeComplex(testCase, propertyName)
             isComplex = ismember(propertyName, testCase.inputPropertiesComplex);
         end
@@ -85,11 +88,11 @@ classdef(Abstract) TestInput < matlab.unittest.TestCase
                 gridSize = 1
             end
 
-            is_complex = testCase.mustBeComplex(propertyName);
+            isComplex = testCase.mustBeComplex(propertyName);
             if gridSize == 1
-                val = rand + 1i * rand * is_complex; 
+                val = rand + 1i .* rand .* isComplex; 
             else
-                val = rand(gridSize) + 1i .* is_complex;
+                val = rand(gridSize) + 1i .* isComplex;
             end
          end
     

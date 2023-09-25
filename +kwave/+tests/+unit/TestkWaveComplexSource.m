@@ -6,41 +6,40 @@
 
 classdef TestkWaveComplexSource < kwave.tests.unit.TestInput
 
-  properties
-      inputClass = 'kWaveComplexSource'
-      inputProperties = {'sourceField'}
-      inputPropertiesComplex = {'sourceField', 'sourceFieldPadded'}
-      inputPropertiesPadded = {'sourceFieldPadded'}
-      inputPropertiesScalar = {}
-  end
-
-  methods(Test)
-      function testSetAndGetSourceField(testCase)
-          kgrid = kwave.toolbox.kWaveGrid([32, 32], 1e-3);
-          source = kwave.toolbox.kWaveComplexSource(kgrid);
-          testData = rand(32, 32) + 1i * rand(32, 32);
-          source.sourceField = testData;
-          testCase.verifyEqual(source.sourceField, testData, 'AbsTol', 1e-6);
-      end
-
-      function testSourceFieldMagnitude(testCase)
-          kgrid = kwave.toolbox.kWaveGrid([32, 32], 1e-3);
-          source = kwave.toolbox.kWaveComplexSource(kgrid);
-          testData = rand(32, 32) + 1i * rand(32, 32);
-          source.sourceField = testData;
-          expectedMagnitude = abs(testData);
-          testCase.verifyEqual(source.sourceFieldMagnitude, expectedMagnitude, 'AbsTol', 1e-6);
-      end
-
-      function testSourceFieldPhase(testCase)
-          kgrid = kwave.toolbox.kWaveGrid([32, 32], 1e-3);
-          source = kwave.toolbox.kWaveComplexSource(kgrid);
-          testData = rand(32, 32) + 1i * rand(32, 32);
-          source.sourceField = testData;
-          expectedPhase = angle(testData);
-          testCase.verifyEqual(source.sourceFieldPhase, expectedPhase, 'AbsTol', 1e-6);
-      end
-
-  end
+    properties
+        inputClass = 'kWaveComplexSource'
+        inputProperties = {'sourceField'}
+        inputPropertiesComplex = {'sourceField', 'sourceFieldPadded'}
+        inputPropertiesPadded = {'sourceFieldPadded'}
+        inputPropertiesScalar = {}
+        source
+        testData
+    end
+    
+    methods(TestMethodSetup)
+        function setupTestData(testCase)
+            testCase.source = kwave.toolbox.kWaveComplexSource(testCase.kgrid);
+            testCase.testData = rand(testCase.kgrid.gridSize) + 1i .* rand(testCase.kgrid.gridSize);
+            testCase.source.sourceField = testCase.testData;
+        end
+    end
+    
+    methods(Test)
+    
+        function testSetAndGetSourceField(testCase)
+            testCase.verifyEqual(testCase.source.sourceField, testCase.testData, 'AbsTol', 1e-6);
+        end
+        
+        function testSourceFieldMagnitude(testCase)
+            expectedMagnitude = abs(testCase.testData);
+            testCase.verifyEqual(testCase.source.sourceFieldMagnitude, expectedMagnitude, 'AbsTol', 1e-6);
+        end
+        
+        function testSourceFieldPhase(testCase)
+            expectedPhase = angle(testCase.testData);
+            testCase.verifyEqual(testCase.source.sourceFieldPhase, expectedPhase, 'AbsTol', 1e-6);
+        end
+    
+    end
 
 end

@@ -9,8 +9,8 @@
 %
 %% Description
 % This class is used to define complex valued source terms. The constructor
-% takes an object of the kWaveGrid class which defines the grid size.
-% Source matrices must match the grid size defined by kgrid. 
+% takes an object of the |kWaveGrid| class which defines the grid size.
+% Source matrices must match the grid size defined by |kgrid|. 
 %
 %% Examples
 % Define the grid and source objects, and assign the source field.
@@ -20,12 +20,12 @@
 %    source.sourceField = rand(source.gridSize) + 1i * rand(source.gridSize);
 %
 %% Properties
-% * |sourceField| - (complex) Complex source field distribution [Pa + i*rad]
+% * |sourceField| - (complex) Complex source field distribution [Pa + i*rad].
 % * |sourceFieldMagnitude| - (single) Magnitude of the complex source field [Pa].
 % * |sourceFieldPhase| - (single) Phase of the complex source field [radians]. 
 %
 %% See Also
-% * |kWaveInput|
+% * |kwave.toolbox.kWaveInput|
 
 classdef kWaveComplexSource < kwave.toolbox.kWaveInput
   
@@ -78,3 +78,4 @@ classdef kWaveComplexSource < kwave.toolbox.kWaveInput
     end
 
 end
+
