@@ -30,13 +30,13 @@
 classdef kWaveComplexSource < kwave.toolbox.kWaveInput
   
     properties(Dependent=true)
-        sourceField {kwave.utilities.mustBeEmptyOrComplex(sourceField)}
+        sourceField single {kwave.utilities.mustBeEmptyOrComplex(sourceField)}
         sourceFieldMagnitude single
         sourceFieldPhase single
     end
 
     properties(Hidden=true)
-        sourceFieldPadded {kwave.utilities.mustBeEmptyOrComplex(sourceFieldPadded)}
+        sourceFieldPadded single {kwave.utilities.mustBeEmptyOrComplex(sourceFieldPadded)}
     end
 
     properties(Constant, Hidden=true)

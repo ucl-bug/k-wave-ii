@@ -19,7 +19,7 @@ classdef TestkWaveComplexSource < kwave.tests.unit.TestInput
     methods(TestMethodSetup)
         function setupTestData(testCase)
             testCase.source = kwave.toolbox.kWaveComplexSource(testCase.kgrid);
-            testCase.testData = rand(testCase.kgrid.gridSize) + 1i .* rand(testCase.kgrid.gridSize);
+            testCase.testData = single(rand(testCase.kgrid.gridSize) + 1i .* rand(testCase.kgrid.gridSize));
             testCase.source.sourceField = testCase.testData;
         end
     end
