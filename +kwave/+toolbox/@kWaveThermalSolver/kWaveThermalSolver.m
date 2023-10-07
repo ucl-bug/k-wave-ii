@@ -78,7 +78,7 @@
 %   settings.
 %
 %% Properties
-% * |temperature| - (single) Temperature field [degC].
+% * |temperature| - (numeric) Temperature field [degC].
 %
 %% Methods
 % * |takeTimeStep|

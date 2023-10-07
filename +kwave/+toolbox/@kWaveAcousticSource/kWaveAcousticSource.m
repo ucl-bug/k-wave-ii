@@ -9,9 +9,8 @@
 %
 %% Description
 % This class is used to define the acoustic source terms. The constructor
-% takes an object of the kWaveGrid class which defines the grid size.
-% Source matrices must match the grid size defined by kgrid. Inputs are
-% cast to single precision.
+% takes an object of the |kwave.toolbox.kWaveGrid| class which defines the
+% grid size. Source matrices must match the grid size defined by kgrid.
 %
 %% Examples
 % Define the grid and source objects, and assign the initial pressure.
@@ -21,7 +20,7 @@
 %    source.initialPressure = rand(source.gridSize);
 %
 %% Properties
-% * |initialPressure| - (single) Initial pressure distribution [Pa]. This
+% * |initialPressure| - (numeric) Initial pressure distribution [Pa]. This
 %   assumes the initial particle velocity is zero, which is a equivalent to
 %   a photoacoustic source under the conditions of stress confinement.
 %
@@ -30,35 +29,11 @@
 
 classdef kWaveAcousticSource < kwave.toolbox.kWaveInput
 
-    properties(Dependent=true)
-        initialPressure single {mustBeReal, mustBeFinite}
-    end
-
-    properties(Hidden=true)
-        initialPressurePadded single {mustBeReal, mustBeFinite}
-    end
-
     properties(Constant, Hidden=true)
         requiredProperties = {};
-    end
-
-    % Set and get methods.
-    methods
-
-        function set.initialPressure(obj, val)
-            obj.kgrid.validateSize(val, VariableName='initialPressure');
-            obj.initialPressurePadded = obj.kgrid.assignWithGridPadding(val, 0);
-        end
-
-        function set.initialPressurePadded(obj, val)
-            obj.kgrid.validateSize(val, VariableName='initialPressurePadded', IncludePadding=true);
-            obj.initialPressurePadded = val;
-        end
-
-        function initialPressure = get.initialPressure(obj)
-            initialPressure = obj.kgrid.returnWithoutGridPadding(obj.initialPressurePadded);
-        end
-
+        gridFields = kwave.toolbox.kWaveInput.createGridFieldsMap([
+            struct('name', 'initialPressure', 'classes', {{'numeric'}}, 'attributes', {{'real', 'finite'}})
+        ]);
     end
 
 end
