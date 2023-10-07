@@ -41,9 +41,10 @@
 %
 % * |IncludePadding| - (logical) Option to include |gridPadding| in the
 %   grid size comparison. Default = false.
-% * |VectorField| - (logical) Option check the size of a vector field
-%   input, where the components of the vector field are stored in the 4th
-%   input dimension. Default = false.
+% * |Type| - (|'scalar-field', 'vector-field', 'vector-x', 'vector-y',
+%   'vector-z'|) Type of grid variable. For vector fields, the components
+%   of the vector field are stored in the 4th input dimension. Default =
+%   'scalar-field'.
 % * |FunctionName| - (char) Name of the calling function. Used to add
 %   information to any error message thrown. Default = ''.
 % * |VariableName| - (char) Name of the matrix variable. Used to add
@@ -55,27 +56,32 @@ arguments
     obj
     matrix
     options.IncludePadding(1,1) logical = false
-    options.VectorField(1,1) logical = false
+    options.Type(1,:) char {mustBeMember(options.Type, {'scalar-field', 'vector-field', 'vector-x', 'vector-y', 'vector-z'})} = 'scalar-field'
     options.VariableName(1,:) char = ''
     options.FunctionName(1,:) char = ''
 end
 
-if (numel(matrix) ~= 1)
-
-    expectedGridSize = obj.gridSize;
-
-    if (options.IncludePadding)
-        expectedGridSize = expectedGridSize + 2 * obj.gridPadding;
-    end
-
-    if (options.VectorField)
-        expectedGridSize = [expectedGridSize, obj.dimensions];
-    end
-    
-    validateattributes(matrix, ...
-        {'numeric'}, ...
-        {'size', expectedGridSize}, ...
-        options.FunctionName, ...
-        options.VariableName);
-
+if numel(matrix) == 1
+    return
 end
+
+expectedGridSize = obj.gridSize;
+
+if (options.IncludePadding)
+    expectedGridSize = expectedGridSize + 2 * obj.gridPadding;
+end
+
+switch (options.Type)
+    case 'vector-field'
+        expectedGridSize = [expectedGridSize, obj.dimensions];
+    case 'vector-x'
+        expectedGridSize([2, 3]) = 1;
+    case 'vector-y'
+        expectedGridSize([1, 3]) = 1;
+    case 'vector-z'
+        expectedGridSize([1, 2]) = 1;
+end
+
+validateattributes(matrix, {'numeric'}, ...
+        {'size', expectedGridSize, 'real', 'finite'}, ...
+        options.FunctionName, options.VariableName);

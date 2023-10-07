@@ -31,7 +31,12 @@ if (numel(matrix) > 1) && (any(obj.gridPadding ~= 0))
 
     % Check size of matrix matches padded grid size. Allow for vector
     % fields where vector components are stored in the fourth dimension.
-    obj.validateSize(matrix, IncludePadding=true, VectorField=(size(matrix, 4) > 1));
+    if (size(matrix, 4) > 1)
+        type = 'vector-field';
+    else
+        type = 'scalar-field';
+    end
+    obj.validateSize(matrix, IncludePadding=true, Type=type);
 
     % Trim padding.
     matrix = matrix(1 + obj.gridPadding(1):end - obj.gridPadding(1), ...
