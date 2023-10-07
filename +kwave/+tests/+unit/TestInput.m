@@ -13,14 +13,19 @@
 % * |inputClass| - (char) Name of input class.
 % * |inputProperties| - Cell array of property names defined on the
 %   non-padded grid that can be either scalar values or spatially varying.
-%   For example, |inputProperties = {'soundSpeed', 'density'}.
+%   For example, |inputProperties = {'soundSpeed', 'density'}|.
+% * |inputPropertiesComplex| - Cell array of property names defined on the
+%   padded grid that must be complex valued. For example,
+%   |inputPropertiesComplex = {'sourceField'}|. Properties declared as
+%   complex must also be defined in one of the other input arrays, e.g.,
+%   |inputPropertiesPadded|.
 % * |inputPropertiesPadded| - Cell array of property names defined on the
 %   padded grid that can be either scalar values or spatially varying. For
 %   example, |inputPropertiesPadded = {'soundSpeedPadded',
-%   'densityPadded'}.
+%   'densityPadded'}|.
 % * |inputPropertiesScalar| - Cell array of property names for values that
 %   must be scalar values. For example, |inputPropertiesScalar =
-%   {'soundSpeedReference'}.
+%   {'soundSpeedReference'}|.
 %
 % Derived classes must also contain a test methods block (which can be
 % empty) so that the tests run:
@@ -39,6 +44,7 @@ classdef(Abstract) TestInput < matlab.unittest.TestCase
         inputProperties
         inputPropertiesPadded
         inputPropertiesScalar
+        inputPropertiesComplex
     end
 
     properties
@@ -66,6 +72,32 @@ classdef(Abstract) TestInput < matlab.unittest.TestCase
 
     end
 
+    methods
+
+        % Checks if a property must be complex, to e.g. help setting test 
+        % values
+        function isComplex =  mustBeComplex(testCase, propertyName)
+            isComplex = ismember(propertyName, testCase.inputPropertiesComplex);
+        end
+
+        % Returns a random initialization value for a property
+        function val = randomPropertyValue(testCase, propertyName, gridSize)
+            arguments
+                testCase
+                propertyName (1,:) char
+                gridSize = 1
+            end
+
+            isComplex = testCase.mustBeComplex(propertyName);
+            if gridSize == 1
+                val = rand + 1i .* rand .* isComplex; 
+            else
+                val = rand(gridSize) + 1i .* isComplex;
+            end
+         end
+    
+    end
+
     methods(Test)
 
         % Test not defining required properties throws an error.
@@ -84,7 +116,7 @@ classdef(Abstract) TestInput < matlab.unittest.TestCase
 
             % Assign medium properties and check size is 1.
             for ind = 1:length(mediumPropertiesAll)
-                testCase.input.(mediumPropertiesAll{ind}) = rand;
+                testCase.input.(mediumPropertiesAll{ind}) = testCase.randomPropertyValue(mediumPropertiesAll{ind});
                 testCase.verifyEqual(numel(testCase.input.(mediumPropertiesAll{ind})), 1);
             end
 
@@ -112,7 +144,9 @@ classdef(Abstract) TestInput < matlab.unittest.TestCase
             % Assign medium properties and check size with and without
             % padding.
             for ind = 1:length(testCase.inputProperties)
-                testCase.input.(testCase.inputProperties{ind}) = rand(testCase.input.gridSize);
+                val = testCase.randomPropertyValue(testCase.inputProperties{ind}, testCase.input.gridSize);
+                testCase.input.(testCase.inputProperties{ind}) = val;
+
                 testCase.verifyEqual(size(testCase.input.(testCase.inputProperties{ind})), gridSize);
                 testCase.verifyEqual(size(testCase.input.(testCase.inputPropertiesPadded{ind})), paddedSize);
             end

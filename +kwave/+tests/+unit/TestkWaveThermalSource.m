@@ -11,6 +11,7 @@ classdef TestkWaveThermalSource < kwave.tests.unit.TestInput
         inputProperties = {'initialTemperature'}
         inputPropertiesPadded = {'initialTemperaturePadded'}
         inputPropertiesScalar = {}
+        inputPropertiesComplex = {}
     end
 
     methods(Test)

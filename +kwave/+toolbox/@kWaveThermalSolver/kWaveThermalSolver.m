@@ -103,12 +103,12 @@ classdef kWaveThermalSolver < kwave.toolbox.kWaveTimeDomainSolver
 
     % PDE variables.
     properties(SetAccess=private, Dependent=true)
-        temperature
+        temperature {mustBeReal, mustBeFinite}
     end
 
     % PDE variables on padded domain.
     properties(SetAccess=private, Hidden=true)
-        temperaturePadded
+        temperaturePadded {mustBeReal, mustBeFinite}
     end
 
     % Constructor.
