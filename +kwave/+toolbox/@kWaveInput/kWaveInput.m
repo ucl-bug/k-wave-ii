@@ -55,7 +55,7 @@
 %
 %   classdef MyMedium < kwave.toolbox.kWaveInput  
 %       properties(Constant, Hidden=true)
-%           requiredProperties = {'density', 'specificHeat', 'thermalConductivity'};
+%           requiredProperties = {'myProperty'};
 %           gridFields = kwave.toolbox.kWaveInput.createGridFieldsMap([
 %               struct('name', 'myProperty', 'classes', {{'numeric'}}, 'attributes', {{'real', 'positive', 'finite'}})
 %           ]);
