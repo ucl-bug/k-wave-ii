@@ -154,6 +154,9 @@ classdef(Abstract) TestInput < matlab.unittest.TestCase
             % Test required properties are set.
             testCase.verifyWarningFree(@() testCase.input.checkRequiredProperties);
 
+            % Check command line output works.
+            testCase.input
+
         end
 
     end
