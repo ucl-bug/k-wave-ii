@@ -28,17 +28,11 @@
 %   is a virtual property, it will be the non-padded representation of the
 %   underlying data.
 
-function value = subsref(obj, S)
+function varargout = subsref(obj, S)
 
 if (S(1).type == '.') && (obj.gridFields.isKey(S(1).subs))
     propertyPaddedName = strcat(S(1).subs, 'Padded');
-    value = obj.kgrid.returnWithoutGridPadding(obj.(propertyPaddedName));
-    return;
-end
-
-if (nargout == 0) && ismethod(obj, S(1).subs)
-    builtin('subsref', obj, S);
-    return;
+    varargout{1} = obj.kgrid.returnWithoutGridPadding(obj.(propertyPaddedName));
 else
-    value = builtin('subsref', obj, S);
+    [varargout{1:nargout}] = builtin('subsref', obj, S);
 end

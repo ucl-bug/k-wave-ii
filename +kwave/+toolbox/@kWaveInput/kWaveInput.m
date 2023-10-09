@@ -115,12 +115,12 @@
 %   field properties.
 % * |getPropertyGroups| - Overloaded method from the
 %   matlab.mixin.CustomDisplay mixin to customize object display.
-% * |properties| - Overloaded method that returns both static and virtual
+% * |properties| - Overloaded method that returns both normal and virtual
 %   properties.
 % * |subsasgn| - Overloaded method for setting properties. It ensures that
-%   grid field properties are correctly padded.
+%   properties defined in |gridFields| are correctly padded.
 % * |subsref| - Overloaded method for accessing properties. It returns the
-%   user-friendly version of grid field properties without padding.
+%   properties defined in |gridFields| without padding.
 
 classdef(Abstract) kWaveInput < dynamicprops & matlab.mixin.CustomDisplay
 
@@ -193,7 +193,7 @@ classdef(Abstract) kWaveInput < dynamicprops & matlab.mixin.CustomDisplay
     end
 
     methods (Access = protected)
-        getPropertyGroups(obj)
+        propgrp = getPropertyGroups(obj);
     end
 
     methods(Static)
