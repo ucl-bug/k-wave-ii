@@ -9,16 +9,11 @@
 %
 %% Description
 % This class is used to define the acoustic medium properties. The
-% constructor takes an object of the |kWaveGrid| class which defines the
-% grid size. All medium properties can be scalar or have the same size as
-% the grid with the exception of |alphaPower| and |soundSpeedReference|,
-% which must be scalar. The |soundSpeed| and |density| must be defined.
-%
-% Note: Internally, the medium properties that are allowed to be
-% heterogeneous are stored including the grid padding defined by
-% |kgrid.gridPadding|. The set and get methods automatically add and remove
-% the grid padding. The padded variants can be accessed via the hidden
-% properties |densityPadded|, etc.
+% constructor takes an object of the |kwave.toolbox.kWaveGrid| class which
+% defines the grid size. All medium properties can be scalar or have the
+% same size as the grid with the exception of |alphaPower| and
+% |soundSpeedReference|, which must be scalar. The |soundSpeed| and
+% |density| must be defined.
 %
 %% Examples
 % Define the grid and medium objects, and assign the sound speed and
@@ -46,97 +41,18 @@
 classdef kWaveAcousticMedium < kwave.toolbox.kWaveInput
 
     properties
-        soundSpeedReference single {mustBeReal, mustBeFinite}
+        soundSpeedReference single {mustBeReal, mustBePositive, mustBeFinite}
         alphaPower single {mustBeReal, mustBeFinite}
-    end
-
-    properties(Hidden=true)
-        soundSpeedPadded single {mustBeReal, mustBeFinite}
-        densityPadded single {mustBeReal, mustBeFinite}
-        alphaCoeffPadded single {mustBeReal, mustBeFinite}
-        BonAPadded single {mustBeReal, mustBeFinite}
-    end
-
-    properties(Dependent=true)
-        soundSpeed single {mustBeReal, mustBeFinite}
-        density single {mustBeReal, mustBeFinite}
-        alphaCoeff single {mustBeReal, mustBeFinite}
-        BonA single {mustBeReal, mustBeFinite}
     end
 
     properties(Constant, Hidden=true)
         requiredProperties = {'soundSpeed', 'density'};
-    end
-
-    % Set and get methods.
-    methods
-        
-        function set.soundSpeed(obj, val)
-            obj.kgrid.validateSize(val, VariableName='soundSpeed');
-            obj.soundSpeedPadded = obj.kgrid.assignWithGridPadding(val);
-        end
-
-        function set.soundSpeedPadded(obj, val)
-            obj.kgrid.validateSize(val, VariableName='soundSpeedPadded', IncludePadding=true);
-            obj.soundSpeedPadded = val;
-        end
-
-        function soundSpeed = get.soundSpeed(obj)
-            soundSpeed = obj.kgrid.returnWithoutGridPadding(obj.soundSpeedPadded);
-        end
-
-        function set.soundSpeedReference(obj, val)
-            validateattributes(val, {'numeric'}, {'numel', 1}, '', 'soundSpeedReference');
-            obj.soundSpeedReference = val;
-        end
-
-        function set.density(obj, val)
-            obj.kgrid.validateSize(val, VariableName='density');
-            obj.densityPadded = obj.kgrid.assignWithGridPadding(val);
-        end
-
-        function set.densityPadded(obj, val)
-            obj.kgrid.validateSize(val, VariableName='densityPadded', IncludePadding=true);
-            obj.densityPadded = val;
-        end
-
-        function density = get.density(obj)
-            density = obj.kgrid.returnWithoutGridPadding(obj.densityPadded);
-        end
-
-        function set.alphaCoeff(obj, val)
-            obj.kgrid.validateSize(val, VariableName='alphaCoeff');
-            obj.alphaCoeffPadded = obj.kgrid.assignWithGridPadding(val);
-        end
-
-        function set.alphaCoeffPadded(obj, val)
-            obj.kgrid.validateSize(val, VariableName='alphaCoeffPadded', IncludePadding=true);
-            obj.alphaCoeffPadded = val;
-        end
-
-        function alphaCoeff = get.alphaCoeff(obj)
-            alphaCoeff = obj.kgrid.returnWithoutGridPadding(obj.alphaCoeffPadded);
-        end          
-
-        function set.alphaPower(obj, val)
-            validateattributes(val, {'numeric'}, {'numel', 1}, '', 'alphaPower');
-            obj.alphaPower = obj.kgrid.assignWithGridPadding(val);
-        end
-
-        function set.BonA(obj, val)
-            obj.kgrid.validateSize(val, VariableName='BonA');
-            obj.BonAPadded = obj.kgrid.assignWithGridPadding(val);
-        end
-
-        function set.BonAPadded(obj, val)
-            obj.kgrid.validateSize(val, VariableName='BonAPadded', IncludePadding=true);
-            obj.BonAPadded = val;
-        end        
-
-        function BonA = get.BonA(obj)
-            BonA = obj.kgrid.returnWithoutGridPadding(obj.BonAPadded);
-        end
-
+        gridFields = kwave.toolbox.GridField.createGridFieldsMap([
+            kwave.toolbox.GridField('soundSpeed');
+            kwave.toolbox.GridField('density');
+            kwave.toolbox.GridField('alphaCoeff');
+            kwave.toolbox.GridField('BonA')
+        ]);
     end
 
 end

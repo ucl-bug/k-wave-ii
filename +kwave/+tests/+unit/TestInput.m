@@ -156,6 +156,20 @@ classdef(Abstract) TestInput < matlab.unittest.TestCase
 
         end
 
+        % Test the command line display when typing the object name.
+        function testCustomDisplay(testCase)
+
+            % Assign medium properties.
+            for ind = 1:length(testCase.inputProperties)
+                val = testCase.randomPropertyValue(testCase.inputProperties{ind}, testCase.input.gridSize);
+                testCase.input.(testCase.inputProperties{ind}) = val;
+            end
+
+            % Check command line output works.
+            testCase.input
+
+        end
+
     end
 
 end

@@ -11,16 +11,10 @@
 %
 %% Description
 % This class is used to define the thermal medium properties. The
-% constructor takes an object of the |kWaveGrid| class which defines the
-% grid size. All medium properties can be scalar or have the same size as
-% the grid. The |density|, |specificHeat|, and |thermalConductivity| must
-% be defined.
-%
-% Note: Internally, the medium properties that are allowed to be
-% heterogeneous are stored including the grid padding defined by
-% |kgrid.gridPadding|. The set and get methods automatically add and remove
-% the grid padding. The padded variants can be accessed via the hidden
-% properties |densityPadded|, etc.
+% constructor takes an object of the |kwave.toolbox.kWaveGrid| class which
+% defines the grid size. All medium properties can be scalar or have the
+% same size as the grid. The |density|, |specificHeat|, and
+% |thermalConductivity| must be defined.
 %
 %% Examples
 % Define the grid and medium objects, and assign the thermal properties.
@@ -32,13 +26,13 @@
 %    medium.thermalConductivity = rand(medium.gridSize);
 %
 %% Properties
-% * |density| - (single) Mass density [kg/m^2].
-% * |diffusionReference| - (single) Reference diffusion coefficient used in
-%   the k-space correction term [m^2/s]. Automatically defined in
-%   kWaveThermal if not defined by the user.
-% * |specificHeat| - (single) Specific heat capacity at constant pressure
+% * |density| - (numeric) Mass density [kg/m^2].
+% * |diffusionReference| - (numeric) Reference diffusion coefficient used
+%   in the k-space correction term [m^2/s]. Automatically defined in
+%   ThermalSolver if not defined by the user.
+% * |specificHeat| - (numeric) Specific heat capacity at constant pressure
 %   [J/kg/K].
-% * |thermalConductivity| - (single) Thermal conductivity [W/m/K].
+% * |thermalConductivity| - (numeric) Thermal conductivity [W/m/K].
 %
 %% See Also
 % * |kWaveInput|
@@ -46,75 +40,16 @@
 classdef kWaveThermalMedium < kwave.toolbox.kWaveInput
 
     properties
-        diffusionReference single {mustBeReal, mustBeFinite}
-    end
-
-    properties(Hidden=true)
-        densityPadded single {mustBeReal, mustBeFinite}
-        specificHeatPadded single {mustBeReal, mustBeFinite}
-        thermalConductivityPadded single {mustBeReal, mustBeFinite}
-    end
-
-    properties(Dependent=true)
-        density single {mustBeReal, mustBeFinite}
-        specificHeat single {mustBeReal, mustBeFinite}
-        thermalConductivity single {mustBeReal, mustBeFinite}
+        diffusionReference {mustBeReal, mustBeFinite}
     end
 
     properties(Constant, Hidden=true)
         requiredProperties = {'density', 'specificHeat', 'thermalConductivity'};
+        gridFields = kwave.toolbox.GridField.createGridFieldsMap([
+            kwave.toolbox.GridField('density');
+            kwave.toolbox.GridField('specificHeat');
+            kwave.toolbox.GridField('thermalConductivity')
+        ]);
     end
 
-    % Set and get methods.
-    methods
-
-        function set.diffusionReference(obj, val)
-            validateattributes(val, {'numeric'}, {'numel', 1}, '', 'diffusionReference');
-            obj.diffusionReference = val;
-        end
-        
-        function set.specificHeat(obj, val)
-            obj.kgrid.validateSize(val, VariableName='specificHeat');
-            obj.specificHeatPadded = obj.kgrid.assignWithGridPadding(val);
-        end
-
-        function set.specificHeatPadded(obj, val)
-            obj.kgrid.validateSize(val, VariableName='specificHeatPadded', IncludePadding=true);
-            obj.specificHeatPadded = val;
-        end
-
-        function specificHeat = get.specificHeat(obj)
-            specificHeat = obj.kgrid.returnWithoutGridPadding(obj.specificHeatPadded);
-        end        
-
-        function set.density(obj, val)
-            obj.kgrid.validateSize(val, VariableName='density');
-            obj.densityPadded = obj.kgrid.assignWithGridPadding(val);
-        end
-
-        function set.densityPadded(obj, val)
-            obj.kgrid.validateSize(val, VariableName='densityPadded', IncludePadding=true);
-            obj.densityPadded = val;
-        end
-
-        function density = get.density(obj)
-            density = obj.kgrid.returnWithoutGridPadding(obj.densityPadded);
-        end            
-
-        function set.thermalConductivity(obj, val)
-            obj.kgrid.validateSize(val, VariableName='thermalConductivity');
-            obj.thermalConductivityPadded = obj.kgrid.assignWithGridPadding(val);
-        end
-
-        function set.thermalConductivityPadded(obj, val)
-            obj.kgrid.validateSize(val, VariableName='thermalConductivityPadded', IncludePadding=true);
-            obj.thermalConductivityPadded = val;
-        end
-
-        function thermalConductivity = get.thermalConductivity(obj)
-            thermalConductivity = obj.kgrid.returnWithoutGridPadding(obj.thermalConductivityPadded);
-        end            
-        
-    end
-    
 end

@@ -1,71 +1,65 @@
 %% kWaveInput
 % *Package:* kwave.toolbox
+% *Superclasses:* dynamicprops, matlab.mixin.CustomDisplay
 %
-% Superclass of all kwave.toolbox input classes.
+% Abstract superclass defining the structure and behavior of all k-Wave
+% grid-based input classes.
 %
 %% Description
-% Abstract class used as a container to define grid-based inputs for k-Wave
-% simulation functions. Input classes used for the k-Wave simulation
-% functions should be derived from this class.
+% This abstract class provides a unified structure for managing grid-based
+% inputs for k-Wave simulations. It encapsulates the logic for managing
+% grid padding, which is often essential for simulations, especially when
+% incorporating a perfectly matched layer. This design ensures that user
+% interactions with properties are abstracted away from the internal grid
+% padding mechanism.
 %
-% Simulations in k-Wave are often performed on a padded grid, for example,
-% to incorporate a perfectly matched layer. The expansion of the grid-based
-% medium, source, and sensor inputs is devolved to these classes. Any
-% grid-based inputs should thus be expanded from |kgrid.gridSize| to
-% |kgrid.gridSize + 2*kgrid.gridPadding| before storing. This should be
-% performed within the corresponding set method. Similarly, the padding
-% should be removed from the stored variable before returning to the user
-% within the corresponding get method. This approach allows the user to
-% continue to use and modify the grid-based properties ignoring the grid
-% padding.
+% One of the key features of this class is the concept of "virtual
+% properties". Instead of directly interacting with the actual stored
+% properties that include the padded grid, users interact with a set of
+% virtual properties that reflect the non-padded grid. Behind the scenes,
+% whenever a user accesses or modifies one of these virtual properties, the
+% class internally maps this interaction to the padded variant, ensuring
+% that the simulation uses the correctly padded values while presenting a
+% simpler and more intuitive interface to the user.
 %
-% Within the derived classes, the padded versions should be assigned as
-% hidden properties, which can then be used directly inside the solver
-% classes. The non-padded properties should be assigned as dependent
-% properties with set and get methods as described above. |kWaveGrid|
-% provides the |assignWithGridPadding| method for automatically padding an
-% input, and |returnWithoutGridPadding| for automatically contracting it.
+% Features of the class include:
+% * Dynamic property management: This class uses dynamic properties
+%   to efficiently handle grid field properties, automatically taking care
+%   of grid padding.
+% * Grid-based input validation: The class integrates with the kWaveGrid
+%   object to ensure that the grid-based inputs align with the defined grid
+%   size.
+% * Required property checks: The class ensures that all required
+%   properties for a given simulation are set before execution.
 %
-% Inputs should list required attributes as part of their declaration. For
-% example, if a property must be real and finite, this should be declared.
-% In general, properties should also be defined in single precision, unless
-% there is a specific precision requirement.
+%% Note on Property Access
+% Due to the internal design of the class and the way properties are
+% managed, it is recommended to access "virtual" properties (those
+% without direct storage in the class but exist due to grid padding
+% mechanisms) within class methods using:
 %
-% Derived classes must also define a cell array of |requiredProperties| as
-% a |Constant| property. A check that these properties are not empty is
-% done within the |kWaveSolver| constructor using the
-% |checkRequiredProperties| method. If there are no required properties,
-% |requiredProperties| should be defined as |{}|.
+%   obj.subsref(struct('type', '.', 'subs', propertyName))
+%
+% instead of the standard:
+%
+%   obj.(propertyName)
+%
+% where propertyName is a char holding the property name. This ensures
+% consistent access to the properties, considering the custom behaviors
+% introduced by the overloaded subsref method.
 %
 %% Examples
 % A simple example of a derived class with a single grid-based property
-% (|myProperty|) is shown below. Note how the get/set methods for the
-% dependent property automatically perform the grid expansion and
-% contraction. Input size validation is performed using the |validateSize|
-% method of the |kWaveGrid| class.
+% (|myProperty|) is shown below. The derived class must define
+% |requiredProperties| and |gridFields|. It is also possible to optionally
+% specify the data classes and attributes for each property.
 %
 %   classdef MyMedium < kwave.toolbox.kWaveInput  
-%       properties(Hidden=true)
-%           myPropertyPadded single {mustBeReal, mustBeFinite}
-%       end
-%       properties(Dependent=true)
-%           myProperty single {mustBeReal, mustBeFinite}
-%       end
 %       properties(Constant, Hidden=true)
 %           requiredProperties = {'myProperty'};
-%       end
-%       methods
-%           function set.myProperty(obj, val)
-%               obj.kgrid.validateSize(val, VariableName='myProperty');
-%               obj.myPropertyPadded = obj.kgrid.assignWithGridPadding(val);
-%           end
-%           function set.myPropertyPadded(obj, val)
-%               obj.kgrid.validateSize(val, VariableName='myProperyPadded', IncludePadding=true);
-%               obj.myPropertyPadded = val;
-%           end
-%           function myProperty = get.myProperty(obj)
-%               myProperty = obj.kgrid.returnWithoutGridPadding(obj.myPropertyPadded);
-%           end
+%           gridFields = kwave.toolbox.GridField.createGridFieldsMap([
+%               kwave.toolbox.GridField('myProperty')
+%           ]);
 %       end
 %   end
 %
@@ -109,41 +103,77 @@
 % * |kgrid| - (kWaveGrid) Handle for kWaveGrid object.
 % * |gridSize| - (double) Number of grid points in each Cartesian direction
 %   [grid points]. Convenience property that returns kgrid.gridSize.
+% * |requiredProperties| - (cell array) List of properties that must be 
+%   set for the simulation. Defined in derived classes.
+% * |gridFields| - (containers.Map) Map containing a
+%   |kwave.toolbox.GridField| for each virtual property.
 %
 %% Methods
-% * |checkRequiredProperties|
+% * |checkRequiredProperties| - Ensures all required properties for the
+%   simulation are set.
+% * |getPropertyGroups| - Overloaded method from the
+%   matlab.mixin.CustomDisplay mixin to customize object display.
+% * |properties| - Overloaded method that returns both normal and virtual
+%   properties.
+% * |subsasgn| - Overloaded method for setting properties. It ensures that
+%   properties defined in |gridFields| are correctly padded.
+% * |subsref| - Overloaded method for accessing properties. It returns the
+%   properties defined in |gridFields| without padding.
 
-classdef(Abstract) kWaveInput < handle
+classdef(Abstract) kWaveInput < dynamicprops & matlab.mixin.CustomDisplay
 
     % Properties set by constructor.
     properties(SetAccess=immutable)
-        kgrid kwave.toolbox.kWaveGrid
+        kgrid;
     end
 
-    % Dependent properties without set methods. These parameters are not
-    % stored but re-computed each time they are needed.
+    % Dependent properties without set methods.
     properties(Dependent=true, GetAccess=public, SetAccess=private)
         gridSize;
     end
 
-    % Cell array of required properties. This should be redefined in
-    % derived classes.
+    % Properties defined in derived classes.
     properties(Abstract, Constant, Hidden=true)
         requiredProperties;
+        gridFields containers.Map;
     end
 
     % Constructor.
     methods
         function obj = kWaveInput(kgrid)
+
             arguments
                 kgrid(1,1) kwave.toolbox.kWaveGrid
             end
             obj.kgrid = kgrid;
-        end
-    end
 
-    % Get methods for dependent properties.
-    methods
+            % Dynamically add properties to the class based on the
+            % gridFields map. The properties names are appended with
+            % 'Padded'.
+            propertyKeys = keys(obj.gridFields);
+            for i = 1:length(propertyKeys)
+                paddedName = strcat(propertyKeys{i}, 'Padded');
+                prop = addprop(obj, paddedName);
+                prop.Hidden = true;
+            end
+
+        end
+
+        % Override the in-built properties method so that the virtual
+        % properties are also visible to the user. (Note, this cannot be
+        % moved to an external file and declared under methods like other
+        % class methods due to the conflict between the MATLAB properties
+        % declaration and the in-built properties function.)
+        function propList = properties(obj)
+
+            % Call the built-in properties method
+            propList = builtin('properties', obj);
+
+            % Add the virtual property names to the list
+            virtualProperties = keys(obj.gridFields);
+            propList = [propList; virtualProperties(:)];
+
+        end
 
         % Convenience function to get the grid size from the stored
         % kWaveGrid.
@@ -156,6 +186,12 @@ classdef(Abstract) kWaveInput < handle
     % General class methods with a concrete implementation.
     methods
         checkRequiredProperties(obj);
+        obj = subsasgn(obj, S, value);
+        value = subsref(obj, S);
+    end
+
+    methods (Access = protected)
+        propgrp = getPropertyGroups(obj);
     end
 
 end
