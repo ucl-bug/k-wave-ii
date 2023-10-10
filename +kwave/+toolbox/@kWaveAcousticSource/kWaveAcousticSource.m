@@ -31,8 +31,8 @@ classdef kWaveAcousticSource < kwave.toolbox.kWaveInput
 
     properties(Constant, Hidden=true)
         requiredProperties = {};
-        gridFields = kwave.toolbox.kWaveInput.createGridFieldsMap([
-            struct('name', 'initialPressure', 'classes', {{'numeric'}}, 'attributes', {{'real', 'finite'}})
+        gridFields = kwave.toolbox.GridField.createGridFieldsMap([
+            kwave.toolbox.GridField('initialPressure', Attributes={'real', 'finite'})
         ]);
     end
 

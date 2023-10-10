@@ -45,10 +45,10 @@ classdef kWaveThermalMedium < kwave.toolbox.kWaveInput
 
     properties(Constant, Hidden=true)
         requiredProperties = {'density', 'specificHeat', 'thermalConductivity'};
-        gridFields = kwave.toolbox.kWaveInput.createGridFieldsMap([
-            struct('name', 'density', 'classes', {{'numeric'}}, 'attributes', {{'real', 'positive', 'finite'}});
-            struct('name', 'specificHeat', 'classes', {{'numeric'}}, 'attributes', {{'real', 'positive', 'finite'}});
-            struct('name', 'thermalConductivity', 'classes', {{'numeric'}}, 'attributes', {{'real', 'positive', 'finite'}})
+        gridFields = kwave.toolbox.GridField.createGridFieldsMap([
+            kwave.toolbox.GridField('density');
+            kwave.toolbox.GridField('specificHeat');
+            kwave.toolbox.GridField('thermalConductivity')
         ]);
     end
 

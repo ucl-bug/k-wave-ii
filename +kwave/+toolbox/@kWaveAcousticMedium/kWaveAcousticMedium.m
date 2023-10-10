@@ -47,11 +47,11 @@ classdef kWaveAcousticMedium < kwave.toolbox.kWaveInput
 
     properties(Constant, Hidden=true)
         requiredProperties = {'soundSpeed', 'density'};
-        gridFields = kwave.toolbox.kWaveInput.createGridFieldsMap([
-            struct('name', 'soundSpeed', 'classes', {{'numeric'}}, 'attributes', {{'real', 'positive', 'finite'}});
-            struct('name', 'density', 'classes', {{'numeric'}}, 'attributes', {{'real', 'positive', 'finite'}});
-            struct('name', 'alphaCoeff', 'classes', {{'numeric'}}, 'attributes', {{'real', 'positive', 'finite'}});
-            struct('name', 'BonA', 'classes', {{'numeric'}}, 'attributes', {{'real', 'positive', 'finite'}})
+        gridFields = kwave.toolbox.GridField.createGridFieldsMap([
+            kwave.toolbox.GridField('soundSpeed');
+            kwave.toolbox.GridField('density');
+            kwave.toolbox.GridField('alphaCoeff');
+            kwave.toolbox.GridField('BonA')
         ]);
     end
 

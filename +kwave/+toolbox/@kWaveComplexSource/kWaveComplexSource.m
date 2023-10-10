@@ -39,8 +39,8 @@ classdef kWaveComplexSource < kwave.toolbox.kWaveInput
 
     properties(Constant, Hidden=true)
         requiredProperties = {};
-        gridFields = kwave.toolbox.kWaveInput.createGridFieldsMap([
-            struct('name', 'sourceField', 'classes', {{'numeric'}}, 'attributes', {{'finite'}})
+        gridFields = kwave.toolbox.GridField.createGridFieldsMap([
+            kwave.toolbox.GridField('sourceField', Attributes={'finite'})
         ]);
     end
 

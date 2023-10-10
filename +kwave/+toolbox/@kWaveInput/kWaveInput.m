@@ -51,13 +51,14 @@
 %% Examples
 % A simple example of a derived class with a single grid-based property
 % (|myProperty|) is shown below. The derived class must define
-% |requiredProperties| and |gridFields|
+% |requiredProperties| and |gridFields|. It is also possible to optionally
+% specify the data classes and attributes for each property.
 %
 %   classdef MyMedium < kwave.toolbox.kWaveInput  
 %       properties(Constant, Hidden=true)
 %           requiredProperties = {'myProperty'};
-%           gridFields = kwave.toolbox.kWaveInput.createGridFieldsMap([
-%               struct('name', 'myProperty', 'classes', {{'numeric'}}, 'attributes', {{'real', 'positive', 'finite'}})
+%           gridFields = kwave.toolbox.GridField.createGridFieldsMap([
+%               kwave.toolbox.GridField('myProperty')
 %           ]);
 %       end
 %   end
@@ -104,15 +105,12 @@
 %   [grid points]. Convenience property that returns kgrid.gridSize.
 % * |requiredProperties| - (cell array) List of properties that must be 
 %   set for the simulation. Defined in derived classes.
-% * |gridFields| - (containers.Map) Map containing the attributes 
-%   and validation criteria for each grid field. Defined in derived
-%   classes.
+% * |gridFields| - (containers.Map) Map containing a
+%   |kwave.toolbox.GridField| for each virtual property.
 %
 %% Methods
 % * |checkRequiredProperties| - Ensures all required properties for the
 %   simulation are set.
-% * |createGridFieldsMap| - Static utility method to define a map for grid
-%   field properties.
 % * |getPropertyGroups| - Overloaded method from the
 %   matlab.mixin.CustomDisplay mixin to customize object display.
 % * |properties| - Overloaded method that returns both normal and virtual
@@ -194,10 +192,6 @@ classdef(Abstract) kWaveInput < dynamicprops & matlab.mixin.CustomDisplay
 
     methods (Access = protected)
         propgrp = getPropertyGroups(obj);
-    end
-
-    methods(Static)
-        fieldsMap = createGridFieldsMap(fieldDefinitions);
     end
 
 end

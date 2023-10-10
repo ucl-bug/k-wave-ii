@@ -29,8 +29,8 @@ classdef kWaveThermalSource < kwave.toolbox.kWaveInput
 
     properties(Constant, Hidden=true)
         requiredProperties = {};
-        gridFields = kwave.toolbox.kWaveInput.createGridFieldsMap([
-            struct('name', 'initialTemperature', 'classes', {{'numeric'}}, 'attributes', {{'real', 'finite'}})
+        gridFields = kwave.toolbox.GridField.createGridFieldsMap([
+            kwave.toolbox.GridField('initialTemperature', Attributes={'real', 'finite'})
         ]);
     end
 
