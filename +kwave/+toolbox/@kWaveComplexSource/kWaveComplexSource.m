@@ -20,7 +20,7 @@
 %    source.sourceField = rand(source.gridSize) + 1i * rand(source.gridSize);
 %
 %% Properties
-% * |sourceField| - (complex) Complex source field distribution [Pa +
+% * |sourceField| - (numeric) Complex source field distribution [Pa +
 %   i*rad].
 % * |sourceFieldMagnitude| - (numeric) Magnitude of the complex source
 %   field [Pa].
