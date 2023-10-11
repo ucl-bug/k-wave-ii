@@ -1,5 +1,5 @@
 %% assignWithGridPadding
-% *Class:* kwave.toolbox.kWaveGrid
+% *Class:* kwave.toolbox.Grid
 % *Package:* kwave.toolbox
 %
 % Pad an input matrix.
@@ -10,7 +10,7 @@
 %
 %% Description
 % Pads an input matrix using |expandMatrix| to account for the
-% |gridPadding| of the associated |kWaveGrid| object.
+% |gridPadding| of the associated |Grid| object.
 %
 %% Input Arguments
 % * |matrix| - (numeric) Matrix to pad.
@@ -21,7 +21,7 @@
 % * |matrix| - (numeric) Padded matrix.
 %
 %% See Also
-% * |kwave.toolbox.kWaveGrid.returnWithoutGridPadding|
+% * |kwave.toolbox.Grid.returnWithoutGridPadding|
 
 function matrix = assignWithGridPadding(obj, matrix, expansionValue)
 

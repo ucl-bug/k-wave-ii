@@ -1,11 +1,11 @@
-%% kWaveThermalSolver
+%% ThermalSolver
 % *Package:* kwave.toolbox
-% *Superclasses:* kwave.toolbox.kWaveTimeDomainSolver
+% *Superclasses:* kwave.toolbox.TimeDomainSolver
 %
 % Thermal solver.
 %
 %% Description
-% |kWaveThermalSolver| implements a time-domain solution to the diffusion
+% |ThermalSolver| implements a time-domain solution to the diffusion
 % equation in the form:
 %
 % $$\rho_0 C_p \frac{\partial T}{\partial t} = \nabla \cdot (K \nabla T)$$
@@ -25,7 +25,7 @@
 % The simulation is defined by five input objects which define the
 % computational grid, medium properties, sources, sensors, and settings.
 %
-% After an object of the |kWaveThermalSolver| class is created, the
+% After an object of the |ThermalSolver| class is created, the
 % simulation is run by calling |solver.takeTimeStep(Nt, dt)|, where solver
 % is the object name, |Nt| is the number of time steps to take, and |dt| is
 % the size of the time step. During the simulation, a visualisation of the
@@ -40,20 +40,20 @@
 %   import kwave.toolbox.*
 %     
 %   % Grid.
-%   kgrid = kWaveGrid(128, 1e-3);
+%   kgrid = Grid(128, 1e-3);
 %     
 %   % Medium.
-%   medium = kWaveThermalMedium(kgrid);
+%   medium = ThermalMedium(kgrid);
 %   medium.thermalConductivity = 0.52;
 %   medium.specificHeat = 3540;
 %   medium.density = 1000;
 %     
 %   % Source.
-%   source = kWaveThermalSource(kgrid);
+%   source = ThermalSource(kgrid);
 %   source.initialTemperature = exp( -kgrid.xVec.^2 ./ (10 * kgrid.dx).^2 );
 %     
 %   % Solve.
-%   solver = kWaveThermalSolver(kgrid, medium, source, []);
+%   solver = ThermalSolver(kgrid, medium, source, []);
 %   solver.takeTimeStep(500, 0.5);
 %     
 %   % Plot.
@@ -68,14 +68,15 @@
 %   ylabel('Temperature [degC]');
 %
 %% Input Arguments
-% * |kgrid| - (kWaveGrid) Object which defines the simulation grid size.
-% * |medium| - (kWaveThermalMedium) Object which defines the medium
-%   properties.
-% * |source| - (kWaveThermalSource) Object which defines the source
-%   properties.
+% * |kgrid| - (kwave.toolbox.Grid) Object which defines the simulation grid
+%   size.
+% * |medium| - (kwave.toolbox.ThermalMedium) Object which defines the
+%   medium properties.
+% * |source| - (kwave.toolbox.ThermalSource) Object which defines the
+%   source properties.
 % * |sensor| - ...Not yet implemented...
-% * |settings| - (kWaveSettings) Object which defines the simulation
-%   settings.
+% * |settings| - (kwave.toolbox.Settings) Object which defines the
+%   simulation settings.
 %
 %% Properties
 % * |temperature| - (numeric) Temperature field [degC].
@@ -99,7 +100,7 @@
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
-classdef kWaveThermalSolver < kwave.toolbox.kWaveTimeDomainSolver
+classdef ThermalSolver < kwave.toolbox.TimeDomainSolver
 
     % PDE variables.
     properties(SetAccess=private, Dependent=true)
@@ -113,17 +114,17 @@ classdef kWaveThermalSolver < kwave.toolbox.kWaveTimeDomainSolver
 
     % Constructor.
     methods
-        function obj = kWaveThermalSolver(kgrid, medium, source, sensor, settings)
+        function obj = ThermalSolver(kgrid, medium, source, sensor, settings)
             arguments
-                kgrid(1,1) kwave.toolbox.kWaveGrid
-                medium(1,1) kwave.toolbox.kWaveThermalMedium
-                source(1,1) kwave.toolbox.kWaveThermalSource
+                kgrid(1,1) kwave.toolbox.Grid
+                medium(1,1) kwave.toolbox.ThermalMedium
+                source(1,1) kwave.toolbox.ThermalSource
                 sensor
-                settings(1,1) kwave.toolbox.kWaveSettings = kwave.toolbox.kWaveSettings
+                settings(1,1) kwave.toolbox.Settings = kwave.toolbox.Settings
             end
 
             % Pass input arguments to superclass constructor.
-            obj@kwave.toolbox.kWaveTimeDomainSolver(kgrid, medium, source, sensor, settings)
+            obj@kwave.toolbox.TimeDomainSolver(kgrid, medium, source, sensor, settings)
 
         end
     end

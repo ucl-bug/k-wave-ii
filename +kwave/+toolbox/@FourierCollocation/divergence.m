@@ -1,5 +1,5 @@
 %% divergence
-% *Class:* kwave.toolbox.kWaveFourierCollocation
+% *Class:* kwave.toolbox.FourierCollocation
 % *Package:* kwave.toolbox
 %
 % Calculate divergence of vector field.

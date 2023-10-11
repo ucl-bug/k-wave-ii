@@ -128,7 +128,7 @@ end
 % |ClassName:errorIdentifier| or 
 %   |functionName:errorIdentifier|.
 
-error('kWaveGrid:incorrectInputSize', 'gridSpacing must be a scalar or the same length as gridSize.');
+error('Grid:incorrectInputSize', 'gridSpacing must be a scalar or the same length as gridSize.');
 
 %% Class and Function Documentation
 % Classes should be written using

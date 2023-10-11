@@ -1,4 +1,4 @@
-%% kWaveFourierCollocation
+%% FourierCollocation
 % *Package:* kwave.toolbox
 %
 % Derivative calculation using the Fourier collocation spectral method.
@@ -6,9 +6,9 @@
 %% Description
 % Class used to calculate differential operators using the Fourier
 % collocation spectral method. The class constructor takes a
-% |kwave.toolbox.kWaveGrid| object which defines the discrete locations
-% where the input field is defined. Calculations are always performed on
-% the padded grid. Methods are provided for calculating the gradient of a
+% |kwave.toolbox.Grid| object which defines the discrete locations where
+% the input field is defined. Calculations are always performed on the
+% padded grid. Methods are provided for calculating the gradient of a
 % scalar field, and the divergence of a vector field.
 %
 % Vector fields are stored by concatenating the Cartesian components in the
@@ -34,11 +34,11 @@
 %   z = x .* exp(-x.^2 - y.^2);
 %   
 %   % Define input field.
-%   kgrid = kwave.toolbox.kWaveGrid([40, 40], 0.2);
+%   kgrid = kwave.toolbox.Grid([40, 40], 0.2);
 %   f = kgrid.x .* exp(-kgrid.x.^2 - kgrid.y.^2);
 %   
 %   % Compute gradient using k-Wave.
-%   fourierDiffOps = kwave.toolbox.kWaveFourierCollocation(kgrid);
+%   fourierDiffOps = kwave.toolbox.FourierCollocation(kgrid);
 %   gradf = fourierDiffOps.gradient(f);
 %   
 %   % Compute gradient using finite differences with MATLAB gradient function.
@@ -83,12 +83,13 @@
 %   title('Difference');
 %
 %% Input Arguments
-% * |kgrid| - (kWaveGrid) Object which defines the simulation grid size.
+% * |kgrid| - (kwave.toolbox.Grid) Object which defines the simulation grid
+%   size.
 %
 %% Properties
 % Input objects:
 %
-% * |kgrid| - (kWaveGrid) Handle for grid object.
+% * |kgrid| - (kwave.toolbox.Grid) Handle for grid object.
 %
 % Other properties:
 %
@@ -117,7 +118,7 @@
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
-classdef kWaveFourierCollocation < handle
+classdef FourierCollocation < handle
 
     % Properties that can be set internally or by derived classes.
     properties(SetAccess=immutable)
@@ -127,7 +128,7 @@ classdef kWaveFourierCollocation < handle
 
     % Hidden properties that can be set internally or by derived classes.
     properties(SetAccess=immutable, Hidden=true)
-        kgridPadded kwave.toolbox.kWaveGrid
+        kgridPadded kwave.toolbox.Grid
     end
 
     % Internal 1D derivative operators defined with no staggering, forward
@@ -155,9 +156,9 @@ classdef kWaveFourierCollocation < handle
 
     % Constructor.
     methods
-        function obj = kWaveFourierCollocation(kgrid)
+        function obj = FourierCollocation(kgrid)
             arguments
-                kgrid(1,1) kwave.toolbox.kWaveGrid
+                kgrid(1,1) kwave.toolbox.Grid
             end
 
             % Assign properties.
@@ -165,7 +166,7 @@ classdef kWaveFourierCollocation < handle
 
             % Assign grid and expanded grid.
             obj.kgrid = kgrid;
-            obj.kgridPadded = kwave.toolbox.kWaveGrid(kgrid.gridSize(1:kgrid.dimensions) + 2 * kgrid.gridPadding(1:kgrid.dimensions), kgrid.gridSpacing(1:kgrid.dimensions));
+            obj.kgridPadded = kwave.toolbox.Grid(kgrid.gridSize(1:kgrid.dimensions) + 2 * kgrid.gridPadding(1:kgrid.dimensions), kgrid.gridSpacing(1:kgrid.dimensions));
 
             % Assign derivative operators.
             obj.ddxNoShift = reshape(ifftshift(1i * obj.kgridPadded.kxVec), [], 1, 1);

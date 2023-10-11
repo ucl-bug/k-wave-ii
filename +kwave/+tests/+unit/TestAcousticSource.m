@@ -1,13 +1,13 @@
-%% TestkWaveAcousticSource
+%% TestAcousticSource
 % *Package:* kwave.tests.unit
-% *Superclasses:* kwave.tests.unit.TestInput
+% *Superclasses:* kwave.tests.unit.AbstractTestGridInput
 %
-% Unit tests for the kWaveAcousticSource class using the TestInput class.
+% Unit tests for the AcousticSource class using the AbstractTestGridInput class.
 
-classdef TestkWaveAcousticSource < kwave.tests.unit.TestInput
+classdef TestAcousticSource < kwave.tests.unit.AbstractTestGridInput
 
     properties
-        inputClass = 'kWaveAcousticSource'
+        inputClass = 'AcousticSource'
         inputProperties = {'initialPressure'}
         inputPropertiesPadded = {'initialPressurePadded'}
         inputPropertiesScalar = {}

@@ -1,5 +1,5 @@
 %% validateSize
-% *Class:* kwave.toolbox.kWaveGrid
+% *Class:* kwave.toolbox.Grid
 % *Package:* kwave.toolbox
 %
 % Check if matrix matches grid size.
@@ -10,7 +10,7 @@
 %
 %% Description
 % Checks if the size of an input matrix matches the |gridSize| property of
-% a |kWaveGrid| object using <matlab:doc('validateattributes')
+% a |Grid| object using <matlab:doc('validateattributes')
 % |validateattributes|>. By default, the grid size not including padding is
 % used. To include padding, set |IncludePadding=true|. If the input matrix
 % is a scalar, the check is skipped.
@@ -18,14 +18,14 @@
 %% Examples
 % Validate size of 2D matrix:
 %
-%     kgrid = kwave.toolbox.kWaveGrid([32, 32], 1e-3);
+%     kgrid = kwave.toolbox.Grid([32, 32], 1e-3);
 %     matrix = rand([32, 32]);
 %     kgrid.validateSize(matrix);
 %
 % Call with optional inputs. The second call to |validateSize| will throw
 % an error as the matrix doesn't match the grid size including padding.
 %
-%     kgrid = kwave.toolbox.kWaveGrid([32, 32], 1e-3, [10, 10]);
+%     kgrid = kwave.toolbox.Grid([32, 32], 1e-3, [10, 10]);
 %     matrix = rand([32, 32]);
 %     kgrid.validateSize(matrix, VariableName='myInput');
 %     kgrid.validateSize(matrix, VariableName='myInput', IncludePadding=true);

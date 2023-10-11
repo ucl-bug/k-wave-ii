@@ -1,4 +1,4 @@
-%% TestInput
+%% AbstractTestGridInput
 % *Package:* kwave.tests.unit
 % *Superclasses:* matlab.unittest.TestCase
 %
@@ -6,7 +6,7 @@
 %
 %% Description
 % Abstract test class for testing medium property classes derived from
-% |kWaveInput|. Derived classes must define four abstract properties. The
+% |GridInput|. Derived classes must define four abstract properties. The
 % first defines the medium class name, and the others define cell arrays of
 % the medium properties names for the class under test:
 %
@@ -37,7 +37,7 @@
 % property assignment, padded and non-padded size checks, and error states
 % for grid sizes in 1D, 2D, and 3D.
 
-classdef(Abstract) TestInput < matlab.unittest.TestCase
+classdef(Abstract) AbstractTestGridInput < matlab.unittest.TestCase
 
     properties(Abstract)
         inputClass
@@ -48,7 +48,7 @@ classdef(Abstract) TestInput < matlab.unittest.TestCase
     end
 
     properties
-        kgrid kwave.toolbox.kWaveGrid
+        kgrid kwave.toolbox.Grid
         input
     end
 
@@ -66,7 +66,7 @@ classdef(Abstract) TestInput < matlab.unittest.TestCase
 
         % Create grid and medium objects used by tests.
         function createGrid(testCase, gridSize, gridSpacing, gridPadding)
-            testCase.kgrid = kwave.toolbox.kWaveGrid(gridSize, gridSpacing, gridPadding);
+            testCase.kgrid = kwave.toolbox.Grid(gridSize, gridSpacing, gridPadding);
             testCase.input = kwave.toolbox.(testCase.inputClass)(testCase.kgrid);
         end
 
@@ -103,7 +103,7 @@ classdef(Abstract) TestInput < matlab.unittest.TestCase
         % Test not defining required properties throws an error.
         function testMissingProperties(testCase)
             if ~isempty(testCase.input.requiredProperties)
-                testCase.verifyError(@() testCase.input.checkRequiredProperties, 'kWaveInput:missingInput');
+                testCase.verifyError(@() testCase.input.checkRequiredProperties, 'GridInput:missingInput');
             end
         end
 

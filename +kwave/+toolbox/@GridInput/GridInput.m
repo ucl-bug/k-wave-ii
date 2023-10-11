@@ -1,4 +1,4 @@
-%% kWaveInput
+%% GridInput
 % *Package:* kwave.toolbox
 % *Superclasses:* dynamicprops, matlab.mixin.CustomDisplay
 %
@@ -26,7 +26,7 @@
 % * Dynamic property management: This class uses dynamic properties
 %   to efficiently handle grid field properties, automatically taking care
 %   of grid padding.
-% * Grid-based input validation: The class integrates with the kWaveGrid
+% * Grid-based input validation: The class integrates with the Grid
 %   object to ensure that the grid-based inputs align with the defined grid
 %   size.
 % * Required property checks: The class ensures that all required
@@ -54,7 +54,7 @@
 % |requiredProperties| and |gridFields|. It is also possible to optionally
 % specify the data classes and attributes for each property.
 %
-%   classdef MyMedium < kwave.toolbox.kWaveInput  
+%   classdef MyMedium < kwave.toolbox.GridInput
 %       properties(Constant, Hidden=true)
 %           requiredProperties = {'myProperty'};
 %           gridFields = kwave.toolbox.GridField.createGridFieldsMap([
@@ -66,7 +66,7 @@
 % Save the example above into a file called |MyMedium.m|. Then, the class
 % can be tested. First define the grid and medium objects.
 %
-%    kgrid = kwave.toolbox.kWaveGrid([128, 128], 1e-3, [10, 10]);
+%    kgrid = kwave.toolbox.Grid([128, 128], 1e-3, [10, 10]);
 %    medium = MyMedium(kgrid);
 %
 % The default object has no assigned properties. We can verify that the
@@ -74,7 +74,7 @@
 % |checkRequiredProperties|.
 %
 %    medium.checkRequiredProperties;
-%    Error using kwave.toolbox.kWaveInput/checkRequiredProperties
+%    Error using kwave.toolbox.GridInput/checkRequiredProperties
 %    The property myProperty must be defined.
 %
 % Finally, assign the required property and examine its size. |myProperty|
@@ -96,11 +96,11 @@
 %       148   148
 %
 %% Input Arguments
-% * |kgrid| - (kWaveGrid) kWaveGrid object which defines the simulation
+% * |kgrid| - (kwave.toolbox.Grid) Grid object which defines the simulation
 %   grid size.
 %
 %% Properties
-% * |kgrid| - (kWaveGrid) Handle for kWaveGrid object.
+% * |kgrid| - (kwave.toolbox.Grid) Handle for |Grid| object.
 % * |gridSize| - (double) Number of grid points in each Cartesian direction
 %   [grid points]. Convenience property that returns kgrid.gridSize.
 % * |requiredProperties| - (cell array) List of properties that must be 
@@ -120,7 +120,7 @@
 % * |subsref| - Overloaded method for accessing properties. It returns the
 %   properties defined in |gridFields| without padding.
 
-classdef(Abstract) kWaveInput < dynamicprops & matlab.mixin.CustomDisplay
+classdef(Abstract) GridInput < dynamicprops & matlab.mixin.CustomDisplay
 
     % Properties set by constructor.
     properties(SetAccess=immutable)
@@ -140,10 +140,10 @@ classdef(Abstract) kWaveInput < dynamicprops & matlab.mixin.CustomDisplay
 
     % Constructor.
     methods
-        function obj = kWaveInput(kgrid)
+        function obj = GridInput(kgrid)
 
             arguments
-                kgrid(1,1) kwave.toolbox.kWaveGrid
+                kgrid(1,1) kwave.toolbox.Grid
             end
             obj.kgrid = kgrid;
 
@@ -176,7 +176,7 @@ classdef(Abstract) kWaveInput < dynamicprops & matlab.mixin.CustomDisplay
         end
 
         % Convenience function to get the grid size from the stored
-        % kWaveGrid.
+        % Grid.
         function sz = get.gridSize(obj)
             sz = obj.kgrid.gridSize;
         end

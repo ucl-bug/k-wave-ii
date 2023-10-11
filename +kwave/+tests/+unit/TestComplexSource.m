@@ -1,13 +1,13 @@
-%% TestkWaveComplexSource
+%% TestComplexSource
 % *Package:* kwave.tests.unit
-% *Superclasses:* kwave.tests.unit.TestInput
+% *Superclasses:* kwave.tests.unit.AbstractTestGridInput
 %
-% Unit tests for the kWaveComplexSource class using the TestInput class.
+% Unit tests for the ComplexSource class using the AbstractTestGridInput class.
 
-classdef TestkWaveComplexSource < kwave.tests.unit.TestInput
+classdef TestComplexSource < kwave.tests.unit.AbstractTestGridInput
 
     properties
-        inputClass = 'kWaveComplexSource'
+        inputClass = 'ComplexSource'
         inputProperties = {'sourceField'}
         inputPropertiesComplex = {'sourceField', 'sourceFieldPadded'}
         inputPropertiesPadded = {'sourceFieldPadded'}
@@ -18,7 +18,7 @@ classdef TestkWaveComplexSource < kwave.tests.unit.TestInput
     
     methods(TestMethodSetup)
         function setupTestData(testCase)
-            testCase.source = kwave.toolbox.kWaveComplexSource(testCase.kgrid);
+            testCase.source = kwave.toolbox.ComplexSource(testCase.kgrid);
             testCase.testData = single(rand(testCase.kgrid.gridSize) + 1i .* rand(testCase.kgrid.gridSize));
             testCase.source.sourceField = testCase.testData;
         end

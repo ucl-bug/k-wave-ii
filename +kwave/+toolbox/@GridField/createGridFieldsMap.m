@@ -15,7 +15,7 @@
 % corresponds to a grid field property's name, and the associated value is
 % a |kwave.toolbox.GridField| object. This utility is used to generate the
 % |gridFields| property for classes derived from
-% |kwave.toolbox.kWaveInput|.
+% |kwave.toolbox.GridInput|.
 %
 %% Input Arguments
 % * |fieldDefinitions| - (|kwave.toolbox.GridField| array) An array of

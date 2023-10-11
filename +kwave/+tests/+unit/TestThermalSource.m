@@ -1,13 +1,13 @@
-%% TestkWaveThermalSource
+%% TestThermalSource
 % *Package:* kwave.tests.unit
-% *Superclasses:* kwave.tests.unit.TestInput
+% *Superclasses:* kwave.tests.unit.AbstractTestGridInput
 %
-% Unit tests for the kWaveThermalSource class using the TestMedium class.
+% Unit tests for the ThermalSource class using the TestMedium class.
 
-classdef TestkWaveThermalSource < kwave.tests.unit.TestInput
+classdef TestThermalSource < kwave.tests.unit.AbstractTestGridInput
 
     properties
-        inputClass = 'kWaveThermalSource'
+        inputClass = 'ThermalSource'
         inputProperties = {'initialTemperature'}
         inputPropertiesPadded = {'initialTemperaturePadded'}
         inputPropertiesScalar = {}

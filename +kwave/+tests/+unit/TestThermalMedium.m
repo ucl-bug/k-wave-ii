@@ -1,13 +1,13 @@
-%% TestkWaveThermalMedium
+%% TestThermalMedium
 % *Package:* kwave.tests.unit
-% *Superclasses:* kwave.tests.unit.TestInput
+% *Superclasses:* kwave.tests.unit.AbstractTestGridInput
 %
-% Unit tests for the kWaveThermalMedium class using the TestMedium class.
+% Unit tests for the ThermalMedium class using the TestMedium class.
 
-classdef TestkWaveThermalMedium < kwave.tests.unit.TestInput
+classdef TestThermalMedium < kwave.tests.unit.AbstractTestGridInput
 
     properties
-        inputClass = 'kWaveThermalMedium'
+        inputClass = 'ThermalMedium'
         inputProperties = {'density', 'specificHeat', 'thermalConductivity'}
         inputPropertiesPadded = {'densityPadded', 'specificHeatPadded', 'thermalConductivityPadded'}
         inputPropertiesScalar = {}

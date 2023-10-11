@@ -1,5 +1,5 @@
 %% subsref
-% *Class:* kwave.toolbox.kWaveInput
+% *Class:* kwave.toolbox.GridInput
 % *Package:* kwave.toolbox
 %
 % Overloaded reference method to manage interactions with virtual
@@ -10,7 +10,7 @@
 %
 %% Description
 % The |subsref| method has been overloaded to facilitate user interactions
-% with the virtual properties of the |kwave.toolbox.kWaveInput| class. When
+% with the virtual properties of the |kwave.toolbox.GridInput| class. When
 % users query one of these virtual properties, the method retrieves its
 % internally stored padded counterpart and returns the non-padded view to
 % the user, aligning with the virtual property's concept.
@@ -19,7 +19,7 @@
 % the method  falls back to MATLAB's default |subsref| operation.
 %
 %% Input Arguments
-% * |obj| - (kwave.toolbox.kWaveInput) Instance of the kWaveInput class.
+% * |obj| - (kwave.toolbox.GridInput) Instance of the GridInput class.
 % * |S| - (struct) MATLAB structure specifying the target property or
 %   method and type of referencing. 
 %

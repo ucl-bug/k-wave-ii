@@ -1,16 +1,16 @@
-%% TestkWaveThermalSolver
+%% TestThermalSolver
 % *Package:* kwave.tests.unit
-% *Superclasses:* kwave.tests.unit.TestGrid
+% *Superclasses:* kwave.tests.unit.AbstractTestGrid
 %
-% Unit tests for the kWaveThermalSolver class.
+% Unit tests for the ThermalSolver class.
 %
 %% Description
-% Runs the following tests for the kWaveThermalSolver:
+% Runs the following tests for the ThermalSolver:
 % * Verifies simulations in homogeneous media match exact solution
 % * Verifies that simulations using input parameters with a different grid
 %   throw errors.
 
-classdef TestkWaveThermalSolver < kwave.tests.unit.TestGrid
+classdef TestThermalSolver < kwave.tests.unit.AbstractTestGrid
 
     % Parameterized tests.
     methods(Test, ParameterCombination="sequential")
@@ -23,13 +23,13 @@ classdef TestkWaveThermalSolver < kwave.tests.unit.TestGrid
             import kwave.toolbox.*
             
             % Medium.
-            medium = kWaveThermalMedium(testCase.kgrid);
+            medium = ThermalMedium(testCase.kgrid);
             medium.thermalConductivity = 0.52;
             medium.specificHeat = 3540;
             medium.density = 1000;
             
             % Source.
-            source = kWaveThermalSource(testCase.kgrid);
+            source = ThermalSource(testCase.kgrid);
             variance = (3 * testCase.kgrid.dx)^2;
             gaussian = @(x) exp(-x.^2 / (2 * variance));
             switch testCase.kgrid.dimensions
@@ -48,11 +48,11 @@ classdef TestkWaveThermalSolver < kwave.tests.unit.TestGrid
             end
 
             % Settings.
-            settings = kWaveSettings;
+            settings = Settings;
             settings.plotSimulation = 'off';
             
             % Solve using two steps.
-            solver = kWaveThermalSolver(testCase.kgrid, medium, source, [], settings);
+            solver = ThermalSolver(testCase.kgrid, medium, source, [], settings);
             Nt = 500;
             dt = 1;
             solver.takeTimeStep(Nt/2, dt);
@@ -78,35 +78,35 @@ classdef TestkWaveThermalSolver < kwave.tests.unit.TestGrid
 
             import kwave.toolbox.*
 
-            kgridIncorrect = kWaveGrid(10, 2e-3);
+            kgridIncorrect = Grid(10, 2e-3);
 
             % Medium using correct kgrid.
-            medium = kWaveThermalMedium(testCase.kgrid);
+            medium = ThermalMedium(testCase.kgrid);
             medium.thermalConductivity = 0.52;
             medium.specificHeat = 3540;
             medium.density = 1000;
 
             % Medium using incorrect kgrid.
-            mediumIncorrect = kWaveThermalMedium(kgridIncorrect);
+            mediumIncorrect = ThermalMedium(kgridIncorrect);
             mediumIncorrect.thermalConductivity = 0.52;
             mediumIncorrect.specificHeat = 3540;
             mediumIncorrect.density = 1000;
 
             % Source using correct kgrid.
-            source = kWaveThermalSource(testCase.kgrid);
+            source = ThermalSource(testCase.kgrid);
 
             % Source using incorrect kgrid.
-            sourceIncorrect = kWaveThermalSource(kgridIncorrect);
+            sourceIncorrect = ThermalSource(kgridIncorrect);
 
             testCase.verifyWarningFree(@() ...
-                kWaveThermalSolver(testCase.kgrid, medium, source, []));
+                ThermalSolver(testCase.kgrid, medium, source, []));
 
             testCase.verifyError(@() ...
-                kWaveThermalSolver(testCase.kgrid, mediumIncorrect, source, []), ...
+                ThermalSolver(testCase.kgrid, mediumIncorrect, source, []), ...
                 'kWaveSolver:gridMismatch');
 
             testCase.verifyError(@() ...
-                kWaveThermalSolver(testCase.kgrid, medium, sourceIncorrect, []), ...
+                ThermalSolver(testCase.kgrid, medium, sourceIncorrect, []), ...
                 'kWaveSolver:gridMismatch');
 
         end

@@ -1,5 +1,5 @@
 %% returnWithoutGridPadding
-% *Class:* kwave.toolbox.kWaveGrid
+% *Class:* kwave.toolbox.Grid
 % *Package:* kwave.toolbox
 %
 % Trim the padding from an output matrix.
@@ -9,7 +9,7 @@
 %
 %% Description
 % Trims the padding from an output matrix to account for the |gridPadding|
-% of the associated |kWaveGrid| object.
+% of the associated |Grid| object.
 %
 %% Input Arguments
 % * |matrix| - (numeric) Matrix to trim.
@@ -18,7 +18,7 @@
 % * |matrix| - (numeric) Trimmed matrix.
 %
 %% See Also
-% * |kwave.toolbox.kWaveGrid.assignWithGridPadding|
+% * |kwave.toolbox.Grid.assignWithGridPadding|
 
 function matrix = returnWithoutGridPadding(obj, matrix)
 

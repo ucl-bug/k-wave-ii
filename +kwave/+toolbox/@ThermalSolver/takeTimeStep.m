@@ -1,5 +1,5 @@
 %% takeTimeStep
-% *Class:* kwave.toolbox.kWaveThermalSolver
+% *Class:* kwave.toolbox.ThermalSolver
 % *Package:* kwave.toolbox
 %
 % Iteratively update solution for given number of time steps.

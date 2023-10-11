@@ -1,5 +1,5 @@
 %% gradient
-% *Class:* kwave.toolbox.kWaveFourierCollocation
+% *Class:* kwave.toolbox.FourierCollocation
 % *Package:* kwave.toolbox
 %
 % Calculate gradient of scalar field.

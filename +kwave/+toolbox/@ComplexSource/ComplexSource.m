@@ -1,22 +1,22 @@
-%% kWaveComplexSource
+%% ComplexSource
 % *Package:* kwave.toolbox
-% *Superclasses:* kwave.toolbox.kWaveInput
+% *Superclasses:* kwave.toolbox.GridInput
 %
 % Class used to define complex sources for a simulation.
 %
 %% Syntax
-%   source = kWaveComplexSource(kgrid);
+%   source = ComplexSource(kgrid);
 %
 %% Description
 % This class is used to define complex valued source terms. The constructor
-% takes an object of the |kwave.toolbox.kWaveGrid| class which defines the
-% grid size. Source matrices must match the grid size defined by |kgrid|. 
+% takes an object of the |kwave.toolbox.Grid| class which defines the grid
+% size. Source matrices must match the grid size defined by |kgrid|.
 %
 %% Examples
 % Define the grid and source objects, and assign the source field.
 %
-%    kgrid = kwave.toolbox.kWaveGrid([128, 128], 1e-3);
-%    source = kwave.toolbox.kWaveComplexSource(kgrid);
+%    kgrid = kwave.toolbox.Grid([128, 128], 1e-3);
+%    source = kwave.toolbox.ComplexSource(kgrid);
 %    source.sourceField = rand(source.gridSize) + 1i * rand(source.gridSize);
 %
 %% Properties
@@ -28,9 +28,9 @@
 %   [radians].
 %
 %% See Also
-% * |kwave.toolbox.kWaveInput|
+% * |kwave.toolbox.GridInput|
 
-classdef kWaveComplexSource < kwave.toolbox.kWaveInput
+classdef ComplexSource < kwave.toolbox.GridInput
   
     properties(Dependent=true)
         sourceFieldMagnitude

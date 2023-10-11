@@ -1,15 +1,15 @@
-%% kWaveGrid
+%% Grid
 % *Package:* kwave.toolbox
 %
 % Class used to define the spatial grid for a simulation.
 %
 %% Syntax
-%   kgrid = kWaveGrid(gridSize, gridSpacing)
-%   kgrid = kWaveGrid(gridSize, gridSpacing, gridPadding)
+%   kgrid = Grid(gridSize, gridSpacing)
+%   kgrid = Grid(gridSize, gridSpacing, gridPadding)
 %
 %% Description
-% |kWaveGrid| is the grid class used across the k-Wave Toolbox. An object
-% of the |kWaveGrid| class defines the grid coordinates and spatial
+% |Grid| is the grid class used across the k-Wave Toolbox. An object
+% of the |Grid| class defines the grid coordinates and spatial
 % frequency (wavevector) matrices for a particular simulation.
 % 
 % The grid is assumed to be a regular Cartesian grid with grid spacing
@@ -21,7 +21,7 @@
 % |gridSpacing| in metres. For example, to create a 2D grid that is 128 x
 % 128 with a grid spacing of 1 mm, call:
 %
-%     kgrid = kWaveGrid([128, 128], 1e-3);
+%     kgrid = Grid([128, 128], 1e-3);
 %
 % The origin is defined to be in the centre of the spatial grid. For odd
 % dimensions, the origin is at the central point. For even dimensions, the
@@ -41,7 +41,7 @@
 % defined relative to |gridSize|, not including the |gridPadding|.
 %
 % To check if an input matrix matches the grid size specified by a
-% |kWaveGrid| object, the |validateSize| method can be used.
+% |Grid| object, the |validateSize| method can be used.
 %
 %% Input Arguments
 % * |gridSize| - (double) Number of grid points in each Cartesian direction
@@ -94,7 +94,7 @@
 % * |returnWithoutGridPadding|
 % * |validateSize|
 
-classdef kWaveGrid < handle
+classdef Grid < handle
     
     % Properties set by constructor.
     properties(SetAccess=immutable)
@@ -172,7 +172,7 @@ classdef kWaveGrid < handle
     
     % Constructor.
     methods
-        function obj = kWaveGrid(gridSize, gridSpacing, gridPadding)
+        function obj = Grid(gridSize, gridSpacing, gridPadding)
             
             % Set grid dimensions based on length of gridSize vector.
             obj.dimensions = numel(gridSize);
@@ -180,14 +180,14 @@ classdef kWaveGrid < handle
             % Assign gridSize and gridSpacing.
             obj.gridSize(1:obj.dimensions) = gridSize;
             if (numel(gridSpacing) ~= 1) && (numel(gridSpacing) ~= obj.dimensions)
-                error('kWaveGrid:incorrectInputSize', 'gridSpacing must be a scalar or the same length as gridSize.');
+                error('Grid:incorrectInputSize', 'gridSpacing must be a scalar or the same length as gridSize.');
             end
             obj.gridSpacing(1:obj.dimensions) = gridSpacing;
 
             % Assign gridPadding.
             if nargin == 3
                 if (numel(gridPadding) ~= 1) && (numel(gridPadding) ~= obj.dimensions)
-                    error('kWaveGrid:incorrectInputSize', 'gridSpacing must be a scalar or the same length as gridSize.');
+                    error('Grid:incorrectInputSize', 'gridSpacing must be a scalar or the same length as gridSize.');
                 end
                 obj.gridPadding(1:obj.dimensions) = gridPadding;
             end

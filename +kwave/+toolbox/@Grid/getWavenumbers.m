@@ -1,5 +1,5 @@
 %% getWavenumbers
-% *Class:* kwave.toolbox.kWaveGrid
+% *Class:* kwave.toolbox.Grid
 % *Package:* kwave.toolbox
 %
 % Create vector of wavenumbers.
@@ -11,8 +11,8 @@
 % Creates the vector of wavenumbers (spatial frequencies) for use with the
 % MATLAB fft functions. Internally, MATLAB uses FFTW, so the frequency bins
 % match those used by FFTW. The DC component is returned in the centre of
-% the spectrum. Use |ifftshift| to transform this so the DC component is
-% the first element.
+% the spectrum. Use |<matlab:doc('ifftshift') ifftshift>| to transform this
+% so the DC component is the first element.
 %
 %% Input Arguments
 % * |numGridPoints| - (double) Number of grid points.

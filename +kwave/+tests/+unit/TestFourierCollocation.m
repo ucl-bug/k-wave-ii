@@ -1,26 +1,26 @@
-%% TestkWaveFourierCollocation
+%% TestFourierCollocation
 % *Package:* kwave.tests.unit
 % *Superclasses:* kwave.tests.unit.TestGrid
 %
-% Unit tests for the kWaveFourierCollocation class.
+% Unit tests for the FourierCollocation class.
 %
 %% Description
 % Tests the gradient and divergence functions of the
-% kWaveFourierCollocation against simple analytical functions that are
+% FourierCollocation against simple analytical functions that are
 % periodic on the test grid. All dimensions and grid staggering options are
 % tested.
 
-classdef TestkWaveFourierCollocation < kwave.tests.unit.TestGrid
+classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
 
     % Add solver to class properties so we can pass it to each testCase.
     properties
-        solver kwave.toolbox.kWaveFourierCollocation
+        solver kwave.toolbox.FourierCollocation
     end
 
     % Setup solver for each test.
     methods(TestMethodSetup, ParameterCombination="sequential")
         function createSolver(testCase)
-            testCase.solver = kwave.toolbox.kWaveFourierCollocation(testCase.kgrid);
+            testCase.solver = kwave.toolbox.FourierCollocation(testCase.kgrid);
         end
     end
 

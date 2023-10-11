@@ -226,14 +226,14 @@ classdef GenerateDocumentation
 
         end
 
-        % Given a folder (e.g. '@kWaveGrid') and a filename (e.g.
-        % 'kWaveGrid.m'), return true if the file represents the class
+        % Given a folder (e.g. '@Grid') and a filename (e.g.
+        % 'Grid.m'), return true if the file represents the class
         % itself (as opposed to a class method)
         function isClass = isClass(~, mFileRelativeFolder, filename)
             isClass = ~isempty(mFileRelativeFolder) && strcmp(extractAfter(mFileRelativeFolder, 1), filename);
         end
 
-        % Given a folder (e.g. '@kWaveGrid') and a filename (e.g.
+        % Given a folder (e.g. '@Grid') and a filename (e.g.
         % 'validateSize.m'), return true if the file represents a class
         % method
         function isClassMethod = isClassMethod(obj, mFileRelativeFolder, filename)

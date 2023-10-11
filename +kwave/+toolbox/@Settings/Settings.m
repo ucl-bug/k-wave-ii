@@ -1,16 +1,15 @@
-%% kWaveSettings
+%% Settings
 % *Package:* kwave.toolbox
 %
 % Class used to define settings for k-Wave simulations.
 %
 %% Description
 % Defines default settings used in the k-Wave simulation classes. To modify
-% settings, first create a |kWaveSettings| object, then modify the
-% properties. The object can then be passed as an input to the simulation
-% classes.
+% settings, first create a |Settings| object, then modify the properties.
+% The object can then be passed as an input to the simulation classes.
 %
 %% Examples
-%   settings = kwave.toolbox.kWaveSettings;
+%   settings = kwave.toolbox.Settings;
 %   settings.plotSimulation = 'off';
 %
 %% Properties
@@ -41,7 +40,7 @@
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
-classdef kWaveSettings < handle
+classdef Settings < handle
     properties
         colorMap(:,3) double = kwave.legacy.getColorMap
         plotFrequency(1,1) uint64 {mustBeInteger, mustBePositive, mustBeFinite} = 10

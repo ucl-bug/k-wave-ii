@@ -1,13 +1,13 @@
-%% TestkWaveAcousticMedium
+%% TestAcousticMedium
 % *Package:* kwave.tests.unit
-% *Superclasses:* kwave.tests.unit.TestInput
+% *Superclasses:* kwave.tests.unit.AbstractTestGridInput
 %
-% Unit tests for the kWaveAcousticMedium class using the TestMedium class.
+% Unit tests for the AcousticMedium class using the TestMedium class.
 
-classdef TestkWaveAcousticMedium < kwave.tests.unit.TestInput
+classdef TestAcousticMedium < kwave.tests.unit.AbstractTestGridInput
 
     properties
-        inputClass = 'kWaveAcousticMedium'
+        inputClass = 'AcousticMedium'
         inputProperties = {'soundSpeed', 'density', 'alphaCoeff', 'BonA'}
         inputPropertiesPadded = {'soundSpeedPadded', 'densityPadded', 'alphaCoeffPadded', 'BonAPadded'}
         inputPropertiesScalar = {'soundSpeedReference', 'alphaPower'}

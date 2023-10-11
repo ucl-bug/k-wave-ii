@@ -1,5 +1,5 @@
 %% divergenceSplit
-% *Class:* kwave.toolbox.kWaveFourierCollocation
+% *Class:* kwave.toolbox.FourierCollocation
 % *Package:* kwave.toolbox
 %
 % Calculate components of divergence of vector field.

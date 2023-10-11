@@ -1,5 +1,5 @@
 %% getPropertyGroups
-% *Class:* kwave.toolbox.kWaveInput
+% *Class:* kwave.toolbox.GridInput
 % *Package:* kwave.toolbox
 %
 % Overloads the matlab.mixin.CustomDisplay method to return a property
@@ -11,7 +11,7 @@
 %% Description
 % The |getPropertyGroups| method, an overload of
 % |matlab.mixin.CustomDisplay|, is designed to enhance the display of the
-% |kWaveInput| class object when viewed in the MATLAB command window. By
+% |GridInput| class object when viewed in the MATLAB command window. By
 % grouping properties and using the overridden |subsref| method, this
 % function ensures that both static and virtual properties of the object
 % are presented in a structured manner.
@@ -21,8 +21,8 @@
 % state, especially in the context of its virtual properties.
 %
 %% Input Arguments
-% * |obj| - (kwave.toolbox.kWaveInput) An instance of the
-%   |kwave.toolbox.kWaveInput| class.
+% * |obj| - (kwave.toolbox.GridInput) An instance of the
+%   |kwave.toolbox.GridInput| class.
 %
 %% Output Arguments
 % * |propgrp| - (matlab.mixin.util.PropertyGroup) A property group object

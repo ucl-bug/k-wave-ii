@@ -1,23 +1,23 @@
-%% TestGrid
+%% AbstractTestGrid
 % *Package:* kwave.tests.unit
 % *Superclasses:* matlab.unittest.TestCase
 %
-% Super class for tests requiring a kWaveGrid object of different sizes.
+% Super class for tests requiring a Grid object of different sizes.
 %
 %% Description
-% Abstract test class for tests that require a |kWaveGrid| object with
-% different sizes and dimensions. Each test method should define
+% Abstract test class for tests that require a |kwave.toolbox.Grid| object
+% with different sizes and dimensions. Each test method should define
 % |testClass.actualSolution| and |testClass.referenceSolution|. Comparisons
 % should be made using |testCase.verifyThat| as shown in the example below.
 % The test class also sets up a failure diagnostic that plots the
 % differences in the actual and reference solution.
 %
 %% Examples
-% Example of a derived test class that uses the parametrised kWaveGrid
+% Example of a derived test class that uses the parametrised Grid
 % object. This automatically loops over different 1D, 2D, and 3D
-% |kWaveGrid| objects assigned to |kgrid|.
+% |kwave.toolbox.Grid| objects assigned to |kgrid|.
 %
-%    classdef TestMyClass < kwave.tests.unit.TestGrid
+%    classdef TestMyClass < kwave.tests.unit.AbstractTestGrid
 %        methods(Test, ParameterCombination="sequential")
 %            function testSomething(testCase)
 % 
@@ -36,12 +36,12 @@
 %    end
 %
 %% See Also
-% * |TestInput|
+% * |AbstractTestGridInput|
 
-classdef(Abstract) TestGrid < matlab.unittest.TestCase
+classdef(Abstract) AbstractTestGrid < matlab.unittest.TestCase
 
     properties
-        kgrid kwave.toolbox.kWaveGrid
+        kgrid kwave.toolbox.Grid
         actualSolution single
         referenceSolution single
         tol matlab.unittest.constraints.AbsoluteTolerance
@@ -58,12 +58,12 @@ classdef(Abstract) TestGrid < matlab.unittest.TestCase
 
     methods(TestMethodSetup, ParameterCombination="sequential")
 
-        % Create kWaveGrid object and single precision tolerance used by
+        % Create Grid object and single precision tolerance used by
         % tests. If a test fails, the difference in the fields is plotted.
         function createGrid(testCase, gridSize, gridSpacing)
 
             % Create grid.
-            testCase.kgrid = kwave.toolbox.kWaveGrid(gridSize, gridSpacing);
+            testCase.kgrid = kwave.toolbox.Grid(gridSize, gridSpacing);
 
             % Define tolerance for field comparisons.
             testCase.tol = matlab.unittest.constraints.AbsoluteTolerance(single(1e-6));

@@ -1,5 +1,5 @@
 %% highestPrimeFactors
-% *Class:* kwave.toolbox.kWaveGrid
+% *Class:* kwave.toolbox.Grid
 % *Package:* kwave.toolbox
 %
 % Calculate highest prime factors.
@@ -13,7 +13,7 @@
 %% Examples
 % Calculate the highest prime factors for a 2D grid.
 %
-%     kgrid = kwave.toolbox.kWaveGrid([32, 31], 1e-3);
+%     kgrid = kwave.toolbox.Grid([32, 31], 1e-3);
 %     kgrid.highestPrimeFactors
 %     
 %     ans =

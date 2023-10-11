@@ -5,7 +5,7 @@
 %
 %% Description
 % Simple container class used to specify virtual properties for classes
-% deriving from |kwave.toolbox.kWaveInput|. 
+% deriving from |kwave.toolbox.GridInput|.
 %
 %% Input Arguments
 % * |name| - (char) Name of the virtual property.

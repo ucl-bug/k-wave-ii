@@ -1,15 +1,15 @@
-%% kWaveAcousticMedium
+%% AcousticMedium
 % *Package:* kwave.toolbox
-% *Superclasses:* kwave.toolbox.kWaveInput
+% *Superclasses:* kwave.toolbox.GridInput
 %
 % Class used to define the acoustic medium properties for a simulation.
 %
 %% Syntax
-%   medium = kWaveAcousticMedium(kgrid);
+%   medium = AcousticMedium(kgrid);
 %
 %% Description
 % This class is used to define the acoustic medium properties. The
-% constructor takes an object of the |kwave.toolbox.kWaveGrid| class which
+% constructor takes an object of the |kwave.toolbox.Grid| class which
 % defines the grid size. All medium properties can be scalar or have the
 % same size as the grid with the exception of |alphaPower| and
 % |soundSpeedReference|, which must be scalar. The |soundSpeed| and
@@ -19,8 +19,8 @@
 % Define the grid and medium objects, and assign the sound speed and
 % density.
 %
-%    kgrid = kwave.toolbox.kWaveGrid([128, 128], 1e-3);
-%    medium = kwave.toolbox.kWaveAcousticMedium(kgrid);
+%    kgrid = kwave.toolbox.Grid([128, 128], 1e-3);
+%    medium = kwave.toolbox.AcousticMedium(kgrid);
 %    medium.soundSpeed = rand(medium.gridSize);
 %    medium.density = rand(medium.gridSize);
 %
@@ -36,9 +36,9 @@
 % * |BonA| - (single) Parameter of nonlinearity.
 %
 %% See Also
-% * |kWaveInput|
+% * |GridInput|
 
-classdef kWaveAcousticMedium < kwave.toolbox.kWaveInput
+classdef AcousticMedium < kwave.toolbox.GridInput
 
     properties
         soundSpeedReference single {mustBeReal, mustBePositive, mustBeFinite}

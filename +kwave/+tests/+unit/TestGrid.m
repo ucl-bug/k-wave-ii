@@ -1,13 +1,13 @@
-%% TestkWaveGrid
+%% TestGrid
 % *Package:* kwave.tests.unit
 % *Superclasses:* matlab.unittest.TestCase
 %
-% Unit tests for the kWaveGrid class.
+% Unit tests for the kwave.toolbox.Grid class.
 
-classdef TestkWaveGrid < matlab.unittest.TestCase
+classdef TestGrid < matlab.unittest.TestCase
 
     properties
-        kgrid kwave.toolbox.kWaveGrid
+        kgrid kwave.toolbox.Grid
     end
 
     properties(MethodSetupParameter)
@@ -53,10 +53,10 @@ classdef TestkWaveGrid < matlab.unittest.TestCase
 
     methods(TestMethodSetup, ParameterCombination="sequential")
 
-        % Create kWaveGrid object used by tests.
+        % Create Grid object used by tests.
         function createSource(testCase, gridSize, gridSpacing, gridSizePadded, gridSpacingPadded, primeFactors) %#ok<INUSD> 
             import kwave.toolbox.*;
-            testCase.kgrid = kWaveGrid(gridSize, gridSpacing);
+            testCase.kgrid = Grid(gridSize, gridSpacing);
         end
 
     end
@@ -98,7 +98,7 @@ classdef TestkWaveGrid < matlab.unittest.TestCase
             yVec = yVec - yVec(ceil((end + 1)/2));
             zVec = zVec - zVec(ceil((end + 1)/2));
 
-            % Verify against values computed by kWaveGrid.
+            % Verify against values computed by Grid.
             testCase.verifyEqual(testCase.kgrid.xVec, xVec, RelTol=1e-15);
             testCase.verifyEqual(testCase.kgrid.yVec, yVec, RelTol=1e-15);
             testCase.verifyEqual(testCase.kgrid.zVec, zVec, RelTol=1e-15);
@@ -148,7 +148,7 @@ classdef TestkWaveGrid < matlab.unittest.TestCase
             kMaxVec(kMaxVec == 0) = [];
             kMax = min(kMaxVec);
 
-            % Verify maximum against values computed by kWaveGrid.
+            % Verify maximum against values computed by Grid.
             testCase.verifyEqual(testCase.kgrid.kxMax, kxMax, RelTol=1e-15);
             testCase.verifyEqual(testCase.kgrid.kyMax, kyMax, RelTol=1e-15);
             testCase.verifyEqual(testCase.kgrid.kzMax, kzMax, RelTol=1e-15);
@@ -200,7 +200,7 @@ classdef TestkWaveGrid < matlab.unittest.TestCase
             import kwave.toolbox.*;
             sz = [10, 10];
             spacing = [1, 1, 1];
-            testCase.verifyError(@() kWaveGrid(sz, spacing), 'kWaveGrid:incorrectInputSize');
+            testCase.verifyError(@() Grid(sz, spacing), 'Grid:incorrectInputSize');
         end
 
         % Test that a mismatch between the length of the grid size and grid
@@ -210,7 +210,7 @@ classdef TestkWaveGrid < matlab.unittest.TestCase
             sz = [10, 10];
             spacing = [1, 1];
             padding = [1, 1, 1];
-            testCase.verifyError(@() kWaveGrid(sz, spacing, padding), 'kWaveGrid:incorrectInputSize');
+            testCase.verifyError(@() Grid(sz, spacing, padding), 'Grid:incorrectInputSize');
         end
 
         % Test assigning grid padding.
@@ -219,7 +219,7 @@ classdef TestkWaveGrid < matlab.unittest.TestCase
             sz = [10, 10];
             spacing = [1, 1];
             padding = [1, 1];
-            testCase.verifyWarningFree(@() kWaveGrid(sz, spacing, padding));
+            testCase.verifyWarningFree(@() Grid(sz, spacing, padding));
         end
 
         % Test size check for vector fields.
