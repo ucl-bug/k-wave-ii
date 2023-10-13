@@ -83,7 +83,7 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
 
             % Test incorrect size gives exception.
             f = rand(2, 2, 2, 4);
-            testCase.verifyError(@() testCase.solver.divergence(f), 'kWaveSolver:incorrectSize');
+            testCase.verifyError(@() testCase.solver.divergence(f), 'FourierCollocation:incorrectSize');
 
         end
 

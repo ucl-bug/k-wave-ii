@@ -103,11 +103,11 @@ classdef TestThermalSolver < kwave.tests.unit.AbstractTestGrid
 
             testCase.verifyError(@() ...
                 ThermalSolver(testCase.kgrid, mediumIncorrect, source, []), ...
-                'kWaveSolver:gridMismatch');
+                'TimeDomainSolver:gridMismatch');
 
             testCase.verifyError(@() ...
                 ThermalSolver(testCase.kgrid, medium, sourceIncorrect, []), ...
-                'kWaveSolver:gridMismatch');
+                'TimeDomainSolver:gridMismatch');
 
         end
 
