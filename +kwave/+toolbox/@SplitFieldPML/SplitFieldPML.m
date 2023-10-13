@@ -7,12 +7,12 @@
 % 
 %
 %% Input Arguments
-% * |kgrid| - (kWaveGrid) Object which defines the simulation grid size.
+% * |kgrid| - (kwave.toolbox.Grid) Object which defines the simulation grid size.
 %
 %% Properties
 % Input objects:
 %
-% * |kgrid| - (kWaveGrid) Handle for grid object.
+% * |kgrid| - (kwave.toolbox.Grid) Handle for grid object.
 %
 % Other properties:
 %
@@ -37,7 +37,12 @@
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
-classdef SplitFieldPML < kwave.toolbox.kWaveInput
+classdef SplitFieldPML < handle
+
+    % Properties set by constructor.
+    properties(SetAccess=immutable)
+        kgrid;
+    end
 
     % PML properties.
     properties
@@ -49,21 +54,14 @@ classdef SplitFieldPML < kwave.toolbox.kWaveInput
         pmlZStaggered single {mustBeReal, mustBeFinite}
     end
 
-    % List of required properties.
-    properties(Constant, Hidden=true)
-        requiredProperties = {};
-    end
-
     % Constructor.
     methods
         function obj = SplitFieldPML(kgrid)
 
             arguments
-                kgrid(1,1) kwave.toolbox.kWaveGrid
+                kgrid(1,1) kwave.toolbox.Grid
             end
-
-            % Pass input arguments to superclass constructor.
-            obj@kwave.toolbox.kWaveInput(kgrid)
+            obj.kgrid = kgrid;
 
             % Initialise PML properties.
             pmlSize = obj.kgrid.gridPadding;
@@ -146,7 +144,7 @@ classdef SplitFieldPML < kwave.toolbox.kWaveInput
                 obj
                 dt(1,1) single {mustBeReal, mustBeFinite}
                 soundSpeedReference(1,1) single {mustBeReal, mustBeFinite}
-                pmlAlpha(3,1) single {mustBeReal, mustBeFinite}
+                pmlAlpha(3,1) single {mustBeReal, mustBeFinite} = 2
             end
 
             pmlSize = obj.kgrid.gridPadding;
@@ -168,6 +166,5 @@ classdef SplitFieldPML < kwave.toolbox.kWaveInput
         end
 
     end
-
 
 end
