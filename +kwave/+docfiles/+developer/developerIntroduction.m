@@ -141,16 +141,16 @@
 % class in isolation.
 % * *|+linting|:* Linting checks assess code for stylistic and syntactical
 % correctness.
-% * *|+legacy|:* Legacy tests are regression tests against k-Wave I to ensure
-% existing functionality remains unaffected by changes. 
+% * *|+legacy|:* Legacy tests are regression tests against k-Wave I to
+% ensure existing functionality remains unaffected by changes.
 % 
 % Each top level class or function should have at least one corresponding
 % unit test. Unit tests should have 100% line coverage. Tests should
 % inheret from one of the following:
 %
-% * |kwave.tests.unit.TestInput| for testing classes that derive from
-% |kwave.toolbox.kWaveInput|. 
-% * |kwave.tests.unit.TestGrid| for tests that need to iterate over
+% * |kwave.tests.unit.AbstractTestGridInput| for testing classes that
+% derive from |kwave.toolbox.GridInput|.
+% * |kwave.tests.unit.AbstractTestGrid| for tests that need to iterate over
 % different sized grids.
 % * |matlab.unittest.TestCase| for general tests.
 % * |matlab.perftest.TestCase| for performance tests.

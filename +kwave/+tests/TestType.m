@@ -41,6 +41,5 @@ classdef TestType
         function folder = artifactsFolderName(obj)
             folder = string(obj) + '-tests-artifacts';
         end     
-
     end
 end

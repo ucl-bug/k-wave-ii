@@ -1,6 +1,6 @@
 %% templateClass
 % *Package:* kwave.toolbox
-% *Superclasses:* kwave.toolbox.kWaveInput (delete if not applicable)
+% *Superclasses:* kwave.toolbox.GridInput (delete if not applicable)
 %
 % Short description of class or function.
 %
