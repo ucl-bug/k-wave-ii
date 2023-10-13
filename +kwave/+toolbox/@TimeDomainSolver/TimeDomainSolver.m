@@ -103,10 +103,10 @@ classdef(Abstract) TimeDomainSolver < kwave.toolbox.FourierCollocation
 
             % Check inputs reference the same grid object.
             if (medium.kgrid ~= kgrid)
-                error('kWaveSolver:gridMismatch', 'The medium input references a different Grid object to the kgrid input.');
+                error('TimeDomainSolver:gridMismatch', 'The medium input references a different Grid object to the kgrid input.');
             end
             if (source.kgrid ~= kgrid)
-                error('kWaveSolver:gridMismatch', 'The source input references a different Grid object to the kgrid input.');
+                error('TimeDomainSolver:gridMismatch', 'The source input references a different Grid object to the kgrid input.');
             end
 
             % Check the required input properties have been defined.

@@ -75,7 +75,7 @@ end
 
 % Check input dimensions.
 if obj.dimensions ~= size(f, 4)
-    error('kWaveSolver:incorrectSize', ['Input must be vector field with ' num2str(obj.dimensions) ' components.']);
+    error('FourierCollocation:incorrectSize', ['Input must be vector field with ' num2str(obj.dimensions) ' components.']);
 end
 
 % Assign pseudonym for k-space derivative and shift operator.
