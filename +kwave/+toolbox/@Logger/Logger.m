@@ -30,13 +30,13 @@
 %
 %% Examples
 %   % Load toolbox and clear previous logger settings.
-%   clear all;
 %   import kwave.toolbox.*
+%   Logger.reset();
 %
 %   % Display debug and info messages. By default, only the info message
 %   % appears as the log level is |LogLevels.Info|.
-%   Logger.debug('Debugging message');
-%   Logger.info('Informational message');
+%   Logger.debug('This debug message will not be printed.');
+%   Logger.info('This info message will be printed.');
 %
 %   % Adjust the log level and display another debug message. The debug
 %   % message now shows up.
@@ -45,13 +45,14 @@
 %
 %   % Alter the log output to a file, then log a message.
 %   Logger.setLogToFile('logfile.txt');
+%   Logger.info('This message will be printed to the log file.');
 %
-%   % Reset the log output to the command line, then showcase warning and
+%   % Reset the log output to the command line, then print warning and
 %   % error messages.
 %   Logger.setLogToCommandLine();
 %   Logger.warning('Warning message');
 %   try
-%       Logger.error('CustomErrorID', 'Error message');
+%       Logger.error('ClassName:CustomErrorID', 'Error message');
 %   catch ME
 %       disp(ME.message);
 %   end
