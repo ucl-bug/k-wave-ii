@@ -25,7 +25,7 @@ classdef TestLogger < matlab.unittest.TestCase
         % Delete the log file.
         function deleteLogFile(testCase)
             kwave.toolbox.Logger.reset;
-            % delete(testCase.logFileName);
+            delete(testCase.logFileName);
         end     
 
     end
