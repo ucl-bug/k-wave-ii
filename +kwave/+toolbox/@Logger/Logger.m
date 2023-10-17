@@ -128,7 +128,6 @@ classdef Logger < handle
                 instance = [];
             elseif isempty(instance)
                 instance = kwave.toolbox.Logger();
-                disp('initialising...')
             end
             singleInstance = instance;
         end
@@ -184,7 +183,6 @@ classdef Logger < handle
         
         % Static method to log error messages and throw an exception.
         function error(errID, errorMessage)
-            disp('Here');
             kwave.toolbox.Logger.log(kwave.toolbox.LogLevels.Error, errorMessage);
             builtin('error', errID, errorMessage);
         end

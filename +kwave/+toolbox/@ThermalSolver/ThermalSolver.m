@@ -80,9 +80,6 @@
 %
 %% Properties
 % * |temperature| - (numeric) Temperature field [degC].
-%
-%% Methods
-% * |takeTimeStep|
 
 % Copyright (C) 2022- University College London.
 %
@@ -136,14 +133,10 @@ classdef ThermalSolver < kwave.toolbox.TimeDomainSolver
         end
     end
 
-    % Override inherited setInitialConditions method.
+    % Override inherited methods.
     methods(Access=protected)
         setInitialConditions(obj)
-    end
-
-    % Concrete implementation of takeTimeStep method.
-    methods
-        takeTimeStep(obj, Nt, dt)
+        executeTimeStep(obj, Nt, dt)
     end
 
 end

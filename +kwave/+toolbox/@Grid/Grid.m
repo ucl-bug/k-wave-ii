@@ -90,6 +90,7 @@
 %
 %% Methods
 % * |assignWithGridPadding|
+% * |displayGridSize|
 % * |highestPrimeFactors|
 % * |returnWithoutGridPadding|
 % * |validateSize|
@@ -380,6 +381,7 @@ classdef Grid < handle
     % General class methods.
     methods
         highestPrimeFactors = highestPrimeFactors(obj);
+        displayGridSize(obj);
         validateSize(obj, matrix, options);
         matrix = assignWithGridPadding(obj, matrix, edgeValues);
         matrix = returnWithoutGridPadding(obj, matrix);
