@@ -25,6 +25,6 @@ function checkRequiredProperties(obj)
 
 for ind = 1:length(obj.requiredProperties)
     if isempty(obj.subsref(struct('type', '.', 'subs', obj.requiredProperties{ind})))
-        error('GridInput:missingInput', ['The property ' obj.requiredProperties{ind} ' must be defined.']);
+        kwave.toolbox.Logger.error('GridInput:missingInput', ['The property ' obj.requiredProperties{ind} ' must be defined.']);
     end
 end

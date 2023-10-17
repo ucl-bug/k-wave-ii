@@ -180,14 +180,14 @@ classdef Grid < handle
             % Assign gridSize and gridSpacing.
             obj.gridSize(1:obj.dimensions) = gridSize;
             if (numel(gridSpacing) ~= 1) && (numel(gridSpacing) ~= obj.dimensions)
-                error('Grid:incorrectInputSize', 'gridSpacing must be a scalar or the same length as gridSize.');
+                kwave.toolbox.Logger.error('Grid:incorrectInputSize', 'gridSpacing must be a scalar or the same length as gridSize.');
             end
             obj.gridSpacing(1:obj.dimensions) = gridSpacing;
 
             % Assign gridPadding.
             if nargin == 3
                 if (numel(gridPadding) ~= 1) && (numel(gridPadding) ~= obj.dimensions)
-                    error('Grid:incorrectInputSize', 'gridSpacing must be a scalar or the same length as gridSize.');
+                    kwave.toolbox.Logger.error('Grid:incorrectInputSize', 'gridSpacing must be a scalar or the same length as gridSize.');
                 end
                 obj.gridPadding(1:obj.dimensions) = gridPadding;
             end
