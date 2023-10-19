@@ -22,7 +22,9 @@
 % |Error| messages.
 %
 % Messages can be printed to an external file instead of the command line
-% by calling |kwave.toolbox.Logger.setLogToFile("logFile.txt")|.
+% by calling |kwave.toolbox.Logger.setLogToFile("logFile.txt")|. The time
+% stamp can also be printed alongside the message by calling
+% |kwave.toolbox.Logger.showTimeStamp(true)|.
 %
 % The class implementation uses a singleton design so that the same log
 % settings can be used across the k-Wave toolbox. The class methods are
@@ -59,16 +61,6 @@
 %       disp(ME.message);
 %   end
 %
-%% Internal Properties
-% * |logLevel| - (kwave.toolbox.LogLevels) Specifies the current log 
-%   level. Messages beneath this level won't be logged. Defaults to
-%   |LogLevels.Info|.
-% * |logFile| - (char) Denotes the filename where log messages will be 
-%   stored. If left empty, messages are logged to the command window.
-%   Defaults to |''|.
-% * |showTimeStamp| - (logical) Specifies whether a date and time stamp is
-%   shown alongside the log message. Defaults to false.
-%
 %% Methods
 % *Logging*
 %
@@ -79,12 +71,18 @@
 %
 % *General*
 %
-% * |reset| - Clears the persistent variable and resets the logger.
-% * |setLogLevel| - Modifies |logLevel|. Accepts |LogLevels.Debug|,
-%   |LogLevels.Info|, |LogLevels.Warning|, and |LogLevels.Error|.
-% * |setLogToFile| - Adjusts |logFile| to the specified input file.
-% * |setLogToCommandLine| - Clears |logFile| value.
-% * |setShowTimeStamp| - Modifies |showTimeStamp|.
+% * |reset| - Resets all logger settings to their defaults.
+% * |setLogLevel| - Sets the minimum log level. Messages beneath this level
+%   won't be logged. Accepts |LogLevels.Debug|, |LogLevels.Info|,
+%   |LogLevels.Warning|, and |LogLevels.Error|. Defaults to
+%   |LogLevels.Info|.
+% * |setLogToFile| - Sets a text filename where log messages will be
+%   stored. If set to an empty string, messages are logged to the command
+%   window. Defaults to |''|.
+% * |setLogToCommandLine| - Clears the log filename so that log messages
+%   are displayed on the command line.
+% * |showTimeStamp| - Specifies whether a date and time stamp is
+%   shown alongside the log message. Defaults to false.
 %
 %% See Also
 % * |<matlab:doc('warning') warning>|
@@ -96,7 +94,7 @@ classdef Logger < handle
     properties (Access = private)
         logLevel (1,1) kwave.toolbox.LogLevels;
         logFile char;
-        showTimeStamp (1,1) logical
+        displayTimeStamp (1,1) logical
     end
     
     methods (Access = private)
@@ -105,7 +103,7 @@ classdef Logger < handle
         function obj = Logger()
             obj.logLevel = kwave.toolbox.LogLevels.Info;
             obj.logFile = '';
-            obj.showTimeStamp = false;
+            obj.displayTimeStamp = false;
         end
         
         % Method to log messages with different log levels.
@@ -113,7 +111,7 @@ classdef Logger < handle
             if level >= obj.logLevel
 
                 formattedMessage = message;
-                if obj.showTimeStamp
+                if obj.displayTimeStamp
                     timestamp = datetime('now', 'Format', 'yyyy-MM-dd HH:mm:ss');
                     formattedMessage = sprintf('%s - %s: %s', timestamp, char(level), formattedMessage);  
                 end
@@ -180,10 +178,10 @@ classdef Logger < handle
             logger.logFile = [];
         end
 
-        % Static method to modify the showTimeStamp boolean.
-        function setShowTimeStamp(value)
+        % Static method to modify the displayTimeStamp boolean.
+        function showTimeStamp(value)
             logger = kwave.toolbox.Logger.getInstance();
-            logger.showTimeStamp = value;
+            logger.displayTimeStamp = value;
         end
         
         % Static method to log debug messages.

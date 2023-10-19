@@ -77,7 +77,7 @@ classdef TestLogger < matlab.unittest.TestCase
         % which is added as part of the time stamp.
         function testShowTimeStamp(testCase)
             kwave.toolbox.Logger.setLogLevel(kwave.toolbox.LogLevels.Info);
-            kwave.toolbox.Logger.setShowTimeStamp(true);
+            kwave.toolbox.Logger.showTimeStamp(true);
             message = 'This message should appear with a time stamp.';
             kwave.toolbox.Logger.info(message);
 
