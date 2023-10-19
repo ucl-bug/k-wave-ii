@@ -55,20 +55,34 @@ classdef TestLogger < matlab.unittest.TestCase
         % Test setting the output to a file and verify the line addition.
         function testSetLogToFile(testCase)
             kwave.toolbox.Logger.setLogToFile(testCase.logFileName);
-            kwave.toolbox.Logger.info('Message written to a file.');
+            message = 'Message written to a file.';
+            kwave.toolbox.Logger.info(message);
             
             fileContent = fileread(testCase.logFileName);
-            testCase.verifyNotEmpty(strfind(fileContent, 'Message written to a file.'));
+            testCase.verifyNotEmpty(strfind(fileContent, message));
         end        
 
         % Test setting the log level and verify the line is not added.
         function testSetLogLevel(testCase)
             kwave.toolbox.Logger.setLogLevel(kwave.toolbox.LogLevels.Warning);
             kwave.toolbox.Logger.setLogToFile(testCase.logFileName);
-            kwave.toolbox.Logger.debug('This message should not appear.');
+            message = 'This message should not appear.';
+            kwave.toolbox.Logger.debug(message);
             
             fileContent = fileread(testCase.logFileName);
-            testCase.verifyEmpty(strfind(fileContent, 'This message should not appear.'));
+            testCase.verifyEmpty(strfind(fileContent, message));
+        end
+
+        % Test showing the time stamp and verify 'Info' is in the file,
+        % which is added as part of the time stamp.
+        function testShowTimeStamp(testCase)
+            kwave.toolbox.Logger.setLogLevel(kwave.toolbox.LogLevels.Info);
+            kwave.toolbox.Logger.setShowTimeStamp(true);
+            message = 'This message should appear with a time stamp.';
+            kwave.toolbox.Logger.info(message);
+
+            fileContent = fileread(testCase.logFileName);
+            testCase.verifyNotEmpty(strfind(fileContent, 'Info'));
         end
 
         % Smoke test setting log output back to the command line.
