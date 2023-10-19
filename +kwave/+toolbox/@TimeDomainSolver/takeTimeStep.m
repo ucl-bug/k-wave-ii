@@ -43,9 +43,9 @@ startTime = datetime('now');
 
 kwave.toolbox.Logger.info(['Calling ' class(obj) '.takeTimeStep...']);
 obj.kgrid.displayGridSize();
-kwave.toolbox.Logger.info(['dt: ' kwave.utilities.scaleSI(dt) 's, end time: ' kwave.utilities.scaleSI(dt * Nt) 's, time steps: ' num2str(Nt)]);
+kwave.toolbox.Logger.info(['  dt: ' kwave.utilities.scaleSI(dt) 's, end time: ' kwave.utilities.scaleSI(dt * Nt) 's, time steps: ' num2str(Nt)]);
 
 obj.executeTimeStep(Nt, dt);
 
 elapsedTime = between(startTime, datetime('now'));
-kwave.toolbox.Logger.info(['takeTimeStep completed in ' kwave.utilities.formatDuration(elapsedTime)]);
+kwave.toolbox.Logger.info(['  takeTimeStep completed in ' kwave.utilities.formatDuration(elapsedTime)]);

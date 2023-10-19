@@ -43,8 +43,10 @@
 %   Logger.setLogLevel(LogLevels.Debug);
 %   Logger.debug('Another debugging message');
 %
-%   % Alter the log output to a file, then log a message.
+%   % Alter the log output to a file, turn on display of the time stamp,
+%   % then log a message.
 %   Logger.setLogToFile('logfile.txt');
+%   Logger.setShowTimeStamp(true);
 %   Logger.info('This message will be printed to the log file.');
 %
 %   % Reset the log output to the command line, then print warning and
@@ -57,11 +59,15 @@
 %       disp(ME.message);
 %   end
 %
-%% Properties
+%% Internal Properties
 % * |logLevel| - (kwave.toolbox.LogLevels) Specifies the current log 
-%   level. Messages beneath this level won't be logged. 
+%   level. Messages beneath this level won't be logged. Defaults to
+%   |LogLevels.Info|.
 % * |logFile| - (char) Denotes the filename where log messages will be 
 %   stored. If left empty, messages are logged to the command window.
+%   Defaults to |''|.
+% * |showTimeStamp| - (logical) Specifies whether a date and time stamp is
+%   shown alongside the log message. Defaults to false.
 %
 %% Methods
 % *Logging*
@@ -78,6 +84,7 @@
 %   |LogLevels.Info|, |LogLevels.Warning|, and |LogLevels.Error|.
 % * |setLogToFile| - Adjusts |logFile| to the specified input file.
 % * |setLogToCommandLine| - Clears |logFile| value.
+% * |setShowTimeStamp| - Modifies |showTimeStamp|.
 %
 %% See Also
 % * |<matlab:doc('warning') warning>|
@@ -89,6 +96,7 @@ classdef Logger < handle
     properties (Access = private)
         logLevel (1,1) kwave.toolbox.LogLevels;
         logFile char;
+        showTimeStamp (1,1) logical
     end
     
     methods (Access = private)
@@ -97,13 +105,19 @@ classdef Logger < handle
         function obj = Logger()
             obj.logLevel = kwave.toolbox.LogLevels.Info;
             obj.logFile = '';
+            obj.showTimeStamp = false;
         end
         
         % Method to log messages with different log levels.
         function logMessage(obj, level, message)
             if level >= obj.logLevel
-                timestamp = datetime('now', 'Format', 'yyyy-MM-dd HH:mm:ss');
-                formattedMessage = sprintf('%s - %s: %s', timestamp, char(level), message);
+
+                formattedMessage = message;
+                if obj.showTimeStamp
+                    timestamp = datetime('now', 'Format', 'yyyy-MM-dd HH:mm:ss');
+                    formattedMessage = sprintf('%s - %s: %s', timestamp, char(level), formattedMessage);  
+                end
+
                 if isempty(obj.logFile)
                     disp(formattedMessage);
                 else
@@ -111,6 +125,7 @@ classdef Logger < handle
                     fprintf(fileId, '%s\n', formattedMessage);
                     fclose(fileId);
                 end
+
             end
         end
 
@@ -163,6 +178,12 @@ classdef Logger < handle
         function setLogToCommandLine()
             logger = kwave.toolbox.Logger.getInstance();
             logger.logFile = [];
+        end
+
+        % Static method to modify the showTimeStamp boolean.
+        function setShowTimeStamp(value)
+            logger = kwave.toolbox.Logger.getInstance();
+            logger.showTimeStamp = value;
         end
         
         % Static method to log debug messages.
