@@ -33,6 +33,7 @@ classdef GenerateDocumentation
 
     properties(SetAccess=immutable, Hidden=true)
         helpDir;
+        helpDirWeb
         rootPath;
     end
 
@@ -51,6 +52,7 @@ classdef GenerateDocumentation
             end
             addpath(obj.rootPath);
             obj.helpDir = fullfile(obj.rootPath, 'helpfiles');
+            obj.helpDirWeb = fullfile(obj.rootPath, 'helpfilesweb');
             obj.createHelpDir;
 
             % Generate HTML files.
@@ -87,6 +89,10 @@ classdef GenerateDocumentation
                 rmdir(obj.helpDir, 's');
             end
             mkdir(obj.helpDir);
+            if exist(obj.helpDirWeb, 'file')
+                rmdir(obj.helpDirWeb, 's');
+            end
+            mkdir(obj.helpDirWeb);
         end
 
         % Convert m-files in specified directory to HTML using publish.
@@ -153,12 +159,15 @@ classdef GenerateDocumentation
                 % line of code documentation.
                 mFilenames(ind).title = kwave.utilities.parseTitle(fullfile(mFilenames(ind).folder, mFilenames(ind).name));
 
-                % Publish.
+                % Publish to html.
                 htmlFile = publish(filename, ...
                     'format', 'html', ...
                     'outputDir', obj.helpDir, ...
                     'evalCode', options.evalCode, ...
                     'showCode', options.showCode);
+
+                % Publish to md.
+                kwave.utilities.mToMarkdown(filename, obj.helpDirWeb);
 
                 % Rename to include classname if a class method.
                 if mFilenames(ind).isClassMethod
