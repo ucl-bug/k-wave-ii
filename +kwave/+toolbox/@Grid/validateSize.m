@@ -55,7 +55,7 @@ arguments
     obj
     matrix
     options.IncludePadding(1,1) logical = false
-    options.Type(1,:) kwave.toolbox.GridFieldType = kwave.toolbox.GridFieldType.ScalarField
+    options.Type(1,1) kwave.toolbox.GridFieldType = kwave.toolbox.GridFieldType.ScalarField
     options.VariableName(1,:) char = ''
     options.FunctionName(1,:) char = ''
 end
