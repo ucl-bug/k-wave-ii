@@ -6,9 +6,9 @@
 %
 %% Description
 % Tests the gradient and divergence functions of the
-% FourierCollocation against simple analytical functions that are
-% periodic on the test grid. All dimensions and grid staggering options are
-% tested.
+% |kwave.toolbox.FourierCollocation| class against simple analytical
+% functions that are periodic on the test grid. All dimensions and grid
+% staggering options are tested.
 
 classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
 
@@ -103,9 +103,9 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
     methods
 
         % Define a periodic scalar function and its analytic gradient on
-        % the grid specified by obj.kgrid. The function is normalised so
-        % the maximum of the gradient is approximately 1. The gradient can
-        % also be returned on a staggered grid.
+        % the grid specified by obj.kgridPadded. The function is normalised
+        % so the maximum of the gradient is approximately 1. The gradient
+        % can also be returned on a staggered grid.
         function [F, gradF] = getPeriodicScalarFunction(obj, staggering)
 
             arguments
@@ -115,29 +115,29 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
 
             switch staggering
                 case 'none'
-                     xSg = obj.kgrid.xVec;
-                     ySg = obj.kgrid.yVec;
-                     zSg = obj.kgrid.zVec;
+                     xSg = obj.kgridPadded.xVec;
+                     ySg = obj.kgridPadded.yVec;
+                     zSg = obj.kgridPadded.zVec;
                 case 'forward'
-                     xSg = obj.kgrid.xVec + obj.kgrid.dx/2;
-                     ySg = obj.kgrid.yVec + obj.kgrid.dy/2;
-                     zSg = obj.kgrid.zVec + obj.kgrid.dz/2;
+                     xSg = obj.kgridPadded.xVec + obj.kgridPadded.dx/2;
+                     ySg = obj.kgridPadded.yVec + obj.kgridPadded.dy/2;
+                     zSg = obj.kgridPadded.zVec + obj.kgridPadded.dz/2;
                 case 'backward'
-                     xSg = obj.kgrid.xVec - obj.kgrid.dx/2;
-                     ySg = obj.kgrid.yVec - obj.kgrid.dy/2;
-                     zSg = obj.kgrid.zVec - obj.kgrid.dz/2;
+                     xSg = obj.kgridPadded.xVec - obj.kgridPadded.dx/2;
+                     ySg = obj.kgridPadded.yVec - obj.kgridPadded.dy/2;
+                     zSg = obj.kgridPadded.zVec - obj.kgridPadded.dz/2;
             end
 
-            switch obj.kgrid.dimensions
+            switch obj.kgridPadded.dimensions
                 case 1
-                    kx = (2*pi ./ obj.kgrid.xSize);
-                    F = sin(kx .* obj.kgrid.xVec) ./ kx;
+                    kx = (2*pi ./ obj.kgridPadded.xSize);
+                    F = sin(kx .* obj.kgridPadded.xVec) ./ kx;
                     gradF = cos(kx .* xSg);
                 case 2
-                    kx = (2*pi ./ obj.kgrid.xSize);
-                    ky = (2*pi ./ obj.kgrid.ySize);
+                    kx = (2*pi ./ obj.kgridPadded.xSize);
+                    ky = (2*pi ./ obj.kgridPadded.ySize);
 
-                    [X, Y] = ndgrid(obj.kgrid.xVec, obj.kgrid.yVec);
+                    [X, Y] = ndgrid(obj.kgridPadded.xVec, obj.kgridPadded.yVec);
                     [Xsg, Ysg] = ndgrid(xSg, ySg);
                     
                     F = sin(kx .* X) .* sin(ky .* Y) ./ kx;
@@ -146,11 +146,11 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
                     gradF(:, :, :, 1) = cos(kx .* Xsg) .* sin(ky .* Y);
                     gradF(:, :, :, 2) = sin(kx .* X)   .* cos(ky .* Ysg) .* (ky ./ kx);
                 case 3
-                    kx = (2*pi ./ obj.kgrid.xSize);
-                    ky = (2*pi ./ obj.kgrid.ySize);
-                    kz = (2*pi ./ obj.kgrid.zSize);
+                    kx = (2*pi ./ obj.kgridPadded.xSize);
+                    ky = (2*pi ./ obj.kgridPadded.ySize);
+                    kz = (2*pi ./ obj.kgridPadded.zSize);
                     
-                    [X, Y, Z] = ndgrid(obj.kgrid.xVec, obj.kgrid.yVec, obj.kgrid.zVec);
+                    [X, Y, Z] = ndgrid(obj.kgridPadded.xVec, obj.kgridPadded.yVec, obj.kgridPadded.zVec);
                     [Xsg, Ysg, Zsg] = ndgrid(xSg, ySg, zSg);
                     
                     F = sin(kx .* X) .* sin(ky .* Y) .* sin(kz .* Z) ./ kx;
@@ -163,7 +163,7 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
         end
 
         % Define a periodic vector function and its analytic divergence on
-        % the grid specified by obj.kgrid. The function is normalized so
+        % the grid specified by obj.kgridPadded. The function is normalized so
         % the maximum of the divergence is approximately 1. The gradient
         % can also be returned on a staggered grid.
         function [F, divF] = getPeriodicVectorFunction(obj, staggering)
@@ -175,29 +175,29 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
 
             switch staggering
                 case 'none'
-                     xSg = obj.kgrid.xVec;
-                     ySg = obj.kgrid.yVec;
-                     zSg = obj.kgrid.zVec;
+                     xSg = obj.kgridPadded.xVec;
+                     ySg = obj.kgridPadded.yVec;
+                     zSg = obj.kgridPadded.zVec;
                 case 'forward'
-                     xSg = obj.kgrid.xVec + obj.kgrid.dx/2;
-                     ySg = obj.kgrid.yVec + obj.kgrid.dy/2;
-                     zSg = obj.kgrid.zVec + obj.kgrid.dz/2;
+                     xSg = obj.kgridPadded.xVec + obj.kgridPadded.dx/2;
+                     ySg = obj.kgridPadded.yVec + obj.kgridPadded.dy/2;
+                     zSg = obj.kgridPadded.zVec + obj.kgridPadded.dz/2;
                 case 'backward'
-                     xSg = obj.kgrid.xVec - obj.kgrid.dx/2;
-                     ySg = obj.kgrid.yVec - obj.kgrid.dy/2;
-                     zSg = obj.kgrid.zVec - obj.kgrid.dz/2;
+                     xSg = obj.kgridPadded.xVec - obj.kgridPadded.dx/2;
+                     ySg = obj.kgridPadded.yVec - obj.kgridPadded.dy/2;
+                     zSg = obj.kgridPadded.zVec - obj.kgridPadded.dz/2;
             end
 
-            switch obj.kgrid.dimensions
+            switch obj.kgridPadded.dimensions
                 case 1
-                    kx = (2*pi ./ obj.kgrid.xSize);
-                    F = sin(kx .* obj.kgrid.xVec) ./ kx;
+                    kx = (2*pi ./ obj.kgridPadded.xSize);
+                    F = sin(kx .* obj.kgridPadded.xVec) ./ kx;
                     divF = cos(kx .* xSg);
                 case 2
-                    kx = (2*pi ./ obj.kgrid.xSize);
-                    ky = (2*pi ./ obj.kgrid.ySize);
+                    kx = (2*pi ./ obj.kgridPadded.xSize);
+                    ky = (2*pi ./ obj.kgridPadded.ySize);
                     
-                    [X, Y] = ndgrid(obj.kgrid.xVec, obj.kgrid.yVec);
+                    [X, Y] = ndgrid(obj.kgridPadded.xVec, obj.kgridPadded.yVec);
                     [Xsg, Ysg] = ndgrid(xSg, ySg);
                     
                     Fx = sin(kx .* X) ./ kx;
@@ -207,11 +207,11 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
                     
                     divF = cos(kx .* Xsg) + cos(ky .* Ysg);
                 case 3
-                    kx = (2*pi ./ obj.kgrid.xSize);
-                    ky = (2*pi ./ obj.kgrid.ySize);
-                    kz = (2*pi ./ obj.kgrid.zSize);
+                    kx = (2*pi ./ obj.kgridPadded.xSize);
+                    ky = (2*pi ./ obj.kgridPadded.ySize);
+                    kz = (2*pi ./ obj.kgridPadded.zSize);
                     
-                    [X, Y, Z] = ndgrid(obj.kgrid.xVec, obj.kgrid.yVec, obj.kgrid.zVec);
+                    [X, Y, Z] = ndgrid(obj.kgridPadded.xVec, obj.kgridPadded.yVec, obj.kgridPadded.zVec);
                     [Xsg, Ysg, Zsg] = ndgrid(xSg, ySg, zSg);
                     
                     Fx = sin(kx .* X) ./ kx;

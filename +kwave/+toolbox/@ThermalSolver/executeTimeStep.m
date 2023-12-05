@@ -1,16 +1,15 @@
-%% takeTimeStep
+%% executeTimeStep
 % *Class:* kwave.toolbox.ThermalSolver
 % *Package:* kwave.toolbox
 %
 % Iteratively update solution for given number of time steps.
 %
 %% Syntax
-%   takeTimeStep(obj, Nt, dt)
+%   executeTimeStep(obj, Nt, dt)
 %
 %% Description
 % Iteratively updates the solution for the temperature field for the given
-% number of time steps and time step size. This function implements the
-% pseudospectral time domain solution to the governing PDE.
+% number of time steps and time step size.
 %
 %% Input Arguments
 % * |Nt| - (integer) Number of time steps.
@@ -32,7 +31,7 @@
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
-function takeTimeStep(obj, Nt, dt)
+function executeTimeStep(obj, Nt, dt)
 
 arguments
     obj

@@ -122,13 +122,14 @@ for index = 1:length(heightArray)
 end
 
 %% Error messages
+% * Error messages should use the |kwave.toolbox.Logger| class.
 % * Error messages should begin with a capital letter (except when using a
 %   variable or function name) and end with a period.
 % * Error messages should use a two part identifier in the form
 % |ClassName:errorIdentifier| or 
 %   |functionName:errorIdentifier|.
 
-error('Grid:incorrectInputSize', 'gridSpacing must be a scalar or the same length as gridSize.');
+kwave.toolbox.Logger.error('Grid:incorrectInputSize', 'gridSpacing must be a scalar or the same length as gridSize.');
 
 %% Class and Function Documentation
 % Classes should be written using
