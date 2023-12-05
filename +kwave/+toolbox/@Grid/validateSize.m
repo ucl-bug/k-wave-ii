@@ -41,9 +41,9 @@
 %
 % * |IncludePadding| - (logical) Option to include |gridPadding| in the
 %   grid size comparison. Default = false.
-% * |VectorField| - (logical) Option check the size of a vector field
-%   input, where the components of the vector field are stored in the 4th
-%   input dimension. Default = false.
+% * |Type| - (kwave.toolbox.GridFieldType) Type of grid variable. For
+%   vector fields, the components of the vector field are stored in the 4th
+%   input dimension. Default = kwave.toolbox.GridFieldType.ScalarField.
 % * |FunctionName| - (char) Name of the calling function. Used to add
 %   information to any error message thrown. Default = ''.
 % * |VariableName| - (char) Name of the matrix variable. Used to add
@@ -55,7 +55,7 @@ arguments
     obj
     matrix
     options.IncludePadding(1,1) logical = false
-    options.VectorField(1,1) logical = false
+    options.Type(1,1) kwave.toolbox.GridFieldType = kwave.toolbox.GridFieldType.ScalarField
     options.VariableName(1,:) char = ''
     options.FunctionName(1,:) char = ''
 end
@@ -68,8 +68,15 @@ if (numel(matrix) ~= 1)
         expectedGridSize = expectedGridSize + 2 * obj.gridPadding;
     end
 
-    if (options.VectorField)
-        expectedGridSize = [expectedGridSize, obj.dimensions];
+    switch (options.Type)
+        case kwave.toolbox.GridFieldType.VectorField
+            expectedGridSize = [expectedGridSize, obj.dimensions];
+        case kwave.toolbox.GridFieldType.VectorX
+            expectedGridSize([2, 3]) = 1;
+        case kwave.toolbox.GridFieldType.VectorY
+            expectedGridSize([1, 3]) = 1;
+        case kwave.toolbox.GridFieldType.VectorZ
+            expectedGridSize([1, 2]) = 1;
     end
     
     validateattributes(matrix, ...
