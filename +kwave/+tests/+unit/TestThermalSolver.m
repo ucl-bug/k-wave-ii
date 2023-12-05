@@ -57,11 +57,11 @@ classdef TestThermalSolver < kwave.tests.unit.AbstractTestGrid
             dt = 1;
             solver.takeTimeStep(Nt/2, dt);
             solver.takeTimeStep(Nt/2, dt);
-            testCase.actualSolution = solver.temperature;
+            testCase.actualSolution = solver.temperaturePadded;
 
             % Compute exact Green's function solution.
-            D = medium.thermalConductivity / (medium.density * medium.specificHeat);
-            testCase.referenceSolution = kwave.legacy.bioheatExact(source.initialTemperature, 0, [D, 0, 0], testCase.kgrid.dx, (Nt - 1) * dt);
+            D = medium.thermalConductivityPadded / (medium.densityPadded * medium.specificHeatPadded);
+            testCase.referenceSolution = kwave.legacy.bioheatExact(source.initialTemperaturePadded, 0, [D, 0, 0], testCase.kgrid.dx, (Nt - 1) * dt);
 
             % Compare with tolerance.
             testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));

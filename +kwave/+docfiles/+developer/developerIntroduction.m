@@ -118,6 +118,14 @@
 % Additional documentation files that are not automatically added to the
 % table of contents should be stored in |+kwave/+docfiles/+general|.
 %
+%% Logging And Errors
+% Logging messages help users understand code settings and status, and help
+% developers debug code. In k-Wave-II, all logging messages (including
+% warnings and errors) should be printed using the |kwave.toolbox.Logger|
+% class. This provides a consistent interface, allow adjusting the
+% verbosity of the output messages, and allows piping the logging messages
+% to an external file.
+%
 %% Toolboxes And External Code
 % The core functionality of k-Wave-II should not depend on any MATLAB
 % toolboxes. This is to minimise the requirements for non-academic users

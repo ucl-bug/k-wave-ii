@@ -16,15 +16,16 @@
 % |setInitialConditions| is blank, and derived classes should reimplement
 % this as appropriate to initialise variables used in the time loop.
 %
-% Derived classes must provide a concrete implementation of the
-% |takeTimeStep| method which implements the numerical solution to the PDE.
-% This must also update the |timeStepsTaken| and |tArray| properties.
+% Derived classes must provide a concrete implementation of the protected
+% |executeTimeStep| method which implements the numerical solution to the
+% PDE. |executeTimeStep| must update the |timeStepsTaken| and |tArray|
+% properties. |executeTimeStep| is called by the public |takeTimeStep|
+% method which also prints simulation information using
+% |kwave.toolbox.Logger.info|.
 % 
-% Similar to classes derived from |kwave.toolbox.GridInput|, classes
-% derived from |TimeDomainSolver| should define padded variants of any PDE
-% variables that can be accessed by the user, and implement set and get
-% methods that add and remove the grid padding. See the
-% |kwave.toolbox.GridInput| documentation for further details.
+% Classes derived from |TimeDomainSolver| should define padded variants of
+% any PDE variables that can be accessed by the user, and implement set and
+% get methods that add and remove the grid padding.
 %
 %% Input Arguments
 % * |kgrid| - (kwave.toolbox.Grid) Object which defines the simulation grid
@@ -103,10 +104,10 @@ classdef(Abstract) TimeDomainSolver < kwave.toolbox.FourierCollocation
 
             % Check inputs reference the same grid object.
             if (medium.kgrid ~= kgrid)
-                error('TimeDomainSolver:gridMismatch', 'The medium input references a different Grid object to the kgrid input.');
+                kwave.toolbox.Logger.error('TimeDomainSolver:gridMismatch', 'The medium input references a different Grid object to the kgrid input.');
             end
             if (source.kgrid ~= kgrid)
-                error('TimeDomainSolver:gridMismatch', 'The source input references a different Grid object to the kgrid input.');
+                kwave.toolbox.Logger.error('TimeDomainSolver:gridMismatch', 'The source input references a different Grid object to the kgrid input.');
             end
 
             % Check the required input properties have been defined.
@@ -125,9 +126,14 @@ classdef(Abstract) TimeDomainSolver < kwave.toolbox.FourierCollocation
         end
     end
 
-    % Abstract methods that must be implemented by sub-classes.
-    methods(Abstract)
+    % Template methods.
+    methods
         takeTimeStep(obj, Nt, dt);
+    end
+
+    % Abstract methods that must be implemented by sub-classes.
+    methods(Abstract, Access=protected)
+        executeTimeStep(obj, Nt, dt);
     end
 
     % Internal class methods with an empty implementation. These can
