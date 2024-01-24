@@ -41,10 +41,9 @@
 %
 % * |IncludePadding| - (logical) Option to include |gridPadding| in the
 %   grid size comparison. Default = false.
-% * |Type| - (|'scalar-field', 'vector-field', 'vector-x', 'vector-y',
-%   'vector-z'|) Type of grid variable. For vector fields, the components
-%   of the vector field are stored in the 4th input dimension. Default =
-%   'scalar-field'.
+% * |Type| - (kwave.toolbox.GridFieldType) Type of grid variable. For
+%   vector fields, the components of the vector field are stored in the 4th
+%   input dimension. Default = kwave.toolbox.GridFieldType.ScalarField.
 % * |FunctionName| - (char) Name of the calling function. Used to add
 %   information to any error message thrown. Default = ''.
 % * |VariableName| - (char) Name of the matrix variable. Used to add
@@ -56,7 +55,7 @@ arguments
     obj
     matrix
     options.IncludePadding(1,1) logical = false
-    options.Type(1,:) char {mustBeMember(options.Type, {'scalar-field', 'vector-field', 'vector-x', 'vector-y', 'vector-z'})} = 'scalar-field'
+    options.Type(1,1) kwave.toolbox.GridFieldType = kwave.toolbox.GridFieldType.ScalarField
     options.VariableName(1,:) char = ''
     options.FunctionName(1,:) char = ''
 end
@@ -72,16 +71,18 @@ if (options.IncludePadding)
 end
 
 switch (options.Type)
-    case 'vector-field'
+    case kwave.toolbox.GridFieldType.VectorField
         expectedGridSize = [expectedGridSize, obj.dimensions];
-    case 'vector-x'
+    case kwave.toolbox.GridFieldType.VectorX
         expectedGridSize([2, 3]) = 1;
-    case 'vector-y'
+    case kwave.toolbox.GridFieldType.VectorY
         expectedGridSize([1, 3]) = 1;
-    case 'vector-z'
+    case kwave.toolbox.GridFieldType.VectorZ
         expectedGridSize([1, 2]) = 1;
 end
 
-validateattributes(matrix, {'numeric'}, ...
-        {'size', expectedGridSize}, ...
-        options.FunctionName, options.VariableName);
+validateattributes(matrix, ...
+    {'numeric'}, ...
+    {'size', expectedGridSize}, ...
+    options.FunctionName, ...
+    options.VariableName);

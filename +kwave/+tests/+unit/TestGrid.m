@@ -225,7 +225,7 @@ classdef TestGrid < matlab.unittest.TestCase
         % Test size check for vector fields.
         function testValidateSizeForVectors(testCase)
             a = rand([testCase.kgrid.gridSize, testCase.kgrid.dimensions]);
-            testCase.verifyWarningFree(@() testCase.kgrid.validateSize(a, Type='vector-field'));
+            testCase.verifyWarningFree(@() testCase.kgrid.validateSize(a, Type=kwave.toolbox.GridFieldType.VectorField));
         end
 
     end

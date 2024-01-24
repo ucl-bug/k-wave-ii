@@ -30,6 +30,8 @@
 %   'positive', 'finite'}.
 % * |expansionValue| - (numeric) Value used in matrix expansion. Default =
 %   [].
+% * |type| = (kwave.toolbox.GridFieldsType) Field type used for size
+%   validation. Default = kwave.toolbox.GridFieldTypes.ScalarField.
 %
 %% Methods
 % * |createGridFieldsMap| - Static utility method to define a map for grid
@@ -42,6 +44,7 @@ classdef GridField < handle
         classes cell
         attributes cell
         expansionValue {mustBeScalarOrEmpty}
+        type kwave.toolbox.GridFieldType
     end
 
     methods
@@ -53,12 +56,14 @@ classdef GridField < handle
                 options.Classes = {'numeric'}
                 options.Attributes = {'real', 'positive', 'finite'}
                 options.ExpansionValue = []
+                options.Type = kwave.toolbox.GridFieldType.ScalarField
             end
 
             obj.name = name;
             obj.classes = options.Classes;
             obj.attributes = options.Attributes;
             obj.expansionValue = options.ExpansionValue;
+            obj.type = options.Type;
         end
 
     end
