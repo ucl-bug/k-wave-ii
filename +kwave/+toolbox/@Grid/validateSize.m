@@ -60,29 +60,29 @@ arguments
     options.FunctionName(1,:) char = ''
 end
 
-if (numel(matrix) ~= 1)
-
-    expectedGridSize = obj.gridSize;
-
-    if (options.IncludePadding)
-        expectedGridSize = expectedGridSize + 2 * obj.gridPadding;
-    end
-
-    switch (options.Type)
-        case kwave.toolbox.GridFieldType.VectorField
-            expectedGridSize = [expectedGridSize, obj.dimensions];
-        case kwave.toolbox.GridFieldType.VectorX
-            expectedGridSize([2, 3]) = 1;
-        case kwave.toolbox.GridFieldType.VectorY
-            expectedGridSize([1, 3]) = 1;
-        case kwave.toolbox.GridFieldType.VectorZ
-            expectedGridSize([1, 2]) = 1;
-    end
-    
-    validateattributes(matrix, ...
-        {'numeric'}, ...
-        {'size', expectedGridSize}, ...
-        options.FunctionName, ...
-        options.VariableName);
-
+if numel(matrix) == 1
+    return
 end
+
+expectedGridSize = obj.gridSize;
+
+if (options.IncludePadding)
+    expectedGridSize = expectedGridSize + 2 * obj.gridPadding;
+end
+
+switch (options.Type)
+    case kwave.toolbox.GridFieldType.VectorField
+        expectedGridSize = [expectedGridSize, obj.dimensions];
+    case kwave.toolbox.GridFieldType.VectorX
+        expectedGridSize([2, 3]) = 1;
+    case kwave.toolbox.GridFieldType.VectorY
+        expectedGridSize([1, 3]) = 1;
+    case kwave.toolbox.GridFieldType.VectorZ
+        expectedGridSize([1, 2]) = 1;
+end
+
+validateattributes(matrix, ...
+    {'numeric'}, ...
+    {'size', expectedGridSize}, ...
+    options.FunctionName, ...
+    options.VariableName);
