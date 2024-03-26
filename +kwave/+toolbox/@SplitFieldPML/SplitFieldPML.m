@@ -1,13 +1,30 @@
 %% SplitFieldPML
 % *Package:* kwave.toolbox
 %
-% XX.
+% Definition and application of a split field perfectly matched layer
+% (PML).
 %
 %% Description
-% 
+% Class used to define and apply a perfectly matched layer (PML) to a
+% vector field. The class constructor takes a |Grid| object which defines
+% the grid size. The PML size is defined by the |gridPadding| property of
+% the |Grid| object.
+%
+% Six properties are used to store the PML on the regular and staggered
+% grid in each direction. These are initialised as ones (no PML) by the
+% constructor. The PML profile can be setup by calling the helper method
+% |setupQuarticPML|, which sets the profiles to
+% <https://doi.org/10.1121/1.1421344> (Equation 27). Alternatively, the
+% individual profiles can be defined directly.
+%
+% The PML can be applied to a vector field |f| by calling |applyPML|. This
+% applies the appropriate PML to each Cartesian direction, where the
+% Cartesian components of the field are stored in the fourth dimension of
+% |f|.
 %
 %% Input Arguments
-% * |kgrid| - (kwave.toolbox.Grid) Object which defines the simulation grid size.
+% * |kgrid| - (kwave.toolbox.Grid) Object which defines the simulation grid
+%   size.
 %
 %% Properties
 % Input objects:
@@ -16,12 +33,19 @@
 %
 % Other properties:
 %
-% * |dimensions| - (double) Number of grid dimensions (1, 2, or 3).
+% * |pmlX| - (single) X-direction PML on the regular grid.
+% * |pmlY| - (single) Y-direction PML on the regular grid.
+% * |pmlZ| - (single) Z-direction PML on the regular grid.
+% * |pmlXStaggered| - (single) X-direction PML on the staggered grid.
+% * |pmlYStaggered| - (single) Y-direction PML on the staggered grid.
+% * |pmlZStaggered| - (single) Z-direction PML on the staggered grid.
 %
 %% Methods
-% * |xxx|
+% * |applyPML|
+% * |getQuarticPMLProfile|
+% * |setupQuarticPML|
 
-% Copyright (C) 2023- The k-Wave Authors.
+% Copyright (C) 2024- The k-Wave Authors.
 %
 % This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
 % software: you can redistribute it and/or modify it under the terms of the
@@ -44,8 +68,23 @@ classdef SplitFieldPML < handle
         kgrid;
     end
 
+    % Internal PML properties. These are defined to avoid property
+    % initialisation order dependency, as the PML set methods access
+    % another property (kgrid), which makes setting the properties order
+    % dependent, and the load order cannot be guaranteed when loading an
+    % object.
+    properties(Access=private,Hidden=true)
+        privatePmlX single {mustBeReal, mustBeFinite}
+        privatePmlY single {mustBeReal, mustBeFinite}
+        privatePmlZ single {mustBeReal, mustBeFinite}
+        privatePmlXStaggered single {mustBeReal, mustBeFinite}
+        privatePmlYStaggered single {mustBeReal, mustBeFinite}
+        privatePmlZStaggered single {mustBeReal, mustBeFinite}
+    end
+
+
     % PML properties.
-    properties
+    properties(Dependent)
         pmlX single {mustBeReal, mustBeFinite}
         pmlY single {mustBeReal, mustBeFinite}
         pmlZ single {mustBeReal, mustBeFinite}
@@ -79,92 +118,69 @@ classdef SplitFieldPML < handle
     methods
 
         function set.pmlX(obj, val)
-            obj.kgrid.validateSize(val, VariableName='pmlX', IncludePadding=true, Type='vector-x');
-            obj.pmlX = val;
+            obj.kgrid.validateSize(val, VariableName='pmlX', IncludePadding=true, Type=kwave.toolbox.GridFieldType.VectorX);
+            obj.privatePmlX = val;
         end
 
         function set.pmlXStaggered(obj, val)
-            obj.kgrid.validateSize(val, VariableName='pmlXStaggered', IncludePadding=true, Type='vector-x');
-            obj.pmlXStaggered = val;
+            obj.kgrid.validateSize(val, VariableName='pmlXStaggered', IncludePadding=true, Type=kwave.toolbox.GridFieldType.VectorX);
+            obj.privatePmlXStaggered = val;
         end
 
         function set.pmlY(obj, val)
-            obj.kgrid.validateSize(val, VariableName='pmlY', IncludePadding=true, Type='vector-y');
-            obj.pmlY = val;
+            obj.kgrid.validateSize(val, VariableName='pmlY', IncludePadding=true, Type=kwave.toolbox.GridFieldType.VectorY);
+            obj.privatePmlY = val;
         end
 
         function set.pmlYStaggered(obj, val)
-            obj.kgrid.validateSize(val, VariableName='pmlYStaggered', IncludePadding=true, Type='vector-y');
-            obj.pmlYStaggered = val;
+            obj.kgrid.validateSize(val, VariableName='pmlYStaggered', IncludePadding=true, Type=kwave.toolbox.GridFieldType.VectorY);
+            obj.privatePmlYStaggered = val;
         end
 
         function set.pmlZ(obj, val)
-            obj.kgrid.validateSize(val, VariableName='pmlZ', IncludePadding=true, Type='vector-z');
-            obj.pmlZ = val;
+            obj.kgrid.validateSize(val, VariableName='pmlZ', IncludePadding=true, Type=kwave.toolbox.GridFieldType.VectorZ);
+            obj.privatePmlZ = val;
         end
 
         function set.pmlZStaggered(obj, val)
-            obj.kgrid.validateSize(val, VariableName='pmlZStaggered', IncludePadding=true, Type='vector-z');
-            obj.pmlZStaggered = val;
+            obj.kgrid.validateSize(val, VariableName='pmlZStaggered', IncludePadding=true, Type=kwave.toolbox.GridFieldType.VectorZ);
+            obj.privatePmlZStaggered = val;
+        end
+
+        function pml = get.pmlX(obj)
+            pml = obj.privatePmlX;
+        end
+
+        function pml = get.pmlY(obj)
+            pml = obj.privatePmlY;
+        end
+
+        function pml = get.pmlZ(obj)
+            pml = obj.privatePmlZ;
+        end
+
+        function pml = get.pmlXStaggered(obj)
+            pml = obj.privatePmlXStaggered;
+        end
+
+        function pml = get.pmlYStaggered(obj)
+            pml = obj.privatePmlYStaggered;
+        end
+
+        function pml = get.pmlZStaggered(obj)
+            pml = obj.privatePmlZStaggered;
         end        
 
-    end    
+    end
 
+    % General class methods.
     methods
+        f = applyPML(obj, f);
+        setupQuarticPML(obj, dt, soundSpeedReference, pmlAlpha);
+    end
 
-        function f = applyPML(obj, f)
-            for dimInd = 1:obj.kgrid.dimensions
-                switch dimInd
-                    case 1
-                        f(:, :, :, 1) = obj.pmlX .* f(:, :, :, 1);
-                    case 2
-                        f(:, :, :, 2) = obj.pmlY .* f(:, :, :, 2);
-                    case 3
-                        f(:, :, :, 3) = obj.pmlZ .* f(:, :, :, 3);
-                end
-            end
-        end
-
-        function f = applyStaggeredPML(obj, f)
-            for dimInd = 1:obj.kgrid.dimensions
-                switch dimInd
-                    case 1
-                        f(:, :, :, 1) = obj.pmlXStaggered .* f(:, :, :, 1);
-                    case 2
-                        f(:, :, :, 2) = obj.pmlYStaggered .* f(:, :, :, 2);
-                    case 3
-                        f(:, :, :, 3) = obj.pmlZStaggered .* f(:, :, :, 3);
-                end
-            end
-        end
-
-        function setupQuarticPML(obj, dt, soundSpeedReference, pmlAlpha)
-
-            arguments
-                obj
-                dt(1,1) single {mustBeReal, mustBeFinite}
-                soundSpeedReference(1,1) single {mustBeReal, mustBeFinite}
-                pmlAlpha(3,1) single {mustBeReal, mustBeFinite} = 2
-            end
-
-            pmlSize = obj.kgrid.gridPadding;
-            obj.pmlX = kwave.legacy.getPML(obj.kgrid.Nx + 2 * pmlSize(1), obj.kgrid.dx, dt, ...
-                soundSpeedReference, pmlSize(1), pmlAlpha(1), false, 1);
-            obj.pmlXStaggered = kwave.legacy.getPML(obj.kgrid.Nx + 2 * pmlSize(1), obj.kgrid.dx, dt, ...
-                soundSpeedReference, pmlSize(1), pmlAlpha(1), true, 1);
-            
-            obj.pmlY = kwave.legacy.getPML(obj.kgrid.Ny + 2 * pmlSize(2), obj.kgrid.dy, dt, ...
-                soundSpeedReference, pmlSize(2), pmlAlpha(2), false, 2);
-            obj.pmlYStaggered = kwave.legacy.getPML(obj.kgrid.Ny + 2 * pmlSize(2), obj.kgrid.dy, dt, ...
-                soundSpeedReference, pmlSize(2), pmlAlpha(2), true, 2);
-            
-            obj.pmlZ = kwave.legacy.getPML(obj.kgrid.Nz + 2 * pmlSize(3), obj.kgrid.dz, dt, ...
-                soundSpeedReference, pmlSize(3), pmlAlpha(3), false, 3);
-            obj.pmlZStaggered = kwave.legacy.getPML(obj.kgrid.Nz + 2 * pmlSize(3), obj.kgrid.dz, dt, ...
-                soundSpeedReference, pmlSize(3), pmlAlpha(3), true, 3);
-
-        end
-
+    methods(Static)
+        profile = getQuarticPMLProfile(numGridPoints, gridSpacing, dt, soundSpeed, dimension, options);
     end
 
 end
