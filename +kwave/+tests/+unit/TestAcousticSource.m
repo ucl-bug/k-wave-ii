@@ -28,6 +28,23 @@ classdef TestAcousticSource < kwave.tests.unit.AbstractTestGridInput
             testCase.verifyEqual(size(source.initialPressure(1,:)), [1, 64])
         end
 
+        % Testing if subassignments like `source.initialPressure(idx) =
+        % val` work
+        function testSubasgn(testCase)
+            % Initialize source object
+            kgrid = kwave.toolbox.Grid([64,64,], [0.5,0.5]);
+            randValue = rand(kgrid.gridSize);
+
+            source = kwave.toolbox.AcousticSource(kgrid);
+            source.initialPressure = rand(source.gridSize);
+            source.initialPressure(1:kgrid.Nx/4, :) = 2000;
+
+            randValue(1:kgrid.Nx/4, :) = 2000;
+
+            % Check assignment
+            testCase.verifyEqual(source.initialPressure, randValue)
+        end
+
     end
 
 end

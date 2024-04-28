@@ -36,6 +36,17 @@
 function obj = subsasgn(obj, S, value)
 
 if (S(1).type == '.') && (obj.gridFields.isKey(S(1).subs))
+    
+    if length(S) > 1 
+        % If there's more than a single assignment, it means that
+        % something is being done to the referenced variable. So we first
+        % do it and then assign
+        unpaddedArray = obj.subsref(S(1));
+        S2 = S(2:end);
+        value = builtin('subsasgn', unpaddedArray, S2, value);
+    end
+    
+    % Assign
     propertyDetails = obj.gridFields(S(1).subs);
     propertyPaddedName = strcat(S(1).subs, 'Padded');
     validateattributes(value, propertyDetails.classes, propertyDetails.attributes, '', S(1).subs);
