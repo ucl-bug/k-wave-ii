@@ -36,7 +36,7 @@ classdef TestAcousticSource < kwave.tests.unit.AbstractTestGridInput
             randValue = rand(kgrid.gridSize);
 
             source = kwave.toolbox.AcousticSource(kgrid);
-            source.initialPressure = rand(source.gridSize);
+            source.initialPressure = randValue;
             source.initialPressure(1:kgrid.Nx/4, :) = 2000;
 
             randValue(1:kgrid.Nx/4, :) = 2000;
