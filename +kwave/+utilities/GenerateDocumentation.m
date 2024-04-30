@@ -167,7 +167,7 @@ classdef GenerateDocumentation
                     'showCode', options.showCode);
 
                 % Publish to md.
-                kwave.utilities.mToMarkdown(filename, obj.helpDirWeb);
+                kwave.utilities.mToMarkdown(fullfile(mFilenames(ind).folder, mFilenames(ind).name), obj.helpDirWeb);
 
                 % Rename to include classname if a class method.
                 if mFilenames(ind).isClassMethod
