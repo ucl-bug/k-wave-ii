@@ -2,7 +2,8 @@
 % *Package:* kwave.tests.unit
 % *Superclasses:* kwave.tests.unit.AbstractTestGridInput
 %
-% Unit tests for the AcousticSource class using the AbstractTestGridInput class.
+% Unit tests for the AcousticSource class using the AbstractTestGridInput
+% class.
 
 classdef TestAcousticSource < kwave.tests.unit.AbstractTestGridInput
 
@@ -16,22 +17,25 @@ classdef TestAcousticSource < kwave.tests.unit.AbstractTestGridInput
 
     methods(Test)
         
-        % Tests if things like
-        % `source.initialPressure.method.something(:,1).other etc work
+        % Tests nested sub-references work, for example:
+        % source.initialPressure.method.something(:, 1).other
         function testSubrefs(testCase)
-            % Initialize source object
+
+            % Initialize source object.
             grid = kwave.toolbox.Grid([64,64,], [0.5,0.5]);
             source = kwave.toolbox.AcousticSource(grid);
             source.initialPressure = rand(source.gridSize);
 
-            % Check slicing
-            testCase.verifyEqual(size(source.initialPressure(1,:)), [1, 64])
+            % Check slicing.
+            testCase.verifyEqual(size(source.initialPressure(1,:)), [1, 64]);
+
         end
 
-        % Testing if subassignments like `source.initialPressure(idx) =
-        % val` work
+        % Tests nested sub-assignments work, for example:
+        % source.initialPressure(idx) = val
         function testSubasgn(testCase)
-            % Initialize source object
+
+            % Initialize source object.
             kgrid = kwave.toolbox.Grid([64,64,], [0.5,0.5]);
             randValue = rand(kgrid.gridSize);
 
@@ -42,7 +46,8 @@ classdef TestAcousticSource < kwave.tests.unit.AbstractTestGridInput
             randValue(1:kgrid.Nx/4, :) = 2000;
 
             % Check assignment
-            testCase.verifyEqual(source.initialPressure, randValue)
+            testCase.verifyEqual(source.initialPressure, randValue);
+
         end
 
     end

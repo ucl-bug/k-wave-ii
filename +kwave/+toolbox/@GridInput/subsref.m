@@ -29,15 +29,18 @@
 %   underlying data.
 
 function varargout = subsref(obj, S)
+
 if (S(1).type == '.') && (obj.gridFields.isKey(S(1).subs))
+
     propertyPaddedName = strcat(S(1).subs, 'Padded');
     varargout{1} = obj.kgrid.returnWithoutGridPadding(obj.(propertyPaddedName));
 
-    % If there are any more subreferences, apply them
+    % If there are any more subreferences, apply them.
     if length(S) > 1
         S2 = S(2:end);
         varargout{1} = builtin('subsref', varargout{1}, S2);
     end
+
 else
     [varargout{1:nargout}] = builtin('subsref', obj, S);
 end
