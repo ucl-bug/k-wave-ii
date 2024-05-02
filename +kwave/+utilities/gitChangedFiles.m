@@ -27,7 +27,7 @@ arguments
 end
 
 % Get list of changed files.
-[~, output] = system('git diff --name-only main');
+[~, output] = system('git diff --diff-filter=d --name-only main');
 fileList = strsplit(output, '\n');
 
 % Remove empty cells.
