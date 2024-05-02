@@ -106,8 +106,8 @@ classdef(Abstract) Solver < kwave.toolbox.FourierCollocation
         end
     end
 
-    % Template methods.
-    methods
+    % Abstract methods.
+    methods(Abstract)
         run(obj);
     end
 
