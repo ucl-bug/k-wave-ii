@@ -20,11 +20,12 @@
 %% Output Arguments
 % * |f| - (matlab.ui.Figure) Figure handle for generated figure.
 
-function f = plotFieldsDiff(actual, expected)
+function f = plotFieldsDiff(actual, expected, plotTitle)
 
 arguments
     actual (:,:,:,:) {mustBeNumeric}
     expected {mustBeNumeric, kwave.utilities.mustBeEqualSize(expected, actual)}
+    plotTitle {mustBeTextScalar} = ''
 end
 
 % If input is 4D, make recursive call with each component.
@@ -129,3 +130,5 @@ else
     title('Difference y-z');
 
 end
+
+sgtitle(plotTitle);
