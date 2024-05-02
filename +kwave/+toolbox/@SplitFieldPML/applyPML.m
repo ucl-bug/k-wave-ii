@@ -25,7 +25,7 @@
 % the pairs does not matter.
 %
 % * |Staggered| - (logical) If true, the staggered grid PML profiles are
-% used Default = false.
+%   used Default = false.
 %
 %% Output Arguments
 % * |f| - (numeric) Vector field with the PML applied.
