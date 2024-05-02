@@ -55,8 +55,8 @@ classdef TestThermalSolver < kwave.tests.unit.AbstractTestGrid
             solver = ThermalSolver(testCase.kgrid, medium, source, [], settings);
             Nt = 500;
             dt = 1;
-            solver.takeTimeStep(Nt/2, dt);
-            solver.takeTimeStep(Nt/2, dt);
+            solver.run(Nt=Nt/2, dt=dt);
+            solver.run(Nt=Nt/2, dt=dt);
             testCase.actualSolution = solver.temperaturePadded;
 
             % Compute exact Green's function solution.
@@ -66,9 +66,14 @@ classdef TestThermalSolver < kwave.tests.unit.AbstractTestGrid
             % Compare with tolerance.
             testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));
 
+            % Take a step using auto-calculated Nt and dt.
+            solver.run(EndTime=1);
+            solver.run(CFL=0.5);
+            solver.run;
+
             % Turn on plotting and take a step.
             solver.settings.plotSimulation = 'on';
-            solver.takeTimeStep(1, dt);
+            solver.run(Nt=1, dt=dt);
 
         end
 

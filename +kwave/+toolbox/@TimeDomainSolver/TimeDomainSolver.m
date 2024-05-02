@@ -19,9 +19,8 @@
 % Derived classes must provide a concrete implementation of the protected
 % |executeTimeStep| method which implements the numerical solution to the
 % PDE. |executeTimeStep| must update the |timeStepsTaken| and |tArray|
-% properties. |executeTimeStep| is called by the public |takeTimeStep|
-% method which also prints simulation information using
-% |kwave.toolbox.Logger.info|.
+% properties. |executeTimeStep| is called by the public |run| method which
+% also prints simulation information using |kwave.toolbox.Logger.info|.
 % 
 % Classes derived from |TimeDomainSolver| should define padded variants of
 % any PDE variables that can be accessed by the user, and implement set and
@@ -50,6 +49,9 @@
 %
 % * |timeArray| - (double) Time points at which update steps were taken.
 % * |timeStepsTaken| - (integer) Number of time steps taken.
+%
+%% Methods
+% * |run|
 %
 %% See Also
 % * |kwave.toolbox.FourierCollocation|
@@ -128,12 +130,13 @@ classdef(Abstract) TimeDomainSolver < kwave.toolbox.FourierCollocation
 
     % Template methods.
     methods
-        takeTimeStep(obj, Nt, dt);
+        run(obj);
     end
 
     % Abstract methods that must be implemented by sub-classes.
     methods(Abstract, Access=protected)
         executeTimeStep(obj, Nt, dt);
+        [Nt, dt] = autoComputeTimeStep(obj, CFL, EndTime);
     end
 
     % Internal class methods with an empty implementation. These can
