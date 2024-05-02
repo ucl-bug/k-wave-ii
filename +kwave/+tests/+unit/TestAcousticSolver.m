@@ -138,6 +138,10 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             testCase.verifyThat(density3Dz,  IsEqualTo(density1D,  "Within", tol));
             testCase.verifyThat(velocity3Dz, IsEqualTo(velocity1D, "Within", tol));
 
+            % Re-create 1D solver without settings input to hit default
+            % settings LOC.
+            AcousticSolver(kgrid1D, medium1D, source1D, []);
+
         end
 
     end
