@@ -99,6 +99,11 @@ classdef(Abstract) TimeDomainSolver < kwave.toolbox.Solver
         [Nt, dt] = autoComputeTimeStep(obj, CFL, EndTime);
     end
 
+    % Template methods.
+    methods
+        run(obj);
+    end
+
     % Internal class methods with an empty implementation. These can
     % optionally be implemented by sub-classes.
     methods(Access=protected)
