@@ -21,7 +21,11 @@
 % * Defining both |CFL| and |EndTime|.
 %
 % If |Nt| and |dt| are not provided, they are automatically calculated
-% using the values for |CFL| and |EndTime|.
+% using the values for |CFL| and |EndTime|. Note, the time step is always
+% adjusted such that |Nt * dt = EndTime|, so the exact value for |CFL|
+% may be slightly smaller than the defined value. The default values for
+% |CFL| and |EndTime| are specified within the |autoComputeTimeStep| method
+% of derived classes.
 %
 %% Name-Value Arguments
 % Specify optional pairs of arguments as |Name1=Value1,...,NameN=ValueN|,
