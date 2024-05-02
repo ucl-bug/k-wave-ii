@@ -15,7 +15,7 @@ function displayGridSize(obj)
 
     printGridSize('  Input grid size: ', obj.gridSize, obj.gridSpacing, obj.dimensions);
     if any(obj.gridPadding ~= 0)
-        printGridSize('  Padded grid size: ', obj.gridSize + obj.gridPadding, obj.gridSpacing, obj.dimensions);
+        printGridSize('  Padded grid size: ', obj.gridSize + 2 * obj.gridPadding, obj.gridSpacing, obj.dimensions);
     end
 
 end
