@@ -1,19 +1,38 @@
-%% takeTimeStep
+%% run
 % *Class:* kwave.toolbox.TimeDomainSolver
 % *Package:* kwave.toolbox
 %
-% Iteratively update solution for given number of time steps.
+% Iteratively update the PDE solution.
 %
 %% Syntax
-%   takeTimeStep(obj, Nt, dt)
+%   run(obj)
+%   run(obj, Nt=100, dt=1e-6)
+%   run(obj, CFL=0.3)
+%   run(obj, EndTime=100e-6)
+%   run(obj, CFL=0.3, EndTime=100e-6)
 %
 %% Description
-% Iteratively updates the PDE solution for the given number of time steps
-% and time step size.
+% Iteratively updates the PDE solution. There are four possible input
+% variants:
 %
-%% Input Arguments
+% * Defining the number of time steps |Nt| and time step size |dt|.
+% * Defining the Courant-Friedrichs-Lewy number |CFL|.
+% * Defining the end time |EndTime|.
+% * Defining both |CFL| and |EndTime|.
+%
+% If |Nt| and |dt| are not provided, they are automatically calculated
+% using the values for |CFL| and |EndTime|.
+%
+%% Name-Value Arguments
+% Specify optional pairs of arguments as |Name1=Value1,...,NameN=ValueN|,
+% where |Name| is the argument name and |Value| is the corresponding value.
+% Name-value arguments must appear after other arguments, but the order of
+% the pairs does not matter.
+%
 % * |Nt| - (integer) Number of time steps.
-% * |dt| - (numeric) Size of each time step. 
+% * |dt| - (numeric) Size of each time step.
+% * |CFL| - (numeric) Courant-Friedrichs-Lewy (CFL) number.
+% * |EndTime| - (numeric) Simulation time [s].
 
 % Copyright (C) 2022- University College London.
 %
@@ -31,21 +50,28 @@
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
-function takeTimeStep(obj, Nt, dt)
+function run(obj, options)
 
 arguments
     obj
-    Nt(1,1) {mustBeInteger, mustBePositive, mustBeFinite}
-    dt(1,1) {mustBeNumeric, mustBePositive, mustBeFinite}
+    options.Nt {mustBeScalarOrEmpty, mustBeInteger, mustBePositive, mustBeFinite} = []
+    options.dt {mustBeScalarOrEmpty, mustBeNumeric, mustBePositive, mustBeFinite} = []
+    options.CFL {mustBeScalarOrEmpty, mustBeNumeric, mustBePositive, mustBeFinite} = []
+    options.EndTime {mustBeScalarOrEmpty, mustBeNumeric, mustBePositive, mustBeFinite} = []
+end
+
+kwave.utilities.mustBeAllOrNoneEmpty(options.Nt, options.dt)
+if isempty(options.Nt)
+    [options.Nt, options.dt] = obj.autoComputeTimeStep(options.CFL, options.EndTime);
 end
 
 startTime = datetime('now');
 
 kwave.toolbox.Logger.info(['Calling ' class(obj) '.takeTimeStep...']);
 obj.kgrid.displayGridSize();
-kwave.toolbox.Logger.info(['  dt: ' kwave.utilities.scaleSI(dt) 's, end time: ' kwave.utilities.scaleSI(dt * Nt) 's, time steps: ' num2str(Nt)]);
+kwave.toolbox.Logger.info(['  dt: ' kwave.utilities.scaleSI(options.dt) 's, end time: ' kwave.utilities.scaleSI(options.dt * options.Nt) 's, time steps: ' num2str(options.Nt)]);
 
-obj.executeTimeStep(Nt, dt);
+obj.executeTimeStep(options.Nt, options.dt);
 
 elapsedTime = between(startTime, datetime('now'));
 kwave.toolbox.Logger.info(['  takeTimeStep completed in ' kwave.utilities.formatDuration(elapsedTime)]);
