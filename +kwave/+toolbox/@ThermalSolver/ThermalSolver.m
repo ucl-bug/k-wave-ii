@@ -25,12 +25,11 @@
 % The simulation is defined by five input objects which define the
 % computational grid, medium properties, sources, sensors, and settings.
 %
-% After an object of the |ThermalSolver| class is created, the
-% simulation is run by calling |solver.takeTimeStep(Nt, dt)|, where solver
-% is the object name, |Nt| is the number of time steps to take, and |dt| is
-% the size of the time step. During the simulation, a visualisation of the
-% temperature field is displayed. The current temperature can be queried
-% (or modified) at any point using the property |solver.temperature|.
+% After an object of the |ThermalSolver| class is created, the simulation
+% is run by calling |solver.run|. During the simulation, a visualisation of
+% the temperature field is displayed. The current temperature can be
+% queried (or modified) at any point using the property
+% |solver.temperature|.
 %
 %% Examples
 % A simple of example of solving a initial value problem in 1D is shown
@@ -54,7 +53,7 @@
 %     
 %   % Solve.
 %   solver = ThermalSolver(kgrid, medium, source, []);
-%   solver.takeTimeStep(500, 0.5);
+%   solver.run(Nt=500, dt=0.5);
 %     
 %   % Plot.
 %   figure;
@@ -137,6 +136,7 @@ classdef ThermalSolver < kwave.toolbox.TimeDomainSolver
     methods(Access=protected)
         setInitialConditions(obj)
         executeTimeStep(obj, Nt, dt)
+        [Nt, dt] = autoComputeTimeStep(obj, CFL, EndTime)
     end
 
 end

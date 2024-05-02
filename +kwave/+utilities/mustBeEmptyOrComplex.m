@@ -2,6 +2,7 @@
 % *Package:* kwave.utilities
 %
 % Validate that an input is an empty array or a complex array / scalar.
+%
 %% Syntax
 %   mustBeEmptyOrComplex(a)
 %
@@ -16,6 +17,6 @@ function mustBeEmptyOrComplex(a)
     if ~isempty(a) && isreal(a)
         eid = 'Type:notComplex';
         msg = 'Value must be complex.';
-        throwAsCaller(MException(eid,msg))
+        throwAsCaller(MException(eid,msg));
     end
 end
