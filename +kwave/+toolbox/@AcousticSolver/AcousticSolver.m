@@ -119,9 +119,9 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
 
     % PDE variables on padded domain, and PML variables.
     properties(SetAccess=private, Hidden=true)
-        pressurePadded
-        densitySplitPadded
-        velocityPadded
+        pressurePadded single
+        densitySplitPadded single
+        velocityPadded single
         pml kwave.toolbox.SplitFieldPML
     end
 
