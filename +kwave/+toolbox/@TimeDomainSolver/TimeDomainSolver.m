@@ -136,7 +136,7 @@ classdef(Abstract) TimeDomainSolver < kwave.toolbox.FourierCollocation
     % Abstract methods that must be implemented by sub-classes.
     methods(Abstract, Access=protected)
         executeTimeStep(obj, Nt, dt);
-        [Nt, dt] = autoComputeTimeStep(obj, CFL, EndTime);
+        [Nt, dt] = autoComputeTimeStep(obj, CFL, endTime);
     end
 
     % Internal class methods with an empty implementation. These can

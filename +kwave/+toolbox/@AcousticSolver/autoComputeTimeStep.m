@@ -1,5 +1,5 @@
 %% autoComputeTimeStep
-% *Class:* kwave.toolbox.ThermalSolver
+% *Class:* kwave.toolbox.AcousticSolver
 % *Package:* kwave.toolbox
 %
 % Compute Nt and dt from CFL and EndTime.
@@ -45,20 +45,22 @@ end
 
 % Assign default CFL if not given.
 if isempty(CFL)
-    CFL = 0.5;
+    CFL = 0.3;
 end
 
-% Compute EndTime as proportional to the thermal relaxation time across the
-% whole grid. The proportional constant of 100 was chosen as a balance
-% between the number of time steps and total dissipation of the heat.
+% Get the minimum and maximum sound speeds.
+soundSpeedMin = min(obj.medium.soundSpeed(:));
+soundSpeedMax = max(obj.medium.soundSpeed(:));
+
+% Compute EndTime as proportional to the time to travel across the grid
+% diagonal at the slowest sound speed.
 if isempty(endTime)
-    characteristicLength = norm(obj.kgrid.gridSize .* obj.kgrid.gridSpacing);
-    endTime = characteristicLength^2 / (100 * obj.medium.diffusionReference * obj.kgrid.dimensions);
+    endTime = norm(obj.kgrid.gridSize .* obj.kgrid.gridSpacing) ./ soundSpeedMin;
 end
 
-% Compute dt based on the CFL.
+% Compute dt based on the CFL and the maximum sound speed.
 dx = min(obj.kgrid.gridSpacing(1:obj.kgrid.dimensions));
-dt = CFL * dx^2 / obj.medium.diffusionReference;
+dt = CFL .* dx ./ soundSpeedMax;
 
 % Compute Nt based on EndTime.
 Nt = ceil(endTime / dt);

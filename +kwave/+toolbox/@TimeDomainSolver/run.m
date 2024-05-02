@@ -22,10 +22,10 @@
 %
 % If |Nt| and |dt| are not provided, they are automatically calculated
 % using the values for |CFL| and |EndTime|. Note, the time step is always
-% adjusted such that |Nt * dt = EndTime|, so the exact value for |CFL|
-% may be slightly smaller than the defined value. The default values for
-% |CFL| and |EndTime| are specified within the |autoComputeTimeStep| method
-% of derived classes.
+% adjusted such that |Nt * dt = EndTime|, so the exact value for |CFL| may
+% be slightly smaller than the defined value. The default values and
+% calculation method for |CFL| and |EndTime| are specified within the
+% |autoComputeTimeStep| method of derived classes.
 %
 %% Name-Value Arguments
 % Specify optional pairs of arguments as |Name1=Value1,...,NameN=ValueN|,
@@ -71,11 +71,11 @@ end
 
 startTime = datetime('now');
 
-kwave.toolbox.Logger.info(['Calling ' class(obj) '.takeTimeStep...']);
+kwave.toolbox.Logger.info(['Calling ' class(obj) '.run...']);
 obj.kgrid.displayGridSize();
 kwave.toolbox.Logger.info(['  dt: ' kwave.utilities.scaleSI(options.dt) 's, end time: ' kwave.utilities.scaleSI(options.dt * options.Nt) 's, time steps: ' num2str(options.Nt)]);
 
 obj.executeTimeStep(options.Nt, options.dt);
 
 elapsedTime = between(startTime, datetime('now'));
-kwave.toolbox.Logger.info(['  takeTimeStep completed in ' kwave.utilities.formatDuration(elapsedTime)]);
+kwave.toolbox.Logger.info(['  run completed in ' kwave.utilities.formatDuration(elapsedTime)]);

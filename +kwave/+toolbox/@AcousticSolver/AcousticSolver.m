@@ -15,8 +15,8 @@
 % $$p = c_0^2 \rho$$
 %
 % where $p$ is the acoustic pressure, $\vec{u}$ is the acoustic particle
-% velocity, $\rho$ is the acoustic density, $\rho_0$ is the mass density,
-% $c_0$ is the sound speed, and $t$ is time.
+% velocity, $\rho$ is the acoustic density, $\rho_0$ is the ambient
+% density, $c_0$ is the sound speed, and $t$ is time.
 %
 % The computation is based on a k-space pseudospectral scheme in which
 % spatial gradients are calculated using the Fourier collocation spectral
@@ -29,12 +29,10 @@
 % The simulation is defined by five input objects which define the
 % computational grid, medium properties, sources, sensors, and settings.
 %
-% After an object of the |AcousticSolver| class is created, the
-% simulation is run by calling |solver.takeTimeStep(Nt, dt)|, where solver
-% is the object name, |Nt| is the number of time steps to take, and |dt| is
-% the size of the time step. During the simulation, a visualisation of the
-% pressure field is displayed. The current pressure can be queried
-% (or modified) at any point using the property |solver.pressure|.
+% After an object of the |AcousticSolver| class is created, the simulation
+% is run by calling |solver.run|. During the simulation, a visualisation of
+% the pressure field is displayed. The current pressure can be queried (or
+% modified) at any point using the property |solver.pressure|.
 %
 %% Examples
 % A simple of example of solving a initial value problem in 1D is shown
@@ -63,7 +61,7 @@
 %   solver = AcousticSolver(kgrid, medium, source, [], settings);
 %   CFL = 0.5;
 %   dt = CFL * kgrid.dx / medium.soundSpeed;
-%   solver.takeTimeStep(80, dt);
+%   solver.run(Nt=80, dt=dt);
 %   
 %   % Plot.
 %   figure;
@@ -155,7 +153,7 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
         end
         function densitySplit = get.densitySplit(obj)
             densitySplit = obj.kgrid.returnWithoutGridPadding(obj.densitySplitPadded);
-                end
+        end
         function velocity = get.velocity(obj)
             velocity = obj.kgrid.returnWithoutGridPadding(obj.velocityPadded);
         end
@@ -165,6 +163,7 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
     methods(Access=protected)
         setInitialConditions(obj)
         executeTimeStep(obj, Nt, dt)
+        [Nt, dt] = autoComputeTimeStep(obj, CFL, EndTime)
     end
 
 end
