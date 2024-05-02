@@ -18,6 +18,6 @@ function mustBeEqualSize(a, b)
     if ~isequal(size(a), size(b))
         eid = 'Size:notEqual';
         msg = 'Inputs must have equal size.';
-        throwAsCaller(MException(eid,msg))
+        throwAsCaller(MException(eid,msg));
     end
 end
