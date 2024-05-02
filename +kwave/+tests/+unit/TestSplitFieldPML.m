@@ -20,7 +20,7 @@ classdef TestSplitFieldPML < kwave.tests.unit.AbstractTestGrid
     methods(TestMethodSetup, ParameterCombination="sequential")
         function createPML(testCase)           
             testCase.pml = kwave.toolbox.SplitFieldPML(testCase.kgrid);
-            testCase.pml.setupQuarticPML(1, 1500, 2);
+            testCase.pml.setupQuarticPML(1, 1500);
         end
     end
 
