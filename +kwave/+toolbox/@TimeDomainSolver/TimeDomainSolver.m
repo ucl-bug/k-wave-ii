@@ -9,22 +9,20 @@
 % classes should be derived from this class. See documentation for
 % |kwave.toolbox.Solver| for further details.
 %
-% The constructor calls the parent class constructor method for the input
-% medium, source, and sensor objects. It also calls the
-% |setInitialConditions| method. The default implementation for
-% |setInitialConditions| is blank, and derived classes should reimplement
-% this as appropriate to initialise variables used in the time loop.
+% The constructor calls the |kwave.toolbox.Solver| with the input objects.
+% It also calls the |setInitialConditions| method. The default
+% implementation for |setInitialConditions| is blank, and derived classes
+% should reimplement this as appropriate to initialise variables used in
+% the time loop.
 %
 % Derived classes must provide a concrete implementation of the protected
 % |executeTimeStep| method which implements the numerical solution to the
-% PDE. |executeTimeStep| must update the |timeStepsTaken| and |tArray|
-% properties. |executeTimeStep| is called by the public |run| method which
+% PDE. |executeTimeStep| is called by the public |run| method which
 % also prints simulation information using |kwave.toolbox.Logger.info|.
-% 
-% As it is required by the parent |Solver| class, classes derived from 
-% |TimeDomainSolver| should define padded variants of any PDE variables 
-% that can be accessed by the user, and implement set and get methods that 
-% add and remove the grid padding.
+%
+% Classes derived from |TimeDomainSolver| should define padded variants of
+% any PDE variables that can be accessed by the user, and implement set and
+% get methods that add and remove the grid padding.
 %
 %% Input Arguments
 % * |kgrid| - (kwave.toolbox.Grid) Object which defines the simulation grid
@@ -69,7 +67,7 @@
 classdef(Abstract) TimeDomainSolver < kwave.toolbox.Solver
 
     properties(SetAccess=protected)
-        timeStepsTaken uint64 = 0
+        timeStepsTaken(1,1) uint64 = 0
         timeArray single
     end
 
@@ -96,10 +94,10 @@ classdef(Abstract) TimeDomainSolver < kwave.toolbox.Solver
     % Abstract methods that must be implemented by sub-classes.
     methods(Abstract, Access=protected)
         executeTimeStep(obj, Nt, dt);
-        [Nt, dt] = autoComputeTimeStep(obj, CFL, EndTime);
+        [Nt, dt] = autoComputeTimeStep(obj, CFL, endTime);
     end
 
-    % Template methods.
+    % General class methods with a concrete implementation.
     methods
         run(obj);
     end

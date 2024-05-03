@@ -5,14 +5,23 @@
 % Superclass of all kwave.toolbox solver classes.
 %
 %% Description
-% Abstract class used to define solvers. All solvers
-% classes should be derived from this class. See documentation for
-% |kwave.toolbox.FourierCollocation| for details of how to compute
-% derivatives.
+% Abstract class used to define solvers in k-Wave. All solver classes
+% should be derived from this class.
+%
+% The |Solver| class codifies the common features of a solver in k-Wave. In
+% particular, solvers must take grid, medium, source, sensor, and
+% settings objects that define the problem specifics. These objects must
+% use the same |kwave.toolbox.Grid| object. Solvers must also
+% implement a |run| method as a common interface to obtaining the solution.
+%
+% The |Solver| class is derived from |kwave.toolbox.FourierCollocation|.
+% This superclass implements common methods to calculate differential
+% operators using the Fourier collocation spectral method. See class
+% documentation for futher details.
 %
 % The constructor calls the |checkRequiredProperties| method for the input
 % medium, source, and sensor objects. 
-% 
+%
 % Classes derived from |Solver| should define padded variants of
 % any PDE variables that can be accessed by the user, and implement set and
 % get methods that add and remove the grid padding.
@@ -45,7 +54,7 @@
 % * |kwave.toolbox.GridInput|
 % * |kwave.toolbox.Settings|
 
-% Copyright (C) 2022- University College London.
+% Copyright (C) 2024- The k-Wave Authors.
 %
 % This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
 % software: you can redistribute it and/or modify it under the terms of the
@@ -63,7 +72,7 @@
 
 classdef(Abstract) Solver < kwave.toolbox.FourierCollocation
 
-    % Properties that can be set internally or by derived classes.
+    % Properties set by the constructor.
     properties(SetAccess=immutable)
         medium
         source
@@ -106,7 +115,7 @@ classdef(Abstract) Solver < kwave.toolbox.FourierCollocation
         end
     end
 
-    % Abstract methods.
+    % Abstract methods that must be implemented by sub-classes.
     methods(Abstract)
         run(obj);
     end
