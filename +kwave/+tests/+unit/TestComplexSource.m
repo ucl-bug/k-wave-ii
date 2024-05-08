@@ -12,6 +12,7 @@ classdef TestComplexSource < kwave.tests.unit.AbstractTestGridInput
         inputPropertiesComplex = {'sourceField', 'sourceFieldPadded'}
         inputPropertiesPadded = {'sourceFieldPadded'}
         inputPropertiesScalar = {}
+        inputPropertiesVectorField = {}
         source
         testData
     end
