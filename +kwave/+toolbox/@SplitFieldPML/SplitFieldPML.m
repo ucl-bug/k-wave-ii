@@ -39,6 +39,8 @@
 % * |pmlXStaggered| - (single) X-direction PML on the staggered grid.
 % * |pmlYStaggered| - (single) Y-direction PML on the staggered grid.
 % * |pmlZStaggered| - (single) Z-direction PML on the staggered grid.
+% * |pmlAlpha| - (single) Absorption coefficient within the PML
+%   [Nepers per grid point]. Default = 2.
 %
 %% Methods
 % * |applyPML|
@@ -68,6 +70,11 @@ classdef SplitFieldPML < handle
         kgrid;
     end
 
+    % Accessible properties.
+    properties
+        pmlAlpha(1,3) single {mustBeReal, mustBeNonnegative, mustBeFinite} = 2
+    end
+
     % Internal PML properties. These are defined to avoid property
     % initialisation order dependency, as the PML set methods access
     % another property (kgrid), which makes setting the properties order
@@ -81,7 +88,6 @@ classdef SplitFieldPML < handle
         privatePmlYStaggered single {mustBeReal, mustBeFinite}
         privatePmlZStaggered single {mustBeReal, mustBeFinite}
     end
-
 
     % PML properties.
     properties(Dependent)

@@ -55,9 +55,9 @@ classdef(Abstract) AbstractTestGrid < matlab.unittest.TestCase
         % Grid size and spacing to loop over. These test different possible
         % inputs for 1D, 2D and 3D domains with even and odd sizes, and
         % with and without padding.
-        gridSize = {64, 64, 65, 65, [32, 48], [32, 48], [33, 49], [33, 49], [24, 28, 32], [24, 28, 32], [25, 29, 33], [25, 29, 33]};
+        gridSize = {64, 64, 63, 65, [32, 48], [32, 48], [35, 45], [35, 45], [24, 28, 32], [24, 28, 32], [25, 27, 35], [25, 27, 35]};
         gridSpacing = num2cell(ones(1, 12) * 1e-3);
-        gridPadding = {0, 10, 0, 10, [0, 0], [6, 8], [0, 0], [6, 8], [0, 0, 0], [6, 8, 10], [0, 0, 0], [6, 8, 10]};
+        gridPadding = {0, 8, 0, 9, [0, 0], [4, 6], [0, 0], [5, 9], [0, 0, 0], [6, 4, 4], [0, 0, 0], [1, 4, 5]};
 
     end
 
@@ -75,7 +75,8 @@ classdef(Abstract) AbstractTestGrid < matlab.unittest.TestCase
             testCase.tol = matlab.unittest.constraints.AbsoluteTolerance(single(1e-6));
 
             % Add diagnostic for test failure.
-            testCase.onFailure(@()kwave.utilities.plotFieldsDiff(testCase.actualSolution, testCase.referenceSolution));
+            plotTitle = ['Grid Size: [' num2str(gridSize) '], Padding Size: [' num2str(gridPadding) ']'];
+            testCase.onFailure(@()kwave.utilities.plotFieldsDiff(testCase.actualSolution, testCase.referenceSolution, plotTitle));
 
         end
 

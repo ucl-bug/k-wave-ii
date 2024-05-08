@@ -136,7 +136,7 @@ classdef ThermalSolver < kwave.toolbox.TimeDomainSolver
     methods(Access=protected)
         setInitialConditions(obj)
         executeTimeStep(obj, Nt, dt)
-        [Nt, dt] = autoComputeTimeStep(obj, CFL, EndTime)
+        [Nt, dt] = autoComputeTimeStep(obj, CFL, endTime)
     end
 
 end

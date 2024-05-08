@@ -1,81 +1,19 @@
 %% TestThermalSolver
 % *Package:* kwave.tests.unit
-% *Superclasses:* kwave.tests.unit.AbstractTestGrid
+% *Superclasses:* matlab.unittest.TestCase
 %
-% Unit tests for the ThermalSolver class.
+% Non-parameterised unit tests for the ThermalSolver class. Use this test
+% class for tests that do not require automatically sweeping over the grid
+% sizes defined in |AbstractTestGrid|.
 %
 %% Description
 % Runs the following tests for the ThermalSolver:
-% * Verifies simulations in homogeneous media match exact solution
 % * Verifies that simulations using input parameters with a different grid
 %   throw errors.
 
-classdef TestThermalSolver < kwave.tests.unit.AbstractTestGrid
+classdef TestThermalSolver < matlab.unittest.TestCase
 
-    % Parameterized tests.
-    methods(Test, ParameterCombination="sequential")
-
-        % Compare 1D, 2D, 3D initial value problem in homogeneous media
-        % against exact solution.
-        function initialValueProblemHomog(testCase)
-
-            import matlab.unittest.constraints.IsEqualTo
-            import kwave.toolbox.*
-            
-            % Medium.
-            medium = ThermalMedium(testCase.kgrid);
-            medium.thermalConductivity = 0.52;
-            medium.specificHeat = 3540;
-            medium.density = 1000;
-            
-            % Source.
-            source = ThermalSource(testCase.kgrid);
-            variance = (3 * testCase.kgrid.dx)^2;
-            gaussian = @(x) exp(-x.^2 / (2 * variance));
-            switch testCase.kgrid.dimensions
-                case 1
-                    source.initialTemperature = ...
-                        gaussian(testCase.kgrid.xVec);
-                case 2
-                    source.initialTemperature = ...
-                        gaussian(testCase.kgrid.xVec) .* ...
-                        gaussian(testCase.kgrid.yVec)';
-                case 3
-                    source.initialTemperature = ...
-                        gaussian(testCase.kgrid.xVec) .* ...
-                        gaussian(testCase.kgrid.yVec)' .* ...
-                        reshape(gaussian(testCase.kgrid.zVec), 1, 1, []);
-            end
-
-            % Settings.
-            settings = Settings;
-            settings.plotSimulation = 'off';
-            
-            % Solve using two steps.
-            solver = ThermalSolver(testCase.kgrid, medium, source, [], settings);
-            Nt = 500;
-            dt = 1;
-            solver.run(Nt=Nt/2, dt=dt);
-            solver.run(Nt=Nt/2, dt=dt);
-            testCase.actualSolution = solver.temperaturePadded;
-
-            % Compute exact Green's function solution.
-            D = medium.thermalConductivityPadded / (medium.densityPadded * medium.specificHeatPadded);
-            testCase.referenceSolution = kwave.legacy.bioheatExact(source.initialTemperaturePadded, 0, [D, 0, 0], testCase.kgrid.dx, (Nt - 1) * dt);
-
-            % Compare with tolerance.
-            testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));
-
-            % Take a step using auto-calculated Nt and dt.
-            solver.run(EndTime=1);
-            solver.run(CFL=0.5);
-            solver.run;
-
-            % Turn on plotting and take a step.
-            solver.settings.plotSimulation = 'on';
-            solver.run(Nt=1, dt=dt);
-
-        end
+    methods(Test)
 
         % Define medium and source inputs on a different grid, and test for
         % input errors.
@@ -83,10 +21,11 @@ classdef TestThermalSolver < kwave.tests.unit.AbstractTestGrid
 
             import kwave.toolbox.*
 
+            kgrid = Grid([10, 10, 10], 1e-3);
             kgridIncorrect = Grid(10, 2e-3);
 
             % Medium using correct kgrid.
-            medium = ThermalMedium(testCase.kgrid);
+            medium = ThermalMedium(kgrid);
             medium.thermalConductivity = 0.52;
             medium.specificHeat = 3540;
             medium.density = 1000;
@@ -98,20 +37,20 @@ classdef TestThermalSolver < kwave.tests.unit.AbstractTestGrid
             mediumIncorrect.density = 1000;
 
             % Source using correct kgrid.
-            source = ThermalSource(testCase.kgrid);
+            source = ThermalSource(kgrid);
 
             % Source using incorrect kgrid.
             sourceIncorrect = ThermalSource(kgridIncorrect);
 
             testCase.verifyWarningFree(@() ...
-                ThermalSolver(testCase.kgrid, medium, source, []));
+                ThermalSolver(kgrid, medium, source, []));
 
             testCase.verifyError(@() ...
-                ThermalSolver(testCase.kgrid, mediumIncorrect, source, []), ...
+                ThermalSolver(kgrid, mediumIncorrect, source, []), ...
                 'Solver:gridMismatch');
 
             testCase.verifyError(@() ...
-                ThermalSolver(testCase.kgrid, medium, sourceIncorrect, []), ...
+                ThermalSolver(kgrid, medium, sourceIncorrect, []), ...
                 'Solver:gridMismatch');
 
         end
