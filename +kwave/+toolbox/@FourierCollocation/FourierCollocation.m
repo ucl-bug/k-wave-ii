@@ -120,7 +120,7 @@
 
 classdef FourierCollocation < handle
 
-    % Properties that can be set internally or by derived classes.
+    % Properties set by the constructor.
     properties(SetAccess=immutable)
         dimensions
         kgrid

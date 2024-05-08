@@ -13,6 +13,7 @@ classdef TestAcousticSource < kwave.tests.unit.AbstractTestGridInput
         inputPropertiesPadded = {'initialPressurePadded'}
         inputPropertiesScalar = {}
         inputPropertiesComplex = {}
+        inputPropertiesVectorField = {}
     end
 
     methods(Test)
