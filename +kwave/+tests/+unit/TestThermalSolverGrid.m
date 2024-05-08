@@ -1,4 +1,4 @@
-%% TestThermalSolver
+%% TestThermalSolverGrid
 % *Package:* kwave.tests.unit
 % *Superclasses:* kwave.tests.unit.AbstractTestGrid
 %
