@@ -12,6 +12,7 @@ classdef TestThermalMedium < kwave.tests.unit.AbstractTestGridInput
         inputPropertiesPadded = {'densityPadded', 'specificHeatPadded', 'thermalConductivityPadded'}
         inputPropertiesScalar = {}
         inputPropertiesComplex = {}
+        inputPropertiesVectorField = {}
     end
 
     methods(Test)

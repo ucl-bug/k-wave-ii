@@ -12,6 +12,7 @@ classdef TestElectromagneticMedium < kwave.tests.unit.AbstractTestGridInput
         inputPropertiesPadded = {'permittivityPadded', 'permeabilityPadded', 'conductivityPadded'}
         inputPropertiesScalar = {}
         inputPropertiesComplex = {}
+        inputPropertiesVectorField = {}
     end
 
     methods(Test)
