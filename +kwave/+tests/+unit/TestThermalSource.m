@@ -12,6 +12,7 @@ classdef TestThermalSource < kwave.tests.unit.AbstractTestGridInput
         inputPropertiesPadded = {'initialTemperaturePadded'}
         inputPropertiesScalar = {}
         inputPropertiesComplex = {}
+        inputPropertiesVectorField = {}
     end
 
     methods(Test)
