@@ -60,7 +60,7 @@ arguments
     options.FunctionName(1,:) char = ''
 end
 
-if isscalar(numel(matrix))
+if isscalar(matrix)
     return
 end
 

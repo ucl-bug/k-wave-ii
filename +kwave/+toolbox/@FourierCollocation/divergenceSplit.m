@@ -95,7 +95,7 @@ switch options.Staggering
 end
 
 % Scalar or no k-space correction, so use 1D FFTs.
-if isempty(obj.kappa) || isscalar(numel(obj.kappa))
+if isempty(obj.kappa) || isscalar(obj.kappa)
     for dimInd = 1:obj.dimensions
         switch dimInd
             case 1
@@ -107,7 +107,7 @@ if isempty(obj.kappa) || isscalar(numel(obj.kappa))
         end
     end
 
-    if isscalar(numel(obj.kappa))
+    if isscalar(obj.kappa)
         f = f .* obj.kappa;
     end
 
