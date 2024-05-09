@@ -40,7 +40,7 @@ try
 
         % Compute absolute path.
         if returnAbsolutePath
-            fileList = fullfile(strip([kwave.utilities.getkWavePath, ...
+            fileList = fullfile(strcat([kwave.utilities.getkWavePath, ...
                 filesep]), fileList);
         end
     else
