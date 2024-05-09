@@ -91,7 +91,7 @@ if isvector(matrix) % 1D vector
     if length(expansionSize) == 2
         x1Expansion = expansionSize(1);
         x2Expansion = expansionSize(2);
-    elseif length(expansionSize) == 1
+    elseif isscalar(expansionSize) 
         x1Expansion = expansionSize(1);
         x2Expansion = expansionSize(1);
     else
@@ -136,7 +136,7 @@ elseif ismatrix(matrix) % 2D matrix
         x2Expansion = expansionSize(1);
         y1Expansion = expansionSize(2);
         y2Expansion = expansionSize(2);    
-    elseif length(expansionSize) == 1
+    elseif isscalar(expansionSize)
         x1Expansion = expansionSize;
         x2Expansion = expansionSize;
         y1Expansion = expansionSize;
@@ -196,8 +196,8 @@ else % 3D matrix
         y1Expansion = expansionSize(2);
         y2Expansion = expansionSize(2);              
         z1Expansion = expansionSize(3);
-        z2Expansion = expansionSize(3);    
-    elseif length(expansionSize) == 1
+        z2Expansion = expansionSize(3);
+    elseif isscalar(expansionSize)
         x1Expansion = expansionSize;
         x2Expansion = expansionSize;
         y1Expansion = expansionSize;
