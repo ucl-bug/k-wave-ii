@@ -30,12 +30,12 @@ try
     % Get list of changed files.
     [~, output] = system(['git --no-pager diff --diff-filter=d ' ...
         '--name-only main']);
-    
+
     % Check if the Git command executed successfully
     if ~startsWith(output, 'fatal:')
         fileList = strsplit(output, '\n');
 
-        % Remove empty cells.
+        % Remove empty cells
         fileList(cellfun('isempty', fileList)) = [];
 
         % Compute absolute path.
