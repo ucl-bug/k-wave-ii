@@ -27,6 +27,7 @@ arguments
 end
 
 % Get list of changed files.
+setenv('GIT_PAGER', '');
 [~, output] = system('git diff --diff-filter=d --name-only main');
 fileList = strsplit(output, '\n');
 
