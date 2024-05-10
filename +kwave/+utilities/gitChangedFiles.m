@@ -26,7 +26,6 @@ arguments
     returnAbsolutePath(1,1) logical = false
 end
 
-
 % Get list of changed files.
 [status, output] = system(['git --no-pager diff --diff-filter=d ' ...
     '--name-only main']);
