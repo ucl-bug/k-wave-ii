@@ -32,7 +32,7 @@ end
 
 % Check if the Git command executed successfully
 if status ~= 0
- error('SYSTEM:GitDiffExecutionFailed', ...
+ error('SYSTEM:gitDiff', ...
         'Git diff command execution failed with status %d.', status);
 end
 
