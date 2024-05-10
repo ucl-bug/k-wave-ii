@@ -28,8 +28,6 @@ end
 
 
 % Get list of changed files.
-% [status, output] = system(['git --no-pager diff --diff-filter=d ' ...
-%     '--name-only main']);
 [status, output] = system(['git --no-pager diff --diff-filter=d ' ...
     '--name-only main']);
 
@@ -39,21 +37,8 @@ if status ~= 0
     return;
 end
 
-% Check if the Git command threw a warning message and capture it
-warningMsg = lastwarn;
-lastwarn('');
-
-% Print out the git warning and terminate as the output will not match the
-% expexted file list
-if ~isempty(warningMsg)
-    fprintf('Warning: %s\n', warningMsg);
-    return;
-end
-
-% Check if the Git command executed successfully
+% Parse output
 fileList = strsplit(output, '\n');
-
-% Remove empty cells
 fileList(cellfun('isempty', fileList)) = [];
 
 % Compute absolute path.
