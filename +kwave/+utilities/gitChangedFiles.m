@@ -26,26 +26,38 @@ arguments
     returnAbsolutePath(1,1) logical = false
 end
 
-try
-    % Get list of changed files.
-    [~, output] = system(['git --no-pager diff --diff-filter=d ' ...
-        '--name-only main']);
 
-    % Check if the Git command executed successfully
-    if ~startsWith(output, 'fatal:')
-        fileList = strsplit(output, '\n');
+% Get list of changed files.
+% [status, output] = system(['git --no-pager diff --diff-filter=d ' ...
+%     '--name-only main']);
+[status, output] = system(['git --no-pager diff --diff-filter=d ' ...
+    '--name-only main']);
 
-        % Remove empty cells
-        fileList(cellfun('isempty', fileList)) = [];
+% Check if the Git command executed successfully
+if status ~= 0
+    fprintf('Error: Git command execution failed with status %d.\n', status);
+    return;
+end
 
-        % Compute absolute path.
-        if returnAbsolutePath
-            fileList = fullfile(strcat([kwave.utilities.getkWavePath, ...
-                filesep]), fileList);
-        end
-    else
-        error('git command failed: %s', output);
-    end
-catch ME
-    error('An unexpected error occurred: %s', ME.message);
+% Check if the Git command threw a warning message and capture it
+warningMsg = lastwarn;
+lastwarn('');
+
+% Print out the git warning and terminate as the output will not match the
+% expexted file list
+if ~isempty(warningMsg)
+    fprintf('Warning: %s\n', warningMsg);
+    return;
+end
+
+% Check if the Git command executed successfully
+fileList = strsplit(output, '\n');
+
+% Remove empty cells
+fileList(cellfun('isempty', fileList)) = [];
+
+% Compute absolute path.
+if returnAbsolutePath
+    fileList = fullfile(strcat([kwave.utilities.getkWavePath, ...
+        filesep]), fileList);
 end
