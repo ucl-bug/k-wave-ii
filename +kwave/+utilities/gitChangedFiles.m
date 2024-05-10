@@ -32,8 +32,8 @@ end
 
 % Check if the Git command executed successfully
 if status ~= 0
-    fprintf('Error: Git command execution failed with status %d.\n', status);
-    return;
+ error('SYSTEM:GitDiffExecutionFailed', ...
+        'Git diff command execution failed with status %d.', status);
 end
 
 % Parse output
