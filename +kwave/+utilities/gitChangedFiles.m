@@ -27,13 +27,21 @@ arguments
 end
 
 % Get list of changed files.
-[~, output] = system('git diff --diff-filter=d --name-only main');
-fileList = strsplit(output, '\n');
+[status, output] = system(['git --no-pager diff --diff-filter=d ' ...
+    '--name-only main']);
 
-% Remove empty cells.
+% Check if the Git command executed successfully
+if status ~= 0
+    error('SYSTEM:gitDiff', ...
+        'Git diff command execution failed with status %d.', status);
+end
+
+% Parse output
+fileList = strsplit(output, '\n');
 fileList(cellfun('isempty', fileList)) = [];
 
 % Compute absolute path.
 if returnAbsolutePath
-    fileList = fullfile(strcat([kwave.utilities.getkWavePath filesep], fileList));
+    fileList = fullfile(strcat([kwave.utilities.getkWavePath, ...
+        filesep]), fileList);
 end
