@@ -148,7 +148,7 @@ classdef(Abstract) AbstractTestGridInput < matlab.unittest.TestCase
 
             % Pad grid size to match output of size.
             paddedSize = gridSize + 2 * gridPadding;
-            if numel(gridSize) == 1
+            if isscalar(gridSize)
                 gridSize = [gridSize, 1];
                 paddedSize = [paddedSize, 1];
             end

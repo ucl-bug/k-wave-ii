@@ -14,7 +14,7 @@
 % the same size as the grid. The |soundSpeedCompression|,
 % |soundSpeedShear| and |density| must be defined, while the
 % |soundSpeedCompression| and |soundSpeedShear| are used only with the
-% Kelvin Voigt model.
+% Kelvin-Voigt model.
 %
 %% Examples
 % Define the grid and medium objects, and assign the sound speed and
@@ -42,17 +42,14 @@
 
 classdef ElasticMedium < kwave.toolbox.GridInput
 
-    properties
-        alphaCoeffCompression single {mustBeReal, mustBePositive, mustBeFinite}
-        alphaCoeffShear single {mustBeReal, mustBePositive, mustBeFinite}
-    end
-
     properties(Constant, Hidden=true)
         requiredProperties = {'density', 'soundSpeedCompression', 'soundSpeedShear'};
         gridFields = kwave.toolbox.GridField.createGridFieldsMap([
             kwave.toolbox.GridField('density');
             kwave.toolbox.GridField('soundSpeedCompression');
             kwave.toolbox.GridField('soundSpeedShear');
+            kwave.toolbox.GridField('alphaCoeffCompression');
+            kwave.toolbox.GridField('alphaCoeffShear');
         ]);
     end
 
