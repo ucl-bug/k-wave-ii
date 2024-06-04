@@ -48,8 +48,8 @@ obj.pml.setupQuarticPML(dt, obj.medium.soundSpeedReference);
 % Anonymous functions to simplify code within time loop.
 pml = @(x) obj.pml.applyPML(x);
 pmlSG = @(x) obj.pml.applyPML(x, Staggered=true);
-gradient = @(x) obj.gradient(x, Staggering='forward');
-divergence = @(x) obj.divergenceSplit(x, Staggering='backward');
+gradientStress = @(x) obj.gradientStree(x, Staggering='forward');
+gradientVector = @(x) obj.gradientVector(x, Staggering='backward');
 
 if (obj.settings.plotSimulation)
     fig = figure;
@@ -57,45 +57,79 @@ end
 
 for tIndex = 1:Nt
 
-    if (obj.timeStepsTaken == 0)
-
-        % Set initial conditions for an elastic wave initial value problem.
-        % We do this here, rather than in setInitialConditions, as setting
-        % the initial particle velocity requires the time step. The
-        % calculated density term is automatically copied to all components
-        % of densitySplit via implicit expansion.
-
-        % obj.pressurePadded = obj.source.initialPressurePadded;
-        % obj.velocityPadded = (dt ./ obj.medium.densityPadded) .* gradient(obj.pressurePadded) / 2;
-
-    else
-
-        % (1) Calculate the spatial gradients of the stress field using the
-        % Fourier collocation spectral method (equation 7a)
-        % - In legacy this is done on the split field.
-        %
-        % (2) Update the particle velocity using a finite difference time
-        % step (equation 7b)
-        % - In legacy this is done on the split field, adding source terms
-        % then combine the split field components.
-        %
-        % (3) Calculate the spatial gradients of the updated particle
-        % velocity using the Fourier collocation spectral method (equation 7c)
-        % - In legacy this is done on the colocalled field.
-        %
-        % (4) Calculate the spatial gradients of the time derivative of the
-        % particle velocity using equation (5) - momentum conservation
-        % (equation 7d)
-        % - The momentum conservation is only needed when using the
-        % Kelvin-Voigt model and not with the lossless model.
-        %
-        % (5) Update the stress field using a finite difference time step
-        % (equation 7e)
-        % - In legacy this is done on the split field.
-        %
-        % Compute pressure from normal components of the stress
-
-    end
+    % (1) Calculate the spatial gradients of the stress field using the
+    % Fourier collocation spectral method (equation (7a))
+    % - In legacy this is done on the split field. 
+    %
+    % Options: 
+    % 1. Add gradient of a tensor to @FouirerCollectons Gradient which
+    % resturns the matrix of the spatial gradient of the stress field (as 
+    % in equation (5) in the paper) in a 5D array where the last 2
+    % dimensions are the matrix, following the apparoach in other spatial 
+    % derivative in the @FouirerCollectons class.  Note that obj.stress
+    % already has the sums and is not split into its components.
+    % 
+    % partialSigma = obj.gradientStress(obj.stress, Staggering='forward');
+    %
+    % 2. Split the tensor into a number or vectors (dim / dim for 2D, dim,
+    % dim-1, dim-1, dim-1 for 3D) and add an option to select an axis for 
+    % dim-1 cases. 
+    %
+    % ...
+    %
+    % (2) Update the particle velocity using a finite difference time
+    % step (equation (7b) / equation (5))
+    % - In legacy this is done on the split field, adding source terms
+    % then combine the split field components. This can be done with a
+    % sum(A, 2) over the strain.
+    %
+    % obj.velocity = obj.velocity + obj.dt ./ obj.medium.density .* sum(partialSigma,2);
+    %
+    % (3) Calculate the spatial gradients of the updated particle
+    % velocity using the Fourier collocation spectral method (equation 7c)
+    % - In legacy this is done on the colocalled field.
+    %
+    % Extend the @FouirerCollectons class gradient to work on vector fields
+    % and return a tensor. This can be done in a similar way to gradient by
+    % adding a gradientVector method to the @FouirerCollectons class that
+    % returns a 5D array with the last 2 being the velocity gradient
+    % tensor.
+    % gradVel = obj.gradientVector(obj.velocity, Staggering='backwards');
+    %
+    % (4) Calculate the spatial gradients of the time derivative of the
+    % particle velocity using equation (5) - momentum conservation
+    % (equation 7d)
+    % - The momentum conservation is only needed when using the
+    % Kelvin-Voigt model and not with the lossless model.
+    %
+    % (5) Update the stress field using a finite difference time step
+    % (equation (7e))
+    % - In legacy this is done on the split field.
+    %
+    % Option 1: 
+    % - using the operators directly. This will require manipulating the shape of gradVel for symmetric
+    % cases so it is a dim .* ( dim + 1) ./ dim and not dim^2.
+    % - In the fll rank it would be something similar to
+    %
+    % obj.stress = obj.stress + dt .* obj.lambda .* tr(gradVel) .* eye(dim)
+    % + obj.mu .* (gradVel + gradVel.')
+    % 
+    %
+    % Option 2: 
+    % -Using i, j in Einstein notation, someting like for i = 1:3, j = 1:3,
+    % k = 1:3 
+    % if i == k
+    % if i == j 
+    % ...
+    % obj.stress(i) += obj.stress(i) + dt .* (lambda + 2 .* mu) .* (gradVel(:, :, :, i, j);
+    % if i ~= k
+    % if i == j 
+    % ...
+    % if i ~= k
+    % if i ~= j
+    % ...
+    %
+    % (6) Compute pressure from normal components of the stress
 
     % Plot.
     % if obj.settings.plotSimulation && (rem(tIndex, obj.settings.plotFrequency) == 0 || tIndex == 1 || tIndex == Nt)
