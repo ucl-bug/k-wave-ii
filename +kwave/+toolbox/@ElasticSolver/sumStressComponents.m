@@ -1,4 +1,9 @@
-
+%% sumStressComponents
+% *Package:* kwave.toolbox
+% *Superclasses:* kwave.toolbox.TimeDomainSolver
+%
+% Sums up the components of gradient of the stress field.
+%
 function stressSum =    sumStressComponents(stress, dimensions)
 
 arguments

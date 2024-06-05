@@ -99,6 +99,8 @@
 % * |divergence|
 % * |divergenceSplit|
 % * |gradient|
+% * |gradientVector|
+% * |gradientStress|
 % * |plotField|
 % * |sinc|
 

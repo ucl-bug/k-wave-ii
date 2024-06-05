@@ -19,11 +19,7 @@
 % fourth and fifth dimensions.
 %
 % The resulting tensor takes the shape
-% $$ \nabla \mathbf{f} = \begin{bmatrix} 
-% \frac{\partial f_x}{\partial x} & \frac{\partial f_x}{\partial y} & \frac{\partial f_x}{\partial z} \\ 
-% \frac{\partial f_y}{\partial x} & \frac{\partial f_y}{\partial y} & \frac{\partial f_y}{\partial z} \\ 
-% \frac{\partial f_z}{\partial x} & \frac{\partial f_z}{\partial y} & \frac{\partial f_z}{\partial z} \\ 
-% \end{bmatrix}$$
+%   df = [dfxdx dfxdy dfxdz; dfydx dfydy dfydz; dfzdx dfzdy dfzdz]
 %
 % If obj.kappa is defined, a k-space correction is applied as part of the
 % gradient calulation. If kappa is a scalar (single frequency correction)

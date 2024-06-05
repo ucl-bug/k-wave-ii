@@ -1,4 +1,11 @@
-
+%% computeConsisuativeEquation
+% *Package:* kwave.toolbox
+% *Superclasses:* kwave.toolbox.TimeDomainSolver
+%
+% Computes the components of the symmetric stress tensor in linearised
+% using the velocity gradient tensor and Lame parameters for the elastic
+% wave propagation equation. 
+%
 function stress = computeConsisuativeEquation(obj, gradVel)
 
 arguments

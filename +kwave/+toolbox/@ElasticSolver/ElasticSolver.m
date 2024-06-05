@@ -10,9 +10,9 @@
 %
 % $$\frac{\partial \sigma_{ij}}{\partial t} = \lambda \delta_{ij} \frac{\partial v_k}{x_k} + \mu\left(\frac{\partial v_i}{\partial x_j} + \frac{\partial v_j}{\partial x_i}\right) $$
 %
-% $$ frac{\partial \sigma}{\partial t} = \lambda \nabla \dot \mathbf{v} \mathbf{I} + \mu \left( \nabla \mathbf{v} + \nambla \mathbf{v} ^ T \right)
-%
 % $$\frac{\partial v_i}{\partial t} = \frac{1}{\rho_0} \frac{\partial \sigma_{ij}}{\partial x_j}$$
+%
+% $$\frac{\partial \sigma}{\partial t} = \lambda \nabla \cdot \mathbf{v} \mathbf{I} + \mu (\nabla \mathbf{v} + \nabla \mathbf{v} ^ T)$$
 %
 % The computation is based on a k-space pseudospectral scheme in which
 % spatial gradients are calculated using the Fourier collocation spectral
@@ -33,7 +33,7 @@
 %% Examples
 % A simple of example of solving a initial value problem in 1D is shown
 % below.
-%
+%FourierCollocation
 %   clearvars;
 %   import kwave.toolbox.*
 %   
