@@ -12,11 +12,18 @@
 % Calculates the gradient of a vector field in 1D, 2D, or 3D using a
 % Fourier collocation spectral method.
 % 
-% The Jacobiam components of the gradient are stacked in the 4th dimension 
+% The Jacobian components of the gradient are stacked in the 4th dimension 
 % of the output. For example, if calling gradient on a matrix of dimensions
 % (10, 10), the output will be of size (10, 10, 1, 2, 2). This is to allow
 % codes to implement multi-dimensional support by always looping over the
-% fourth dimension.
+% fourth and fifth dimensions.
+%
+% The resulting tensor takes the shape
+% $$ \nabla \mathbf{f} = \begin{bmatrix} 
+% \frac{\partial f_x}{\partial x} & \frac{\partial f_x}{\partial y} & \frac{\partial f_x}{\partial z} \\ 
+% \frac{\partial f_y}{\partial x} & \frac{\partial f_y}{\partial y} & \frac{\partial f_y}{\partial z} \\ 
+% \frac{\partial f_z}{\partial x} & \frac{\partial f_z}{\partial y} & \frac{\partial f_z}{\partial z} \\ 
+% \end{bmatrix}$$
 %
 % If obj.kappa is defined, a k-space correction is applied as part of the
 % gradient calulation. If kappa is a scalar (single frequency correction)
@@ -103,7 +110,7 @@ switch options.Staggering
         dzdz = obj.ddzShiftNeg;
 end
 
-% Preallocate output matrix (vector field).
+% Preallocate output matrix (tensor field).
 df = zeros([obj.kgridPadded.gridSize, obj.dimensions, obj.dimensions]);
 
 % Scalar or no k-space correction, so use 1D FFTs.
@@ -111,17 +118,17 @@ if isempty(obj.kappa) || isscalar(obj.kappa)
     for dimInd = 1:obj.dimensions
         switch dimInd
             case 1
-                df(:, :, :, 1, 1) = ifft(dxdx .* fft(f, [], 1), [], 1, 'symmetric');
+                df(:, :, :, 1, 1) = ifft(dxdx .* fft(f(:, :, :, 1), [], 1), [], 1, 'symmetric');
             case 2
-                df(:, :, :, 2, 1) = ifft(dydx .* fft(f, [], 1), [], 1, 'symmetric');
-                df(:, :, :, 1, 2) = ifft(dxdy .* fft(f, [], 2), [], 2, 'symmetric');
-                df(:, :, :, 2, 2) = ifft(dydy .* fft(f, [], 2), [], 2, 'symmetric');
+                df(:, :, :, 2, 1) = ifft(dydx .* fft(f(:, :, :, 2), [], 1), [], 1, 'symmetric');
+                df(:, :, :, 1, 2) = ifft(dxdy .* fft(f(:, :, :, 1), [], 2), [], 2, 'symmetric');
+                df(:, :, :, 2, 2) = ifft(dydy .* fft(f(:, :, :, 2), [], 2), [], 2, 'symmetric');
             case 3
-                df(:, :, :, 3, 1) = ifft(dzdx .* fft(f, [], 1), [], 1, 'symmetric');
-                df(:, :, :, 3, 2) = ifft(dzdy .* fft(f, [], 2), [], 2, 'symmetric');
-                df(:, :, :, 1, 3) = ifft(dxdz .* fft(f, [], 3), [], 3, 'symmetric');
-                df(:, :, :, 2, 3) = ifft(dydz .* fft(f, [], 3), [], 3, 'symmetric');
-                df(:, :, :, 3, 3) = ifft(dzdz .* fft(f, [], 3), [], 3, 'symmetric');
+                df(:, :, :, 3, 1) = ifft(dzdx .* fft(f(:, :, :, 3), [], 1), [], 1, 'symmetric');
+                df(:, :, :, 3, 2) = ifft(dzdy .* fft(f(:, :, :, 3), [], 2), [], 2, 'symmetric');
+                df(:, :, :, 1, 3) = ifft(dxdz .* fft(f(:, :, :, 1), [], 3), [], 3, 'symmetric');
+                df(:, :, :, 2, 3) = ifft(dydz .* fft(f(:, :, :, 2), [], 3), [], 3, 'symmetric');
+                df(:, :, :, 3, 3) = ifft(dzdz .* fft(f(:, :, :, 3), [], 3), [], 3, 'symmetric');
         end
     end
 
@@ -131,21 +138,20 @@ if isempty(obj.kappa) || isscalar(obj.kappa)
 
 % ND k-space correction, so use ND FFTs.
 else
-    f_k = fftn(f);
     for dimInd = 1:obj.dimensions
         switch dimInd
             case 1
-                df(:, :, :, 1, 1) = ifftn(dxdx .* obj.kappa .* f_k, 'symmetric');
+                df(:, :, :, 1, 1) = ifftn(dxdx .* obj.kappa .* fftn(f(:, :, :, 1)), 'symmetric');
             case 2
-                df(:, :, :, 2, 1) = ifftn(dydx .* obj.kappa .* f_k, 'symmetric');
-                df(:, :, :, 1, 2) = ifftn(dxdy .* obj.kappa .* f_k, 'symmetric');
-                df(:, :, :, 2, 2) = ifftn(dydy .* obj.kappa .* f_k, 'symmetric');
+                df(:, :, :, 2, 1) = ifftn(dydx .* obj.kappa .* fftn(f(:, :, :, 2)), 'symmetric');
+                df(:, :, :, 1, 2) = ifftn(dxdy .* obj.kappa .* fftn(f(:, :, :, 1)), 'symmetric');
+                df(:, :, :, 2, 2) = ifftn(dydy .* obj.kappa .* fftn(f(:, :, :, 2)), 'symmetric');
             case 3
-                df(:, :, :, 3, 1) = ifftn(dzdx .* obj.kappa .* f_k, 'symmetric');
-                df(:, :, :, 3, 2) = ifftn(dzdy .* obj.kappa .* f_k, 'symmetric');
-                df(:, :, :, 1, 3) = ifftn(dxdz .* obj.kappa .* f_k, 'symmetric');
-                df(:, :, :, 2, 2) = ifftn(dydz .* obj.kappa .* f_k, 'symmetric');
-                df(:, :, :, 3, 3) = ifftn(dzdz .* obj.kappa .* f_k, 'symmetric');
+                df(:, :, :, 3, 1) = ifftn(dzdx .* obj.kappa .* fftn(f(:, :, :, 3)), 'symmetric');
+                df(:, :, :, 3, 2) = ifftn(dzdy .* obj.kappa .* fftn(f(:, :, :, 3)), 'symmetric');
+                df(:, :, :, 1, 3) = ifftn(dxdz .* obj.kappa .* fftn(f(:, :, :, 1)), 'symmetric');
+                df(:, :, :, 2, 2) = ifftn(dydz .* obj.kappa .* fftn(f(:, :, :, 2)), 'symmetric');
+                df(:, :, :, 3, 3) = ifftn(dzdz .* obj.kappa .* fftn(f(:, :, :, 3)), 'symmetric');
         end
     end
 end

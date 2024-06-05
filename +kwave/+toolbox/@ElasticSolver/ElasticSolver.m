@@ -6,9 +6,11 @@
 %
 %% Description
 % |ElasticSolver| implements a time-domain solution to the elastic
-% wave equation written as two coupled equations in the form:
+% wave equation written as two coupled equations.  The lossess equation takes the form:
 %
 % $$\frac{\partial \sigma_{ij}}{\partial t} = \lambda \delta_{ij} \frac{\partial v_k}{x_k} + \mu\left(\frac{\partial v_i}{\partial x_j} + \frac{\partial v_j}{\partial x_i}\right) $$
+%
+% $$ frac{\partial \sigma}{\partial t} = \lambda \nabla \dot \mathbf{v} \mathbf{I} + \mu \left( \nabla \mathbf{v} + \nambla \mathbf{v} ^ T \right)
 %
 % $$\frac{\partial v_i}{\partial t} = \frac{1}{\rho_0} \frac{\partial \sigma_{ij}}{\partial x_j}$$
 %

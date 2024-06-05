@@ -46,8 +46,8 @@ obj.kappa = ifftshift(kwave.toolbox.FourierCollocation.sinc(obj.medium.soundSpee
 obj.pml.setupQuarticPML(dt, obj.medium.soundSpeedReference);
 
 % Anonymous functions to simplify code within time loop.
-pml = @(x) obj.pml.applyPML(x);
-pmlSG = @(x) obj.pml.applyPML(x, Staggered=true);
+% pml = @(x) obj.pml.applyPML(x);
+% pmlSG = @(x) obj.pml.applyPML(x, Staggered=true);
 gradientStress = @(x) obj.gradientStree(x, Staggering='forward');
 gradientVector = @(x) obj.gradientVector(x, Staggering='backward');
 
@@ -69,7 +69,7 @@ for tIndex = 1:Nt
     % derivative in the @FouirerCollectons class.  Note that obj.stress
     % already has the sums and is not split into its components.
     % 
-    % partialSigma = obj.gradientStress(obj.stress, Staggering='forward');
+    partialSigma = gradientStress(obj.stress);
     %
     % 2. Split the tensor into a number or vectors (dim / dim for 2D, dim,
     % dim-1, dim-1, dim-1 for 3D) and add an option to select an axis for 
@@ -84,7 +84,9 @@ for tIndex = 1:Nt
     % sum(A, 2) over the strain.
     %
     % obj.velocity = obj.velocity + obj.dt ./ obj.medium.density .* sum(partialSigma,2);
-    %
+
+    obj.velocity = obj.velocity + obj.dt ./ obj.medium.density .* sumStress(partialSigma);
+    
     % (3) Calculate the spatial gradients of the updated particle
     % velocity using the Fourier collocation spectral method (equation 7c)
     % - In legacy this is done on the colocalled field.
@@ -94,7 +96,8 @@ for tIndex = 1:Nt
     % adding a gradientVector method to the @FouirerCollectons class that
     % returns a 5D array with the last 2 being the velocity gradient
     % tensor.
-    % gradVel = obj.gradientVector(obj.velocity, Staggering='backwards');
+    %
+    gradVel = gradientVector(obj.velocity);
     %
     % (4) Calculate the spatial gradients of the time derivative of the
     % particle velocity using equation (5) - momentum conservation
@@ -109,18 +112,16 @@ for tIndex = 1:Nt
     % Option 1: 
     % - using the operators directly. This will require manipulating the shape of gradVel for symmetric
     % cases so it is a dim .* ( dim + 1) ./ dim and not dim^2.
-    % - In the fll rank it would be something similar to
+    % - In the full rank it would be something similar to
     %
     % obj.stress = obj.stress + dt .* obj.lambda .* tr(gradVel) .* eye(dim)
     % + obj.mu .* (gradVel + gradVel.')
-    % 
     %
     % Option 2: 
     % -Using i, j in Einstein notation, someting like for i = 1:3, j = 1:3,
     % k = 1:3 
     % if i == k
     % if i == j 
-    % ...
     % obj.stress(i) += obj.stress(i) + dt .* (lambda + 2 .* mu) .* (gradVel(:, :, :, i, j);
     % if i ~= k
     % if i == j 
@@ -128,7 +129,9 @@ for tIndex = 1:Nt
     % if i ~= k
     % if i ~= j
     % ...
-    %
+    
+    obj.stress = obj.stress + dt .* computeConsisuativeEquation(gradVel);
+
     % (6) Compute pressure from normal components of the stress
 
     % Plot.
