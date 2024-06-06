@@ -40,20 +40,21 @@ arguments
 end
 
 % Set k-space correction (depends on time step).
-obj.kappa = ifftshift(kwave.toolbox.FourierCollocation.sinc(obj.medium.soundSpeedReference * obj.kgridPadded.k * dt/2));
+soundSpeedReference = max(obj.medium.soundSpeedCompression, obj.medium.soundSpeedShear);
+obj.kappa = ifftshift(kwave.toolbox.FourierCollocation.sinc(soundSpeedReference * obj.kgridPadded.k * dt/2));
 
 % Set PML variables (depend on time step).
-obj.pml.setupQuarticPML(dt, obj.medium.soundSpeedReference);
+% obj.pml.setupQuarticPML(dt, soundSpeedReference);
 
 % Anonymous functions to simplify code within time loop.
 % pml = @(x) obj.pml.applyPML(x);
 % pmlSG = @(x) obj.pml.applyPML(x, Staggered=true);
-gradientStress = @(x) obj.gradientStree(x, Staggering='forward');
+gradientStress = @(x) obj.gradientStress(x, Staggering='forward');
 gradientVector = @(x) obj.gradientVector(x, Staggering='backward');
-
-if (obj.settings.plotSimulation)
-    fig = figure;
-end
+% 
+% if (obj.settings.plotSimulation)
+%     fig = figure;
+% end
 
 for tIndex = 1:Nt
 
