@@ -84,8 +84,7 @@ for tIndex = 1:Nt
     % then combine the split field components. This can be done with a
     % sum(A, 2) over the strain.
     %
-    stressGrad = sumStressComponents(gradStress);
-    obj.velocityPadded = obj.velocityPadded + dt ./ obj.medium.density .* stressGrad;
+    obj.velocityPadded = obj.velocityPadded + dt ./ obj.medium.density .* obj.sumStressComponents(gradStress);
     %
     % (3) Calculate the spatial gradients of the updated particle
     % velocity using the Fourier collocation spectral method (equation 7c)
@@ -130,7 +129,7 @@ for tIndex = 1:Nt
     % if i ~= j
     % ...
     
-    obj.stress = obj.stress + dt .* computeConsisuativeEquation(gradVel);
+    obj.stressPadded = obj.stressPadded + dt .* obj.computeConsisuativeEquation(gradVel);
 
     % (6) Compute pressure from normal components of the stress
 

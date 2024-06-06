@@ -1,4 +1,4 @@
-%% computeConsisuativeEquation
+%% computeConstitutiveEquation
 % *Package:* kwave.toolbox
 % *Superclasses:* kwave.toolbox.TimeDomainSolver
 %
@@ -27,7 +27,7 @@
 %% See Also
 % |kwave.toolbox.gradientStress|
 %
-function stress = computeConsisuativeEquation(obj, gradVel)
+function stress = computeConstitutiveEquation(obj, gradVel)
 
 arguments
     obj
@@ -36,7 +36,7 @@ end
 
 dim = obj.dimensions;
 % Preallocate output matrix.
-stress = zeros([dim .* (dim + 1) ./ 2, 1]);
+stress = zeros([obj.kgridPadded.gridSize, dim .* (dim + 1) ./ 2]);
 for i = 1:dim
     for j = 1:dim
         for k = 1:dim

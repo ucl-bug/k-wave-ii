@@ -17,14 +17,15 @@
 % The stress field gradient is obtained from
 % kwave.toolbox.gradientStress.
 %
-function gradStressSum = sumStressComponents(gradStress)
+function gradStressSum = sumStressComponents(obj, gradStress)
 
 arguments
+    obj
     gradStress(:,:,:,:,:)
 end
 
 % Preallocate output matrix (vector field).
-gradStressSum = zeros([obj.dimensions, 1]);
+gradStressSum = zeros([obj.kgridPadded.gridSize, obj.dimensions]);
 for i = 1:obj.dimensions
     for j = 1:obj.dimensions
         gradStressSum(:, :, :, i) = gradStressSum(:, :, :, i) + gradStress(:, :, :, j, i);
