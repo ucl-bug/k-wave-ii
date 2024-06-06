@@ -52,6 +52,12 @@ gradientVector = @(x) obj.gradientVector(x, Staggering='backward');
 %     fig = figure;
 % end
 
+% Assign pressure source to stress field.
+obj.pressure = obj.kgrid.assignWithGridPadding(obj.source.initialPressure, obj.kgrid.gridPadding(1));
+for dim = 1:obj.dimensions
+    obj.stressPadded(:, :, :, dim) = -obj.pressure; 
+end
+
 for tIndex = 1:Nt
     %% (1) Calculate the spatial gradients of the stress field using the
     % Fourier collocation spectral method (equation (7a))
@@ -124,8 +130,12 @@ for tIndex = 1:Nt
     obj.stressPadded = obj.stressPadded + dt .* obj.computeConstitutiveEquation(gradVel);
     %
     %% (6) Compute pressure from normal components of the stress
+    for dim = 1:obj.dimensions
+        obj.pressure = obj.pressure + obj.stressPadded(:, :, :, dim);
+    end
 
-    % Plot.
+
+    % % Plot.
     % if obj.settings.plotSimulation && (rem(tIndex, obj.settings.plotFrequency) == 0 || tIndex == 1 || tIndex == Nt)
     %     figure(fig);
     %     obj.plotField(obj.pressure);

@@ -108,7 +108,6 @@ classdef ElasticSolver < kwave.toolbox.TimeDomainSolver
 
     % PDE variables.
     properties(SetAccess=private, Dependent=true)
-        pressure
         velocity
         stress
     end
@@ -117,9 +116,10 @@ classdef ElasticSolver < kwave.toolbox.TimeDomainSolver
     properties(SetAccess=private, Hidden=true)
         velocityPadded single
         stressPadded single
+        pressure
         mu
         lambda
-        % pml kwave.toolbox.SplitFieldPML
+        pml kwave.toolbox.SplitFieldPML
     end
 
     % Constructor.
@@ -137,8 +137,8 @@ classdef ElasticSolver < kwave.toolbox.TimeDomainSolver
             % setInitialConditions.
             obj@kwave.toolbox.TimeDomainSolver(kgrid, medium, source, sensor, settings);
 
-            % % Initialise PML object.
-            % obj.pml = kwave.toolbox.SplitFieldPML(obj.kgrid);
+            % Initialise PML object.
+            obj.pml = kwave.toolbox.SplitFieldPML(obj.kgrid);
 
         end
     end
@@ -148,8 +148,8 @@ classdef ElasticSolver < kwave.toolbox.TimeDomainSolver
         function velocity = get.velocity(obj)
             velocity = obj.kgrid.returnWithoutGridPadding(obj.velocityPadded);
         end
-        function velocity = get.stress(obj)
-            velocity = obj.kgrid.returnWithoutGridPadding(obj.stressPadded);
+        function stress = get.stress(obj)
+            stress = obj.kgrid.returnWithoutGridPadding(obj.stressPadded);
         end
 
     end

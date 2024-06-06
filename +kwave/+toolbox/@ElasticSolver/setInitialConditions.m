@@ -37,20 +37,22 @@
 
 function setInitialConditions(obj)
 
-% % Assign the reference sound speed if not provided.
+% % Assign the reference sound speed if not provided.  Do we need it for
+% PML?
 % if isempty(obj.medium.soundSpeedReference)
 %     obj.medium.soundSpeedReference = max(max(obj.medium.soundSpeedShear(:),obj.medium.soundSpeedCompression(:)));
 % end
 
 % Initialise elastic variables. The pressure is a scalar
-% field, so has the same size as the grid. The split velocity is a
-% vector fields, with the Cartesian components indexed in the 4th
+% field, so has the same size as the grid. The velocity is a vector fields,
+% with the Cartesian components indexed in the 4th dimension and the stress
+% tensor is linearised to a vector with its components indexed in the 4th 
 % dimension.
 dim = obj.kgrid.dimensions;
 obj.velocityPadded = zeros([obj.kgridPadded.gridSize, dim], obj.settings.simulationDataType);
 obj.stressPadded = zeros([obj.kgridPadded.gridSize, dim .* (dim + 1) ./ 2], obj.settings.simulationDataType);
 
-% Assign the Lame parameters and the Kelvin-Voigt model
-% viscosity coefficients.  (Should this be here?)
+% Assign the Lame parameters and in the future the Kelvin-Voigt model
+% visco-elastic coefficients.
 obj.mu     = obj.medium.soundSpeedShear.^2       .* obj.medium.density;
 obj.lambda = obj.medium.soundSpeedCompression.^2 .* obj.medium.density - 2*obj.mu;
