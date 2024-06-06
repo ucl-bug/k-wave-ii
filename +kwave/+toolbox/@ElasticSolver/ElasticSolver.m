@@ -110,18 +110,13 @@ classdef ElasticSolver < kwave.toolbox.TimeDomainSolver
     properties(SetAccess=private, Dependent=true)
         pressure
         velocity
-        % velocitySplit
-        % stress
-        % stressSplit
     end
 
     % PDE variables on padded domain, and PML variables.
     properties(SetAccess=private, Hidden=true)
         pressurePadded single
         velocityPadded single
-        velocitySplitPadded single
         stressPadded single
-        stressSplitPadded single
         mu
         lambda
         % pml kwave.toolbox.SplitFieldPML
@@ -156,15 +151,6 @@ classdef ElasticSolver < kwave.toolbox.TimeDomainSolver
         function velocity = get.velocity(obj)
             velocity = obj.kgrid.returnWithoutGridPadding(obj.velocityPadded);
         end
-        % function velocity = get.velocitySplit(obj)
-        %     velocity = obj.kgrid.returnWithoutGridPadding(obj.velocitySplitPadded);
-        % end
-        % function velocity = get.stress(obj)
-        %     velocity = obj.kgrid.returnWithoutGridPadding(obj.stressPadded);
-        % end
-        % function velocity = get.stressSplit(obj)
-        %     velocity = obj.kgrid.returnWithoutGridPadding(obj.stressSplitPadded);
-        % end
     end
 
     % Override inherited methods.

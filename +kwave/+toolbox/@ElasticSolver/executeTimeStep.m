@@ -69,7 +69,7 @@ for tIndex = 1:Nt
     % derivative in the @FouirerCollectons class.  Note that obj.stress
     % already has the sums and is not split into its components.
     % 
-    partialSigma = gradientStress(obj.stress);
+    gradStress = gradientStress(obj.stress);
     %
     % 2. Split the tensor into a number or vectors (dim / dim for 2D, dim,
     % dim-1, dim-1, dim-1 for 3D) and add an option to select an axis for 
@@ -83,10 +83,8 @@ for tIndex = 1:Nt
     % then combine the split field components. This can be done with a
     % sum(A, 2) over the strain.
     %
-    % obj.velocity = obj.velocity + obj.dt ./ obj.medium.density .* sum(partialSigma,2);
-
-    obj.velocity = obj.velocity + obj.dt ./ obj.medium.density .* sumStress(partialSigma);
-    
+    obj.velocity = obj.velocity + obj.dt ./ obj.medium.density .* sumStressComponents(gradStress);
+    %
     % (3) Calculate the spatial gradients of the updated particle
     % velocity using the Fourier collocation spectral method (equation 7c)
     % - In legacy this is done on the colocalled field.

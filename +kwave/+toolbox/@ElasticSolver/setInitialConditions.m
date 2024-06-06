@@ -49,9 +49,7 @@ function setInitialConditions(obj)
 dim = obj.kgrid.dimensions;
 obj.pressurePadded = zeros(obj.kgridPadded.gridSize, obj.settings.simulationDataType);
 obj.velocityPadded = zeros([obj.kgridPadded.gridSize, dim], obj.settings.simulationDataType);
-obj.velocitySplitPadded = zeros([obj.kgridPadded.gridSize, 2 .* dim], obj.settings.simulationDataType);
 obj.stressPadded = zeros([obj.kgridPadded.gridSize, dim .* (dim + 1) ./ 2], obj.settings.simulationDataType);
-obj.stressSplitPadded = zeros([obj.kgridPadded.gridSize, 2 .* dim .* dim - dim], obj.settings.simulationDataType);
 
 % Assign the Lame parameters and the Kelvin-Voigt model
 % viscosity coefficients.  (Should this be here?)

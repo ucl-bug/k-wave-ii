@@ -5,21 +5,30 @@
 % Calculate gradient of vector field.
 %
 %% Syntax
-%   df = gradientVector(obj, f)
-%   df = gradientVector(obj, f, Staggering='forward')
+%   ds = gradientVector(obj, s)
+%   ds = gradientVector(obj, s, Staggering='forward')
 %
 %% Description
-% Calculates the gradient of a vector field in 1D, 2D, or 3D using a
-% Fourier collocation spectral method.
+% Calculates the gradient of a stress tensor in 1D, 2D, or 3D using a
+% Fourier collocation spectral method.  The stress tensor is assumed
+% summetric and linearised to a vector of dimensions
+% [D * (D + 1) / 2 , 1] where the components are [sxx] in 1D,
+% [sxx, syy, sxy]' in 2D and [sxx, syy, szz, sxy, sxz, syz]' in 3D.
+%
+% The gradient components of the symmetric stress tensor which
+% are non-zero are
+%     ds = [dsxxdx, dsxydy, dsxzdz;
+%           dsxydx, dsyydy, dsyzdz;
+%           dsxzdz, dsyzdz, dszzdz]
 % 
-% The Jacobiam components of the gradient are stacked in the 4th dimension 
-% of the output. For example, if calling gradient on a matrix of dimensions
-% (10, 10), the output will be of size (10, 10, 1, 2, 2). This is to allow
-% codes to implement multi-dimensional support by always looping over the
-% fourth dimension.
+% The tensor components of the gradient are stacked in the 4th and 5th
+% dimension of the output. For example, if calling gradient on a matrix of
+% dimensions (10, 10), the output will be of size (10, 10, 1, 2, 2).
+% This is to allow codes to implement multi-dimensional support by always
+% looping over the fourth and fifth dimensions.
 %
 % If obj.kappa is defined, a k-space correction is applied as part of the
-% gradient calulation. If kappa is a scalar (single frequency correction)
+% gradient calculation. If kappa is a scalar (single frequency correction)
 % or empty, the gradient components are calculated using 1D FFTs. If kappa
 % is a matrix, the gradient components are calculated using ND FFTs, and
 % kappa is applied in the Fourier domain.
@@ -30,7 +39,7 @@
 % setting the optional |Staggering| argument.
 %
 %% Input Arguments
-% * |f| - (numeric) Vector field to compute gradient of.
+% * |s| - (numeric) Stress field to compute gradient of.
 %
 %% Name-Value Arguments
 % Specify optional pairs of arguments as |Name1=Value1,...,NameN=ValueN|,
@@ -40,10 +49,10 @@
 %
 % * |Staggering| - ('none', 'forward', 'backward') Option to return the
 %   output staggered by half a grid point in the specified direction.
-%   Defatult = 'none'.
+%   Default = 'none'.
 %
 %% Output Arguments
-% * |df| - (numeric) Gradient of f.
+% * |ds| - (numeric) Gradient of the stress field s.
 
 % Copyright (C) 2022- University College London.
 %
@@ -61,78 +70,78 @@
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
-function df = gradientStress(obj, f, options)
+function ds = gradientStress(obj, s, options)
 
 arguments
     obj
-    f(:,:,:,:)
+    s(:,:,:,:)
     options.Staggering(1,:) char {mustBeMember(options.Staggering, {'none', 'forward', 'backward'})} = 'none'
 end
 
 % Assign pseudonym for k-space derivative and shift operator.
 switch options.Staggering
     case 'none'
-        dxxdx = obj.ddxNoShift;
-        dxydy = obj.ddyNoShift;
-        dxzdz = obj.ddzNoShift;
-        dxydx = obj.ddxNoShift;
-        dyydy = obj.ddyNoShift;
-        dyzdz = obj.ddzNoShift;
-        dxzdx = obj.ddxNoShift;
-        dyzdy = obj.ddyNoShift;
-        dzzdz = obj.ddzNoShift;
+        dsxxdx = obj.ddxNoShift;
+        dsxydy = obj.ddyNoShift;
+        dsxzdz = obj.ddzNoShift;
+        dsxydx = obj.ddxNoShift;
+        dsyydy = obj.ddyNoShift;
+        dsyzdz = obj.ddzNoShift;
+        dsxzdx = obj.ddxNoShift;
+        dsyzdy = obj.ddyNoShift;
+        dszzdz = obj.ddzNoShift;
     case 'forward'
-        dxxdx = obj.ddxShiftPos;
-        dxydy = obj.ddyShiftNeg;
-        dxzdz = obj.ddzShiftNeg;
-        dxydx = obj.ddxShiftNeg;
-        dyydy = obj.ddyShiftPos;
-        dyzdz = obj.ddzShiftNeg;
-        dxzdx = obj.ddxShiftNeg;
-        dyzdy = obj.ddyShiftNeg;
-        dzzdz = obj.ddzShiftPos;
+        dsxxdx = obj.ddxShiftPos;
+        dsxydy = obj.ddyShiftNeg;
+        dsxzdz = obj.ddzShiftNeg;
+        dsxydx = obj.ddxShiftNeg;
+        dsyydy = obj.ddyShiftPos;
+        dsyzdz = obj.ddzShiftNeg;
+        dsxzdx = obj.ddxShiftNeg;
+        dsyzdy = obj.ddyShiftNeg;
+        dszzdz = obj.ddzShiftPos;
     case 'backward'
-        dxxdx = obj.ddxShiftNeg;
-        dxydy = obj.ddyShiftPos;
-        dxzdz = obj.ddzShiftPos;
-        dxydx = obj.ddxShiftPos;
-        dyydy = obj.ddyShiftNeg;
-        dyzdz = obj.ddzShiftPos;
-        dxzdx = obj.ddxShiftPos;
-        dyzdy = obj.ddyShiftPos;
-        dzzdz = obj.ddzShiftNeg;
+        dsxxdx = obj.ddxShiftNeg;
+        dsxydy = obj.ddyShiftPos;
+        dsxzdz = obj.ddzShiftPos;
+        dsxydx = obj.ddxShiftPos;
+        dsyydy = obj.ddyShiftNeg;
+        dsyzdz = obj.ddzShiftPos;
+        dsxzdx = obj.ddxShiftPos;
+        dsyzdy = obj.ddyShiftPos;
+        dszzdz = obj.ddzShiftNeg;
 end
 
 % Preallocate output matrix (vector field).
-df = zeros([obj.kgridPadded.gridSize, obj.dimensions, obj.dimensions]);
+ds = zeros([obj.kgridPadded.gridSize, obj.dimensions, obj.dimensions]);
 
 % Scalar or no k-space correction, so use 1D FFTs.
 if isempty(obj.kappa) || isscalar(obj.kappa)
     for dimInd = 1:obj.dimensions
         switch dimInd
             case 1
-                df(:, :, :, 1, 1) = ifft(dxxdx .* fft(f(:, :, :, 1), [], 1), [], 1, 'symmetric');
+                ds(:, :, :, 1, 1) = ifft(dsxxdx .* fft(f(:, :, :, 1), [], 1), [], 1, 'symmetric');
             case 2
-                df(:, :, :, 2, 1) = ifft(dxydx .* fft(f(:, :, :, 3), [], 1), [], 1, 'symmetric');
-                df(:, :, :, 1, 2) = ifft(dxydy .* fft(f(:, :, :, 3), [], 2), [], 2, 'symmetric');
-                df(:, :, :, 2, 2) = ifft(dyydy .* fft(f(:, :, :, 2), [], 2), [], 2, 'symmetric');
+                ds(:, :, :, 2, 1) = ifft(dsxydx .* fft(f(:, :, :, 3), [], 1), [], 1, 'symmetric');
+                ds(:, :, :, 1, 2) = ifft(dsxydy .* fft(f(:, :, :, 3), [], 2), [], 2, 'symmetric');
+                ds(:, :, :, 2, 2) = ifft(dsyydy .* fft(f(:, :, :, 2), [], 2), [], 2, 'symmetric');
             case 3
                 % Indecies for the symmetric (squashed) stress tensor are
                 % different in 2D and 3D so the spatial derivatives for the
                 % dxy components need overwritten with the correct
                 % indecies.
-                df(:, :, :, 2, 1) = ifft(dxydx .* fft(f(:, :, :, 4), [], 1), [], 1, 'symmetric');
-                df(:, :, :, 1, 2) = ifft(dxydy .* fft(f(:, :, :, 4), [], 2), [], 2, 'symmetric');
-                df(:, :, :, 3, 1) = ifft(dxzdx .* fft(f(:, :, :, 5), [], 1), [], 1, 'symmetric');
-                df(:, :, :, 3, 2) = ifft(dyzdy .* fft(f(:, :, :, 6), [], 2), [], 2, 'symmetric');
-                df(:, :, :, 1, 3) = ifft(dxzdz .* fft(f(:, :, :, 5), [], 3), [], 3, 'symmetric');
-                df(:, :, :, 2, 3) = ifft(dyzdz .* fft(f(:, :, :, 6), [], 3), [], 3, 'symmetric');
-                df(:, :, :, 3, 3) = ifft(dzzdz .* fft(f(:, :, :, 3), [], 3), [], 3, 'symmetric');
+                ds(:, :, :, 2, 1) = ifft(dsxydx .* fft(f(:, :, :, 4), [], 1), [], 1, 'symmetric');
+                ds(:, :, :, 1, 2) = ifft(dsxydy .* fft(f(:, :, :, 4), [], 2), [], 2, 'symmetric');
+                ds(:, :, :, 3, 1) = ifft(dsxzdx .* fft(f(:, :, :, 5), [], 1), [], 1, 'symmetric');
+                ds(:, :, :, 3, 2) = ifft(dsyzdy .* fft(f(:, :, :, 6), [], 2), [], 2, 'symmetric');
+                ds(:, :, :, 1, 3) = ifft(dsxzdz .* fft(f(:, :, :, 5), [], 3), [], 3, 'symmetric');
+                ds(:, :, :, 2, 3) = ifft(dsyzdz .* fft(f(:, :, :, 6), [], 3), [], 3, 'symmetric');
+                ds(:, :, :, 3, 3) = ifft(dszzdz .* fft(f(:, :, :, 3), [], 3), [], 3, 'symmetric');
         end
     end
 
     if isscalar(obj.kappa)
-        df = df .* obj.kappa;
+        ds = ds .* obj.kappa;
     end
 
 % ND k-space correction, so use ND FFTs.
@@ -140,23 +149,23 @@ else
     for dimInd = 1:obj.dimensions
         switch dimInd
             case 1
-                df(:, :, :, 1, 1) = ifftn(dxdx .* obj.kappa .* fftn(f(:, :, :, 1)), 'symmetric');
+                ds(:, :, :, 1, 1) = ifftn(dsxxdx .* obj.kappa .* fftn(f(:, :, :, 1)), 'symmetric');
             case 2
-                df(:, :, :, 2, 1) = ifftn(dydx .* obj.kappa .* fftn(f(:, :, :, 3)), 'symmetric');
-                df(:, :, :, 1, 2) = ifftn(dxdy .* obj.kappa .* fftn(f(:, :, :, 3)), 'symmetric');
-                df(:, :, :, 2, 2) = ifftn(dydy .* obj.kappa .* fftn(f(:, :, :, 2)), 'symmetric');
+                ds(:, :, :, 2, 1) = ifftn(dsxydx .* obj.kappa .* fftn(f(:, :, :, 3)), 'symmetric');
+                ds(:, :, :, 1, 2) = ifftn(dsxydy .* obj.kappa .* fftn(f(:, :, :, 3)), 'symmetric');
+                ds(:, :, :, 2, 2) = ifftn(dsyydy .* obj.kappa .* fftn(f(:, :, :, 2)), 'symmetric');
             case 3
-                % Indecies for the symmetric (squashed) stress tensor are
-                % different in 2D and 3D so the spatial derivatives for the
-                % dxy components need overwritten with the correct
+                % Indecies for the linearised symmetric stress tensor are
+                % different in 2D and 3D so the spatial derivatives of the
+                % sxy components need to be overwritten with the correct
                 % indecies.
-                df(:, :, :, 2, 1) = ifftn(dydx .* obj.kappa .* fftn(f(:, :, :, 4)), 'symmetric');
-                df(:, :, :, 1, 2) = ifftn(dxdy .* obj.kappa .* fftn(f(:, :, :, 4)), 'symmetric');
-                df(:, :, :, 3, 1) = ifftn(dzdx .* obj.kappa .* fftn(f(:, :, :, 5)), 'symmetric');
-                df(:, :, :, 3, 2) = ifftn(dzdy .* obj.kappa .* fftn(f(:, :, :, 6)), 'symmetric');
-                df(:, :, :, 1, 3) = ifftn(dxdz .* obj.kappa .* fftn(f(:, :, :, 5)), 'symmetric');
-                df(:, :, :, 2, 2) = ifftn(dydz .* obj.kappa .* fftn(f(:, :, :, 6)), 'symmetric');
-                df(:, :, :, 3, 3) = ifftn(dzdz .* obj.kappa .* fftn(f(:, :, :, 3)), 'symmetric');
+                ds(:, :, :, 2, 1) = ifftn(dsxydx .* obj.kappa .* fftn(f(:, :, :, 4)), 'symmetric');
+                ds(:, :, :, 1, 2) = ifftn(dsxydy .* obj.kappa .* fftn(f(:, :, :, 4)), 'symmetric');
+                ds(:, :, :, 3, 1) = ifftn(dsxzdx .* obj.kappa .* fftn(f(:, :, :, 5)), 'symmetric');
+                ds(:, :, :, 3, 2) = ifftn(dsyzdy .* obj.kappa .* fftn(f(:, :, :, 6)), 'symmetric');
+                ds(:, :, :, 1, 3) = ifftn(dsxzdz .* obj.kappa .* fftn(f(:, :, :, 5)), 'symmetric');
+                ds(:, :, :, 2, 2) = ifftn(dsyzdz .* obj.kappa .* fftn(f(:, :, :, 6)), 'symmetric');
+                ds(:, :, :, 3, 3) = ifftn(dszzdz .* obj.kappa .* fftn(f(:, :, :, 3)), 'symmetric');
         end
     end
 end
