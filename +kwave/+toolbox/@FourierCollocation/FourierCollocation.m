@@ -100,7 +100,7 @@
 % * |divergenceSplit|
 % * |gradient|
 % * |gradientVector|
-% * |gradientStress|
+% * |gradientSymTensor|
 % * |plotField|
 % * |sinc|
 

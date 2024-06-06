@@ -39,17 +39,13 @@ arguments
     dt(1,1) {mustBeNumeric, mustBePositive, mustBeFinite}
 end
 
-% Set k-space correction (depends on time step).
-soundSpeedReference = max(obj.medium.soundSpeedCompression, obj.medium.soundSpeedShear);
-obj.kappa = ifftshift(kwave.toolbox.FourierCollocation.sinc(soundSpeedReference * obj.kgridPadded.k * dt/2));
-
 % Set PML variables (depend on time step).
 % obj.pml.setupQuarticPML(dt, soundSpeedReference);
 
 % Anonymous functions to simplify code within time loop.
 % pml = @(x) obj.pml.applyPML(x);
 % pmlSG = @(x) obj.pml.applyPML(x, Staggered=true);
-gradientStress = @(x) obj.gradientStress(x, Staggering='forward');
+gradientSymTensor = @(x) obj.gradientSymTensor(x, Staggering='forward');
 gradientVector = @(x) obj.gradientVector(x, Staggering='backward');
 % 
 % if (obj.settings.plotSimulation)
@@ -57,28 +53,28 @@ gradientVector = @(x) obj.gradientVector(x, Staggering='backward');
 % end
 
 for tIndex = 1:Nt
-
-    % (1) Calculate the spatial gradients of the stress field using the
+    %% (1) Calculate the spatial gradients of the stress field using the
     % Fourier collocation spectral method (equation (7a))
     % - In legacy this is done on the split field. 
     %
     % Options: 
     % 1. Add gradient of a tensor to @FouirerCollectons Gradient which
     % resturns the matrix of the spatial gradient of the stress field (as 
-    % in equation (5) in the paper) in a 5D array where the last 2
-    % dimensions are the matrix, following the apparoach in other spatial 
-    % derivative in the @FouirerCollectons class.  Note that obj.stress
-    % already has the sums and is not split into its components.
-    % 
-    gradStress = gradientStress(obj.stressPadded);
+    % in equation (5) in the paper).  This was implamented as a method in
+    % the @FouirerCollectons class called gradientSymTensor returning a 5D 
+    % array where the last two dimensions are the stress gradient in matrix 
+    % form (9 components of the split field in 3D), following the apparoach 
+    % of the other spatial derivative.
     %
-    % 2. Split the tensor into a number or vectors (dim / dim for 2D, dim,
-    % dim-1, dim-1, dim-1 for 3D) and add an option to select an axis for 
-    % dim-1 cases. 
+    % 2. Split the tensor into a number or vectors and manipulate the
+    % existing divergance (non-split) operator to return the correct
+    % components of the gradient of the stress tensor.  This might be
+    % possible if we really want to but looks like it might be rather
+    % messy so was not attempted in the initial prototype.
     %
-    % ...
+    gradStress = gradientSymTensor(obj.stressPadded);
     %
-    % (2) Update the particle velocity using a finite difference time
+    %% (2) Update the particle velocity using a finite difference time
     % step (equation (7b) / equation (5))
     % - In legacy this is done on the split field, adding source terms
     % then combine the split field components. This can be done with a
@@ -86,52 +82,48 @@ for tIndex = 1:Nt
     %
     obj.velocityPadded = obj.velocityPadded + dt ./ obj.medium.density .* obj.sumStressComponents(gradStress);
     %
-    % (3) Calculate the spatial gradients of the updated particle
+    %% (3) Calculate the spatial gradients of the updated particle
     % velocity using the Fourier collocation spectral method (equation 7c)
     % - In legacy this is done on the colocalled field.
     %
     % Extend the @FouirerCollectons class gradient to work on vector fields
-    % and return a tensor. This can be done in a similar way to gradient by
-    % adding a gradientVector method to the @FouirerCollectons class that
-    % returns a 5D array with the last 2 being the velocity gradient
-    % tensor.
+    % and return a tensor. This was implamented in a similar way to the 
+    % divergence method by adding a gradientVector method to the 
+    % @FouirerCollectons class that returns a 5D array with the last 2 being 
+    % the tensor of the velocity gradient.
     %
     gradVel = gradientVector(obj.velocityPadded);
     %
-    % (4) Calculate the spatial gradients of the time derivative of the
+    %% (4) Calculate the spatial gradients of the time derivative of the
     % particle velocity using equation (5) - momentum conservation
     % (equation 7d)
     % - The momentum conservation is only needed when using the
     % Kelvin-Voigt model and not with the lossless model.
     %
-    % (5) Update the stress field using a finite difference time step
+    %% (5) Update the stress field using a finite difference time step
     % (equation (7e))
-    % - In legacy this is done on the split field.
+    % - In legacy this is done on the split field with 15 components in 3D.
     %
-    % Option 1: 
-    % - using the operators directly. This will require manipulating the shape of gradVel for symmetric
-    % cases so it is a dim .* ( dim + 1) ./ dim and not dim^2.
-    % - In the full rank it would be something similar to
-    %
+    % Options:
+    % 1. Using the operators directly. 
+    % This will require using the full rank stress tensors and would look
+    % something like the following:
     % obj.stress = obj.stress + dt .* obj.lambda .* tr(gradVel) .* eye(dim)
     % + obj.mu .* (gradVel + gradVel.')
     %
-    % Option 2: 
-    % -Using i, j in Einstein notation, someting like for i = 1:3, j = 1:3,
-    % k = 1:3 
-    % if i == k
-    % if i == j 
+    % 2. Using Einstein notation. 
+    % Someting like for i = 1:3, j = 1:3, k = 1:3 
+    % if i == k && i == j 
     % obj.stress(i) += obj.stress(i) + dt .* (lambda + 2 .* mu) .* (gradVel(:, :, :, i, j);
-    % if i ~= k
-    % if i == j 
+    % if i ~= k && if i == j 
     % ...
-    % if i ~= k
-    % if i ~= j
+    % if i ~= k && if i ~= j
     % ...
-    
-    obj.stressPadded = obj.stressPadded + dt .* obj.computeConsisuativeEquation(gradVel);
-
-    % (6) Compute pressure from normal components of the stress
+    % This was implamented in computeConsisuativeEquation.m
+    %
+    obj.stressPadded = obj.stressPadded + dt .* obj.computeConstitutiveEquation(gradVel);
+    %
+    %% (6) Compute pressure from normal components of the stress
 
     % Plot.
     % if obj.settings.plotSimulation && (rem(tIndex, obj.settings.plotFrequency) == 0 || tIndex == 1 || tIndex == Nt)

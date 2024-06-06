@@ -7,7 +7,7 @@
 % wave propagation equation. 
 %
 %% Syntax
-% stress = computeConsisuativeEquation(obj, gradVel)
+% stress = computeConstitutiveEquation(obj, gradVel)
 %
 %% Description
 % Computes the right hand side of the of the lossless elasticity

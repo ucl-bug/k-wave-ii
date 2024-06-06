@@ -115,7 +115,6 @@ classdef ElasticSolver < kwave.toolbox.TimeDomainSolver
 
     % PDE variables on padded domain, and PML variables.
     properties(SetAccess=private, Hidden=true)
-        pressurePadded single
         velocityPadded single
         stressPadded single
         mu
@@ -146,9 +145,6 @@ classdef ElasticSolver < kwave.toolbox.TimeDomainSolver
 
     % Get methods for PDE variables on non-padded grid.
     methods
-        function pressure = get.pressure(obj)
-            pressure = obj.kgrid.returnWithoutGridPadding(obj.pressurePadded);
-        end
         function velocity = get.velocity(obj)
             velocity = obj.kgrid.returnWithoutGridPadding(obj.velocityPadded);
         end

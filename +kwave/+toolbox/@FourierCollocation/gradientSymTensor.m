@@ -1,22 +1,21 @@
-%% gradientStress
+%% gradientSymTensor
 % *Class:* kwave.toolbox.FourierCollocation
 % *Package:* kwave.toolbox
 %
 % Calculate gradient of vector field.
 %
 %% Syntax
-%   ds = gradientVector(obj, s)
-%   ds = gradientVector(obj, s, Staggering='forward')
+%   ds = gradientSymTensor(obj, s)
+%   ds = gradientSymTensor(obj, s, Staggering='forward')
 %
 %% Description
-% Calculates the gradient of a stress tensor in 1D, 2D, or 3D using a
-% Fourier collocation spectral method.  The stress tensor is assumed
-% summetric and linearised to a vector of dimensions
-% [D * (D + 1) / 2 , 1] where the components are [sxx] in 1D,
-% [sxx, syy, sxy]' in 2D and [sxx, syy, szz, sxy, sxz, syz]' in 3D.
+% Calculates the gradient of a symmetric tensor in 1D, 2D, or 3D using a
+% Fourier collocation spectral method.  The symmetric tensor must be
+% linearised to a vector of dimensions % [D * (D + 1) / 2 , 1] where the 
+% components are [sxx] in 1D, [sxx, syy, sxy]' in 2D and 
+% [sxx, syy, szz, sxy, sxz, syz]' in 3D.
 %
-% The gradient components of the symmetric stress tensor which
-% are non-zero are
+% The gradient components of the symmetric tensor which are non-zero are
 %     ds = [dsxxdx, dsxydy, dsxzdz;
 %           dsxydx, dsyydy, dsyzdz;
 %           dsxzdz, dsyzdz, dszzdz]
@@ -70,7 +69,7 @@
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
-function ds = gradientStress(obj, s, options)
+function ds = gradientSymTensor(obj, s, options)
 
 arguments
     obj

@@ -47,7 +47,6 @@ function setInitialConditions(obj)
 % vector fields, with the Cartesian components indexed in the 4th
 % dimension.
 dim = obj.kgrid.dimensions;
-obj.pressurePadded = zeros(obj.kgridPadded.gridSize, obj.settings.simulationDataType);
 obj.velocityPadded = zeros([obj.kgridPadded.gridSize, dim], obj.settings.simulationDataType);
 obj.stressPadded = zeros([obj.kgridPadded.gridSize, dim .* (dim + 1) ./ 2], obj.settings.simulationDataType);
 
