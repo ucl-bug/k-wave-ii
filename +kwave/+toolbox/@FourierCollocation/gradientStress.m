@@ -120,23 +120,23 @@ if isempty(obj.kappa) || isscalar(obj.kappa)
     for dimInd = 1:obj.dimensions
         switch dimInd
             case 1
-                ds(:, :, :, 1, 1) = ifft(dsxxdx .* fft(f(:, :, :, 1), [], 1), [], 1, 'symmetric');
+                ds(:, :, :, 1, 1) = ifft(dsxxdx .* fft(s(:, :, :, 1), [], 1), [], 1, 'symmetric');
             case 2
-                ds(:, :, :, 2, 1) = ifft(dsxydx .* fft(f(:, :, :, 3), [], 1), [], 1, 'symmetric');
-                ds(:, :, :, 1, 2) = ifft(dsxydy .* fft(f(:, :, :, 3), [], 2), [], 2, 'symmetric');
-                ds(:, :, :, 2, 2) = ifft(dsyydy .* fft(f(:, :, :, 2), [], 2), [], 2, 'symmetric');
+                ds(:, :, :, 2, 1) = ifft(dsxydx .* fft(s(:, :, :, 3), [], 1), [], 1, 'symmetric');
+                ds(:, :, :, 1, 2) = ifft(dsxydy .* fft(s(:, :, :, 3), [], 2), [], 2, 'symmetric');
+                ds(:, :, :, 2, 2) = ifft(dsyydy .* fft(s(:, :, :, 2), [], 2), [], 2, 'symmetric');
             case 3
                 % Indecies for the symmetric (squashed) stress tensor are
                 % different in 2D and 3D so the spatial derivatives for the
                 % dxy components need overwritten with the correct
                 % indecies.
-                ds(:, :, :, 2, 1) = ifft(dsxydx .* fft(f(:, :, :, 4), [], 1), [], 1, 'symmetric');
-                ds(:, :, :, 1, 2) = ifft(dsxydy .* fft(f(:, :, :, 4), [], 2), [], 2, 'symmetric');
-                ds(:, :, :, 3, 1) = ifft(dsxzdx .* fft(f(:, :, :, 5), [], 1), [], 1, 'symmetric');
-                ds(:, :, :, 3, 2) = ifft(dsyzdy .* fft(f(:, :, :, 6), [], 2), [], 2, 'symmetric');
-                ds(:, :, :, 1, 3) = ifft(dsxzdz .* fft(f(:, :, :, 5), [], 3), [], 3, 'symmetric');
-                ds(:, :, :, 2, 3) = ifft(dsyzdz .* fft(f(:, :, :, 6), [], 3), [], 3, 'symmetric');
-                ds(:, :, :, 3, 3) = ifft(dszzdz .* fft(f(:, :, :, 3), [], 3), [], 3, 'symmetric');
+                ds(:, :, :, 2, 1) = ifft(dsxydx .* fft(s(:, :, :, 4), [], 1), [], 1, 'symmetric');
+                ds(:, :, :, 1, 2) = ifft(dsxydy .* fft(s(:, :, :, 4), [], 2), [], 2, 'symmetric');
+                ds(:, :, :, 3, 1) = ifft(dsxzdx .* fft(s(:, :, :, 5), [], 1), [], 1, 'symmetric');
+                ds(:, :, :, 3, 2) = ifft(dsyzdy .* fft(s(:, :, :, 6), [], 2), [], 2, 'symmetric');
+                ds(:, :, :, 1, 3) = ifft(dsxzdz .* fft(s(:, :, :, 5), [], 3), [], 3, 'symmetric');
+                ds(:, :, :, 2, 3) = ifft(dsyzdz .* fft(s(:, :, :, 6), [], 3), [], 3, 'symmetric');
+                ds(:, :, :, 3, 3) = ifft(dszzdz .* fft(s(:, :, :, 3), [], 3), [], 3, 'symmetric');
         end
     end
 
@@ -149,23 +149,23 @@ else
     for dimInd = 1:obj.dimensions
         switch dimInd
             case 1
-                ds(:, :, :, 1, 1) = ifftn(dsxxdx .* obj.kappa .* fftn(f(:, :, :, 1)), 'symmetric');
+                ds(:, :, :, 1, 1) = ifftn(dsxxdx .* obj.kappa .* fftn(s(:, :, :, 1)), 'symmetric');
             case 2
-                ds(:, :, :, 2, 1) = ifftn(dsxydx .* obj.kappa .* fftn(f(:, :, :, 3)), 'symmetric');
-                ds(:, :, :, 1, 2) = ifftn(dsxydy .* obj.kappa .* fftn(f(:, :, :, 3)), 'symmetric');
-                ds(:, :, :, 2, 2) = ifftn(dsyydy .* obj.kappa .* fftn(f(:, :, :, 2)), 'symmetric');
+                ds(:, :, :, 2, 1) = ifftn(dsxydx .* obj.kappa .* fftn(s(:, :, :, 3)), 'symmetric');
+                ds(:, :, :, 1, 2) = ifftn(dsxydy .* obj.kappa .* fftn(s(:, :, :, 3)), 'symmetric');
+                ds(:, :, :, 2, 2) = ifftn(dsyydy .* obj.kappa .* fftn(s(:, :, :, 2)), 'symmetric');
             case 3
                 % Indecies for the linearised symmetric stress tensor are
                 % different in 2D and 3D so the spatial derivatives of the
                 % sxy components need to be overwritten with the correct
                 % indecies.
-                ds(:, :, :, 2, 1) = ifftn(dsxydx .* obj.kappa .* fftn(f(:, :, :, 4)), 'symmetric');
-                ds(:, :, :, 1, 2) = ifftn(dsxydy .* obj.kappa .* fftn(f(:, :, :, 4)), 'symmetric');
-                ds(:, :, :, 3, 1) = ifftn(dsxzdx .* obj.kappa .* fftn(f(:, :, :, 5)), 'symmetric');
-                ds(:, :, :, 3, 2) = ifftn(dsyzdy .* obj.kappa .* fftn(f(:, :, :, 6)), 'symmetric');
-                ds(:, :, :, 1, 3) = ifftn(dsxzdz .* obj.kappa .* fftn(f(:, :, :, 5)), 'symmetric');
-                ds(:, :, :, 2, 2) = ifftn(dsyzdz .* obj.kappa .* fftn(f(:, :, :, 6)), 'symmetric');
-                ds(:, :, :, 3, 3) = ifftn(dszzdz .* obj.kappa .* fftn(f(:, :, :, 3)), 'symmetric');
+                ds(:, :, :, 2, 1) = ifftn(dsxydx .* obj.kappa .* fftn(s(:, :, :, 4)), 'symmetric');
+                ds(:, :, :, 1, 2) = ifftn(dsxydy .* obj.kappa .* fftn(s(:, :, :, 4)), 'symmetric');
+                ds(:, :, :, 3, 1) = ifftn(dsxzdx .* obj.kappa .* fftn(s(:, :, :, 5)), 'symmetric');
+                ds(:, :, :, 3, 2) = ifftn(dsyzdy .* obj.kappa .* fftn(s(:, :, :, 6)), 'symmetric');
+                ds(:, :, :, 1, 3) = ifftn(dsxzdz .* obj.kappa .* fftn(s(:, :, :, 5)), 'symmetric');
+                ds(:, :, :, 2, 2) = ifftn(dsyzdz .* obj.kappa .* fftn(s(:, :, :, 6)), 'symmetric');
+                ds(:, :, :, 3, 3) = ifftn(dszzdz .* obj.kappa .* fftn(s(:, :, :, 3)), 'symmetric');
         end
     end
 end
