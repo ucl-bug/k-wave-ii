@@ -43,9 +43,9 @@ for i = 1:dim
             if (i == k && j == i)
                 stress(:, :, :, i) = stress(:, :, :, i) + (obj.lambda + 2 .* obj.mu) .* gradVel(:, :, :, i, j);
             elseif (i == j && i ~= k && j ~= k)
-                stress(:, :, :, i) = stress(:, :, :, i) + obj.lamda .* gradVel(:, :, :, i, j);
+                stress(:, :, :, i) = stress(:, :, :, i) + obj.lambda .* gradVel(:, :, :, i, j);
             elseif (dim == 2 && i ~= k)
-                stress(:, :, :, i + j + 1) = stress(:, :, :, i + j + 1) + obj.mu .* gradVel(:, :, :, i, j);
+                stress(:, :, :, i + j) = stress(:, :, :, i + j) + obj.mu .* gradVel(:, :, :, i, j);
             elseif (dim == 3 && i ~= k && j ~= k)
                 stress(:, :, :, i + j + 1) = stress(:, :, :, i + j + 1) + obj.mu .* gradVel(:, :, :, i, j);
             end

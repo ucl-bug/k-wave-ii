@@ -47,10 +47,10 @@ end
 % pmlSG = @(x) obj.pml.applyPML(x, Staggered=true);
 gradientSymTensor = @(x) obj.gradientSymTensor(x, Staggering='forward');
 gradientVector = @(x) obj.gradientVector(x, Staggering='backward');
-% 
-% if (obj.settings.plotSimulation)
-%     fig = figure;
-% end
+
+if (obj.settings.plotSimulation)
+    fig = figure;
+end
 
 % Assign pressure source to stress field.
 obj.pressure = obj.kgrid.assignWithGridPadding(obj.source.initialPressure, obj.kgrid.gridPadding(1));
@@ -135,11 +135,12 @@ for tIndex = 1:Nt
     end
 
 
-    % % Plot.
-    % if obj.settings.plotSimulation && (rem(tIndex, obj.settings.plotFrequency) == 0 || tIndex == 1 || tIndex == Nt)
-    %     figure(fig);
-    %     obj.plotField(obj.pressure);
-    % end
+    % Plot.
+    if obj.settings.plotSimulation && (rem(tIndex, obj.settings.plotFrequency) == 0 || tIndex == 1 || tIndex == Nt)
+        pressure = obj.kgrid.returnWithoutGridPadding(obj.pressure);
+        figure(fig);
+        obj.plotField(pressure);
+    end
 
     obj.timeStepsTaken = obj.timeStepsTaken + 1;
 

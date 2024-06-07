@@ -43,8 +43,8 @@
 %   % Medium.
 %   medium = ElasticMedium(kgrid);
 %   medium.density = 1000;
-%   medium.soundSpeedCompression = 5;
-%   medium.soundSpeedShear = 3;
+%   medium.soundSpeedCompression = 1500;
+%   medium.soundSpeedShear = 800;
 %   ...
 %   
 %   % Source.
@@ -58,7 +58,7 @@
 %   % Solve.
 %   solver = ElasticSolver(kgrid, medium, source, [], settings);
 %   CFL = 0.5;
-%   dt = CFL * kgrid.dx / max(medium.soundSpeedCompression, medium.soundSpeedShear);
+%   dt = CFL .* kgrid.dx ./ max(medium.soundSpeedCompression, medium.soundSpeedShear);
 %   solver.run(Nt=80, dt=dt);
 %   
 %   % Plot.
