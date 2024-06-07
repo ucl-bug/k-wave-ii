@@ -55,7 +55,7 @@ end
 % Assign pressure source to stress field.
 obj.pressure = obj.kgrid.assignWithGridPadding(obj.source.initialPressure, obj.kgrid.gridPadding(1));
 for dim = 1:obj.dimensions
-    obj.stressPadded(:, :, :, dim) = -obj.pressure; 
+    obj.stressPadded(:, :, :, dim) = -obj.pressure ./ (1 .* obj.dimensions);
 end
 
 for tIndex = 1:Nt
@@ -130,16 +130,15 @@ for tIndex = 1:Nt
     obj.stressPadded = obj.stressPadded + dt .* obj.computeConstitutiveEquation(gradVel);
     %
     %% (6) Compute pressure from normal components of the stress
-    for dim = 1:obj.dimensions
-        obj.pressure = obj.pressure + obj.stressPadded(:, :, :, dim);
-    end
+    obj.pressure = obj.pressure - mean(obj.stressPadded(:, :, :, 1:obj.dimensions), 4);
 
 
     % Plot.
     if obj.settings.plotSimulation && (rem(tIndex, obj.settings.plotFrequency) == 0 || tIndex == 1 || tIndex == Nt)
         pressure = obj.kgrid.returnWithoutGridPadding(obj.pressure);
         figure(fig);
-        obj.plotField(pressure);
+        %obj.plotField(pressure);
+        obj.plotField(obj.stressPadded(:,:,:,1)./obj.dimensions);
     end
 
     obj.timeStepsTaken = obj.timeStepsTaken + 1;
