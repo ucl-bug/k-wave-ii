@@ -71,6 +71,8 @@ if (options.IncludePadding)
 end
 
 switch (options.Type)
+    case kwave.toolbox.GridFieldType.SymTensorField
+        expectedGridSize = [expectedGridSize, obj.dimensions .* (obj.dimensions + 1) ./ 2];
     case kwave.toolbox.GridFieldType.VectorField
         expectedGridSize = [expectedGridSize, obj.dimensions];
     case kwave.toolbox.GridFieldType.VectorX

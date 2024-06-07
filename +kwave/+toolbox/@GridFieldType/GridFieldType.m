@@ -10,10 +10,12 @@
 % * |VectorField| - Vector field where the first three dimensions match the
 %   size of the grid, and the vector components are stored in the 4th
 %   dimension.
+% * |SymTensorField| - Symetric tensor field where the first three 
+%   dimensions match the size of the grid, and the vector components are 
+%   stored in the 4th dimension.
 % * |VectorX| - 1D vector oriented in the x-direction.
 % * |VectorY| - 1D vector oriented in the y-direction.
 % * |VectorZ| - 1D vector oriented in the z-direction.
-%
 %% See Also
 % * |kwave.toolbox.Grid|
 % * |kwave.toolbox.GridField|
@@ -23,6 +25,7 @@ classdef GridFieldType
     enumeration
         ScalarField
         VectorField
+        SymTensorField
         VectorX
         VectorY
         VectorZ
