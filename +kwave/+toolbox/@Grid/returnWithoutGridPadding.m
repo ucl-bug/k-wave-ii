@@ -31,7 +31,7 @@ if (numel(matrix) > 1) && (any(obj.gridPadding ~= 0))
 
     % Check size of matrix matches padded grid size. Allow for vector
     % fields where vector components are stored in the fourth dimension.
-    if (size(matrix, 4) == obj.dimensions .* (obj.dimensions + 1) ./ 2)
+    if (size(matrix, 4) == obj.dimensions * (obj.dimensions + 1) / 2)
         type = kwave.toolbox.GridFieldType.SymTensorField;
     elseif (size(matrix, 4) == obj.dimensions)
         type = kwave.toolbox.GridFieldType.VectorField;

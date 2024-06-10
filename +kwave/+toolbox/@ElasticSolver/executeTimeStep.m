@@ -43,8 +43,8 @@ end
 % obj.pml.setupQuarticPML(dt, soundSpeedReference);
 
 % Anonymous functions to simplify code within time loop.
-% pml = @(x) obj.pml.applyPML(x);
-% pmlSG = @(x) obj.pml.applyPML(x, Staggered=true);
+pml = @(x) obj.pml.applyPML(x);
+pmlSG = @(x) obj.pml.applyPML(x, Staggered=true);
 gradientSymTensor = @(x) obj.gradientSymTensor(x, Staggering='forward');
 gradientVector = @(x) obj.gradientVector(x, Staggering='backward');
 
@@ -53,12 +53,12 @@ if (obj.settings.plotSimulation)
 end
 
 % Assign pressure source to stress field.
-obj.pressure = obj.kgrid.assignWithGridPadding(obj.source.initialPressure, obj.kgrid.gridPadding(1));
 for dim = 1:obj.dimensions
-    obj.stressPadded(:, :, :, dim) = -obj.pressure ./ (1 .* obj.dimensions);
+    obj.stressPadded(:, :, :, dim) = -obj.source.initialPressurePadded;
 end
 
 for tIndex = 1:Nt
+
     %% (1) Calculate the spatial gradients of the stress field using the
     % Fourier collocation spectral method (equation (7a))
     % - In legacy this is done on the split field. 
@@ -86,7 +86,7 @@ for tIndex = 1:Nt
     % then combine the split field components. This can be done with a
     % sum(A, 2) over the strain.
     %
-    obj.velocityPadded = obj.velocityPadded + dt ./ obj.medium.density .* obj.sumStressComponents(gradStress);
+    obj.velocityPadded = pmlSG(pmlSG(obj.velocityPadded) + dt ./ obj.medium.density .* obj.sumStressComponents(gradStress));
     %
     %% (3) Calculate the spatial gradients of the updated particle
     % velocity using the Fourier collocation spectral method (equation 7c)
@@ -127,18 +127,17 @@ for tIndex = 1:Nt
     % ...
     % This was implamented in computeConsisuativeEquation.m
     %
-    obj.stressPadded = obj.stressPadded + dt .* obj.computeConstitutiveEquation(gradVel);
+    obj.stressPadded = pml(pml(obj.stressPadded) + dt .* obj.computeConstitutiveEquation(gradVel));
     %
     %% (6) Compute pressure from normal components of the stress
-    obj.pressure = obj.pressure - mean(obj.stressPadded(:, :, :, 1:obj.dimensions), 4);
+    obj.pressurePadded = -mean(obj.stressPadded(:, :, :, 1:obj.dimensions), 4);
 
 
     % Plot.
     if obj.settings.plotSimulation && (rem(tIndex, obj.settings.plotFrequency) == 0 || tIndex == 1 || tIndex == Nt)
-        pressure = obj.kgrid.returnWithoutGridPadding(obj.pressure);
         figure(fig);
-        %obj.plotField(pressure);
-        obj.plotField(obj.stressPadded(:,:,:,1)./obj.dimensions);
+        obj.plotField(obj.stress(:,:,:,2)./obj.dimensions);
+        % obj.plotField(obj.pressure);
     end
 
     obj.timeStepsTaken = obj.timeStepsTaken + 1;

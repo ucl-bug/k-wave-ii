@@ -33,7 +33,7 @@
 %% Examples
 % A simple of example of solving a initial value problem in 1D is shown
 % below.
-%FourierCollocation
+%
 %   clearvars;
 %   import kwave.toolbox.*
 %
@@ -64,7 +64,7 @@
 %   figure;
 %   plot(1e3 * kgrid.xVec, source.initialPressure);
 %   hold on;
-%   plot(1e3 * kgrid.xVec, solver.pressure);
+%   plot(1e3 * kgrid.xVec, solver.stressPadded);
 %   set(gca, 'YLim', [0, 1]);
 %   grid on;
 %   legend('p_0', 'p_{final}');
@@ -109,13 +109,14 @@ classdef ElasticSolver < kwave.toolbox.TimeDomainSolver
     properties(SetAccess=private, Dependent=true)
         velocity
         stress
+        pressure
     end
 
     % PDE variables on padded domain, and PML variables.
     properties(SetAccess=private, Hidden=true)
         velocityPadded single
         stressPadded single
-        pressure
+        pressurePadded single
         mu
         lambda
         pml kwave.toolbox.SplitFieldPML
@@ -149,6 +150,9 @@ classdef ElasticSolver < kwave.toolbox.TimeDomainSolver
         end
         function stress = get.stress(obj)
             stress = obj.kgrid.returnWithoutGridPadding(obj.stressPadded);
+        end
+        function pressure = get.pressure(obj)
+            pressure = obj.kgrid.returnWithoutGridPadding(obj.pressurePadded);
         end
 
     end

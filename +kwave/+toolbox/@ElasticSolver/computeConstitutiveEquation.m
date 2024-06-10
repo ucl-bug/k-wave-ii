@@ -21,8 +21,8 @@
 %
 %% Output Arguments
 % |stress| - (numeric) The RHS of the lossles elastic wave propagation
-% equation (consituative equation) in the format of the symmetric
-% linearised stress tensor.
+% equation (consituative equation) in the format of the linearised 
+% symmetric stress tensor.
 %
 %% See Also
 % |kwave.toolbox.gradientStress|
@@ -41,9 +41,9 @@ for i = 1:dim
     for j = 1:dim
         for k = 1:dim
             if (i == k && j == i)
-                stress(:, :, :, i) = stress(:, :, :, i) + (obj.lambda + 2 .* obj.mu) .* gradVel(:, :, :, i, j);
+                stress(:, :, :, k) = stress(:, :, :, k) + (obj.lambda + 2 .* obj.mu) .* gradVel(:, :, :, i, j);
             elseif (i == j && i ~= k && j ~= k)
-                stress(:, :, :, i) = stress(:, :, :, i) + obj.lambda .* gradVel(:, :, :, i, j);
+                stress(:, :, :, k) = stress(:, :, :, k) + obj.lambda .* gradVel(:, :, :, i, j);
             elseif (dim == 2 && i ~= k)
                 stress(:, :, :, i + j) = stress(:, :, :, i + j) + obj.mu .* gradVel(:, :, :, i, j);
             elseif (dim == 3 && i ~= k && j ~= k)
