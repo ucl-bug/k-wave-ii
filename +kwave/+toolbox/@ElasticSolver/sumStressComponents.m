@@ -28,6 +28,6 @@ end
 gradStressSum = zeros([obj.kgridPadded.gridSize, obj.dimensions]);
 for i = 1:obj.dimensions
     for j = 1:obj.dimensions
-        gradStressSum(:, :, :, i) = gradStressSum(:, :, :, i) + gradStress(:, :, :, j, i);
+        gradStressSum(:, :, :, i) = gradStressSum(:, :, :, i) + gradStress(:, :, :, i, j);
     end
 end

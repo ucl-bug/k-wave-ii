@@ -53,9 +53,15 @@ if (obj.settings.plotSimulation)
 end
 
 % Assign pressure source to stress field.
+% for dim = 1:obj.dimensions
+%     obj.stressPadded(:, :, :, dim) = -obj.source.initialPressurePadded;
+% end
+initialPressurePadded = obj.source.initialPressurePadded;
+% initialPressurePadded = obj.kgrid.assignWithGridPadding(obj.source.initialPressure, 0);
 for dim = 1:obj.dimensions
-    obj.stressPadded(:, :, :, dim) = -obj.source.initialPressurePadded;
+    obj.stressPadded(:, :, :, dim) = -initialPressurePadded;
 end
+obj.pressurePadded = -sum(obj.stressPadded(:, :, :, 1:obj.dimensions), 4) ./ obj.dimensions;
 
 for tIndex = 1:Nt
 
@@ -87,7 +93,7 @@ for tIndex = 1:Nt
     % sum(A, 2) over the strain.
     %
     obj.velocityPadded = pmlSG(pmlSG(obj.velocityPadded) + dt ./ obj.medium.density .* obj.sumStressComponents(gradStress));
-    %
+
     %% (3) Calculate the spatial gradients of the updated particle
     % velocity using the Fourier collocation spectral method (equation 7c)
     % - In legacy this is done on the colocalled field.
@@ -136,8 +142,8 @@ for tIndex = 1:Nt
     % Plot.
     if obj.settings.plotSimulation && (rem(tIndex, obj.settings.plotFrequency) == 0 || tIndex == 1 || tIndex == Nt)
         figure(fig);
-        obj.plotField(obj.stress(:,:,:,2)./obj.dimensions);
-        % obj.plotField(obj.pressure);
+        obj.plotField(obj.stress(:,:,:,3)./obj.dimensions);
+        obj.plotField(obj.pressure);
     end
 
     obj.timeStepsTaken = obj.timeStepsTaken + 1;
