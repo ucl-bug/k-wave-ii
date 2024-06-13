@@ -46,7 +46,7 @@ for i = 1:dim
                 stress(:, :, :, k) = stress(:, :, :, k) + obj.lambda .* gradVel(:, :, :, i, j);
             elseif (dim == 2 && i ~= j && i ~= k)
                 stress(:, :, :, i + j) = stress(:, :, :, i + j) + obj.mu .* gradVel(:, :, :, i, j);
-            elseif (dim == 3 && i ~= k && j ~= k)
+            elseif (dim == 3 && i ~= j && i ~= k && j ~= k)
                 stress(:, :, :, i + j + 1) = stress(:, :, :, i + j + 1) + obj.mu .* gradVel(:, :, :, i, j);
             end
         end

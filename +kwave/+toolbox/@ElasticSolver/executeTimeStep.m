@@ -53,15 +53,16 @@ if (obj.settings.plotSimulation)
 end
 
 % Assign pressure source to stress field.
-% for dim = 1:obj.dimensions
-%     obj.stressPadded(:, :, :, dim) = -obj.source.initialPressurePadded;
-% end
-initialPressurePadded = obj.source.initialPressurePadded;
-% initialPressurePadded = obj.kgrid.assignWithGridPadding(obj.source.initialPressure, 0);
 for dim = 1:obj.dimensions
-    obj.stressPadded(:, :, :, dim) = -initialPressurePadded;
+    obj.stressPadded(:, :, :, dim) = -obj.source.initialPressurePadded;
 end
-obj.pressurePadded = -sum(obj.stressPadded(:, :, :, 1:obj.dimensions), 4) ./ obj.dimensions;
+% initialPressurePadded = obj.source.initialPressurePadded;
+% initialPressurePadded = obj.kgrid.assignWithGridPadding(obj.source.initialPressure, 0);
+% for dim = 1:obj.dimensions
+%     obj.stressPadded(:, :, :, dim) = -initialPressurePadded;
+% end
+
+obj.pressurePadded = -mean(obj.stressPadded(:, :, :, 1:obj.dimensions), 4);
 
 for tIndex = 1:Nt
 
@@ -85,7 +86,7 @@ for tIndex = 1:Nt
     % messy so was not attempted in the initial prototype.
     %
     gradStress = gradientSymTensor(obj.stressPadded);
-    %
+
     %% (2) Update the particle velocity using a finite difference time
     % step (equation (7b) / equation (5))
     % - In legacy this is done on the split field, adding source terms
@@ -105,7 +106,7 @@ for tIndex = 1:Nt
     % the tensor of the velocity gradient.
     %
     gradVel = gradientVector(obj.velocityPadded);
-    %
+
     %% (4) Calculate the spatial gradients of the time derivative of the
     % particle velocity using equation (5) - momentum conservation
     % (equation 7d)
@@ -134,16 +135,16 @@ for tIndex = 1:Nt
     % This was implamented in computeConsisuativeEquation.m
     %
     obj.stressPadded = pml(pml(obj.stressPadded) + dt .* obj.computeConstitutiveEquation(gradVel));
-    %
+
     %% (6) Compute pressure from normal components of the stress
     obj.pressurePadded = -mean(obj.stressPadded(:, :, :, 1:obj.dimensions), 4);
 
-
+    %% Post time-step operations 
     % Plot.
     if obj.settings.plotSimulation && (rem(tIndex, obj.settings.plotFrequency) == 0 || tIndex == 1 || tIndex == Nt)
         figure(fig);
-        obj.plotField(obj.stress(:,:,:,3)./obj.dimensions);
         obj.plotField(obj.pressure);
+        % obj.plotField(obj.stress(:,:,:,3)./obj.dimensions);
     end
 
     obj.timeStepsTaken = obj.timeStepsTaken + 1;
