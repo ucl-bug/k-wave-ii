@@ -330,7 +330,7 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
                     [X, Y, Z] = ndgrid(obj.kgridPadded.xVec, obj.kgridPadded.yVec, obj.kgridPadded.zVec);
                     [xxsg, xysg, xzsg] = ndgrid(xxSg, xySg, xzSg);
                     [yxsg, yysg, yzsg] = ndgrid(yxSg, yySg, yzSg);
-                    [Zxsg, zysg, zzsg] = ndgrid(zxSg, zySg, zzSg);
+                    [zxsg, zysg, zzsg] = ndgrid(zxSg, zySg, zzSg);
 
                     Fx = sin(kx .* X) .* sin(ky .* Y) .* sin(kz .* Z) ./ kx;
                     Fy = sin(ky .* Y) .* sin(kx .* X) .* sin(kz .* Z) ./ ky;
@@ -344,7 +344,7 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
                     gradFy_y = cos(ky .* yysg) .* sin(kx .* X) .* sin(kz .* Z);
                     gradFy_z = sin(ky .* Y) .* sin(kx .* X) .* cos(kz .* yzsg) .* (kz ./ ky);
 
-                    gradFz_x = sin(kz .* Z) .* cos(kx .* Zxsg) .* sin(ky .* Y) .* (kx ./ kz);
+                    gradFz_x = sin(kz .* Z) .* cos(kx .* zxsg) .* sin(ky .* Y) .* (kx ./ kz);
                     gradFz_y = sin(kz .* Z) .* sin(kx .* X) .* cos(ky .* zysg) .* (ky ./ kz);
                     gradFz_z = cos(kz .* zzsg) .* sin(kx .* X) .* sin(ky .* Y);
 
