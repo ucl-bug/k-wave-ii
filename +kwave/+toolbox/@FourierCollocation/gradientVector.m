@@ -74,6 +74,11 @@ arguments
     options.Staggering(1,:) char {mustBeMember(options.Staggering, {'none', 'forward', 'backward'})} = 'none'
 end
 
+% Check input dimensions.
+if obj.dimensions ~= size(f, 4)
+    kwave.toolbox.Logger.error('FourierCollocation:incorrectSize', ['Input must be vector field with ' num2str(obj.dimensions) ' components.']);
+end
+
 % Assign pseudonym for k-space derivative and shift operator.
 switch options.Staggering
     case 'none'
