@@ -112,6 +112,11 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
             testCase.referenceSolution = testCase.referenceSolution .* testCase.solver.kappa;
             testCase.actualSolution = testCase.solver.gradientVector(f);
             testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));
+
+            % Test incorrect size gives exception.
+            f = rand(2, 2, 2, 4);
+            testCase.verifyError(@() testCase.solver.gradientVector(f), 'FourierCollocation:incorrectSize');
+
         end
 
         % Test sinc function.
