@@ -88,34 +88,34 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
         end
 
         % Test the gradient of a vector function.
-        function testGradientSymTensor(testCase)
+        function testDivergenceTensorSplit(testCase)
             import matlab.unittest.constraints.IsEqualTo
 
             % No staggering.
             [f, testCase.referenceSolution] = testCase.getPeriodicGradTensorFunction;
-            testCase.actualSolution = testCase.solver.gradientSymTensor(f);
+            testCase.actualSolution = testCase.solver.divergenceTensorSplit(f);
             testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));
 
             % Forward staggering.
             [f, testCase.referenceSolution] = testCase.getPeriodicGradTensorFunction("forward");
-            testCase.actualSolution = testCase.solver.gradientSymTensor(f, Staggering="forward");
+            testCase.actualSolution = testCase.solver.divergenceTensorSplit(f, Staggering="forward");
             testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));
 
             % Backward staggering.
             [f, testCase.referenceSolution] = testCase.getPeriodicGradTensorFunction("backward");
-            testCase.actualSolution = testCase.solver.gradientSymTensor(f, Staggering="backward");
+            testCase.actualSolution = testCase.solver.divergenceTensorSplit(f, Staggering="backward");
             testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));
 
             % Scalar kappa.
             testCase.solver.kappa = 2;
             [f, testCase.referenceSolution] = testCase.getPeriodicGradTensorFunction;
             testCase.referenceSolution = testCase.referenceSolution .* testCase.solver.kappa;
-            testCase.actualSolution = testCase.solver.gradientSymTensor(f);
+            testCase.actualSolution = testCase.solver.divergenceTensorSplit(f);
             testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));
 
             % Test incorrect size gives exception.
             f = rand(2, 2, 2, 7);
-            testCase.verifyError(@() testCase.solver.gradientSymTensor(f), 'FourierCollocation:incorrectSize');
+            testCase.verifyError(@() testCase.solver.divergenceTensorSplit(f), 'FourierCollocation:incorrectSize');
         end
 
         % Test sinc function.
