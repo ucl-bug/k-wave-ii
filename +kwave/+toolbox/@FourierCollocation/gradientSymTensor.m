@@ -18,7 +18,7 @@
 % The gradient components of the symmetric tensor which are non-zero are
 %     ds = [dsxxdx, dsxydy, dsxzdz;
 %           dsxydx, dsyydy, dsyzdz;
-%           dsxzdz, dsyzdz, dszzdz]
+%           dsxzdx, dsyzdy, dszzdz]
 % 
 % The tensor components of the gradient are stacked in the 4th and 5th
 % dimension of the output. For example, if calling gradient on a matrix of
@@ -53,7 +53,7 @@
 %% Output Arguments
 % * |ds| - (numeric) Gradient of the stress field s.
 
-% Copyright (C) 2022- University College London.
+% Copyright (C) 2024- University College London.
 %
 % This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
 % software: you can redistribute it and/or modify it under the terms of the
@@ -131,10 +131,10 @@ if isempty(obj.kappa) || isscalar(obj.kappa)
                 ds(:, :, :, 1, 2) = ifft(dsxydy .* fft(s(:, :, :, 3), [], 2), [], 2, 'symmetric');
                 ds(:, :, :, 2, 2) = ifft(dsyydy .* fft(s(:, :, :, 2), [], 2), [], 2, 'symmetric');
             case 3
-                % Indecies for the symmetric (squashed) stress tensor are
+                % Indices for the symmetric (squashed) stress tensor are
                 % different in 2D and 3D so the spatial derivatives for the
                 % dxy components need overwritten with the correct
-                % indecies.
+                % indices.
                 ds(:, :, :, 2, 1) = ifft(dsxydx .* fft(s(:, :, :, 4), [], 1), [], 1, 'symmetric');
                 ds(:, :, :, 1, 2) = ifft(dsxydy .* fft(s(:, :, :, 4), [], 2), [], 2, 'symmetric');
                 ds(:, :, :, 3, 1) = ifft(dsxzdx .* fft(s(:, :, :, 5), [], 1), [], 1, 'symmetric');
@@ -160,10 +160,10 @@ else
                 ds(:, :, :, 1, 2) = ifftn(dsxydy .* obj.kappa .* fftn(s(:, :, :, 3)), 'symmetric');
                 ds(:, :, :, 2, 2) = ifftn(dsyydy .* obj.kappa .* fftn(s(:, :, :, 2)), 'symmetric');
             case 3
-                % Indecies for the linearised symmetric stress tensor are
+                % Indices for the linearised symmetric stress tensor are
                 % different in 2D and 3D so the spatial derivatives of the
                 % sxy components need to be overwritten with the correct
-                % indecies.
+                % indices.
                 ds(:, :, :, 2, 1) = ifftn(dsxydx .* obj.kappa .* fftn(s(:, :, :, 4)), 'symmetric');
                 ds(:, :, :, 1, 2) = ifftn(dsxydy .* obj.kappa .* fftn(s(:, :, :, 4)), 'symmetric');
                 ds(:, :, :, 3, 1) = ifftn(dsxzdx .* obj.kappa .* fftn(s(:, :, :, 5)), 'symmetric');
