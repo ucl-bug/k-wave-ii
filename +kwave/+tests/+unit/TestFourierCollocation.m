@@ -5,7 +5,7 @@
 % Unit tests for the FourierCollocation class.
 %
 %% Description
-% Tests the gradient and divergence functions of the
+% Tests the gradient, divergence and curl functions of the
 % |kwave.toolbox.FourierCollocation| class against simple analytical
 % functions that are periodic on the test grid. All dimensions and grid
 % staggering options are tested.
@@ -60,23 +60,23 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
             import matlab.unittest.constraints.IsEqualTo
 
             % No staggering.
-            [f, testCase.referenceSolution] = testCase.getPeriodicVectorFunction;
+            [f, testCase.referenceSolution] = testCase.getPeriodicVectorFunctionDivergence;
             testCase.actualSolution = testCase.solver.divergence(f);
             testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));
 
             % Forward staggering.
-            [f, testCase.referenceSolution] = testCase.getPeriodicVectorFunction("forward");
+            [f, testCase.referenceSolution] = testCase.getPeriodicVectorFunctionDivergence("forward");
             testCase.actualSolution = testCase.solver.divergence(f, Staggering="forward");
             testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));
 
             % Backward staggering.
-            [f, testCase.referenceSolution] = testCase.getPeriodicVectorFunction("backward");
+            [f, testCase.referenceSolution] = testCase.getPeriodicVectorFunctionDivergence("backward");
             testCase.actualSolution = testCase.solver.divergence(f, Staggering="backward");
             testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));
 
             % Scalar kappa.
             testCase.solver.kappa = 2;
-            [f, testCase.referenceSolution] = testCase.getPeriodicVectorFunction;
+            [f, testCase.referenceSolution] = testCase.getPeriodicVectorFunctionDivergence;
             testCase.referenceSolution = testCase.referenceSolution .* testCase.solver.kappa;
             testCase.actualSolution = testCase.solver.divergence(f);
             testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));
@@ -84,6 +84,55 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
             % Test incorrect size gives exception.
             f = rand(2, 2, 2, 4);
             testCase.verifyError(@() testCase.solver.divergence(f), 'FourierCollocation:incorrectSize');
+
+        end
+
+        % Test the curl function.
+        function testCurl(testCase)
+            import matlab.unittest.constraints.IsEqualTo
+
+            switch testCase.kgridPadded.dimensions
+                case 1            
+
+                    % Test to check incorrect number of dimensions gives exception
+                    f = rand(testCase.kgridPadded.Nx,1);
+                    testCase.verifyError(@() testCase.solver.curl(f), 'FourierCollocation:not3DVectorField');
+
+                case 2
+
+                    % Test to check incorrect number of dimensions gives exception
+                    f = rand(testCase.kgridPadded.Nx,testCase.kgridPadded.Ny);
+                    testCase.verifyError(@() testCase.solver.curl(f), 'FourierCollocation:not3DVectorField');
+
+                case 3
+        
+                    % No staggering.
+                    [f, testCase.referenceSolution] = testCase.getPeriodicVectorFunctionCurl;
+                    testCase.actualSolution = testCase.solver.curl(f);
+                    testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));
+        
+                    % Forward staggering.
+                    [f, testCase.referenceSolution] = testCase.getPeriodicVectorFunctionCurl("forward");
+                    testCase.actualSolution = testCase.solver.curl(f, Staggering="forward");
+                    testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));
+        
+                    % Backward staggering.
+                    [f, testCase.referenceSolution] = testCase.getPeriodicVectorFunctionCurl("backward");
+                    testCase.actualSolution = testCase.solver.curl(f, Staggering="backward");
+                    testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));
+        
+                    % Scalar kappa.
+                    testCase.solver.kappa = 2;
+                    [f, testCase.referenceSolution] = testCase.getPeriodicVectorFunctionCurl;
+                    testCase.referenceSolution = testCase.referenceSolution .* testCase.solver.kappa;
+                    testCase.actualSolution = testCase.solver.curl(f);
+                    testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));
+
+            end
+
+            % Test incorrect size gives exception.
+            f = rand(2, 2, 2, 4);
+            testCase.verifyError(@() testCase.solver.curl(f), 'FourierCollocation:not3DVectorField');
 
         end
 
@@ -164,9 +213,9 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
 
         % Define a periodic vector function and its analytic divergence on
         % the grid specified by obj.kgridPadded. The function is normalized so
-        % the maximum of the divergence is approximately 1. The gradient
+        % the maximum of the divergence is approximately 1. The divergence
         % can also be returned on a staggered grid.
-        function [F, divF] = getPeriodicVectorFunction(obj, staggering)
+        function [F, divF] = getPeriodicVectorFunctionDivergence(obj, staggering)
 
             arguments
                 obj
@@ -222,6 +271,61 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
                     
                     divF = cos(kx .* Xsg) + cos(ky .* Ysg) + cos(kz .* Zsg);
             end
+        end
+
+        % Define a periodic vector function and its analytic curl on
+        % the grid specified by obj.kgridPadded. The function is normalized so
+        % the maximum of the curl is approximately 1. The curl
+        % can also be returned on a staggered grid.
+        function [F, curlF] = getPeriodicVectorFunctionCurl(obj, staggering)
+
+            arguments
+                obj
+                staggering(1,:) char {mustBeMember(staggering, {'none', 'forward', 'backward'})} = 'none'
+            end
+
+            switch staggering
+                case 'none'
+                     xSg = obj.kgridPadded.xVec;
+                     ySg = obj.kgridPadded.yVec;
+                     zSg = obj.kgridPadded.zVec;
+                case 'forward'
+                     xSg = obj.kgridPadded.xVec + obj.kgridPadded.dx/2;
+                     ySg = obj.kgridPadded.yVec + obj.kgridPadded.dy/2;
+                     zSg = obj.kgridPadded.zVec + obj.kgridPadded.dz/2;
+                case 'backward'
+                     xSg = obj.kgridPadded.xVec - obj.kgridPadded.dx/2;
+                     ySg = obj.kgridPadded.yVec - obj.kgridPadded.dy/2;
+                     zSg = obj.kgridPadded.zVec - obj.kgridPadded.dz/2;
+            end
+
+            % Only need the 3D case here as curl is only defined for the 3D case
+            % Choose wavenumbers to make function periodic on padded grid
+            kx = (2*pi ./ obj.kgridPadded.xSize);
+            ky = (2*pi ./ obj.kgridPadded.ySize);
+            kz = (2*pi ./ obj.kgridPadded.zSize);
+            
+            [X, Y, Z] = ndgrid(obj.kgridPadded.xVec, obj.kgridPadded.yVec, obj.kgridPadded.zVec);
+            [Xsg, Ysg, Zsg] = ndgrid(xSg, ySg, zSg);
+
+            % Define a periodic vector function (on a staggered Yee cell)
+            F(:,:,:,1) = ( sin(ky .* Y)/ky ) .* ( sin(kz .* Z)/kz ); 
+            F(:,:,:,2) = ( sin(kx .* X)/kx ) .* ( sin(kz .* Z)/kz ); 
+            F(:,:,:,3) = ( sin(kx .* X)/kx ) .* ( sin(ky .* Y)/ky ); 
+
+            % Calculate the components of the analytical curl of F
+            dFxdy =   cos(ky .* Ysg)      .* ( sin(kz .* Z  )/kz );
+            dFxdz = ( sin(ky .* Y  )/ky ) .*   cos(kz .* Zsg);
+            dFydx =   cos(kx .* Xsg)      .* ( sin(kz .* Z  )/kz );
+            dFydz = ( sin(kx .* X  )/kx ) .*   cos(kz .* Zsg);
+            dFzdx =   cos(kx .* Xsg)      .* ( sin(ky .* Y  )/ky );
+            dFzdy = ( sin(kx .* X  )/kx ) .*   cos(ky .* Ysg);
+
+            % Construct the analytical curl of F
+            curlF(:,:,:,1) = dFzdy - dFydz;
+            curlF(:,:,:,2) = dFxdz - dFzdx;      
+            curlF(:,:,:,3) = dFydx - dFxdy;
+
         end
 
     end
