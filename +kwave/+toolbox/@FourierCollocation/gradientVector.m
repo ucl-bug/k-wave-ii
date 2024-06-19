@@ -50,7 +50,7 @@
 %% Output Arguments
 % * |df| - (numeric) Gradient of f.
 
-% Copyright (C) 2022- University College London.
+% Copyright (C) 2024- University College London.
 %
 % This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
 % software: you can redistribute it and/or modify it under the terms of the
