@@ -110,7 +110,7 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
                     [f, testCase.referenceSolution] = testCase.getPeriodicVectorFunctionCurl;
                     testCase.actualSolution = testCase.solver.curl(f);
                     testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));
-        
+
                     % Forward staggering.
                     [f, testCase.referenceSolution] = testCase.getPeriodicVectorFunctionCurl("forward");
                     testCase.actualSolution = testCase.solver.curl(f, Staggering="forward");
@@ -135,6 +135,79 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
             testCase.verifyError(@() testCase.solver.curl(f), 'FourierCollocation:not3DVectorField');
 
         end
+
+
+        % Test div(curl(.)) is zero.
+        function testDivCurl(testCase)
+            import matlab.unittest.constraints.IsEqualTo
+
+            % For this test, the tolerance was changed to 1e-5, instead of
+            % the default 1e-6, because round-off error accumulates quickly
+            % when taking Fourier derivatives. The error is large because 
+            % ddxNoShift etc are defined in the FourierCollocation class
+            % as single precision.
+            temporaryTolerance = matlab.unittest.constraints.AbsoluteTolerance(single(1e-5));
+            
+            if testCase.kgridPadded.dimensions == 3
+
+                    % No staggering.
+                    [f, ~] = testCase.getPeriodicVectorFunctionCurl;
+                    testCase.referenceSolution = zeros(testCase.kgridPadded.gridSize);
+                    testCase.actualSolution = testCase.solver.divergence(testCase.solver.curl(f));
+                    testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", temporaryTolerance));
+        
+                    % Forward staggering.
+                    [f, ~] = testCase.getPeriodicVectorFunctionCurl("forward");
+                    testCase.referenceSolution = zeros(testCase.kgridPadded.gridSize);
+                    testCase.actualSolution = testCase.solver.divergence(testCase.solver.curl(f, Staggering="forward"), Staggering="forward");
+                    testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", temporaryTolerance));
+
+                    % Backward staggering.
+                    [f, ~] = testCase.getPeriodicVectorFunctionCurl("backward");
+                    testCase.referenceSolution = zeros(testCase.kgridPadded.gridSize);
+                    testCase.actualSolution = testCase.solver.divergence(testCase.solver.curl(f, Staggering="backward"), Staggering="backward");
+                    testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", temporaryTolerance));
+                    
+            end
+
+        end
+
+
+%        Test curl(grad(.)) is zero.
+        function testCurlGrad(testCase)
+            import matlab.unittest.constraints.IsEqualTo
+
+            % For this test, the tolerance was changed to 1e-3, instead of
+            % the default 1e-6, because round-off error accumulates quickly
+            % when taking Fourier derivatives. The error is large because 
+            % ddxNoShift etc are defined in the FourierCollocation class
+            % as single precision.
+            temporaryTolerance = matlab.unittest.constraints.AbsoluteTolerance(single(1e-3));
+            
+            if testCase.kgridPadded.dimensions == 3
+
+                    % No staggering.
+                    [f, ~] = testCase.getPeriodicScalarFunction;
+                    testCase.referenceSolution = zeros([testCase.kgridPadded.gridSize, 3]);
+                    testCase.actualSolution = testCase.solver.curl(testCase.solver.gradient(f));
+                    testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", temporaryTolerance));
+
+                    % Forward staggering.
+                    [f, ~] = testCase.getPeriodicScalarFunction("forward");
+                    testCase.referenceSolution = zeros([testCase.kgridPadded.gridSize, 3]);
+                    testCase.actualSolution = testCase.solver.curl(testCase.solver.gradient(f, Staggering="forward"), Staggering="forward");
+                    testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", temporaryTolerance));
+
+                    % Backward staggering.
+                    [f, ~] = testCase.getPeriodicScalarFunction("backward");
+                    testCase.referenceSolution = zeros([testCase.kgridPadded.gridSize, 3]);
+                    testCase.actualSolution = testCase.solver.curl(testCase.solver.gradient(f, Staggering="backward"), Staggering="backward");
+                    testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", temporaryTolerance));
+
+            end
+
+        end
+
 
         % Test sinc function.
         function testSinc(testCase)
