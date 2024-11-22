@@ -35,7 +35,6 @@
 % * |absorptionPower| - (single) Power law attenuation power.
 % * |BonA| - (single) Parameter of nonlinearity.
 % * |absorptionType| - string, 'noAbsorption', 'noDispersion', turns off tau and eta respectively 
-%
 %% See Also
 % * |GridInput|
 
@@ -43,17 +42,18 @@ classdef AcousticMedium < kwave.toolbox.GridInput
 
     properties
         soundSpeedReference single {mustBeReal, mustBePositive, mustBeFinite}
-        absorptionPower single {mustBeReal, mustBeFinite}
+        absorptionPower single {mustBeReal, mustBeFinite} = 0
+        absorptionType string = 'noType'
     end
 
     properties(Constant, Hidden=true)
-        absorptionType string = 'noType'
         requiredProperties = {'soundSpeed', 'density'};
         gridFields = kwave.toolbox.GridField.createGridFieldsMap([
             kwave.toolbox.GridField('soundSpeed');
             kwave.toolbox.GridField('density');
             kwave.toolbox.GridField('absorptionCoeff');
             kwave.toolbox.GridField('BonA')
+        
         ]);
     end
 
