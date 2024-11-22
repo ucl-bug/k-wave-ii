@@ -51,7 +51,7 @@ arguments
 end
 
 % convert the absorption coefficient to nepers.(rad/s)^-y.m^-1
-alphaCoeff = db2neper(obj.medium.absorptionFactor, obj.medium.absorptionPower);
+alphaCoeffPadded = db2neper(obj.medium.absorptionCoeffPadded, obj.medium.absorptionPower);
 
 if ~strcmp(obj.medium.absorptionType,'noDispersion') && ~strcmp(obj.medium.absorptionType,'noAbsorption') && ~strcmp(obj.medium.absorptionType,'noType') && ~strcmp(obj.medium.absorptionType,'none') 
     disp('Unexpected string for absorptionType, defaulted to "noType", please use; "noDispersion", "noAbsorption", or "noType".' )
@@ -59,23 +59,23 @@ end
 
 if strcmp(obj.medium.absorptionType,'none')
     disp('string absorptionType="none". Please run AcosuticSolver in future cases')
-    obj.absorbEta =0;
-    obj.absorbTau = 0;
-end
-
-
-% Applies Formula
-if strcmp(obj.medium.absorptionType,'noDispersion') || obj.medium.absorptionPower==0 || obj.medium.absorptionPower==2 
-    obj.absorbEta =0;
+    obj.absorbEtaPadded =0;
+    obj.absorbTauPadded = 0;
 else
-    obj.absorbEta =   -2 .* alphaCoeff .* obj.medium.soundSpeedPadded.^(obj.medium.alphaPower    ) .* tan(pi .* obj.medium.alphaPower / 2);
-end
 
+    % Applies Formula
+    if strcmp(obj.medium.absorptionType,'noDispersion') || obj.medium.absorptionPower==0 || obj.medium.absorptionPower==2
+        obj.absorbEtaPadded =0;
+    else
+        obj.absorbEtaPadded =   -2 .* alphaCoeffPadded .* obj.medium.soundSpeedPadded.^(obj.medium.absorptionPower    ) .* tan(pi .* obj.medium.absorptionPower / 2);
+    end
 
-if strcmp(obj.medium.absorptionType,'noAbsorption')
-     obj.absorbTau = 0;
-else
-    obj.absorbTau =  -2 .* alphaCoeff .* obj.medium.soundSpeedPadded.^(obj.medium.alphaPower - 1);
+    if strcmp(obj.medium.absorptionType,'noAbsorption')
+        obj.absorbTauPadded = 0;
+    else
+        obj.absorbTauPadded =  -2 .* alphaCoeffPadded .* obj.medium.soundSpeedPadded.^(obj.medium.absorptionPower - 1);
+    end
+
 end
 
 

@@ -128,10 +128,10 @@ classdef AcousticAbsorptionSolver < kwave.toolbox.TimeDomainSolver
         pml kwave.toolbox.SplitFieldPML
     end
 
-    properties
+    properties(SetAccess=private, Hidden=true)
         kappaSplit single
-        absorbTau single
-        absorbEta single
+        absorbTauPadded single
+        absorbEtaPadded single
     end
 
     % Constructor.
