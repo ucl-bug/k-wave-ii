@@ -111,7 +111,7 @@
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
-classdef AcousticAbsorptionSolver < kwave.toolbox.TimeDomainSolver
+classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
 
     % PDE variables.
     properties(SetAccess=private, Dependent=true)
