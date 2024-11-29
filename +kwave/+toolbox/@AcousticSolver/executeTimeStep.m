@@ -42,6 +42,11 @@ end
 % Set k-space correction (depends on time step).
 obj.kappa = ifftshift(kwave.toolbox.FourierCollocation.sinc(obj.medium.soundSpeedReference * obj.kgridPadded.k * dt/2));
 
+%
+if ~isempty(obj.medium.absorptionPower)
+setAbsoptionCoefficients(obj)
+end
+
 % Set PML variables (depend on time step).
 obj.pml.setupQuarticPML(dt, obj.medium.soundSpeedReference);
 
@@ -50,6 +55,18 @@ pml = @(x) obj.pml.applyPML(x);
 pmlSG = @(x) obj.pml.applyPML(x, Staggered=true);
 gradient = @(x) obj.gradient(x, Staggering='forward');
 divergence = @(x) obj.divergenceSplit(x, Staggering='backward');
+
+% obj.medium.densityPadded is not staggered and should be in some places,
+% stagger forwards. If it is not a single value.
+% 
+if length(obj.medium.densityPadded)~= 1
+    % obj.medium.densityPaddedStg =
+    % options.Staggering='forward';
+    % options.Type='linInterpolate';
+    densityPaddedStg=obj.stagger(obj.medium.densityPadded,Stagger='forward', Type='linInterpolate');
+else
+    densityPaddedStg=obj.medium.densityPadded;
+end
 
 if (obj.settings.plotSimulation)
     fig = figure;
@@ -66,18 +83,25 @@ for tIndex = 1:Nt
         % of densitySplit via implicit expansion.
         obj.pressurePadded = obj.source.initialPressurePadded;
         obj.densitySplitPadded = obj.densitySplitPadded + obj.source.initialPressurePadded ./ (obj.dimensions * obj.medium.soundSpeedPadded.^2);
-        obj.velocityPadded = (dt ./ obj.medium.densityPadded) .* gradient(obj.pressurePadded) / 2;
-
+        obj.velocityPadded = (dt ./ densityPaddedStg) .* gradient(obj.pressurePadded) / 2;
+        % Need to pad absorption coefficients
     else
 
         % Momentum conservation equation.
-        obj.velocityPadded = pmlSG(pmlSG(obj.velocityPadded) - (dt ./ obj.medium.densityPadded) .* gradient(obj.pressurePadded));
+        obj.velocityPadded = pmlSG(pmlSG(obj.velocityPadded) - (dt ./ densityPaddedStg) .* gradient(obj.pressurePadded));
 
         % Mass conservation equation.
         obj.densitySplitPadded = pml(pml(obj.densitySplitPadded) - dt .* obj.medium.densityPadded .* divergence(obj.velocityPadded));
-
+        
         % Pressure density relation.
-        obj.pressurePadded = obj.medium.soundSpeedPadded.^2 .* sum(obj.densitySplitPadded, 4);     
+        obj.pressurePadded = obj.medium.soundSpeedPadded.^2 .* ( sum(obj.densitySplitPadded, 4));
+
+        % If absorptionPower declaired then add absorption terms
+        if ~isempty(obj.medium.absorptionPower)
+            obj.pressurePadded =  obj.pressurePadded  +  obj.medium.soundSpeedPadded.^2 .* ( ...
+                obj.absorbTauPadded .* fracLaplacian(obj, obj.medium.densityPadded .* sum(divergence(obj.velocityPadded),4), obj.medium.absorptionPower/2 -1 ) + ...
+                obj.absorbEtaPadded .* fracLaplacian(obj, sum(obj.densitySplitPadded,4), obj.medium.absorptionPower/2 -0.5 ) ) ;
+        end
 
     end
 

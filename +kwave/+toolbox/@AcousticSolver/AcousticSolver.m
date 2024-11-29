@@ -91,6 +91,9 @@
 %   of the acoustic density [kg/m^3].
 % * |velocity| - (numeric) Vector field of the acoustic particle velocity
 %   [m/s]
+%
+%% Methods
+% * |setkSpaceCorrection|
 
 % Copyright (C) 2024- The k-Wave Authors.
 %
@@ -108,7 +111,7 @@
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
-classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
+classdef AcousticAbsorptionSolver < kwave.toolbox.TimeDomainSolver
 
     % PDE variables.
     properties(SetAccess=private, Dependent=true)
@@ -125,9 +128,15 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
         pml kwave.toolbox.SplitFieldPML
     end
 
+    properties(SetAccess=private, Hidden=true)
+        kappaSplit single
+        absorbTauPadded single
+        absorbEtaPadded single
+    end
+
     % Constructor.
     methods
-        function obj = AcousticSolver(kgrid, medium, source, sensor, settings)
+        function obj = AcousticAbsorptionSolver(kgrid, medium, source, sensor, settings)
             arguments
                 kgrid(1,1) kwave.toolbox.Grid
                 medium(1,1) kwave.toolbox.AcousticMedium
@@ -157,13 +166,20 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
         function velocity = get.velocity(obj)
             velocity = obj.kgrid.returnWithoutGridPadding(obj.velocityPadded);
         end
+        
+        out = kappa2correct(obj, f)
+
     end
+
+
 
     % Override inherited methods.
     methods(Access=protected)
         setInitialConditions(obj)
         executeTimeStep(obj, Nt, dt)
         [Nt, dt] = autoComputeTimeStep(obj, CFL, EndTime)
+        setkSpaceCorrection(obj, dt);
+        setabsoptioncoefficients(obj)
     end
-
+    
 end

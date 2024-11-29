@@ -83,10 +83,6 @@ switch options.Staggering
         zshift= reshape(ifftshift(exp(-1i.*obj.kgridPadded.kzVec * obj.kgridPadded.dz/2)), 1, 1, []);
 end
 
-
-% Preallocate output matrix (vector field).
-ddf = zeros([obj.kgridPadded.gridSize]);
-
 dLap=ifftshift(obj.kgridPadded.k.^(2*y));
 dLap(isinf(dLap))=0;
 
