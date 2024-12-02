@@ -12,8 +12,9 @@
 % %% Description
 % % Compute and assign the coefficents tau and eta in the fractional,
 % % assigns values as given by the formula in: 
-% % Treeby and Cox, Modeling power law absorption and dispersion for
-% %     acoustic propagation using the fractional Laplacian 2010
+% % Treeby, Bradley E., and Ben T. Cox. 
+% %    "Modeling power law absorption and dispersion for acoustic propagation using the fractional Laplacian." 
+% %     The Journal of the Acoustical Society of America 127.5 (2010): 2741-2748.
 % %
 % % If no dispersion, problem reduces with eta=0
 % % If no absorption, problem reduces with tau=0
