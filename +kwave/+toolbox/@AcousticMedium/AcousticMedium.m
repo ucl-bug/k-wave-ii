@@ -43,7 +43,7 @@ classdef AcousticMedium < kwave.toolbox.GridInput
     properties
         soundSpeedReference single {mustBeReal, mustBePositive, mustBeFinite}
         absorptionPower single {mustBeReal, mustBeFinite} = []
-        absorptionType string = 'noType'
+        absorptionType char {mustBeMember( absorptionType, {'noType', 'noAbsorption', 'noDispersion'})} = 'noType'
     end
 
     properties(Constant, Hidden=true)
