@@ -56,13 +56,7 @@ pmlSG = @(x) obj.pml.applyPML(x, Staggered=true);
 gradient = @(x) obj.gradient(x, Staggering='forward');
 divergence = @(x) obj.divergenceSplit(x, Staggering='backward');
 
-% obj.medium.densityPadded is not staggered and should be in some places,
-% stagger forwards. If it is not a single value.
-% 
 if length(obj.medium.densityPadded)~= 1
-    % obj.medium.densityPaddedStg =
-    % options.Staggering='forward';
-    % options.Type='linInterpolate';
     densityPaddedStg=obj.stagger(obj.medium.densityPadded,Stagger='forward', Type='linInterpolate');
 else
     densityPaddedStg=obj.medium.densityPadded;
@@ -84,7 +78,6 @@ for tIndex = 1:Nt
         obj.pressurePadded = obj.source.initialPressurePadded;
         obj.densitySplitPadded = obj.densitySplitPadded + obj.source.initialPressurePadded ./ (obj.dimensions * obj.medium.soundSpeedPadded.^2);
         obj.velocityPadded = (dt ./ densityPaddedStg) .* gradient(obj.pressurePadded) / 2;
-        % Need to pad absorption coefficients
     else
 
         % Momentum conservation equation.
@@ -112,5 +105,4 @@ for tIndex = 1:Nt
     end
 
     obj.timeStepsTaken = obj.timeStepsTaken + 1;
-
 end
