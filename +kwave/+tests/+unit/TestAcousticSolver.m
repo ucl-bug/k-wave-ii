@@ -85,7 +85,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
                     medium3Dx.absorptionPower= 1.9;
                     medium3Dy.absorptionPower= 1.9;
                     medium3Dz.absorptionPower= 1.9;
-                elseif Type==3 % case 3: absorptionPower noAbsoorption
+                elseif Type==3 % case 3: absorptionPower noAbsorption
                     medium1D.absorptionType = 'noAbsorption';
                     medium2Dx.absorptionType= 'noAbsorption';
                     medium2Dy.absorptionType= 'noAbsorption';
@@ -123,16 +123,16 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
                 for DomainCase=1:7
                     disp({'Domain case : ' DomainCase})
                         
-                    if DomainCase==1        % c0 rho0 alpha0 single
+                    if DomainCase==1        % c0 rho0 alpha0 single scalar valued
                         
-                    elseif DomainCase==2    % c0 grid f     | rho0 alpha0 single
+                    elseif DomainCase==2    % c0 grid fixed value gridsize     | rho0 alpha0 single scalar valued
                         medium1D.soundSpeed  = c0*ones(Nax,1);
                         medium2Dx.soundSpeed = c0*ones(Nax,Nlat);
                         medium2Dy.soundSpeed = c0*ones(Nlat,Nax);
                         medium3Dx.soundSpeed = c0*ones(Nax,Nlat,Nlat);
                         medium3Dy.soundSpeed = c0*ones(Nlat,Nax,Nlat);
                         medium3Dz.soundSpeed = c0*ones(Nlat, Nlat,Nax);
-                    elseif DomainCase==3    % rho0 grid f   | c0 alpha0 single
+                    elseif DomainCase==3    % rho0 grid fixed value gridsize   | c0 alpha0 single scalar valued
                         medium1D.soundSpeed  = c0;
                         medium2Dx.soundSpeed = c0;
                         medium2Dy.soundSpeed = c0;
@@ -146,7 +146,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
                         medium3Dx.density = rho0*ones(Nax,Nlat,Nlat);
                         medium3Dy.density = rho0*ones(Nlat,Nax,Nlat);
                         medium3Dz.density = rho0*ones(Nlat, Nlat,Nax);
-                    elseif DomainCase==4    % alpha0 grid f | c0 rho0 single
+                    elseif DomainCase==4    % alpha0 grid fixed value gridsize | c0 rho0 single scalar valued
                         medium1D.density  = rho0;
                         medium2Dx.density = rho0;
                         medium2Dy.density = rho0;
@@ -160,7 +160,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
                         medium3Dx.absorptionCoeff = alpha0*ones(Nax,Nlat,Nlat);
                         medium3Dy.absorptionCoeff = alpha0*ones(Nlat,Nax,Nlat);
                         medium3Dz.absorptionCoeff = alpha0*ones(Nlat, Nlat,Nax);
-                    elseif DomainCase==5    % c0 grid v     | rho0 alpha0 single
+                    elseif DomainCase==5    % c0 grid heterogeneous     | rho0 alpha0 single scalar valued
                         medium1D.absorptionCoeff  = alpha0;
                         medium2Dx.absorptionCoeff = alpha0;
                         medium2Dy.absorptionCoeff = alpha0;
@@ -180,7 +180,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
                         medium3Dy.soundSpeed(:,floor(2*Nax/5):floor(3*Nax/5),:)=c0/0.9;
                         medium3Dz.soundSpeed = c0*ones(Nlat, Nlat,Nax);
                         medium3Dz.soundSpeed(:,:,floor(2*Nax/5):floor(3*Nax/5))=c0/0.9;
-                    elseif DomainCase==6    % rho0 grid v   | c0 alpha0 single
+                    elseif DomainCase==6    % rho0 grid heterogeneous   | c0 alpha0 single scalar valued
                         medium1D.soundSpeed  = c0;
                         medium2Dx.soundSpeed = c0;
                         medium2Dy.soundSpeed = c0;
@@ -200,7 +200,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
                         medium3Dy.density(:,floor(2*Nax/5):floor(3*Nax/5),:)=rho0/1.1;
                         medium3Dz.density = rho0*ones(Nlat, Nlat,Nax);
                         medium3Dz.density(:,:,floor(2*Nax/5):floor(3*Nax/5))=rho0/1.1;
-                    elseif DomainCase==7    % alpha0 grid v | c0 rho0 single
+                    elseif DomainCase==7    % alpha0 grid heterogeneous | c0 rho0 single scalar valued
                         medium1D.density  = rho0;
                         medium2Dx.density = rho0;
                         medium2Dy.density = rho0;
@@ -270,7 +270,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
                     testCase.verifyThat(density2Dy,  IsEqualTo(density1D,  "Within", tol)); % 
                     testCase.verifyThat(velocity2Dy, IsEqualTo(velocity1D, "Within", tol)); % 
 
-                    testCase.verifyThat(pressure3Dx, IsEqualTo(pressure1D, "Within", tol)); % 1-5, 3-5 fails with /0.9 rel error ,   ||   1-5 only fails with /1.1 rel error -2e-6
+                    testCase.verifyThat(pressure3Dx, IsEqualTo(pressure1D, "Within", tol)); %
                     testCase.verifyThat(density3Dx,  IsEqualTo(density1D,  "Within", tol)); % 
                     testCase.verifyThat(velocity3Dx, IsEqualTo(velocity1D, "Within", tol)); % 
 
@@ -289,7 +289,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
 
         %%
 
-        function testLegacyAbsorption(testCase)
+        function testAgainstLegacyAbsorption(testCase)
 
             % want to test Legacy code,
             % set up domains for scalar valued parameters, 1D,2D,3D
