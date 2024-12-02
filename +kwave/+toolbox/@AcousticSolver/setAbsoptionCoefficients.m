@@ -52,7 +52,7 @@ arguments
 end
 
 % convert the absorption coefficient to nepers.(rad/s)^-y.m^-1
-alphaCoeffPadded = db2neper(obj.medium.absorptionCoeffPadded, obj.medium.absorptionPower);
+alphaCoeffPadded = 5 * obj.medium.absorptionCoeffPadded * (((1e-6)/(2*pi) )^obj.medium.absorptionPower) / (log10*(exp(1)));
 
 if ~strcmp(obj.medium.absorptionType,'noDispersion') && ~strcmp(obj.medium.absorptionType,'noAbsorption') && ~strcmp(obj.medium.absorptionType,'noType') && ~strcmp(obj.medium.absorptionType,'none') 
     disp('Unexpected string for absorptionType, defaulted to "noType", please use; "noDispersion", "noAbsorption", or "noType".' )
