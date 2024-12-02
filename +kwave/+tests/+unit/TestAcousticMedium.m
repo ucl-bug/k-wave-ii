@@ -10,7 +10,7 @@ classdef TestAcousticMedium < kwave.tests.unit.AbstractTestGridInput
         inputClass = 'AcousticMedium'
         inputProperties = {'soundSpeed', 'density', 'absorptionCoeff', 'BonA'}
         inputPropertiesPadded = {'soundSpeedPadded', 'densityPadded', 'absorptionCoeffPadded', 'BonAPadded'}
-        inputPropertiesScalar = {'soundSpeedReference', 'absorptionPower', 'absorptionType'}
+        inputPropertiesScalar = {'soundSpeedReference', 'absorptionPower','absorptionType'}
         inputPropertiesComplex = {}
         inputPropertiesVectorField = {}
     end
