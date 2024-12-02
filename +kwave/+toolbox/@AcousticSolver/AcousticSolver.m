@@ -14,6 +14,10 @@
 %
 % $$p = c_0^2 \rho$$
 %
+% When absorption y is declared as a medium property
+%
+% $$p= c_0^2 \rho + \tau (-\Nabla^2)^(y/2 -1)\frac{\partial \rho}{\partial t} + \eta (-\Nabla^2)^((y-1)/2)\rho $$
+%
 % where $p$ is the acoustic pressure, $\vec{u}$ is the acoustic particle
 % velocity, $\rho$ is the acoustic density, $\rho_0$ is the ambient
 % density, $c_0$ is the sound speed, and $t$ is time.
@@ -136,7 +140,7 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
 
     % Constructor.
     methods
-        function obj = AcousticAbsorptionSolver(kgrid, medium, source, sensor, settings)
+        function obj = AcousticSolver(kgrid, medium, source, sensor, settings)
             arguments
                 kgrid(1,1) kwave.toolbox.Grid
                 medium(1,1) kwave.toolbox.AcousticMedium
@@ -166,20 +170,13 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
         function velocity = get.velocity(obj)
             velocity = obj.kgrid.returnWithoutGridPadding(obj.velocityPadded);
         end
-        
-        out = kappa2correct(obj, f)
-
     end
-
-
-
+    
     % Override inherited methods.
     methods(Access=protected)
         setInitialConditions(obj)
         executeTimeStep(obj, Nt, dt)
         [Nt, dt] = autoComputeTimeStep(obj, CFL, EndTime)
-        setkSpaceCorrection(obj, dt);
         setabsoptioncoefficients(obj)
     end
-    
 end
