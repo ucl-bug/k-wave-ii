@@ -34,7 +34,7 @@
 %   [dB/(MHz^y cm)]. 
 % * |absorptionPower| - (single) Power law attenuation power.
 % * |BonA| - (single) Parameter of nonlinearity.
-% * |absorptionType| - string, 'noAbsorption', 'noDispersion', turns off tau and eta respectively 
+% * |absorptionType| - string, 'noAbsorption', 'noDispersion', turns off absorption and dispersion terms respectively 
 %% See Also
 % * |GridInput|
 
@@ -42,7 +42,7 @@ classdef AcousticMedium < kwave.toolbox.GridInput
 
     properties
         soundSpeedReference single {mustBeReal, mustBePositive, mustBeFinite}
-        absorptionPower single {mustBeReal, mustBeFinite} = 0
+        absorptionPower single {mustBeReal, mustBeFinite} = []
         absorptionType string = 'noType'
     end
 
