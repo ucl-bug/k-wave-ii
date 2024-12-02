@@ -85,7 +85,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
                     medium3Dx.absorptionPower= 1.9;
                     medium3Dy.absorptionPower= 1.9;
                     medium3Dz.absorptionPower= 1.9;
-                elseif Type==3 % case 3: absorptionPower noAbsoorption
+                elseif Type==3 % case 3: absorptionPower noAbsorption
                     medium1D.absorptionType = 'noAbsorption';
                     medium2Dx.absorptionType= 'noAbsorption';
                     medium2Dy.absorptionType= 'noAbsorption';
@@ -123,7 +123,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
                 for DomainCase=1:7
                     disp({'Domain case : ' DomainCase})
                         
-                    if DomainCase==1        % c0 rho0 alpha0 single
+                    if DomainCase==1        % c0 rho0 alpha0 single scalar values
                         
                     elseif DomainCase==2    % c0 grid f     | rho0 alpha0 single
                         medium1D.soundSpeed  = c0*ones(Nax,1);
@@ -160,7 +160,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
                         medium3Dx.absorptionCoeff = alpha0*ones(Nax,Nlat,Nlat);
                         medium3Dy.absorptionCoeff = alpha0*ones(Nlat,Nax,Nlat);
                         medium3Dz.absorptionCoeff = alpha0*ones(Nlat, Nlat,Nax);
-                    elseif DomainCase==5    % c0 grid v     | rho0 alpha0 single
+                    elseif DomainCase==5    % c0 grid v     | rho0 alpha0 single heterogeneous c0
                         medium1D.absorptionCoeff  = alpha0;
                         medium2Dx.absorptionCoeff = alpha0;
                         medium2Dy.absorptionCoeff = alpha0;
@@ -180,7 +180,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
                         medium3Dy.soundSpeed(:,floor(2*Nax/5):floor(3*Nax/5),:)=c0/0.9;
                         medium3Dz.soundSpeed = c0*ones(Nlat, Nlat,Nax);
                         medium3Dz.soundSpeed(:,:,floor(2*Nax/5):floor(3*Nax/5))=c0/0.9;
-                    elseif DomainCase==6    % rho0 grid v   | c0 alpha0 single
+                    elseif DomainCase==6    % rho0 grid v   | c0 alpha0 single heterogeneous rho0
                         medium1D.soundSpeed  = c0;
                         medium2Dx.soundSpeed = c0;
                         medium2Dy.soundSpeed = c0;
@@ -200,7 +200,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
                         medium3Dy.density(:,floor(2*Nax/5):floor(3*Nax/5),:)=rho0/1.1;
                         medium3Dz.density = rho0*ones(Nlat, Nlat,Nax);
                         medium3Dz.density(:,:,floor(2*Nax/5):floor(3*Nax/5))=rho0/1.1;
-                    elseif DomainCase==7    % alpha0 grid v | c0 rho0 single
+                    elseif DomainCase==7    % alpha0 grid v | c0 rho0 single heterogeneous alpha0
                         medium1D.density  = rho0;
                         medium2Dx.density = rho0;
                         medium2Dy.density = rho0;
@@ -225,37 +225,37 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
                     % Running Simulations
 
                     %Reference Solution
-                    solver1D = AcousticorptionSolver(kgrid1D, medium1D, source1D, [], settings);
+                    solver1D = AcousticSolver(kgrid1D, medium1D, source1D, [], settings);
                     solver1D.run(Nt=Nt, dt=dt);
                     pressure1D = solver1D.pressure;
                     density1D = solver1D.densitySplit;
                     velocity1D = solver1D.velocity;
 
-                    solver2Dx = AcousticorptionSolver(kgrid2Dx, medium2Dx, source2Dx, [], settings);
+                    solver2Dx = AcousticSolver(kgrid2Dx, medium2Dx, source2Dx, [], settings);
                     solver2Dx.run(Nt=Nt, dt=dt);
                     pressure2Dx = squeeze(solver2Dx.pressure(:, end/2));
                     density2Dx = squeeze(solver2Dx.densitySplit(:, end/2, 1, 1));
                     velocity2Dx = squeeze(solver2Dx.velocity(:, end/2, 1, 1));
 
-                    solver2Dy = AcousticorptionSolver(kgrid2Dy, medium2Dy, source2Dy, [], settings);
+                    solver2Dy = AcousticSolver(kgrid2Dy, medium2Dy, source2Dy, [], settings);
                     solver2Dy.run(Nt=Nt, dt=dt);
                     pressure2Dy = reshape(squeeze(solver2Dy.pressure(end/2, :)), [], 1);
                     density2Dy = reshape(squeeze(solver2Dy.densitySplit(end/2, :, 1, 2)), [], 1);
                     velocity2Dy = reshape(squeeze(solver2Dy.velocity(end/2, :, 1, 2)), [], 1);
 
-                    solver3Dx = AcousticorptionSolver(kgrid3Dx, medium3Dx, source3Dx, [], settings); % Failed 1-5
+                    solver3Dx = AcousticSolver(kgrid3Dx, medium3Dx, source3Dx, [], settings); % Failed 1-5
                     solver3Dx.run(Nt=Nt, dt=dt);
                     pressure3Dx = squeeze(solver3Dx.pressure(:, end/2, end/2));
                     density3Dx = squeeze(solver3Dx.densitySplit(:, end/2, end/2, 1));
                     velocity3Dx = squeeze(solver3Dx.velocity(:, end/2, end/2, 1));
 
-                    solver3Dy = AcousticorptionSolver(kgrid3Dy, medium3Dy, source3Dy, [], settings);
+                    solver3Dy = AcousticSolver(kgrid3Dy, medium3Dy, source3Dy, [], settings);
                     solver3Dy.run(Nt=Nt, dt=dt);
                     pressure3Dy = reshape(squeeze(solver3Dy.pressure(end/2, :, end/2)), [], 1, 1);
                     density3Dy = reshape(squeeze(solver3Dy.densitySplit(end/2, :, end/2, 2)), [], 1, 1);
                     velocity3Dy = reshape(squeeze(solver3Dy.velocity(end/2, :, end/2, 2)), [], 1, 1);
 
-                    solver3Dz = AcousticorptionSolver(kgrid3Dz, medium3Dz, source3Dz, [], settings); 
+                    solver3Dz = AcousticSolver(kgrid3Dz, medium3Dz, source3Dz, [], settings); 
                     solver3Dz.run(Nt=Nt, dt=dt);
                     pressure3Dz = reshape(squeeze(solver3Dz.pressure(end/2, end/2, :)), [], 1, 1);
                     density3Dz = reshape(squeeze(solver3Dz.densitySplit(end/2, end/2, :, 3)), [], 1, 1);
@@ -270,7 +270,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
                     testCase.verifyThat(density2Dy,  IsEqualTo(density1D,  "Within", tol)); % 
                     testCase.verifyThat(velocity2Dy, IsEqualTo(velocity1D, "Within", tol)); % 
 
-                    testCase.verifyThat(pressure3Dx, IsEqualTo(pressure1D, "Within", tol)); % 1-5, 3-5 fails with /0.9 rel error ,   ||   1-5 only fails with /1.1 rel error -2e-6
+                    testCase.verifyThat(pressure3Dx, IsEqualTo(pressure1D, "Within", tol)); 
                     testCase.verifyThat(density3Dx,  IsEqualTo(density1D,  "Within", tol)); % 
                     testCase.verifyThat(velocity3Dx, IsEqualTo(velocity1D, "Within", tol)); % 
 
@@ -288,7 +288,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
 
         %%
 
-        function testLegacyAbsorption(testCase)
+        function testAgainstLegacyAbsorption(testCase)
 
             % want to test Legacy code,
             % set up domains for scalar valued parameters, 1D,2D,3D
@@ -323,7 +323,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             source1D.initialPressure = exp( -(kgrid1D.xVec - 25e-3).^2 ./ (5 * kgrid1D.dx).^2 );
             settings = Settings;
             settings.plotSimulation = 'off';
-            solver1D = AcousticorptionSolver(kgrid1D, medium1D, source1D, [], settings);
+            solver1D = AcousticSolver(kgrid1D, medium1D, source1D, [], settings);
             solver1D.run(Nt=Nt, dt=dt);
             % Legacy setup
             kgrid1DL=kWaveGrid(Nax,dx);
@@ -340,7 +340,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             rho0M(floor(2*Nax/5):floor(3*Nax/5))=rho0/1.5;
             medium1D.density  = rho0M;
             medium1DL.density=rho0M;
-            solver1D = AcousticorptionSolver(kgrid1D, medium1D, source1D, [], settings);
+            solver1D = AcousticSolver(kgrid1D, medium1D, source1D, [], settings);
             solver1D.run(Nt=Nt, dt=dt);
             sensor_data1 = kspaceFirstOrder1D(kgrid1DL, medium1DL, source1DL, sensor1DL,'PMLInside',false,'Smooth',false);
             testCase.verifyThat(solver1D.pressure, IsEqualTo(single(sensor_data1.p_final), "Within", tol));
@@ -350,7 +350,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             medium1DL.alpha_coeff  = alpha0;
             medium1D.absorptionPower  = 1.9;
             medium1DL.alpha_power  = 1.9;
-            solver1D = AcousticorptionSolver(kgrid1D, medium1D, source1D, [], settings);
+            solver1D = AcousticSolver(kgrid1D, medium1D, source1D, [], settings);
             solver1D.run(Nt=Nt, dt=dt);
             sensor_data1 = kspaceFirstOrder1D(kgrid1DL, medium1DL, source1DL, sensor1DL,'PMLInside',false,'Smooth',false);
             testCase.verifyThat(solver1D.pressure, IsEqualTo(single(sensor_data1.p_final), "Within", tol));
@@ -374,9 +374,9 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             medium2Dy.absorptionCoeff= alpha0;
             medium2Dy.absorptionPower= 1.9;
             medium2Dy.absorptionType='noAbsorption';
-            solver2Dx = AcousticorptionSolver(kgrid2Dx, medium2Dx, source2Dx, [], settings);
+            solver2Dx = AcousticSolver(kgrid2Dx, medium2Dx, source2Dx, [], settings);
             solver2Dx.run(Nt=Nt, dt=dt);
-            solver2Dy = AcousticorptionSolver(kgrid2Dy, medium2Dy, source2Dy, [], settings);
+            solver2Dy = AcousticSolver(kgrid2Dy, medium2Dy, source2Dy, [], settings);
             solver2Dy.run(Nt=Nt, dt=dt);
 
             kgrid2DxL=kWaveGrid(Nax,dx,Nlat,dx);
@@ -411,7 +411,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             medium3Dx.density = rho0;
             medium3Dx.absorptionCoeff= alpha0*0.9;
             medium3Dx.absorptionPower= 1.2;
-            solver3Dx = AcousticorptionSolver(kgrid3Dx, medium3Dx, source3Dx, [], settings);
+            solver3Dx = AcousticSolver(kgrid3Dx, medium3Dx, source3Dx, [], settings);
             solver3Dx.run(Nt=Nt, dt=dt);
 
             kgrid3DxL=kWaveGrid(Nax,dx,Nlat,dx,Nlat,dx);
