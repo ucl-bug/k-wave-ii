@@ -133,7 +133,6 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
     end
 
     properties(SetAccess=private, Hidden=true)
-        kappaSplit single
         absorbTauPadded single
         absorbEtaPadded single
     end
