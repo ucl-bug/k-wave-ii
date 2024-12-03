@@ -176,6 +176,6 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
         setInitialConditions(obj)
         executeTimeStep(obj, Nt, dt)
         [Nt, dt] = autoComputeTimeStep(obj, CFL, EndTime)
-        setabsoptioncoefficients(obj)
+        setAbsorptionCoefficients(obj)
     end
 end
