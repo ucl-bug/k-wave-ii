@@ -1,13 +1,13 @@
 %% UPDATE =================================================================
 % 
-% %% Set Absoption Coefficients
+% % Set Absorption Coefficients
 % % *Class:* kwave.toolbox.AcousticAbsorptionSolver
 % % *Package:* kwave.toolbox
 % %
 % % Compute and assign the coefficents tau and eta in the fractional laplacian loss.
 % %
 % %% Syntax
-% %   setabsoptioncoefficients(obj)
+% %   setabsorptioncoefficients(obj)
 % %
 % %% Description
 % % Compute and assign the coefficents tau and eta in the fractional,
@@ -45,7 +45,7 @@
 %
 %% ========================================================================
 
-function setAbsoptionCoefficients(obj)
+function setAbsorptionCoefficients(obj)
 
 arguments
     obj
