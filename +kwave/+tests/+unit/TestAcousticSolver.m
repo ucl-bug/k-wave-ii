@@ -285,6 +285,9 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
 
                 end
             end
+            % Re-create 1D solver without settings input to hit default
+            % settings LOC.
+            AcousticSolver(kgrid1D, medium1D, source1D, []);
         end
 
         %%
