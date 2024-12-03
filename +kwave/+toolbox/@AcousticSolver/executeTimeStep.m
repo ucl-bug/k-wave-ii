@@ -44,7 +44,7 @@ obj.kappa = ifftshift(kwave.toolbox.FourierCollocation.sinc(obj.medium.soundSpee
 
 %
 if ~isempty(obj.medium.absorptionPower)
-setAbsoptionCoefficients(obj)
+setAbsorptionCoefficients(obj)
 end
 
 % Set PML variables (depend on time step).
