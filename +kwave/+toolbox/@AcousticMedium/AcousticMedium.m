@@ -30,11 +30,11 @@
 %   used in the k-space correction [m/s]. Automatically defined in
 %   kWaveAcoustic if not defined by the user.
 % * |density| - (single) Mass density [kg/m^2].
-% * |alphaCoeff| - (single) Power law attenuation coefficient
+% * |absorptionCoeff| - (single) Power law attenuation coefficient
 %   [dB/(MHz^y cm)]. 
-% * |alphaPower| - (single) Power law attenuation power.
+% * |absorptionPower| - (single) Power law attenuation power.
 % * |BonA| - (single) Parameter of nonlinearity.
-%
+% * |absorptionType| - string, 'noAbsorption', 'noDispersion', turns off absorption and dispersion terms respectively 
 %% See Also
 % * |GridInput|
 
@@ -42,7 +42,8 @@ classdef AcousticMedium < kwave.toolbox.GridInput
 
     properties
         soundSpeedReference single {mustBeReal, mustBePositive, mustBeFinite}
-        alphaPower single {mustBeReal, mustBeFinite}
+        absorptionPower single {mustBeReal, mustBeFinite} = []
+        absorptionType char {mustBeMember( absorptionType, {'noType', 'noAbsorption', 'noDispersion'})} = 'noType'
     end
 
     properties(Constant, Hidden=true)
@@ -50,8 +51,9 @@ classdef AcousticMedium < kwave.toolbox.GridInput
         gridFields = kwave.toolbox.GridField.createGridFieldsMap([
             kwave.toolbox.GridField('soundSpeed');
             kwave.toolbox.GridField('density');
-            kwave.toolbox.GridField('alphaCoeff');
+            kwave.toolbox.GridField('absorptionCoeff');
             kwave.toolbox.GridField('BonA')
+        
         ]);
     end
 

@@ -14,6 +14,10 @@
 %
 % $$p = c_0^2 \rho$$
 %
+% When absorption y is declared as a medium property
+%
+% $$p= c_0^2 \rho + \tau (-\Nabla^2)^(y/2 -1)\frac{\partial \rho}{\partial t} + \eta (-\Nabla^2)^((y-1)/2)\rho $$
+%
 % where $p$ is the acoustic pressure, $\vec{u}$ is the acoustic particle
 % velocity, $\rho$ is the acoustic density, $\rho_0$ is the ambient
 % density, $c_0$ is the sound speed, and $t$ is time.
@@ -91,6 +95,9 @@
 %   of the acoustic density [kg/m^3].
 % * |velocity| - (numeric) Vector field of the acoustic particle velocity
 %   [m/s]
+%
+%% Methods
+% * |setkSpaceCorrection|
 
 % Copyright (C) 2024- The k-Wave Authors.
 %
@@ -123,6 +130,11 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
         densitySplitPadded single
         velocityPadded single
         pml kwave.toolbox.SplitFieldPML
+    end
+
+    properties(SetAccess=private, Hidden=true)
+        absorbTauPadded single
+        absorbEtaPadded single
     end
 
     % Constructor.
@@ -158,12 +170,12 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
             velocity = obj.kgrid.returnWithoutGridPadding(obj.velocityPadded);
         end
     end
-
+    
     % Override inherited methods.
     methods(Access=protected)
         setInitialConditions(obj)
         executeTimeStep(obj, Nt, dt)
         [Nt, dt] = autoComputeTimeStep(obj, CFL, EndTime)
+        setAbsorptionCoefficients(obj)
     end
-
 end
