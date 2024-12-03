@@ -98,7 +98,8 @@
 %
 %% Methods
 % * |setkSpaceCorrection|
-
+% * |setAbsorptionCoefficients|
+%
 % Copyright (C) 2024- The k-Wave Authors.
 %
 % This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
@@ -177,5 +178,6 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
         executeTimeStep(obj, Nt, dt)
         [Nt, dt] = autoComputeTimeStep(obj, CFL, EndTime)
         setAbsorptionCoefficients(obj)
+        setkSpaceCorrection(obj, dt);
     end
 end

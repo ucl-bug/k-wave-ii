@@ -36,18 +36,23 @@ function executeTimeStep(obj, Nt, dt)
 arguments
     obj
     Nt(1,1) {mustBeInteger, mustBePositive, mustBeFinite}
-    dt(1,1) {mustBeNumeric, mustBePositive, mustBeFinite}
+    dt(1,1) single {mustBeNumeric, mustBePositive, mustBeFinite}
 end
 
-% Set k-space correction (depends on time step).
-obj.kappa = ifftshift(kwave.toolbox.FourierCollocation.sinc(obj.medium.soundSpeedReference * obj.kgridPadded.k * dt/2));
+% Update time variables to account for changes in time step size.
+currentTimeStep = dt;
+if (~isempty(obj.prevTimeStep))
+    dt = (currentTimeStep + obj.prevTimeStep)/2;
+end
 
+% Set k-space correction (use currentTimeStep step).
+obj.setkSpaceCorrection(currentTimeStep);
 %
 if ~isempty(obj.medium.absorptionPower)
 setAbsorptionCoefficients(obj)
 end
 
-% Set PML variables (depend on time step).
+% Set PML variables (use average time step dt).
 obj.pml.setupQuarticPML(dt, obj.medium.soundSpeedReference);
 
 % Anonymous functions to simplify code within time loop.
@@ -68,7 +73,7 @@ end
 
 for tIndex = 1:Nt
 
-    if (obj.timeStepsTaken == 0)
+    if (tIndex == 1) && (obj.timeStepsTaken == 0)
 
         % Set initial conditions for a photoacoustic initial value problem.
         % We do this here, rather than in setInitialConditions, as setting
@@ -82,6 +87,14 @@ for tIndex = 1:Nt
 
         % Momentum conservation equation.
         obj.velocityPadded = pmlSG(pmlSG(obj.velocityPadded) - (dt ./ densityPaddedStg) .* gradient(obj.pressurePadded));
+
+        % Account for change in time step size.
+        if (tIndex == 1) && (currentTimeStep ~= obj.prevTimeStep)
+            dt = currentTimeStep;
+            obj.prevTimeStep = currentTimeStep;
+            obj.setkSpaceCorrection(currentTimeStep);
+            obj.pml.setupQuarticPML(currentTimeStep, obj.medium.soundSpeedReference);
+        end
 
         % Mass conservation equation.
         obj.densitySplitPadded = pml(pml(obj.densitySplitPadded) - dt .* obj.medium.densityPadded .* divergence(obj.velocityPadded));
@@ -104,5 +117,4 @@ for tIndex = 1:Nt
         obj.plotField(obj.pressure);
     end
 
-    obj.timeStepsTaken = obj.timeStepsTaken + 1;
 end
