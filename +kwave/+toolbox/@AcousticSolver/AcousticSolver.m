@@ -99,6 +99,7 @@
 %% Methods
 % * |setkSpaceCorrection|
 % * |setAbsorptionCoefficients|
+% * |kappa2Correct|
 %
 % Copyright (C) 2024- The k-Wave Authors.
 %
@@ -172,12 +173,13 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
         end
     end
     
-    % Override inherited methods.
+    % Override inherited methods and add specific methods.
     methods(Access=protected)
         setInitialConditions(obj)
         executeTimeStep(obj, Nt, dt)
         [Nt, dt] = autoComputeTimeStep(obj, CFL, EndTime)
         setAbsorptionCoefficients(obj)
         setkSpaceCorrection(obj, dt);
+        kappa2correct(obj, f);
     end
 end
