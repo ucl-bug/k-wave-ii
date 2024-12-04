@@ -33,9 +33,11 @@ function fCorrected = kappa2correct(obj, f)
 
 arguments
     obj
-    f(:,:,:,1)
+    f(:,:,:,:)
 end
 
 fCorrected = zeros([obj.kgridPadded.gridSize, obj.dimensions]);
 
-fCorrected(:, :, :) = ifftn(obj.kappaSplit .* fftn(f(:, :, :)), 'symmetric');
+for dim=1:obj.dimensions
+    fCorrected(:, :, :,dim) = ifftn(obj.kappaSplit .* fftn(f(:,:,:,dim)), 'symmetric');
+end

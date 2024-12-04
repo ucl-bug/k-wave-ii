@@ -137,6 +137,7 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
     properties(SetAccess=private, Hidden=true)
         absorbTauPadded single
         absorbEtaPadded single
+        kappaSplit single
     end
 
     % Constructor.
@@ -180,6 +181,6 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
         [Nt, dt] = autoComputeTimeStep(obj, CFL, EndTime)
         setAbsorptionCoefficients(obj)
         setkSpaceCorrection(obj, dt);
-        kappa2correct(obj, f);
+        fCorrected = kappa2correct(obj, f);
     end
 end
