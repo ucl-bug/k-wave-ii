@@ -16,7 +16,7 @@
 %
 % When absorption y is declared as a medium property
 %
-% $$p= c_0^2 \rho + \tau (-\Nabla^2)^(y/2 -1)\frac{\partial \rho}{\partial t} + \eta (-\Nabla^2)^((y-1)/2)\rho $$
+% $$p= c_0^2 \rho + \tau (-\nabla^2)^(y/2 -1)\frac{\partial \rho}{\partial t} + \eta (-\nabla^2)^((y-1)/2)\rho$$
 %
 % where $p$ is the acoustic pressure, $\vec{u}$ is the acoustic particle
 % velocity, $\rho$ is the acoustic density, $\rho_0$ is the ambient
