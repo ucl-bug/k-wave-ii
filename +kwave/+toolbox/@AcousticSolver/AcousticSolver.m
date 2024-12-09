@@ -99,7 +99,7 @@
 %% Methods
 % * |setkSpaceCorrection|
 % * |setAbsorptionCoefficients|
-% * |kappa2Correct|
+% * |kappaSplitCorrection|
 %
 % Copyright (C) 2024- The k-Wave Authors.
 %
@@ -181,6 +181,6 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
         [Nt, dt] = autoComputeTimeStep(obj, CFL, EndTime)
         setAbsorptionCoefficients(obj)
         setkSpaceCorrection(obj, dt);
-        fCorrected = kappa2correct(obj, f);
+        fCorrected = kappaSplitCorrection(obj, f);
     end
 end

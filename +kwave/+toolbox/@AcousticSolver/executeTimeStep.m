@@ -13,7 +13,7 @@
 %
 %% Input Arguments
 % * |Nt| - (integer) Number of time steps.
-% * |dt| - (numeric) Size of each time step. 
+% * |dt| - (numeric) Size of each time step.
 
 % Copyright (C) 2024- The k-Wave Authors.
 %
@@ -22,12 +22,12 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
@@ -36,7 +36,7 @@ function executeTimeStep(obj, Nt, dt)
 arguments
     obj
     Nt(1,1) {mustBeInteger, mustBePositive, mustBeFinite}
-    dt(1,1) single {mustBeNumeric, mustBePositive, mustBeFinite}
+    dt(1,1) {mustBeNumeric, mustBePositive, mustBeFinite}
 end
 
 % Update time variables to account for changes in time step size.
@@ -49,7 +49,7 @@ end
 obj.setkSpaceCorrection(currentTimeStep);
 %
 if ~isempty(obj.medium.absorptionPower)
-setAbsorptionCoefficients(obj)
+    setAbsorptionCoefficients(obj)
 end
 
 % Set PML variables (use average time step dt).
@@ -89,32 +89,45 @@ for tIndex = 1:Nt
             % kspace corrected with split time step with current time
             % considerations. Need to add method that transforms and
             % untransforms F^-1(F(U(t))kappa_2(k))
-            obj.velocityPadded = pmlSG(pmlSG(obj.velocityPadded) - (dt ./ obj.medium.densityPadded) .* gradient(obj.pressurePadded) + dt .* obj.kappa2correct( pmlSG(obj.velocityPadded)) );
+            obj.velocityPadded = pmlSG(pmlSG(obj.velocityPadded) - (dt ./ densityPaddedStg) .* gradient(obj.pressurePadded) + dt .* obj.kappaSplitCorrection( pmlSG(obj.velocityPadded)) );
 
             dt = currentTimeStep;
 
             obj.prevTimeStep = currentTimeStep;
             obj.setkSpaceCorrection(currentTimeStep);
             obj.pml.setupQuarticPML(currentTimeStep, obj.medium.soundSpeedReference);
+
+            % Mass conservation equation.
+            obj.densitySplitPadded = pml(pml(obj.densitySplitPadded) - dt .* obj.medium.densityPadded .* divergence(obj.velocityPadded));
+
+            % Pressure density relation.
+            obj.pressurePadded = obj.medium.soundSpeedPadded.^2 .* ( sum(obj.densitySplitPadded, 4));
+
+            % If absorptionPower declaired then add absorption terms
+            if ~isempty(obj.medium.absorptionPower)
+                obj.pressurePadded =  obj.pressurePadded  +  obj.medium.soundSpeedPadded.^2 .* ( ...
+                    obj.absorbTauPadded .* fracLaplacian(obj, obj.medium.densityPadded .* sum(divergence(obj.velocityPadded),4), obj.medium.absorptionPower/2 -1 ) + ...
+                    obj.absorbEtaPadded .* fracLaplacian(obj, sum(obj.densitySplitPadded,4), obj.medium.absorptionPower/2 -0.5 ) ) ;
+            end
         end
     else
 
         % Momentum conservation equation.
-        obj.velocityPadded = pmlSG(pmlSG(obj.velocityPadded) - (dt ./ obj.medium.densityPadded) .* gradient(obj.pressurePadded));
+        obj.velocityPadded = pmlSG(pmlSG(obj.velocityPadded) - (dt ./ densityPaddedStg) .* gradient(obj.pressurePadded));
 
-    end
+        % Mass conservation equation.
+        obj.densitySplitPadded = pml(pml(obj.densitySplitPadded) - dt .* obj.medium.densityPadded .* divergence(obj.velocityPadded));
 
-    % Mass conservation equation.
-    obj.densitySplitPadded = pml(pml(obj.densitySplitPadded) - dt .* obj.medium.densityPadded .* divergence(obj.velocityPadded));
+        % Pressure density relation.
+        obj.pressurePadded = obj.medium.soundSpeedPadded.^2 .* ( sum(obj.densitySplitPadded, 4));
 
-    % Pressure density relation.
-    obj.pressurePadded = obj.medium.soundSpeedPadded.^2 .* ( sum(obj.densitySplitPadded, 4));
-
-    % If absorptionPower declaired then add absorption terms
-    if ~isempty(obj.medium.absorptionPower)
+        % If absorptionPower declaired then add absorption terms
+        if ~isempty(obj.medium.absorptionPower)
         obj.pressurePadded =  obj.pressurePadded  +  obj.medium.soundSpeedPadded.^2 .* ( ...
             obj.absorbTauPadded .* fracLaplacian(obj, obj.medium.densityPadded .* sum(divergence(obj.velocityPadded),4), obj.medium.absorptionPower/2 -1 ) + ...
             obj.absorbEtaPadded .* fracLaplacian(obj, sum(obj.densitySplitPadded,4), obj.medium.absorptionPower/2 -0.5 ) ) ;
+        end
+
     end
 
 end
