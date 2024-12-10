@@ -37,7 +37,7 @@ function setkSpaceCorrection(obj, dt)
 
 arguments
     obj
-    dt(1,1) single {mustBeNumeric, mustBePositive, mustBeFinite}
+    dt(1,1) {mustBeNumeric, mustBePositive, mustBeFinite}
 end
 
 ck = obj.medium.soundSpeedReference * obj.kgridPadded.k;
