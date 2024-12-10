@@ -583,6 +583,13 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             testCase.verifyThat(pressure3Dz, IsEqualTo(pressure1D, "Within", tol)); %
             testCase.verifyThat(density3Dz,  IsEqualTo(density1D,  "Within", tol)); %
             testCase.verifyThat(velocity3Dz, IsEqualTo(velocity1D, "Within", tol)); %
+
+            % test to show time restart works with change powerlaw
+            medium1D.absorptionPower=1.1;
+            medium1D.absorptionCoeff=0.5;
+            solver1DP= AcousticSolver(kgrid1D, medium1D, source1D, [], settings);
+            solver1DP.run(Nt=2, dt=dt);
+            solver1DP.run(Nt=2, dt=2*dt);
         end
 
     end
