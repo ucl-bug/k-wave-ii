@@ -65,9 +65,15 @@ classdef Medium < kwave.toolbox.GridInput
         soundSpeed = soundSpeedPadded(obj)
         density = densityPadded(obj)
         absorptionCoeff = absorptionCoeffPadded(obj)
-        absorptionPower = absorptionPowerPadded(obj)
+        absorptionPower = absorptionPower(obj)
         BonA = BonAPadded(obj)
         specificHeat = specificHeatPadded(obj)
         thermalConductivity = thermalConductivityPadded(obj)
+        soundSpeed = soundSpeed(obj)
+        density = density(obj)
+        absorptionCoeff = absorptionCoeff(obj)
+        BonA = BonA(obj)
+        specificHeat = specificHeat(obj)
+        thermalConductivity = thermalConductivity(obj)
     end
 end

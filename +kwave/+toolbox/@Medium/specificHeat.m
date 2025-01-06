@@ -1,9 +1,9 @@
-function sS=soundSpeed(obj)
+function sS=specificHeat(obj)
 arguments
     obj
 end
-if ~isscalar(obj.soundSpeedPadded)
-    V=obj.soundSpeedPadded;
+if ~isscalar(obj.specificHeatPadded)
+    V=obj.specificHeatPadded;
     switch obj.kgrid.dimensions
         case 1
             sS=V(obj.kgrid.gridPadding(1)+1:end-obj.kgrid.gridPadding(1));
@@ -13,5 +13,5 @@ if ~isscalar(obj.soundSpeedPadded)
             sS=V(obj.kgrid.gridPadding(1)+1:end-obj.kgrid.gridPadding(1), obj.kgrid.gridPadding(2)+1:end-obj.kgrid.gridPadding(2), obj.kgrid.gridPadding(3)+1:end-obj.kgrid.gridPadding(3));
     end
 else
-    sS=obj.soundSpeedPadded;
+    sS=obj.specificHeatPadded;
 end

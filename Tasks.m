@@ -1,18 +1,20 @@
 %% Current Targets in order
 
-% Git Upload
-% Testing for the Medium
-% Thermal Solver adaptions to accept Medium
-% Git Upload
-% Thermal Testing for Medium
-% Git Upload
-% ElectromagneticMedium parameters in Medium
-% Git Upload
-% Adapt medium Testing for new parameters
-% BuildMaterialTable(Testing): All the test parameter sets and tests
-% Git Upload
-% Git Push adaptions for time restarting
-% Git Upload and Pull
+% [x] Git Upload
+% [x] Testing for the Medium
+% [x] Unpadded Methods
+% [x] Thermal Solver adaptions to accept Medium
+% [x] Thermal Testing for Medium
+% [ ] Git Upload
+% [ ] :HOLD OFF :ElectromagneticMedium parameters in Medium
+% [ ] :HOLD OFF :Git Upload
+% [ ] Adapt medium Testing for new parameters
+% [ ] Change code comments for Labelled Materials
+% [ ] Git Upload
+% [ ] BuildMaterialTable(Testing): All the test parameter sets and tests
+% [ ] Git Upload
+% [ ] Git Push adaptions for time restarting
+% [ ] Git Upload and Pull
 
 %% Longer Term
 

@@ -15,7 +15,7 @@ classdef TestThermalSolverGrid < kwave.tests.unit.AbstractTestGrid
     methods(Test, ParameterCombination="sequential")
 
         % Compare 1D, 2D, 3D initial value problem in homogeneous media
-        % against exact solution.
+        % against exact solution, with both medium types.
         function initialValueProblemHomog(testCase)
 
             import matlab.unittest.constraints.IsEqualTo
@@ -26,6 +26,9 @@ classdef TestThermalSolverGrid < kwave.tests.unit.AbstractTestGrid
             medium.thermalConductivity = 0.52;
             medium.specificHeat = 3540;
             medium.density = 1000;
+
+            medium2 = Medium(testCase.kgrid);
+            medium2.materialIDGrid=1;
             
             % Source.
             source = ThermalSource(testCase.kgrid);
@@ -52,10 +55,13 @@ classdef TestThermalSolverGrid < kwave.tests.unit.AbstractTestGrid
             
             % Solve using two steps.
             solver = ThermalSolver(testCase.kgrid, medium, source, [], settings);
+            solver1 = ThermalSolver(testCase.kgrid, medium2, source, [], settings);
             Nt = 500;
             dt = 1;
             solver.run(Nt=Nt/2, dt=dt);
             solver.run(Nt=Nt/2, dt=dt);
+            solver1.run(Nt=Nt, dt=dt);
+
             testCase.actualSolution = solver.temperaturePadded;
 
             % Compute exact Green's function solution.
@@ -63,6 +69,9 @@ classdef TestThermalSolverGrid < kwave.tests.unit.AbstractTestGrid
             testCase.referenceSolution = kwave.legacy.bioheatExact(source.initialTemperaturePadded, 0, [D, 0, 0], testCase.kgrid.dx, (Nt - 1) * dt);
 
             % Compare with tolerance.
+            testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));
+            
+            testCase.actualSolution = solver1.temperaturePadded; 
             testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));
 
             % Take a step using auto-calculated Nt and dt.

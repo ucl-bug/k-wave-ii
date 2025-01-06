@@ -5,8 +5,19 @@ function MatTab = BuildMaterialTable()
 %inputArg1 will be a vector of integer values that restricts which
 %materials are passed to minimise storage of un-needed materials
 
+
+% Variables given in the order
+% 
+% Sound Speed
+% Density
+% acoustic absorption coefficiient
+% acoustic absorption Power
+% acounstic B on A
+% specific Heat
+% Thermal Conductivity
+
 MatTab=zeros(6,7);
-MatTab(1,:)=[1500    ,1000    ,10    ,1.9,0,0,0]; % Test Acoustic 1
+MatTab(1,:)=[1500    ,1000    ,10    ,1.9,0,3540,0.52]; % Test 1
 MatTab(2,:)=[1500/0.9,1000    ,10    ,1.9,0,0,0]; % Test Acoustic 2
 MatTab(3,:)=[1500    ,1000/1.1,10    ,1.9,0,0,0]; % Test Acoustic 3
 MatTab(4,:)=[1500    ,1000    ,10/1.1,1.9,0,0,0]; % Test Acoustic 4
