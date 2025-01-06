@@ -79,3 +79,12 @@ obj.executeTimeStep(options.Nt, options.dt);
 
 elapsedTime = between(startTime, datetime('now'));
 kwave.toolbox.Logger.info(['  run completed in ' kwave.utilities.formatDuration(elapsedTime)]);
+
+% Update time variables.
+obj.prevTimeStep = options.dt;
+obj.timeStepsTaken = obj.timeStepsTaken + options.Nt;
+if isempty(obj.timeArray)
+    obj.timeArray = (0:(options.Nt - 1)) * options.dt;
+else
+    obj.timeArray = [obj.timeArray, obj.timeArray(end) + (1:options.Nt) * options.dt];
+end

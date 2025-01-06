@@ -68,10 +68,3 @@ for tIndex = tStartIndex:Nt
 
 end
 
-% Update time axes.
-obj.timeStepsTaken = obj.timeStepsTaken + Nt;
-if isempty(obj.timeArray)
-    obj.timeArray = (0:(Nt - 1)) * dt;
-else
-    obj.timeArray = [obj.timeArray, obj.timeArray(end) + (1:Nt) * dt];
-end
