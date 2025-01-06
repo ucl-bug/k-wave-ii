@@ -1,7 +1,7 @@
 %% UPDATE =================================================================
 % 
 % % Set Absorption Coefficients
-% % *Class:* kwave.toolbox.AcousticAbsorptionSolver
+% % *Class:* kwave.toolbox.AcosticSolver
 % % *Package:* kwave.toolbox
 % %
 % % Compute and assign the coefficents tau and eta in the fractional laplacian loss.
@@ -50,21 +50,22 @@ function setAbsorptionCoefficients(obj)
 arguments
     obj
 end
+validateattributes( obj.medium.absorptionPowerPadded, {'single'}, {'scalar'})
 
 % convert the absorption coefficient to nepers.(rad/s)^-y.m^-1
-alphaCoeffPadded = 5 * obj.medium.absorptionCoeffPadded * (((1e-6)/(2*pi) )^obj.medium.absorptionPower) / (log10(exp(1)));
+alphaCoeffPadded = 5 * obj.medium.absorptionCoeffPadded * (((1e-6)/(2*pi) )^obj.medium.absorptionPowerPadded ) / (log10(exp(1)));
 
 % Applies Formula
-if strcmp(obj.medium.absorptionType,'noDispersion') || obj.medium.absorptionPower==0 || obj.medium.absorptionPower==2
+if strcmp(obj.absorptionType,'noDispersion') || obj.medium.absorptionPowerPadded ==0 || obj.medium.absorptionPowerPadded==2
     obj.absorbEtaPadded =0;
 else
-    obj.absorbEtaPadded =   -2 .* alphaCoeffPadded .* obj.medium.soundSpeedPadded.^(obj.medium.absorptionPower    ) .* tan(pi .* obj.medium.absorptionPower / 2);
+    obj.absorbEtaPadded =   -2 .* alphaCoeffPadded .* obj.medium.soundSpeedPadded.^(obj.medium.absorptionPowerPadded    ) .* tan(pi .* obj.medium.absorptionPowerPadded  / 2);
 end
 
-if strcmp(obj.medium.absorptionType,'noAbsorption')
+if strcmp(obj.absorptionType,'noAbsorption')
     obj.absorbTauPadded = 0;
 else
-    obj.absorbTauPadded =  -2 .* alphaCoeffPadded .* obj.medium.soundSpeedPadded.^(obj.medium.absorptionPower - 1);
+    obj.absorbTauPadded =  -2 .* alphaCoeffPadded .* obj.medium.soundSpeedPadded.^(obj.medium.absorptionPowerPadded  - 1);
 end
 
 end

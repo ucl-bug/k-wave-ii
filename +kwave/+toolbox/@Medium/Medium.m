@@ -1,11 +1,11 @@
-%% AcousticMedium
+%% Medium
 % *Package:* kwave.toolbox
 % *Superclasses:* kwave.toolbox.GridInput
 %
 % Class used to define the acoustic medium properties for a simulation.
 %
 %% Syntax
-%   medium = AcousticMedium(kgrid);
+%   medium = Medium(kgrid);
 %
 %% Description
 % This class is used to define the acoustic medium properties. The
@@ -23,6 +23,8 @@
 %    medium = kwave.toolbox.AcousticMedium(kgrid);
 %    medium.soundSpeed = rand(medium.gridSize);
 %    medium.density = rand(medium.gridSize);
+%    medium.specificHeat = rand(medium.gridSize);
+%    medium.thermalConductivity = rand(medium.gridSize);
 %
 %% Properties
 % * |soundSpeed| - (single) Compressional sound speed [m/s].
@@ -31,39 +33,41 @@
 %   kWaveAcoustic if not defined by the user.
 % * |density| - (single) Mass density [kg/m^2].
 % * |absorptionCoeff| - (single) Power law attenuation coefficient
-%   [dB/(MHz^y cm)]. 
+%   [dB/(MHz^y cm)].
 % * |absorptionPower| - (single) Power law attenuation power.
 % * |BonA| - (single) Parameter of nonlinearity.
-% * |absorptionType| - string, 'noAbsorption', 'noDispersion', turns off absorption and dispersion terms respectively 
+% * |diffusionReference| - (numeric) Reference diffusion coefficient used
+%   in the k-space correction term [m^2/s]. Automatically defined in
+%   ThermalSolver if not defined by the user.
+% * |specificHeat| - (numeric) Specific heat capacity at constant pressure
+%   [J/kg/K].
+% * |thermalConductivity| - (numeric) Thermal conductivity [W/m/K].
 %% See Also
 % * |GridInput|
 
-classdef AcousticMedium < kwave.toolbox.GridInput
+classdef Medium < kwave.toolbox.GridInput
 
     properties
         soundSpeedReference single {mustBeReal, mustBePositive, mustBeFinite}
-        absorptionPower single {mustBeReal, mustBeFinite}
-    end
-    
-    properties(Dependent, Hidden)
-        absorptionPowerPadded
+        diffusionReference {mustBeReal, mustBeFinite}
+        materialTable (:,7) single {mustBeNonnegative} =  kwave.toolbox.BuildMaterialTable()
     end
 
-    properties(Constant, Hidden=true)
-        requiredProperties = {'soundSpeed', 'density'};
+    properties(Constant, Hidden=false)
+        requiredProperties = {'materialIDGrid'}; %'soundSpeed', 'density', 'specificHeat', 'thermalConductivity'};
         gridFields = kwave.toolbox.GridField.createGridFieldsMap([
-            kwave.toolbox.GridField('soundSpeed');
-            kwave.toolbox.GridField('density');
-            kwave.toolbox.GridField('absorptionCoeff');
-            kwave.toolbox.GridField('BonA')
-        
-        ]);
+            kwave.toolbox.GridField('materialIDGrid')
+
+            ]);
     end
 
     methods
-        function out= get.absorptionPowerPadded(obj)
-            out=obj.absorptionPower;
-        end
+        soundSpeed = soundSpeedPadded(obj)
+        density = densityPadded(obj)
+        absorptionCoeff = absorptionCoeffPadded(obj)
+        absorptionPower = absorptionPowerPadded(obj)
+        BonA = BonAPadded(obj)
+        specificHeat = specificHeatPadded(obj)
+        thermalConductivity = thermalConductivityPadded(obj)
     end
-
 end

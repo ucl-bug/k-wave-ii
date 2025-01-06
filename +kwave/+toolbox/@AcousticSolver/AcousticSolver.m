@@ -131,6 +131,10 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
         velocityPadded single
         pml kwave.toolbox.SplitFieldPML
     end
+    
+    properties(SetAccess=public,Hidden=false)
+        absorptionType char {mustBeMember( absorptionType, {'off','on', 'noAbsorption', 'noDispersion'})} = 'off'
+    end
 
     properties(SetAccess=private, Hidden=true)
         absorbTauPadded single
@@ -142,19 +146,24 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
         function obj = AcousticSolver(kgrid, medium, source, sensor, settings)
             arguments
                 kgrid(1,1) kwave.toolbox.Grid
-                medium(1,1) kwave.toolbox.AcousticMedium
+                medium(1,1) kwave.toolbox.GridInput
                 source(1,1) kwave.toolbox.AcousticSource
                 sensor
                 settings(1,1) kwave.toolbox.Settings = kwave.toolbox.Settings
             end
 
+            % Need way to check is medium ir a Medium Class or an
+            % AcousticMedium Class
+            
+                if ~(isa(medium, 'kwave.toolbox.Medium') || isa(medium, 'kwave.toolbox.AcousticMedium'))
+                    error('medium must be an object of Medium OR AcousticMedium.');
+                end
+
             % Pass input arguments to superclass constructor. This calls
-            % setInitialConditions.
-            obj@kwave.toolbox.TimeDomainSolver(kgrid, medium, source, sensor, settings);
-
-            % Initialise PML object.
-            obj.pml = kwave.toolbox.SplitFieldPML(obj.kgrid);
-
+                % setInitialConditions.
+                obj@kwave.toolbox.TimeDomainSolver(kgrid, medium, source, sensor, settings);
+                % Initialise PML object.
+                obj.pml = kwave.toolbox.SplitFieldPML(obj.kgrid);
         end
     end
 
