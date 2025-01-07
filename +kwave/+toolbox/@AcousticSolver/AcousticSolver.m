@@ -16,7 +16,7 @@
 %
 % When absorption y is declared as a medium property
 %
-% $$p= c_0^2 \rho + \tau (-\Nabla^2)^(y/2 -1)\frac{\partial \rho}{\partial t} + \eta (-\Nabla^2)^((y-1)/2)\rho $$
+% $$p= c_0^2 \rho + \tau (-\nabla^2)^(y/2 -1)\frac{\partial \rho}{\partial t} + \eta (-\nabla^2)^((y-1)/2)\rho$$
 %
 % where $p$ is the acoustic pressure, $\vec{u}$ is the acoustic particle
 % velocity, $\rho$ is the acoustic density, $\rho_0$ is the ambient
@@ -102,7 +102,8 @@
 %% Methods
 % * |setkSpaceCorrection|
 % * |setAbsorptionCoefficients|
-
+% * |kappaSplitCorrection|
+%
 % Copyright (C) 2024- The k-Wave Authors.
 %
 % This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
@@ -143,6 +144,7 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
     properties(SetAccess=private, Hidden=true)
         absorbTauPadded single
         absorbEtaPadded single
+        kappaSplit single
     end
 
     % Constructor.
@@ -185,11 +187,13 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
         end
     end
     
-    % Override inherited methods.
+    % Override inherited methods and add specific methods.
     methods(Access=protected)
         setInitialConditions(obj)
         executeTimeStep(obj, Nt, dt)
         [Nt, dt] = autoComputeTimeStep(obj, CFL, EndTime)
         setAbsorptionCoefficients(obj)
+        setkSpaceCorrection(obj, dt);
+        fCorrected = kappaSplitCorrection(obj, f);
     end
 end

@@ -110,7 +110,7 @@ switch options.Type
                         fstg(:, :, :, 1) = interpn(obj.kgridPadded.x,obj.kgridPadded.y, obj.kgridPadded.z, f, obj.kgridPadded.x + obj.kgridPadded.dx/2 , obj.kgridPadded.y, obj.kgridPadded.z, '*linear');
                         fstg(:, :, :, 2) = interpn(obj.kgridPadded.x,obj.kgridPadded.y, obj.kgridPadded.z, f, obj.kgridPadded.x  , obj.kgridPadded.y + obj.kgridPadded.dy/2, obj.kgridPadded.z, '*linear');
                         fstg(:, :, :, 3) = interpn(obj.kgridPadded.x,obj.kgridPadded.y, obj.kgridPadded.z, f, obj.kgridPadded.x  , obj.kgridPadded.y , obj.kgridPadded.z + obj.kgridPadded.dz/2, '*linear');
-                        fstg(isnan(fstg)) = [f(isnan(fstg(:,:,:,1))); f(isnan(fstg(:,:,:,2))),; f(isnan(fstg(:,:,:,3)))];
+                        fstg(isnan(fstg)) = [f(isnan(fstg(:,:,:,1))); f(isnan(fstg(:,:,:,2))); f(isnan(fstg(:,:,:,3)))];
                 end
             case 'backward'
                 dimInd=obj.dimensions;
@@ -126,7 +126,7 @@ switch options.Type
                         fstg(:, :, :, 1) = interpn(obj.kgridPadded.x,obj.kgridPadded.y, obj.kgridPadded.z, f, obj.kgridPadded.x - obj.kgridPadded.dx/2 , obj.kgridPadded.y, obj.kgridPadded.z, '*linear');
                         fstg(:, :, :, 2) = interpn(obj.kgridPadded.x,obj.kgridPadded.y, obj.kgridPadded.z, f, obj.kgridPadded.x  , obj.kgridPadded.y - obj.kgridPadded.dy/2, obj.kgridPadded.z, '*linear');
                         fstg(:, :, :, 3) = interpn(obj.kgridPadded.x,obj.kgridPadded.y, obj.kgridPadded.z, f, obj.kgridPadded.x  , obj.kgridPadded.y , obj.kgridPadded.z - obj.kgridPadded.dz/2, '*linear');
-                        fstg(isnan(fstg)) = [f(isnan(fstg(:,:,:,1))); f(isnan(fstg(:,:,:,2))),; f(isnan(fstg(:,:,:,3)))];
+                        fstg(isnan(fstg)) = [f(isnan(fstg(:,:,:,1))); f(isnan(fstg(:,:,:,2))); f(isnan(fstg(:,:,:,3)))];
                 end
         end
 end
