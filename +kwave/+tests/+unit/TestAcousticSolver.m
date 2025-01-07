@@ -9,7 +9,10 @@
 %% Description
 % Runs the following tests for the AcousticSolver:
 % * Verifies that plane wave simulations in 2D and 3D match simulations in
-%   1D.
+%   1D. Performed both with constant and nonconstant gridfield variables.
+% * Tests that the simulations produce the same results as the legacy code.
+% * Verfifies than the simulations produce the same result when using the
+%   medium class or acoustic medium class
 
 classdef TestAcousticSolver < matlab.unittest.TestCase
 
@@ -287,14 +290,8 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             AcousticSolver(kgrid1D, medium1D, source1D, []);
         end
 
-        %%
-
+        %Test against legacy code with and without absorption
         function testAgainstLegacyAbsorption(testCase)
-
-            % want to test Legacy code,
-            % set up domains for scalar valued parameters, 1D,2D,3D
-            % test grid size varied c0 and rho0 in 1D only
-            % do both with and without absorption in its forms
 
             import kwave.toolbox.*
             import kwave.legacy.*
@@ -428,10 +425,10 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             sensor_data3x = kspaceFirstOrder3D(kgrid3DxL, medium3DxL, source3DxL, sensor3DxL,'PMLInside',false,'Smooth',false,'PMLSize',[pmlSize,0,0]);
 
             testCase.verifyThat(solver3Dx.pressure, IsEqualTo(single(sensor_data3x.p_final), "Within", tol));
-
-
         end
 
+        % Test that the medium class returns the smae values as the
+        % acoustic medium class.
         function testMediumAgreement(testCase)
 
             import kwave.toolbox.*

@@ -95,9 +95,13 @@
 %   of the acoustic density [kg/m^3].
 % * |velocity| - (numeric) Vector field of the acoustic particle velocity
 %   [m/s]
+% * |absorptionType|- (string) Must be a member of { 'on', 'off',
+% 'noAbsorption', 'noDispersion'} defaults to 'off'. Switch to include to
+% exclude each of the absorption terms within the equation of state.
 %
 %% Methods
 % * |setkSpaceCorrection|
+% * |setAbsorptionCoefficients|
 
 % Copyright (C) 2024- The k-Wave Authors.
 %
@@ -156,7 +160,8 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
             % AcousticMedium Class
             
                 if ~(isa(medium, 'kwave.toolbox.Medium') || isa(medium, 'kwave.toolbox.AcousticMedium'))
-                    error('medium must be an object of Medium OR AcousticMedium.');
+                    error('AcousticSolver:InvalidMediumType',...
+                        'medium must be an object of Medium OR AcousticMedium.');
                 end
 
             % Pass input arguments to superclass constructor. This calls

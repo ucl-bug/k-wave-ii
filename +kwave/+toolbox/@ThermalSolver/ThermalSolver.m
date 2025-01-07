@@ -120,7 +120,8 @@ classdef ThermalSolver < kwave.toolbox.TimeDomainSolver
             end
 
             if ~(isa(medium, 'kwave.toolbox.Medium') || isa(medium, 'kwave.toolbox.ThermalMedium'))
-                error('medium must be an object of Medium OR AcousticMedium.');
+                error('ThermalSolver:InvalidMediumType',...
+                        'medium must be an object of Medium OR ThermalMedium.');
             end
 
             % Pass input arguments to superclass constructor.
