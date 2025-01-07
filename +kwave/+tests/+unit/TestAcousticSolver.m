@@ -582,6 +582,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             medium1D.absorptionPower=1.1;
             medium1D.absorptionCoeff=0.5;
             solver1DP= AcousticSolver(kgrid1D, medium1D, source1D, [], settings);
+            solver1DP.absorptionType="on";
             solver1DP.run(Nt=2, dt=dt);
             solver1DP.run(Nt=2, dt=2*dt);
         end
