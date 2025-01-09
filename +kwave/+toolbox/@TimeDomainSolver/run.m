@@ -58,7 +58,7 @@ function run(obj, options)
 
 arguments
     obj
-    options.Nt {mustBeScalarOrEmpty, mustBeInteger, mustBePositive, mustBeFinite} = []
+    options.Nt {mustBeScalarOrEmpty, mustBeInteger, mustBeNonnegative, mustBeFinite} = []
     options.dt {mustBeScalarOrEmpty, mustBeNumeric, mustBePositive, mustBeFinite} = []
     options.CFL {mustBeScalarOrEmpty, mustBeNumeric, mustBePositive, mustBeFinite} = []
     options.EndTime {mustBeScalarOrEmpty, mustBeNumeric, mustBePositive, mustBeFinite} = []
@@ -84,7 +84,7 @@ kwave.toolbox.Logger.info(['  run completed in ' kwave.utilities.formatDuration(
 obj.prevTimeStep = options.dt;
 obj.timeStepsTaken = obj.timeStepsTaken + options.Nt;
 if isempty(obj.timeArray)
-    obj.timeArray = (0:(options.Nt - 1)) * options.dt;
+    obj.timeArray = (0:(options.Nt)) * options.dt;
 else
     obj.timeArray = [obj.timeArray, obj.timeArray(end) + (1:options.Nt) * options.dt];
 end
