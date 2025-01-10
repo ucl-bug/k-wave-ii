@@ -92,7 +92,7 @@ if Nt~=0
                 % calculated density term is automatically copied to all components
                 % of densitySplit via implicit expansion.
                 obj.pressurePadded = obj.source.initialPressurePadded;
-                obj.densitySplitPadded = zeros(size(obj.densitySplitPadded)) + obj.source.initialPressurePadded ./ (obj.dimensions * obj.medium.soundSpeedPadded.^2);
+                obj.densitySplitPadded = obj.densitySplitPadded + obj.source.initialPressurePadded ./ (obj.dimensions * obj.medium.soundSpeedPadded.^2);
                 obj.velocityPadded = (dt ./ densityPaddedStg) .* gradient(obj.pressurePadded) / 2;
             else
                 % Momentum conservation equation.

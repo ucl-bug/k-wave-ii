@@ -57,7 +57,7 @@ if Nt ~= 0
             obj.divergence(obj.medium.thermalConductivityPadded .* obj.gradient(obj.temperaturePadded));
 
         % Plot field.
-        if obj.settings.plotSimulation && (rem(tIndex, obj.settings.plotFrequency) == 0 || tIndex == tStartIndex || tIndex == Nt)
+        if obj.settings.plotSimulation && (rem(tIndex, obj.settings.plotFrequency) == 0 || tIndex == 1 || tIndex == Nt)
             obj.plotField(obj.temperature);
         end
 

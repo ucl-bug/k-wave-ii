@@ -76,7 +76,7 @@ classdef TestAcousticSolverGrid < kwave.tests.unit.AbstractTestGrid
                         testCase.kgrid.Ny, testCase.kgrid.dy, ...
                         testCase.kgrid.Nz, testCase.kgrid.dz);
             end
-            kgridRef.setTime(Nt, dt);
+            kgridRef.setTime(Nt+1, dt);
             mediumRef.sound_speed = medium.soundSpeed;
             mediumRef.sound_speed_ref = medium.soundSpeedReference;
             mediumRef.density = medium.density;
