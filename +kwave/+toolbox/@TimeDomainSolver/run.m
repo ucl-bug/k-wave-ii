@@ -75,6 +75,11 @@ kwave.toolbox.Logger.info(['Calling ' class(obj) '.run...']);
 obj.kgrid.displayGridSize();
 kwave.toolbox.Logger.info(['  dt: ' kwave.utilities.scaleSI(options.dt) 's, end time: ' kwave.utilities.scaleSI(options.dt * options.Nt) 's, time steps: ' num2str(options.Nt)]);
 
+if (obj.timeStepsTaken==0)
+    % Set initial conditions.
+            obj.setInitialConditions;
+end
+
 obj.executeTimeStep(options.Nt, options.dt);
 
 elapsedTime = between(startTime, datetime('now'));

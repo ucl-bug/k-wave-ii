@@ -104,6 +104,47 @@ classdef TestAcousticSolverGrid < kwave.tests.unit.AbstractTestGrid
 
         end
 
+        function testInitialVelocity(testCase)
+
+            import kwave.toolbox.*
+            import matlab.unittest.constraints.IsEqualTo
+
+            medium = AcousticMedium(testCase.kgrid);
+            c0 = 1500;
+            medium.soundSpeed = c0;
+            medium.density = 1000;
+            source = AcousticSource(testCase.kgrid);
+            source2 = AcousticSource(testCase.kgrid);
+            source.initialPressure = exp( -testCase.kgrid.dimensions*(testCase.kgrid.x.^2+testCase.kgrid.y.^2+testCase.kgrid.z.^2) ./ (5 * testCase.kgrid.dx).^2 );
+            source2.initialPressure = exp( -testCase.kgrid.dimensions*(testCase.kgrid.x.^2+testCase.kgrid.y.^2+testCase.kgrid.z.^2) ./ (5 * testCase.kgrid.dx).^2 );
+            source2.initialVelocity = 0;
+            settings = Settings;
+            settings.plotSimulation = 'off';
+            
+            % Solve.
+            solver = AcousticSolver(testCase.kgrid, medium, source, [], settings);
+            solver1 = AcousticSolver(testCase.kgrid, medium, source, [], settings);
+            solver2 = AcousticSolver(testCase.kgrid, medium, source2, [], settings);
+            dt = 0.25 * testCase.kgrid.dx / c0;
+            solver.run(Nt=0, dt=dt);
+            solver2.run(Nt=0, dt=dt);
+            solver.pressure;
+            testCase.verifyThat(solver.pressure, IsEqualTo(solver2.pressure, "Within", testCase.tol));
+            solver.run(Nt=3, dt=dt);
+            solver2.run(Nt=3, dt=dt);
+            testCase.verifyThat(solver.pressure, IsEqualTo(solver2.pressure, "Within", testCase.tol));
+            testCase.verifyThat(solver.velocity, IsEqualTo(solver2.velocity, "Within", testCase.tol));
+            solver.run(Nt=22, dt=dt);
+            solver2.run(Nt=22, dt=dt);
+            testCase.verifyThat(solver.pressure, IsEqualTo(solver2.pressure, "Within", testCase.tol));
+            testCase.verifyThat(solver.velocity, IsEqualTo(solver2.velocity, "Within", testCase.tol));
+            solver1.run(Nt=25, dt=dt);
+            testCase.verifyThat(solver.pressure, IsEqualTo(solver1.pressure, "Within", testCase.tol));
+            testCase.verifyThat(solver.velocity, IsEqualTo(solver1.velocity, "Within", testCase.tol));
+            testCase.verifyThat(solver2.pressure, IsEqualTo(solver1.pressure, "Within", testCase.tol));
+            testCase.verifyThat(solver2.velocity, IsEqualTo(solver1.velocity, "Within", testCase.tol));
+        end
+
     end
 
 end
