@@ -145,6 +145,9 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
         absorbTauPadded single
         absorbEtaPadded single
         kappaSplit single
+
+        BoundCond char {mustBeMember( BoundCond, {'off','on'})} = 'off'
+        BoundaryCondition kwave.toolbox.BoundaryCondition
     end
 
     % Constructor.
@@ -195,5 +198,10 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
         setAbsorptionCoefficients(obj)
         setkSpaceCorrection(obj, dt);
         fCorrected = kappaSplitCorrection(obj, f);
+        
+    end
+
+    methods(Access=public)
+        setBoundaryCondition(obj,BoundaryCondition);
     end
 end

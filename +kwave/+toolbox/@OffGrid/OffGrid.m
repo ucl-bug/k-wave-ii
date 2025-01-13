@@ -38,25 +38,25 @@
 % ball.centre=[0,0,0];
 % OffGridBall2=OffGrid(kgrid,[Nx,Ny],'ball',ball);
 classdef OffGrid < handle
-    
+
     % Properties set by constructor.
     properties(SetAccess=immutable)
-        
+
         %
         kGrid kwave.toolbox.Grid
 
         % Grid size [grid points].
         gridSize(1,1) double {mustBeInteger, mustBePositive, mustBeFinite} = [1];
-        
+
         % Locations of the Points
         kGridLocations = [];
-        
+
     end
-    
+
     % Dependent properties without set methods. These parameters are not
     % stored but re-computed each time they are needed.
     properties(Dependent=true, GetAccess=public, SetAccess=private)
-        
+
         % Nx,Ny,Nz vectors containing copies of the grid
         % coordinates for each point [m].
         xLoc;
@@ -66,31 +66,31 @@ classdef OffGrid < handle
     end
 
     properties(Hidden, Dependent=true, SetAccess=private)
-        
+
         % InvBandLimMatrix
 
         % BandLimGrid
 
         % Distaces
     end
-    
+
     % Constructor.
     methods
         function obj = OffGrid(kGrid, gridSize, kGridLocations,options)
-            
-            obj.kGrid = kGrid; 
+
+            obj.kGrid = kGrid;
             obj.gridSize=prod(gridSize);
 
             if isnumeric(kGridLocations)
-%           assert(size(kGridLocations)==[obj.gridSize,obj.kGrid.dimensions] || size(kGridLocations)==[prod(obj.gridSize),obj.kGrid.dimensions])
-            obj.kGridLocations = reshape(kGridLocations,[prod(obj.gridSize),obj.kGrid.dimensions]);
+                %           assert(size(kGridLocations)==[obj.gridSize,obj.kGrid.dimensions] || size(kGridLocations)==[prod(obj.gridSize),obj.kGrid.dimensions])
+                obj.kGridLocations = reshape(kGridLocations,[prod(obj.gridSize),obj.kGrid.dimensions]);
 
-            assert(max(abs(obj.xLoc))<obj.kGrid.xSize/2)
-            assert(max(abs(obj.yLoc))<obj.kGrid.ySize/2)
-            assert(max(abs(obj.zLoc))<obj.kGrid.zSize/2)
-            
+                assert(max(abs(obj.xLoc))<obj.kGrid.xSize/2)
+                assert(max(abs(obj.yLoc))<obj.kGrid.ySize/2)
+                assert(max(abs(obj.zLoc))<obj.kGrid.zSize/2)
+
             elseif ischar(kGridLocations)
-                
+
                 if strcmp(kGridLocations,'ball')
                     assert( ~isempty(options.radius), ~isempty(options.centre))
                     assert( obj.kGrid.dimensions==3)
@@ -150,7 +150,7 @@ classdef OffGrid < handle
 
         end
     end
-    
+
     % Get methods for dependent properties.
     methods
 
@@ -175,8 +175,8 @@ classdef OffGrid < handle
             m=ceil(1/pi*accuracy);
             dist=0;
             Val=1;
-            for dim=1:obj.kgrid.dimensions
-                dist=dist+floor(abs(x1(dim)-x2(dim))/obj.kgrid.gridSpacing(dim));
+            for dim=1:obj.kGrid.dimensions
+                dist=dist+floor(abs(x1(dim)-x2(dim))/obj.kGrid.gridSpacing(dim));
                 if dist>m
                     Val=0;
                     break
@@ -208,18 +208,19 @@ classdef OffGrid < handle
         end
 
         function BandLimPointCoEven=BandLimPointCoEven(obj,x1,x2,n)
-            BandLimPointCoEven = sin(pi*(x1-x2)/obj.kGrid.gridSpacing(n)) / ( obj.kGrid.gridSize(n) * tan (pi*(x1-x2)/( obj.kGrid.gridSize(n)*obj.kGrid.gridSpacing(n))) ) ...
-                - sin(pi*(x1)/obj.kGrid.gridSpacing(n))*sin(pi*(x2)/obj.kGrid.gridSpacing(n))/( obj.kGrid.gridSize(n))  ...
+            BandLimPointCoEven = sin(pi*(x1-x2)/obj.kGrid.gridSpacing(n)) / ( obj.kGrid.gridSize(n) * tan (pi*(x1-x2)/( obj.kGrid.gridSize(n)*obj.kGrid.gridSpacing(n))) );
+            BandLimPointCoEven(isnan(BandLimPointCoEven ))=1;
+            BandLimPointCoEven = BandLimPointCoEven - sin(pi*(x1)/obj.kGrid.gridSpacing(n))*sin(pi*(x2)/obj.kGrid.gridSpacing(n))/( obj.kGrid.gridSize(n))  ...
                 + 1i* sin(pi*(x1)/obj.kGrid.gridSpacing(n))*cos(pi*(x2)/obj.kGrid.gridSpacing(n))/( obj.kGrid.gridSize(n));
         end
 
         function BandLimPoint=BandLimPoint(obj,x1,x2)
             BandLimPoint=1;
-            for dim=1:obj.kgrid.dimensions
-                if obj.kgrid.GridSize(dim)/2==ceil(obj.kgrid.GridSize(dim)/2)
-                    BandLimPoint=BandLimPoint*BandLimPointCoEven(obj,x1,x2,dim);
+            for dim=1:obj.kGrid.dimensions
+                if obj.kGrid.gridSize(dim)/2==ceil(obj.kGrid.gridSize(dim)/2)
+                    BandLimPoint=BandLimPoint*BandLimPointCoEven(obj,x1(dim),x2(dim),dim);
                 else
-                    BandLimPoint=BandLimPoint*BandLimPointCoOdd(obj,x1,x2,dim);
+                    BandLimPoint=BandLimPoint*BandLimPointCoOdd(obj,x1(dim),x2(dim),dim);
                 end
             end
         end
@@ -228,23 +229,22 @@ classdef OffGrid < handle
         % case on a line as an example, limiting behaviour will be
         % difficult.
 
-        function InvBandLimMatrix=InvBandLimMatrix(obj)
-            Mat=zeros(obj.gridSize,obj.gridSize);
+        function [BandLimMatrix,InvBandLimMatrix]=InvBandLimMatrix(obj)
+            BandLimMatrix=zeros(obj.gridSize,obj.gridSize);
             for iInd=1:obj.gridSize
                 for jInd=iInd:obj.gridSize
-                    if obj.ValidGridpointDistance(obj.kgridLocations(iInd,:),obj.kgridLocations(jInd,:))==1
-                        Mat(iInd,jInd)= obj.BandLimPoint(obj.kgridLocations(iInd,:),obj.kgridLocations(jInd,:));
+                    % if obj.ValidGridpointDistance(obj.kGridLocations(iInd,:),obj.kGridLocations(jInd,:))==1
+                        BandLimMatrix(iInd,jInd)= obj.BandLimPoint(obj.kGridLocations(iInd,:),obj.kGridLocations(jInd,:));
                         if iInd~=jInd
-                            Mat(jInd,iInd)= obj.BandLimPoint(obj.kgridLocations(jInd,:),obj.kgridLocations(iInd,:));
+                            BandLimMatrix(jInd,iInd)= obj.BandLimPoint(obj.kGridLocations(jInd,:),obj.kGridLocations(iInd,:));
                         end
-                    end
+                    % end
                 end
             end
-            InvBandLimMatrix=(Mat)^(-1);
+            InvBandLimMatrix=inv(BandLimMatrix);
         end
 
 
     end
 
-end
 end

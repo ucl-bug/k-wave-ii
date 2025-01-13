@@ -2,13 +2,31 @@
 % dim = kgrid.dim-1
 % PointLocs(xii,yij) in (x,y) parametrisation of surface.
 
-% OffGridBndry(OffGrid)
-% b(x,xi) (Nx x Ny x Nz) x ( Nxii x Nxij ) matrix
-% invA matrix(Nxii x Nxij) x (Nxii x Nxij) inverted
-% D(x,xi) distance matrix between grids
-    % Been doing these in OffGrid
-    
+% Test On Grid Boundary,
 
-% AcousticOffGridBndry
-% p0(xi) values of boundary condition
-% BndrySource = kgrid object
+% Build OffGridBoundaryCondition < BoundaryCondition Class
+% Overwrites the computational method.
+
+% Test Off Grid.
+
+% Numerical Comparison, off-Grid to On-Grid Boundary Condition
+
+
+
+% import kwave.toolbox.*
+% kgrid1D = Grid([256], 1e-3,20);
+% mask=zeros(kgrid1D.gridSize);
+% mask(2)=1;
+% mask(end-1)=1;
+% medium=AcousticMedium(kgrid1D);
+% medium.soundSpeed=1500;
+% medium.density = 1000;
+% source = AcousticSource(kgrid1D);
+% source.initialPressure = exp( -(kgrid1D.x.^2+kgrid1D.y.^2+kgrid1D.z.^2) ./ (10 * kgrid1D.dx).^2 );
+% settings = Settings;
+% settings.plotSimulation = 'on';
+% solver = AcousticSolver(kgrid1D, medium, source, settings);
+% BC=BoundaryCondition(kgrid1D);
+% BC.mask=mask;
+% solver.setBoundaryCondition(BC);
+% solver.run(Nt=3500,dt=1e-7)
