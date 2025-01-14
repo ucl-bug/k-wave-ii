@@ -104,7 +104,7 @@ classdef TestAcousticSolverGrid < kwave.tests.unit.AbstractTestGrid
 
         end
 
-        function testInitialVelocity(testCase)
+        function testInitialVelocitySteps(testCase)
 
             import kwave.toolbox.*
             import matlab.unittest.constraints.IsEqualTo
@@ -120,7 +120,7 @@ classdef TestAcousticSolverGrid < kwave.tests.unit.AbstractTestGrid
             source2.initialVelocity = 0;
             settings = Settings;
             settings.plotSimulation = 'off';
-            
+
             % Solve.
             solver = AcousticSolver(testCase.kgrid, medium, source, [], settings);
             solver1 = AcousticSolver(testCase.kgrid, medium, source, [], settings);
@@ -143,6 +143,12 @@ classdef TestAcousticSolverGrid < kwave.tests.unit.AbstractTestGrid
             testCase.verifyThat(solver.velocity, IsEqualTo(solver1.velocity, "Within", testCase.tol));
             testCase.verifyThat(solver2.pressure, IsEqualTo(solver1.pressure, "Within", testCase.tol));
             testCase.verifyThat(solver2.velocity, IsEqualTo(solver1.velocity, "Within", testCase.tol));
+            
+            medium.absorptionPower=1.9;
+            medium.absorptionCoeff=0.5;
+            solver2 = AcousticSolver(testCase.kgrid, medium, source2, [], settings);
+            solver2.absorptionType='on';
+            solver2.run(Nt=3, dt=dt);
         end
 
     end
