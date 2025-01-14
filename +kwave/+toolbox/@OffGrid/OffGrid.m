@@ -43,13 +43,13 @@ classdef OffGrid < handle
     properties(SetAccess=immutable)
 
         %
-        kGrid kwave.toolbox.Grid
+        kgrid kwave.toolbox.Grid
 
         % Grid size [grid points].
         gridSize(1,1) double {mustBeInteger, mustBePositive, mustBeFinite} = [1];
 
         % Locations of the Points
-        kGridLocations = [];
+        kgridLocations = [];
 
     end
 
@@ -76,72 +76,79 @@ classdef OffGrid < handle
 
     % Constructor.
     methods
-        function obj = OffGrid(kGrid, gridSize, kGridLocations,options)
+        function obj = OffGrid(kgrid, gridSize, kgridLocations,options)
 
-            obj.kGrid = kGrid;
+            obj.kgrid = kgrid;
             obj.gridSize=prod(gridSize);
 
-            if isnumeric(kGridLocations)
-                %           assert(size(kGridLocations)==[obj.gridSize,obj.kGrid.dimensions] || size(kGridLocations)==[prod(obj.gridSize),obj.kGrid.dimensions])
-                obj.kGridLocations = reshape(kGridLocations,[prod(obj.gridSize),obj.kGrid.dimensions]);
+            if isnumeric(kgridLocations)
+                %           assert(size(kgridLocations)==[obj.gridSize,obj.kgrid.dimensions] || size(kgridLocations)==[prod(obj.gridSize),obj.kgrid.dimensions])
+                obj.kgridLocations = reshape(kgridLocations,[prod(obj.gridSize),obj.kgrid.dimensions]);
+                switch obj.kgrid.dimensions
+                    case 1
+                        assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
+                    case 2
+                        assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
+                        assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
+                    case 3
+                        assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
+                        assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
+                        assert(max(abs(obj.zLoc))<obj.kgrid.zSize/2)
+                end
 
-                assert(max(abs(obj.xLoc))<obj.kGrid.xSize/2)
-                assert(max(abs(obj.yLoc))<obj.kGrid.ySize/2)
-                assert(max(abs(obj.zLoc))<obj.kGrid.zSize/2)
+            elseif ischar(kgridLocations)
 
-            elseif ischar(kGridLocations)
-
-                if strcmp(kGridLocations,'ball')
+                if strcmp(kgridLocations,'ball')
                     assert( ~isempty(options.radius), ~isempty(options.centre))
-                    assert( obj.kGrid.dimensions==3)
+                    assert( obj.kgrid.dimensions==3)
                     assert( min(size(gridSize)==[1,2]) )
 
                     Nxi=gridSize(1);
                     Nyi=gridSize(2);
-                    kGridLocations=zeros(Nxi,Nyi,3);
+                    kgridLocations=zeros(Nxi,Nyi,3);
 
-                    kGridLocations(:,:,1)=options.centre(1)+cos(0:2*pi/(Nxi-1):2*pi).'.*(cos(-pi/2:pi/(Nyi-1):pi/2));
-                    kGridLocations(:,:,2)=options.centre(2)+sin(0:2*pi/(Nxi-1):2*pi).'.*(cos(-pi/2:pi/(Nyi-1):pi/2));
-                    kGridLocations(:,:,3)=options.centre(3)+kGridLocations(:,:,3)+(sin(-pi/2:pi/(Nyi-1):pi/2));
+                    kgridLocations(:,:,1)=options.centre(1)+cos(0:2*pi/(Nxi-1):2*pi).'.*(cos(-pi/2:pi/(Nyi-1):pi/2));
+                    kgridLocations(:,:,2)=options.centre(2)+sin(0:2*pi/(Nxi-1):2*pi).'.*(cos(-pi/2:pi/(Nyi-1):pi/2));
+                    kgridLocations(:,:,3)=options.centre(3)+kgridLocations(:,:,3)+(sin(-pi/2:pi/(Nyi-1):pi/2));
 
-                    kGridLocations=kGridLocations.*options.radius;
-                    obj.kGridLocations = reshape(kGridLocations,[prod(obj.gridSize),obj.kGrid.dimensions]);
+                    kgridLocations=kgridLocations.*options.radius;
+                    obj.kgridLocations = reshape(kgridLocations,[prod(obj.gridSize),obj.kgrid.dimensions]);
 
-                    assert(max(abs(obj.xLoc))<obj.kGrid.xSize/2)
-                    assert(max(abs(obj.yLoc))<obj.kGrid.ySize/2)
-                    assert(max(abs(obj.zLoc))<obj.kGrid.zSize/2)
+                    assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
+                    assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
+                    assert(max(abs(obj.zLoc))<obj.kgrid.zSize/2)
 
-                elseif strcmp(kGridLocations,'circle')
+                elseif strcmp(kgridLocations,'circle')
                     assert( ~isempty(options.radius), ~isempty(options.centre))
-                    assert( obj.kGrid.dimensions==2)
+                    assert( obj.kgrid.dimensions==2)
                     assert( min(size(gridSize)==[1,1]) )
 
                     Nxi=gridSize;
-                    kGridLocations=zeros(Nxi,2);
+                    kgridLocations=zeros(Nxi,2);
 
-                    kGridLocations(:,1)=options.centre(1)+options.radius.*cos(0:2*pi/(Nxi-1):2*pi);
-                    kGridLocations(:,2)=options.centre(2)+options.radius.*sin(0:2*pi/(Nxi-1):2*pi);
+                    kgridLocations(:,1)=options.centre(1)+options.radius.*cos(0:2*pi/(Nxi-1):2*pi);
+                    kgridLocations(:,2)=options.centre(2)+options.radius.*sin(0:2*pi/(Nxi-1):2*pi);
 
-                    obj.kGridLocations=kGridLocations;
-                    assert(max(abs(obj.xLoc))<obj.kGrid.xSize/2)
-                    assert(max(abs(obj.yLoc))<obj.kGrid.ySize/2)
+                    obj.kgridLocations=kgridLocations;
+                    assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
+                    assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
 
-                elseif strcmp(kGridLocations,'line')
+                elseif strcmp(kgridLocations,'line')
                     assert( ~isempty(options.startpoint), ~isempty(options.endpoint))
                     assert(min(size(options.startpoint)==[1,2]));
                     assert(min(size(options.endpoint)==[1,2]));
-                    assert( obj.kGrid.dimensions==2)
+                    assert( obj.kgrid.dimensions==2)
                     assert( min(size(gridSize)==[1,1]) )
 
                     Nxi=gridSize;
-                    kGridLocations=zeros(Nxi,2);
+                    kgridLocations=zeros(Nxi,2);
 
-                    kGridLocations(:,1)=((0.5:1:Nxi-0.5))*options.startpoint(1)/Nxi + ( 1- ((0.5:1:Nxi-0.5)/Nxi))*options.endpoint(1);
-                    kGridLocations(:,2)=((0.5:1:Nxi-0.5))*options.startpoint(2)/Nxi + ( 1- ((0.5:1:Nxi-0.5)/Nxi))*options.endpoint(2);
+                    kgridLocations(:,1)=((0.5:1:Nxi-0.5))*options.startpoint(1)/Nxi + ( 1- ((0.5:1:Nxi-0.5)/Nxi))*options.endpoint(1);
+                    kgridLocations(:,2)=((0.5:1:Nxi-0.5))*options.startpoint(2)/Nxi + ( 1- ((0.5:1:Nxi-0.5)/Nxi))*options.endpoint(2);
 
-                    obj.kGridLocations=kGridLocations;
-                    assert(max(abs(obj.xLoc))<obj.kGrid.xSize/2)
-                    assert(max(abs(obj.yLoc))<obj.kGrid.ySize/2)
+                    obj.kgridLocations=kgridLocations;
+                    assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
+                    assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
 
                 end
 
@@ -155,28 +162,27 @@ classdef OffGrid < handle
     methods
 
         function xLoc = get.xLoc(obj)
-            xLoc = obj.kGridLocations(:,1);
+            xLoc = obj.kgridLocations(:,1);
         end
 
         function yLoc = get.yLoc(obj)
-            yLoc = obj.kGridLocations(:,2);
+            yLoc = obj.kgridLocations(:,2);
         end
 
         function zLoc = get.zLoc(obj)
-            zLoc = obj.kGridLocations(:,3);
+            zLoc = obj.kgridLocations(:,3);
         end
 
     end
 
     methods
 
-        function Val=ValidGridpointDistance(obj,x1,x2)
-            accuracy=0.01;
-            m=ceil(1/pi*accuracy);
+        function Val=ValidGridpointDistance(obj,x1,x2,accuracy)
+            m=ceil(1/(pi*accuracy));
             dist=0;
             Val=1;
-            for dim=1:obj.kGrid.dimensions
-                dist=dist+floor(abs(x1(dim)-x2(dim))/obj.kGrid.gridSpacing(dim));
+            for dim=1:obj.kgrid.dimensions
+                dist=dist+floor(abs(x1(dim)-x2(dim))/obj.kgrid.gridSpacing(dim));
                 if dist>m
                     Val=0;
                     break
@@ -185,20 +191,22 @@ classdef OffGrid < handle
         end
 
         function BandLimPointCoOdd=BandLimPointCoOdd(obj,x1,x2,n)
-            BandLimPointCoOdd = sin(pi*(x1-x2)/obj.kGrid.gridSpacing(n)) / ( obj.kGrid.gridSize(n) * sin (pi*(x1-x2)/( obj.kGrid.gridSize(n)*obj.kGrid.gridSpacing(n))) );
+            BandLimPointCoOdd = sin(pi*(x1-x2)/obj.kgrid.gridSpacing(n)) / ( obj.kgrid.gridSize(n) * sin (pi*(x1-x2)/( obj.kgrid.gridSize(n)*obj.kgrid.gridSpacing(n))) );
+            BandLimPointCoOdd(isnan(BandLimPointCoOdd))=1;
         end
 
         function BandLimGridPointCoEven=BandLimGridPointCoEven(obj,x1,x2,n)
-            BandLimGridPointCoEven = sin(pi*(x1-x2)/obj.kGrid.gridSpacing(n)) / ( obj.kGrid.gridSize(n) * tan (pi*(x1-x2)/( obj.kGrid.gridSize(n)*obj.kGrid.gridSpacing(n))) );
+            BandLimGridPointCoEven = sin(pi*(x1-x2)/obj.kgrid.gridSpacing(n)) / ( obj.kgrid.gridSize(n) * tan (pi*(x1-x2)/( obj.kgrid.gridSize(n)*obj.kgrid.gridSpacing(n))) );
+            BandLimGridPointCoEven(isnan(BandLimGridPointCoEven))=1;
         end
 
-        function BandLimGridPoint=BandLimGridPoint(obj,x1,x2)
-            if ValidGridpointDistance(obj,x1,x2)==0
+        function BandLimGridPoint=BandLimGridPoint(obj,x1,x2,accuracy)
+            if ValidGridpointDistance(obj,x1,x2,accuracy)==0
                 BandLimGridPoint=0;
             else
                 BandLimGridPoint=1;
                 for dim=1:obj.kgrid.dimensions
-                    if obj.kgrid.GridSize(dim)/2==ceil(obj.kgrid.GridSize(dim)/2)
+                    if obj.kgrid.gridSize(dim)/2==ceil(obj.kgrid.gridSize(dim)/2)
                         BandLimGridPoint=BandLimGridPoint*BandLimGridPointCoEven(obj,x1,x2,dim);
                     else
                         BandLimGridPoint=BandLimGridPoint*BandLimPointCoOdd(obj,x1,x2,dim);
@@ -208,16 +216,16 @@ classdef OffGrid < handle
         end
 
         function BandLimPointCoEven=BandLimPointCoEven(obj,x1,x2,n)
-            BandLimPointCoEven = sin(pi*(x1-x2)/obj.kGrid.gridSpacing(n)) / ( obj.kGrid.gridSize(n) * tan (pi*(x1-x2)/( obj.kGrid.gridSize(n)*obj.kGrid.gridSpacing(n))) );
+            BandLimPointCoEven = sin(pi*(x1-x2)/obj.kgrid.gridSpacing(n)) / ( obj.kgrid.gridSize(n) * tan (pi*(x1-x2)/( obj.kgrid.gridSize(n)*obj.kgrid.gridSpacing(n))) );
             BandLimPointCoEven(isnan(BandLimPointCoEven ))=1;
-            BandLimPointCoEven = BandLimPointCoEven - sin(pi*(x1)/obj.kGrid.gridSpacing(n))*sin(pi*(x2)/obj.kGrid.gridSpacing(n))/( obj.kGrid.gridSize(n))  ...
-                + 1i* sin(pi*(x1)/obj.kGrid.gridSpacing(n))*cos(pi*(x2)/obj.kGrid.gridSpacing(n))/( obj.kGrid.gridSize(n));
+            BandLimPointCoEven = BandLimPointCoEven - sin(pi*(x1)/obj.kgrid.gridSpacing(n))*sin(pi*(x2)/obj.kgrid.gridSpacing(n))/( obj.kgrid.gridSize(n))  ...
+                + 1i* sin(pi*(x1)/obj.kgrid.gridSpacing(n))*cos(pi*(x2)/obj.kgrid.gridSpacing(n))/( obj.kgrid.gridSize(n));
         end
 
         function BandLimPoint=BandLimPoint(obj,x1,x2)
             BandLimPoint=1;
-            for dim=1:obj.kGrid.dimensions
-                if obj.kGrid.gridSize(dim)/2==ceil(obj.kGrid.gridSize(dim)/2)
+            for dim=1:obj.kgrid.dimensions
+                if obj.kgrid.gridSize(dim)/2==ceil(obj.kgrid.gridSize(dim)/2)
                     BandLimPoint=BandLimPoint*BandLimPointCoEven(obj,x1(dim),x2(dim),dim);
                 else
                     BandLimPoint=BandLimPoint*BandLimPointCoOdd(obj,x1(dim),x2(dim),dim);
@@ -229,14 +237,14 @@ classdef OffGrid < handle
         % case on a line as an example, limiting behaviour will be
         % difficult.
 
-        function [BandLimMatrix,InvBandLimMatrix]=InvBandLimMatrix(obj)
+        function InvBandLimMatrix=InvBandLimMatrix(obj)
             BandLimMatrix=zeros(obj.gridSize,obj.gridSize);
             for iInd=1:obj.gridSize
                 for jInd=iInd:obj.gridSize
-                    % if obj.ValidGridpointDistance(obj.kGridLocations(iInd,:),obj.kGridLocations(jInd,:))==1
-                        BandLimMatrix(iInd,jInd)= obj.BandLimPoint(obj.kGridLocations(iInd,:),obj.kGridLocations(jInd,:));
+                    % if obj.ValidGridpointDistance(obj.kgridLocations(iInd,:),obj.kgridLocations(jInd,:))==1
+                        BandLimMatrix(iInd,jInd)= obj.BandLimPoint(obj.kgridLocations(iInd,:),obj.kgridLocations(jInd,:));
                         if iInd~=jInd
-                            BandLimMatrix(jInd,iInd)= obj.BandLimPoint(obj.kGridLocations(jInd,:),obj.kGridLocations(iInd,:));
+                            BandLimMatrix(jInd,iInd)= obj.BandLimPoint(obj.kgridLocations(jInd,:),obj.kgridLocations(iInd,:));
                         end
                     % end
                 end

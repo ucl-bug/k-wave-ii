@@ -9,7 +9,7 @@
 %% Input Arguments
 %
 %
-% Copyright (C) 2024- The k-Wave Authors.
+% Copyright (C) 2025- The k-Wave Authors.
 %
 % This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
 % software: you can redistribute it and/or modify it under the terms of the
@@ -32,7 +32,7 @@ arguments
     BoundaryCondition kwave.toolbox.BoundaryCondition
 end
 
-if max(size(BoundaryCondition.maskPadded)==ones(1,1))
+if max(size(BoundaryCondition.maskPadded)==1)
     switch obj.kgrid.dimensions
         case 1
             assert(BoundaryCondition.mask(1)==0 && BoundaryCondition.mask(end)==0) 

@@ -32,21 +32,21 @@ classdef BoundaryCondition < kwave.toolbox.GridInput
 
     properties 
         BoundaryValue single {mustBeReal, mustBeFinite} = 0; 
+        % mask kwave.toolbox.GridField = [];
         % For now this is just a scalar applied across the whole boundary, update to allow spatial variation, update to allow temporal variation.
     end
 
-    methods
+    methods(Access=public)
         function VariablePadded=applyBoundaryCondition(obj,VariablePadded)
-
             ChangeValue=obj.maskPadded.*obj.BoundaryValue - VariablePadded;
-
             VariablePadded=VariablePadded + (obj.maskPadded~=0).*ChangeValue;
             % returns the same variable adjusted according to the
             % BoundaryValue and the Mask. Something needs to check if the
             % mask is actually grid Size.
         end
-
     end
+
+
 
 end
 
