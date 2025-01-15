@@ -42,7 +42,7 @@ arguments
 end
 if ~isscalar(obj.materialIDGridPadded)
 
-    disp('abosrptionPower value must be scalar, setting to averaged')
+    disp('absorptionPower value must be scalar, setting to averaged')
     V=obj.materialIDGridPadded;
 
     switch obj.kgrid.dimensions

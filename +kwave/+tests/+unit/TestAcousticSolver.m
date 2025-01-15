@@ -587,7 +587,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             solver1DP.run(Nt=2, dt=2*dt);
         end
 
-         % Test that the medium class returns the smae values as the
+         % Test that the medium class returns the same values as the
         % acoustic medium class.
         function testMediumAgreement(testCase)
 
