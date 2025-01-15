@@ -50,7 +50,7 @@ classdef Medium < kwave.toolbox.GridInput
     properties
         soundSpeedReference single {mustBeReal, mustBePositive, mustBeFinite}
         diffusionReference {mustBeReal, mustBeFinite}
-        materialTable (:,7) single {mustBrReal, mustBeNonnegative, mustBeFinite} =  kwave.toolbox.BuildMaterialTable()
+        materialTable (:,7) single {mustBeReal, mustBeNonnegative, mustBeFinite} =  kwave.toolbox.BuildMaterialTable()
     end
 
     properties(Constant, Hidden=false)
