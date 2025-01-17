@@ -140,11 +140,11 @@ for tIndex = 1:Nt
 if obj.settings.plotSimulation && (rem(tIndex, obj.settings.plotFrequency) == 0 || tIndex == 1 || tIndex == Nt)
     figure(fig);
     obj.plotField(obj.pressure);
-    if strcmp(obj.BoundCond,'on')
-        hold on
-            plot(obj.kgrid.x(obj.BoundaryCondition.mask==1),0,'kx')
-        hold off
-    end
+    % if strcmp(obj.BoundCond,'on')
+    %     hold on
+    %         plot(obj.kgrid.x(obj.BoundaryCondition.mask==1),0,'kx')
+    %     hold off
+    % end
     
 
 end

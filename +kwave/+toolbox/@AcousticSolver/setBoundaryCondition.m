@@ -32,13 +32,15 @@ arguments
     BoundaryCondition kwave.toolbox.BoundaryCondition
 end
 
-if max(size(BoundaryCondition.maskPadded)==1)
+if max(size(BoundaryCondition.maskPadded))~=1
     switch obj.kgrid.dimensions
         case 1
             assert(BoundaryCondition.mask(1)==0 && BoundaryCondition.mask(end)==0) 
         case 2
-            assert(BoundaryCondition.mask(1,:)==zeros(1,obj.kgridPadded.Ny) && BoundaryCondition.mask(end,:)==zeros(1,obj.kgridPadded.Ny))
-            assert(BoundaryCondition.mask(:,1)==zeros(obj.kgridPadded.Nx,1) && BoundaryCondition.mask(:,end)==zeros(obj.kgridPadded.Nx,1))
+            assert(min(BoundaryCondition.mask(1,:)==zeros(1,obj.kgridPadded.Ny))) 
+            assert(min(BoundaryCondition.mask(end,:)==zeros(1,obj.kgridPadded.Ny)))
+            assert(min(BoundaryCondition.mask(:,1)==zeros(obj.kgridPadded.Nx,1)) )
+            assert(min(BoundaryCondition.mask(:,end)==zeros(obj.kgridPadded.Nx,1)))
         case 3
             assert(BoundaryCondition.mask(1,:,:)==zeros(1,obj.kgridPadded.Ny,obj.kgridPadded.Nz) && BoundaryCondition.mask(end,:,:)==zeros(1,obj.kgridPadded.Ny,obj.kgridPadded.Nz))
             assert(BoundaryCondition.mask(:,1,:)==zeros(obj.kgridPadded.Nx,1,obj.kgridPadded.Nz) && BoundaryCondition.mask(:,end,:)==zeros(obj.kgridPadded.Nx,1,obj.kgridPadded.Nz))
