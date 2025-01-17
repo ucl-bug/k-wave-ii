@@ -59,15 +59,187 @@
 % solver3.setBoundaryCondition(BCOG3);
 % solver3.run(Nt=1000,dt=1e-7)
 
-
+% %%
+% 
+% clear
+% close all
+% import kwave.toolbox.*
+% kgrid2D = Grid([128, 128], 1e-3);
+% circ.centre=[0,0];
+% % circ.radius=0.025;
+% circ.radius=0.045;
+% CircleOG=OffGrid(kgrid2D,128,'circle',circ);
+% medium2D=Medium(kgrid2D);
+% medium2D.materialIDGrid=1;
+% source = AcousticSource(kgrid2D);
+% setting=Settings;
+% setting.plotSimulation='off';
+% source.initialPressure = exp( -(kgrid2D.x.^2+kgrid2D.y.^2+kgrid2D.z.^2) ./ (10 * kgrid2D.dx).^2 );
+% solver=AcousticSolver(kgrid2D, medium2D, source, [],setting);
+% CircleBC=OffGridBoundaryCondition(kgrid2D,CircleOG);
+% CircleBC.mask=CircleBC.maskBuilder;
+% solver.setBoundaryCondition(CircleBC)
+% solver.run(Nt=500,dt=1e-7)
+% 
+% solver2=AcousticSolver(kgrid2D, medium2D, source, [],setting);
+% Circle=BoundaryCondition(kgrid2D);
+% Circle.mask=zeros(kgrid2D.gridSize);
+% Circle.mask( kgrid2D.x.^2 + kgrid2D.y.^2 < (circ.radius +1*kgrid2D.dx/2)^2  )=1;
+% Circle.mask( kgrid2D.x.^2 + kgrid2D.y.^2 < (circ.radius -1*kgrid2D.dx/2 )^2  )=0;
+% solver2.setBoundaryCondition(Circle)
+% solver2.run(Nt=500,dt=1e-7)
+% 
+% 
+% figure(1)
+% tiledlayout(2,4)
+% nexttile(1)
+% imagesc(solver.kgrid.xVec,solver.kgrid.yVec,real(solver.pressure))
+% colorbar
+% hold on
+% plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
+% xlim([-circ.radius,circ.radius])
+% ylim([-circ.radius,circ.radius])
+% nexttile(5)
+% imagesc(solver.kgrid.xVec,solver.kgrid.yVec,real(solver.velocity(:,:,1,1)))
+% hold on
+% plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
+% xlim([-circ.radius,circ.radius])
+% ylim([-circ.radius,circ.radius])
+% nexttile(6)
+% imagesc(solver.kgrid.xVec,solver.kgrid.yVec,real(solver.velocity(:,:,1,2)))
+% hold on
+% plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
+% xlim([-circ.radius,circ.radius])
+% ylim([-circ.radius,circ.radius])
+% 
+% nexttile(3)
+% imagesc(solver.kgrid.xVec,solver.kgrid.yVec,solver2.pressure)
+% xlim([-circ.radius,circ.radius])
+% ylim([-circ.radius,circ.radius])
+% colorbar
+% hold on
+% plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
+% nexttile(7)
+% imagesc(solver.kgrid.xVec,solver.kgrid.yVec,solver2.velocity(:,:,1,1))
+% hold on
+% xlim([-circ.radius,circ.radius])
+% ylim([-circ.radius,circ.radius])
+% plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
+% nexttile(8)
+% imagesc(solver.kgrid.xVec,solver.kgrid.yVec,solver2.velocity(:,:,1,2))
+% hold on
+% plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
+% xlim([-circ.radius,circ.radius])
+% ylim([-circ.radius,circ.radius])
+% 
+% 
+% nexttile(2)
+% imagesc(solver.kgrid.xVec,solver.kgrid.yVec,abs(solver2.pressure-solver.pressure))
+% hold on
+% plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
+% colorbar
+% xlim([-circ.radius,circ.radius])
+% ylim([-circ.radius,circ.radius])
+% nexttile(4)
+% imagesc(solver.kgrid.xVec,solver.kgrid.yVec,log10(abs(1-solver2.pressure./solver.pressure)))
+% hold on
+% plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
+% colorbar
+% xlim([-circ.radius,circ.radius])
+% ylim([-circ.radius,circ.radius])
+% 
+% drawnow
+% %%
+% 
+% kgrid2D = Grid([129, 129], 1e-3);
+% CircleOG=OffGrid(kgrid2D,128,'circle',circ);
+% medium2D=Medium(kgrid2D);
+% medium2D.materialIDGrid=1;
+% source = AcousticSource(kgrid2D);
+% setting=Settings;
+% setting.plotSimulation='off';
+% source.initialPressure = exp( -(kgrid2D.x.^2+kgrid2D.y.^2+kgrid2D.z.^2) ./ (10 * kgrid2D.dx).^2 );
+% solver3=AcousticSolver(kgrid2D, medium2D, source, [],setting);
+% CircleBC=OffGridBoundaryCondition(kgrid2D,CircleOG);
+% CircleBC.mask=CircleBC.maskBuilder;
+% solver3.setBoundaryCondition(CircleBC)
+% solver3.run(Nt=500,dt=1e-7)
+% 
+% solver4=AcousticSolver(kgrid2D, medium2D, source, [],setting);
+% Circle=BoundaryCondition(kgrid2D);
+% Circle.mask=zeros(kgrid2D.gridSize);
+% Circle.mask( kgrid2D.x.^2 + kgrid2D.y.^2 < (circ.radius +1*kgrid2D.dx/2)^2  )=1;
+% Circle.mask( kgrid2D.x.^2 + kgrid2D.y.^2 < (circ.radius -1*kgrid2D.dx/2 )^2  )=0;
+% solver4.setBoundaryCondition(Circle)
+% solver4.run(Nt=500,dt=1e-7)
+% 
+% 
+% figure(2)
+% tiledlayout(2,4)
+% nexttile(1)
+% imagesc(solver3.kgrid.xVec,solver3.kgrid.yVec,real(solver3.pressure))
+% colorbar
+% hold on
+% plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
+% xlim([-circ.radius,circ.radius])
+% ylim([-circ.radius,circ.radius])
+% nexttile(5)
+% imagesc(solver3.kgrid.xVec,solver3.kgrid.yVec,real(solver3.velocity(:,:,1,1)))
+% hold on
+% plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
+% xlim([-circ.radius,circ.radius])
+% ylim([-circ.radius,circ.radius])
+% nexttile(6)
+% imagesc(solver3.kgrid.xVec,solver3.kgrid.yVec,real(solver3.velocity(:,:,1,2)))
+% hold on
+% plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
+% xlim([-circ.radius,circ.radius])
+% ylim([-circ.radius,circ.radius])
+% 
+% nexttile(3)
+% imagesc(solver3.kgrid.xVec,solver3.kgrid.yVec,solver4.pressure)
+% colorbar
+% hold on
+% plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
+% xlim([-circ.radius,circ.radius])
+% ylim([-circ.radius,circ.radius])
+% nexttile(7)
+% imagesc(solver3.kgrid.xVec,solver3.kgrid.yVec,solver4.velocity(:,:,1,1))
+% hold on
+% plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
+% xlim([-circ.radius,circ.radius])
+% ylim([-circ.radius,circ.radius])
+% nexttile(8)
+% imagesc(solver3.kgrid.xVec,solver3.kgrid.yVec,solver4.velocity(:,:,1,2))
+% hold on
+% plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
+% xlim([-circ.radius,circ.radius])
+% ylim([-circ.radius,circ.radius])
+% 
+% 
+% nexttile(2)
+% imagesc(solver.kgrid.xVec,solver.kgrid.yVec,abs(solver3.pressure-solver4.pressure))
+% hold on
+% plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
+% colorbar
+% xlim([-circ.radius,circ.radius])
+% ylim([-circ.radius,circ.radius])
+% nexttile(4)
+% imagesc(solver.kgrid.xVec,solver.kgrid.yVec,log10(abs(1-solver4.pressure./solver3.pressure)))
+% hold on
+% plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
+% colorbar
+% xlim([-circ.radius,circ.radius])
+% ylim([-circ.radius,circ.radius])
+%
+%%
 
 clear
 close all
 import kwave.toolbox.*
-kgrid2D = Grid([128, 128], 1e-3);
+kgrid2D = Grid([325, 325], 1e-3);
 circ.centre=[0,0];
-% circ.radius=0.025;
-circ.radius=0.045;
+circ.radius=0.025;
 CircleOG=OffGrid(kgrid2D,128,'circle',circ);
 medium2D=Medium(kgrid2D);
 medium2D.materialIDGrid=1;
@@ -75,126 +247,22 @@ source = AcousticSource(kgrid2D);
 setting=Settings;
 setting.plotSimulation='off';
 source.initialPressure = exp( -(kgrid2D.x.^2+kgrid2D.y.^2+kgrid2D.z.^2) ./ (10 * kgrid2D.dx).^2 );
-solver=AcousticSolver(kgrid2D, medium2D, source, [],setting);
-CircleBC=OffGridBoundaryCondition(kgrid2D,CircleOG);
-CircleBC.mask=CircleBC.maskBuilder;
-solver.setBoundaryCondition(CircleBC)
-solver.run(Nt=500,dt=1e-7)
+
+solver1=AcousticSolver(kgrid2D, medium2D, source, [],setting);
+CircleBCL=OffGridBoundaryCondition(kgrid2D,CircleOG,0.1);
+CircleBCL.mask=CircleBCL.maskBuilder;
+solver1.setBoundaryCondition(CircleBCL);
 
 solver2=AcousticSolver(kgrid2D, medium2D, source, [],setting);
-Circle=BoundaryCondition(kgrid2D);
-Circle.mask=zeros(kgrid2D.gridSize);
-Circle.mask( kgrid2D.x.^2 + kgrid2D.y.^2 < (circ.radius +1*kgrid2D.dx/2)^2  )=1;
-Circle.mask( kgrid2D.x.^2 + kgrid2D.y.^2 < (circ.radius -1*kgrid2D.dx/2 )^2  )=0;
-solver2.setBoundaryCondition(Circle)
-solver2.run(Nt=500,dt=1e-7)
+CircleBCM=OffGridBoundaryCondition(kgrid2D,CircleOG,0.01);
+CircleBCM.mask=CircleBCM.maskBuilder;
+solver2.setBoundaryCondition(CircleBCM);
 
-
-figure(1)
-tiledlayout(2,4)
-nexttile(1)
-imagesc(solver.kgrid.xVec,solver.kgrid.yVec,real(solver.pressure))
-colorbar
-hold on
-plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
-nexttile(5)
-imagesc(solver.kgrid.xVec,solver.kgrid.yVec,real(solver.velocity(:,:,1,1)))
-hold on
-plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
-nexttile(6)
-imagesc(solver.kgrid.xVec,solver.kgrid.yVec,real(solver.velocity(:,:,1,2)))
-hold on
-plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
-
-nexttile(3)
-imagesc(solver.kgrid.xVec,solver.kgrid.yVec,solver2.pressure)
-colorbar
-hold on
-plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
-nexttile(7)
-imagesc(solver.kgrid.xVec,solver.kgrid.yVec,solver2.velocity(:,:,1,1))
-hold on
-plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
-nexttile(8)
-imagesc(solver.kgrid.xVec,solver.kgrid.yVec,solver2.velocity(:,:,1,2))
-hold on
-plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
-
-
-nexttile(2)
-imagesc(solver.kgrid.xVec,solver.kgrid.yVec,(solver2.pressure-solver.pressure))
-hold on
-plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
-colorbar
-nexttile(4)
-imagesc(solver.kgrid.xVec,solver.kgrid.yVec,log10(abs(1-solver2.pressure./solver.pressure)))
-hold on
-plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
-colorbar
-
-%%
-
-kgrid2D = Grid([129, 129], 1e-3);
-CircleOG=OffGrid(kgrid2D,128,'circle',circ);
-medium2D=Medium(kgrid2D);
-medium2D.materialIDGrid=1;
-source = AcousticSource(kgrid2D);
-setting=Settings;
-setting.plotSimulation='off';
-source.initialPressure = exp( -(kgrid2D.x.^2+kgrid2D.y.^2+kgrid2D.z.^2) ./ (10 * kgrid2D.dx).^2 );
 solver3=AcousticSolver(kgrid2D, medium2D, source, [],setting);
-CircleBC=OffGridBoundaryCondition(kgrid2D,CircleOG);
-CircleBC.mask=CircleBC.maskBuilder;
-solver3.setBoundaryCondition(CircleBC)
-solver3.run(Nt=500,dt=1e-7)
+CircleBCH=OffGridBoundaryCondition(kgrid2D,CircleOG,0.0025);
+CircleBCH.mask=CircleBCH.maskBuilder;
+solver3.setBoundaryCondition(CircleBCH);
 
-solver4=AcousticSolver(kgrid2D, medium2D, source, [],setting);
-Circle=BoundaryCondition(kgrid2D);
-Circle.mask=zeros(kgrid2D.gridSize);
-Circle.mask( kgrid2D.x.^2 + kgrid2D.y.^2 < (circ.radius +1*kgrid2D.dx/2)^2  )=1;
-Circle.mask( kgrid2D.x.^2 + kgrid2D.y.^2 < (circ.radius -1*kgrid2D.dx/2 )^2  )=0;
-solver4.setBoundaryCondition(Circle)
-solver4.run(Nt=500,dt=1e-7)
-
-
-figure(2)
-tiledlayout(2,4)
-nexttile(1)
-imagesc(solver3.kgrid.xVec,solver3.kgrid.yVec,real(solver3.pressure))
-colorbar
-hold on
-plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
-nexttile(5)
-imagesc(solver3.kgrid.xVec,solver3.kgrid.yVec,real(solver3.velocity(:,:,1,1)))
-hold on
-plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
-nexttile(6)
-imagesc(solver3.kgrid.xVec,solver3.kgrid.yVec,real(solver3.velocity(:,:,1,2)))
-hold on
-plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
-
-nexttile(3)
-imagesc(solver3.kgrid.xVec,solver3.kgrid.yVec,solver4.pressure)
-colorbar
-hold on
-plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
-nexttile(7)
-imagesc(solver3.kgrid.xVec,solver3.kgrid.yVec,solver4.velocity(:,:,1,1))
-hold on
-plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
-nexttile(8)
-imagesc(solver3.kgrid.xVec,solver3.kgrid.yVec,solver4.velocity(:,:,1,2))
-hold on
-plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
-
-
-nexttile(2)
-imagesc(solver.kgrid.xVec,solver.kgrid.yVec,(solver3.pressure-solver4.pressure))
-hold on
-plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
-colourbar
-nexttile(4)
-imagesc(solver.kgrid.xVec,solver.kgrid.yVec,log10(abs(1-solver3.pressure./solver4.pressure)))
-hold on
-plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
-colorbar
+solver1.run(Nt=100,dt=1e-7)
+solver2.run(Nt=100,dt=1e-7)
+solver3.run(Nt=100,dt=1e-7)
