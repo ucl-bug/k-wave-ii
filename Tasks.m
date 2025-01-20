@@ -11,53 +11,53 @@
 
 % Numerical Comparison, off-Grid to On-Grid Boundary Condition
 
-% close all
-% 
-% import kwave.toolbox.*
-% kgrid1D = Grid([256], 1e-3,20);
-% mask=zeros(kgrid1D.gridSize);
-% mask(256/4)=1;
-% mask(3*256/4)=1;
-% medium=AcousticMedium(kgrid1D);
-% medium.soundSpeed=1500;
-% medium.density = 1000;
-% source = AcousticSource(kgrid1D);
-% source.initialPressure = exp( -(kgrid1D.x.^2+kgrid1D.y.^2+kgrid1D.z.^2) ./ (10 * kgrid1D.dx).^2 );
-% settings = Settings;
-% settings.plotSimulation = 'on';
-% solver = AcousticSolver(kgrid1D, medium, source, settings);
-% BC=BoundaryCondition(kgrid1D);
-% BC.mask=mask;
-% solver.setBoundaryCondition(BC);
-% solver.run(Nt=1000,dt=1e-7)
-% 
-% line.startpoint=-((256*1e-3/2)*(1/2));
-% line.endpoint=((256*1e-3/2)*(1/2));
-% OffGL=OffGrid(kgrid1D,2,[line.startpoint;line.endpoint]);
-% BCOG=OffGridBoundaryCondition(kgrid1D,OffGL);
-% BCOG.mask=BCOG.maskBuilder;
-% solver1 = AcousticSolver(kgrid1D, medium, source, settings);
-% solver1.setBoundaryCondition(BCOG);
-% solver1.run(Nt=1000,dt=1e-7)
-% 
-% line.startpoint=-(256*1e-3/2)*(pi/6); %-pi/6 from left edge of the domain, near the halfway point from 0
-% line.endpoint=(256*1e-3/2)*(pi/6); % pi/6 from right edge of the domain, near the halfway point from 0
-% 
-% OffGL2=OffGrid(kgrid1D,2,[line.startpoint;line.endpoint]);
-% BCOG2=OffGridBoundaryCondition(kgrid1D,OffGL2);
-% BCOG2.mask=BCOG2.maskBuilder;
-% solver2 = AcousticSolver(kgrid1D, medium, source, settings);
-% solver2.setBoundaryCondition(BCOG2);
-% solver2.run(Nt=1000,dt=1e-7)
-% 
-% line.startpoint=-(256*1e-3/2)*(pi/5); %-pi/6 from left edge of the domain, near the halfway point from 0
-% line.endpoint=(256*1e-3/2)*(pi/5); % pi/6 from right edge of the domain, near the halfway point from 0
-% OffGL3=OffGrid(kgrid1D,2,[line.startpoint;line.endpoint]);
-% BCOG3=OffGridBoundaryCondition(kgrid1D,OffGL3);
-% BCOG3.mask=BCOG3.maskBuilder;
-% solver3 = AcousticSolver(kgrid1D, medium, source, settings);
-% solver3.setBoundaryCondition(BCOG3);
-% solver3.run(Nt=1000,dt=1e-7)
+close all
+
+import kwave.toolbox.*
+kgrid1D = Grid([256], 1e-3,20);
+mask=zeros(kgrid1D.gridSize);
+mask(256/4)=1;
+mask(3*256/4)=1;
+medium=AcousticMedium(kgrid1D);
+medium.soundSpeed=1500;
+medium.density = 1000;
+source = AcousticSource(kgrid1D);
+source.initialPressure = exp( -(kgrid1D.x.^2+kgrid1D.y.^2+kgrid1D.z.^2) ./ (10 * kgrid1D.dx).^2 );
+settings = Settings;
+settings.plotSimulation = 'on';
+solver = AcousticSolver(kgrid1D, medium, source, settings);
+BC=BoundaryCondition(kgrid1D);
+BC.mask=mask;
+solver.setBoundaryCondition(BC);
+solver.run(Nt=1000,dt=1e-7)
+
+line.startpoint=-((256*1e-3/2)*(1/2));
+line.endpoint=((256*1e-3/2)*(1/2));
+OffGL=OffGrid(kgrid1D,2,[line.startpoint;line.endpoint]);
+BCOG=OffGridBoundaryCondition(kgrid1D,OffGL,0.01);
+BCOG.mask=BCOG.maskBuilder;
+solver1 = AcousticSolver(kgrid1D, medium, source, settings);
+solver1.setBoundaryCondition(BCOG);
+solver1.run(Nt=1000,dt=1e-7)
+
+line.startpoint=-(256*1e-3/2)*(pi/6); %-pi/6 from left edge of the domain, near the halfway point from 0
+line.endpoint=(256*1e-3/2)*(pi/6); % pi/6 from right edge of the domain, near the halfway point from 0
+
+OffGL2=OffGrid(kgrid1D,2,[line.startpoint;line.endpoint]);
+BCOG2=OffGridBoundaryCondition(kgrid1D,OffGL2,0.01);
+BCOG2.mask=BCOG2.maskBuilder;
+solver2 = AcousticSolver(kgrid1D, medium, source, settings);
+solver2.setBoundaryCondition(BCOG2);
+solver2.run(Nt=1000,dt=1e-7)
+
+line.startpoint=-(256*1e-3/2)*(pi/5); %-pi/6 from left edge of the domain, near the halfway point from 0
+line.endpoint=(256*1e-3/2)*(pi/5); % pi/6 from right edge of the domain, near the halfway point from 0
+OffGL3=OffGrid(kgrid1D,2,[line.startpoint;line.endpoint]);
+BCOG3=OffGridBoundaryCondition(kgrid1D,OffGL3,0.01);
+BCOG3.mask=BCOG3.maskBuilder;
+solver3 = AcousticSolver(kgrid1D, medium, source, settings);
+solver3.setBoundaryCondition(BCOG3);
+solver3.run(Nt=1000,dt=1e-7)
 
 % %%
 % 
@@ -267,42 +267,98 @@
 % solver2.run(Nt=100,dt=1e-7)
 % solver3.run(Nt=100,dt=1e-7)
 %
-%%
-clear
-close all
-import kwave.toolbox.*
-kgrid2D = Grid([129, 128], 1e-3,[20,0]);
-line.startPoint=[-0.008,0.016];
-line.endPoint=[0.008,-0.016];
-LineOG=OffGrid(kgrid2D,48,'line',line);
-medium2D=Medium(kgrid2D);
-medium2D.materialIDGrid=1;
-source = AcousticSource(kgrid2D);
-setting=Settings;
-setting.plotSimulation='on';
-source.initialPressure = exp( -(kgrid2D.x-0.036).^2 ./ (10 * kgrid2D.dx).^2 );
-
-LineBC=OffGridBoundaryCondition(kgrid2D,LineOG,0.001);
-LineBC.mask=LineBC.maskBuilder;
-
-LineBC2=BoundaryCondition(kgrid2D);
-LineBC2.mask=zeros(129,128);
-for jx=1:128
-    for  jy=1:128
-        if kgrid2D.xVec(jx)<0.008 && kgrid2D.yVec(jy)<0.016 && kgrid2D.xVec(jx)>-0.008 && kgrid2D.yVec(jy)>-0.016
-            if abs(2*kgrid2D.xVec(jx)+kgrid2D.yVec(jy))<kgrid2D.dx/2
-                LineBC2.mask(jx,jy)=1;
-            end
-        end
-    end
-end
-
-solverBasic=AcousticSolver(kgrid2D, medium2D, source, [],setting);
-solverBasic.setBoundaryCondition(LineBC2);
-solverBasic.run(Nt=150,dt=(0.75)*(0.5)*1e-3/1500);
-
-setting.plotSimulation='off';
-solver=AcousticSolver(kgrid2D, medium2D, source, [],setting);
-
-solver.setBoundaryCondition(LineBC);
-solver.run(Nt=150,dt=(0.75)*(0.5)*1e-3/1500);
+% %%
+% clear
+% close all
+% import kwave.toolbox.*
+% kgrid2D = Grid([257, 256], 1e-3,[20,0]);
+% line.startPoint=[-0.008,0.016];
+% line.endPoint=[0.008,-0.016];
+% LineOG=OffGrid(kgrid2D,45,'line',line);
+% medium2D=Medium(kgrid2D);
+% medium2D.materialIDGrid=1;
+% source = AcousticSource(kgrid2D);
+% setting=Settings;
+% setting.plotSimulation='off';
+% source.initialPressure = exp( -(kgrid2D.x-0.036).^2 ./ (10 * kgrid2D.dx).^2 );
+% 
+% LineBC2=BoundaryCondition(kgrid2D);
+% LineBC2.mask=zeros(257,256);
+% for jx=1:257
+%     for  jy=1:256
+%         if kgrid2D.xVec(jx)<0.008 && kgrid2D.yVec(jy)<0.016 && kgrid2D.xVec(jx)>-0.008 && kgrid2D.yVec(jy)>-0.016
+%             if abs(2*kgrid2D.xVec(jx)+kgrid2D.yVec(jy))<kgrid2D.dx/2
+%                 LineBC2.mask(jx,jy)=1;
+%             end
+%         end
+%     end
+% end
+% 
+% solverBasic=AcousticSolver(kgrid2D, medium2D, source, [],setting);
+% solverBasic.setBoundaryCondition(LineBC2);
+% solverBasic.run(Nt=250,dt=(0.75)*(0.5)*1e-3/1500);
+% 
+% % setting.plotSimulation='off';
+% 
+% LineBC=OffGridBoundaryCondition(kgrid2D,LineOG,0.01);
+% LineBC.mask=LineBC.maskBuilder;
+% solver1=AcousticSolver(kgrid2D, medium2D, source, [],setting);
+% solver1.setBoundaryCondition(LineBC);
+% solver1.run(Nt=250,dt=(0.75)*(0.5)*1e-3/1500);
+% 
+% LineBC=OffGridBoundaryCondition(kgrid2D,LineOG,0.008);
+% LineBC.mask=LineBC.maskBuilder;
+% solver2=AcousticSolver(kgrid2D, medium2D, source, [],setting);
+% solver2.setBoundaryCondition(LineBC);
+% solver2.run(Nt=250,dt=(0.75)*(0.5)*1e-3/1500);
+% 
+% LineBC=OffGridBoundaryCondition(kgrid2D,LineOG,0.006);
+% LineBC.mask=LineBC.maskBuilder;
+% solver3=AcousticSolver(kgrid2D, medium2D, source, [],setting);
+% solver3.setBoundaryCondition(LineBC);
+% solver3.run(Nt=250,dt=(0.75)*(0.5)*1e-3/1500);
+% 
+% LineBC=OffGridBoundaryCondition(kgrid2D,LineOG,0.005);
+% LineBC.mask=LineBC.maskBuilder;
+% solver4=AcousticSolver(kgrid2D, medium2D, source, [],setting);
+% solver4.setBoundaryCondition(LineBC);
+% solver4.run(Nt=250,dt=(0.75)*(0.5)*1e-3/1500);
+% 
+% LineBC=OffGridBoundaryCondition(kgrid2D,LineOG,0.004);
+% LineBC.mask=LineBC.maskBuilder;
+% solver5=AcousticSolver(kgrid2D, medium2D, source, [],setting);
+% solver5.setBoundaryCondition(LineBC);
+% solver5.run(Nt=250,dt=(0.75)*(0.5)*1e-3/1500);
+% 
+% % figure
+% % tiledlayout(1,3)
+% % nexttile(1)
+% % imagesc(real(solver.pressure))
+% % colorbar
+% % nexttile(3)
+% % imagesc(real(solverBasic.pressure))
+% % colorbar
+% % nexttile(2)
+% % imagesc(log10(abs(1-solverBasic.pressure./solver.pressure)))
+% % colorbar
+% 
+% figure
+% tiledlayout(2,3)
+% nexttile(1)
+% imagesc((solver5.pressure))
+% colorbar
+% nexttile(2)
+% imagesc(abs(solver5.pressure-solverBasic.pressure))
+% colorbar
+% nexttile(3)
+% imagesc(abs(solver5.pressure-solver1.pressure))
+% colorbar
+% nexttile(4)
+% imagesc(abs(solver5.pressure-solver2.pressure))
+% colorbar
+% nexttile(5)
+% imagesc(abs(solver5.pressure-solver3.pressure))
+% colorbar
+% nexttile(6)
+% imagesc(abs(solver5.pressure-solver4.pressure))
+% colorbar

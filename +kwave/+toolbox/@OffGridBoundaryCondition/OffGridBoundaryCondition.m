@@ -82,7 +82,7 @@ classdef OffGridBoundaryCondition < kwave.toolbox.BoundaryCondition
             ReducedVariable=VariablePadded(obj.maskPadded==1);
             % For each boundary point compute the pressure
             VariableBoundary=zeros(1,obj.offGrid.gridSize);
-            VariableBoundary=VariableBoundary + sum(obj.offGrid.BandLimGrid(obj.gridLocations,obj.offGrid.gridLocations,obj.accuracy).' .* ReducedVariable,1);
+            VariableBoundary=VariableBoundary + sum(obj.offGrid.BandLim(obj.gridLocations,obj.offGrid.gridLocations).' .* ReducedVariable,1);
 
             % while tol>1e-8 || reps <= 20
 

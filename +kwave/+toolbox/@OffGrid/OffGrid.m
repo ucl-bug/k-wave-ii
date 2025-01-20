@@ -194,19 +194,19 @@ classdef OffGrid < handle
     methods
 
         function Val=ValidGridpointDistance(obj,x1,x2,accuracy)
-            % x1=x1.';
+            x1=x1.';
             m=ceil(1/(pi*accuracy));
             % m=ceil(1/(pi*accuracy))^2;
-            % Val=zeros(length(x2(:,1)),length(x1(1,:)));
-            % dist=zeros(length(x2(:,1)),length(x1(1,:)));
-            % 
-            % for dim=1:obj.kgrid.dimensions
-            %     dist=dist+floor(abs(x1(dim,:)-x2(:,dim)));
-            %     % dist=dist+(abs(x1(dim,:)-x2(:,dim))).^2;
-            % end
+            Val=zeros(length(x2(:,1)),length(x1(1,:)));
+            dist=zeros(length(x2(:,1)),length(x1(1,:)));
+
+            for dim=1:obj.kgrid.dimensions
+                dist=dist+floor(abs(x1(dim,:)-x2(:,dim)));
+                % dist=dist+(abs(x1(dim,:)-x2(:,dim))).^2;
+            end
             
-            Val=zeros(length(x2(:,1)),length(x1(:,1)));
-            dist=sum(floor(abs(reshape(x2,[length(x2),1,obj.kgrid.dimensions]) - reshape(x1,[1,length(x1),obj.kgrid.dimensions]))),3);
+            % Val=zeros(length(x2(:,1)),length(x1(:,1)));
+            % dist=sum(floor(abs(reshape(x2,[length(x2),1,obj.kgrid.dimensions]) - reshape(x1,[1,length(x1),obj.kgrid.dimensions]))),3);
 
             Val(dist<=m)=1;
         end
@@ -235,19 +235,15 @@ classdef OffGrid < handle
         end
 
         function BandLimGridPoint=BandLimGrid(obj,x1,x2,accuracy)
-            if max(ValidGridpointDistance(obj,x1,x2,accuracy),[],'all')==0
-                BandLimGridPoint=0;
-            else
-                BandLimGridPoint=1;
-                for dim=1:obj.kgrid.dimensions
-                    if obj.kgrid.gridSize(dim)/2==ceil(obj.kgrid.gridSize(dim)/2)
-                        BandLimGridPoint=BandLimGridPoint.*BandLimGridCoEven(obj,x1(:,dim),x2(:,dim),dim);
-                    else
-                        BandLimGridPoint=BandLimGridPoint.*BandLimCoOdd(obj,x1(:,dim),x2(:,dim),dim);
-                    end
+            BandLimGridPoint=1;
+            for dim=1:obj.kgrid.dimensions
+                if obj.kgrid.gridSize(dim)/2==ceil(obj.kgrid.gridSize(dim)/2)
+                    BandLimGridPoint=BandLimGridPoint.*BandLimGridCoEven(obj,x1(:,dim),x2(:,dim),dim);
+                else
+                    BandLimGridPoint=BandLimGridPoint.*BandLimCoOdd(obj,x1(:,dim),x2(:,dim),dim);
                 end
-                BandLimGridPoint=ValidGridpointDistance(obj,x1,x2,accuracy).*BandLimGridPoint;
             end
+            % BandLimGridPoint=ValidGridpointDistance(obj,x1,x2,accuracy).*BandLimGridPoint;
         end
 
         
