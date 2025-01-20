@@ -35,16 +35,16 @@ end
 if max(size(BoundaryCondition.maskPadded))~=1
     switch obj.kgrid.dimensions
         case 1
-            assert(BoundaryCondition.mask(1)==0 && BoundaryCondition.mask(end)==0) 
+            assert(BoundaryCondition.maskPadded(1)==0 && BoundaryCondition.maskPadded(end)==0) 
         case 2
-            assert(min(BoundaryCondition.mask(1,:)==zeros(1,obj.kgridPadded.Ny))) 
-            assert(min(BoundaryCondition.mask(end,:)==zeros(1,obj.kgridPadded.Ny)))
-            assert(min(BoundaryCondition.mask(:,1)==zeros(obj.kgridPadded.Nx,1)) )
-            assert(min(BoundaryCondition.mask(:,end)==zeros(obj.kgridPadded.Nx,1)))
+            assert(min(BoundaryCondition.maskPadded(1,:)==zeros(1,obj.kgridPadded.Ny))) 
+            assert(min(BoundaryCondition.maskPadded(end,:)==zeros(1,obj.kgridPadded.Ny)))
+            assert(min(BoundaryCondition.maskPadded(:,1)==zeros(obj.kgridPadded.Nx,1)) )
+            assert(min(BoundaryCondition.maskPadded(:,end)==zeros(obj.kgridPadded.Nx,1)))
         case 3
-            assert(BoundaryCondition.mask(1,:,:)==zeros(1,obj.kgridPadded.Ny,obj.kgridPadded.Nz) && BoundaryCondition.mask(end,:,:)==zeros(1,obj.kgridPadded.Ny,obj.kgridPadded.Nz))
-            assert(BoundaryCondition.mask(:,1,:)==zeros(obj.kgridPadded.Nx,1,obj.kgridPadded.Nz) && BoundaryCondition.mask(:,end,:)==zeros(obj.kgridPadded.Nx,1,obj.kgridPadded.Nz))
-            assert(BoundaryCondition.mask(:,:,1)==zeros(obj.kgridPadded.Nx,obj.kgridPadded.Ny,1) && BoundaryCondition.mask(:,:,end)==zeros(obj.kgridPadded.Nx,obj.kgridPadded.Ny,1))
+            assert(BoundaryCondition.maskPadded(1,:,:)==zeros(1,obj.kgridPadded.Ny,obj.kgridPadded.Nz) && BoundaryCondition.maskPadded(end,:,:)==zeros(1,obj.kgridPadded.Ny,obj.kgridPadded.Nz))
+            assert(BoundaryCondition.maskPadded(:,1,:)==zeros(obj.kgridPadded.Nx,1,obj.kgridPadded.Nz) && BoundaryCondition.maskPadded(:,end,:)==zeros(obj.kgridPadded.Nx,1,obj.kgridPadded.Nz))
+            assert(BoundaryCondition.maskPadded(:,:,1)==zeros(obj.kgridPadded.Nx,obj.kgridPadded.Ny,1) && BoundaryCondition.maskPadded(:,:,end)==zeros(obj.kgridPadded.Nx,obj.kgridPadded.Ny,1))
     end
     obj.BoundCond = 'on';
     obj.BoundaryCondition=BoundaryCondition;

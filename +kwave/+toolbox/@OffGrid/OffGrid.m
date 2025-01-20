@@ -136,17 +136,17 @@ classdef OffGrid < handle
                     assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
 
                 elseif strcmp(kgridLocations,'line')
-                    assert( ~isempty(options.startpoint), ~isempty(options.endpoint))
-                    assert(min(size(options.startpoint)==[1,2]));
-                    assert(min(size(options.endpoint)==[1,2]));
+                    assert( ~isempty(options.startPoint), ~isempty(options.endPoint))
+                    assert(min(size(options.startPoint)==[1,2]));
+                    assert(min(size(options.endPoint)==[1,2]));
                     assert( obj.kgrid.dimensions==2)
                     assert( min(size(gridSize)==[1,1]) )
 
                     Nxi=gridSize;
                     kgridLocations=zeros(Nxi,2);
 
-                    kgridLocations(:,1)=((0.5:1:Nxi-0.5))*options.startpoint(1)/Nxi + ( 1- ((0.5:1:Nxi-0.5)/Nxi))*options.endpoint(1);
-                    kgridLocations(:,2)=((0.5:1:Nxi-0.5))*options.startpoint(2)/Nxi + ( 1- ((0.5:1:Nxi-0.5)/Nxi))*options.endpoint(2);
+                    kgridLocations(:,1)=((0.5:1:Nxi-0.5))*options.startPoint(1)/Nxi + ( 1- ((0.5:1:Nxi-0.5)/Nxi))*options.endPoint(1);
+                    kgridLocations(:,2)=((0.5:1:Nxi-0.5))*options.startPoint(2)/Nxi + ( 1- ((0.5:1:Nxi-0.5)/Nxi))*options.endPoint(2);
 
                     obj.kgridLocations=kgridLocations;
                     assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
@@ -194,16 +194,19 @@ classdef OffGrid < handle
     methods
 
         function Val=ValidGridpointDistance(obj,x1,x2,accuracy)
-            x1=x1.';
+            % x1=x1.';
             m=ceil(1/(pi*accuracy));
             % m=ceil(1/(pi*accuracy))^2;
-            Val=zeros(length(x2(:,1)),length(x1(1,:)));
-            dist=zeros(length(x2(:,1)),length(x1(1,:)));
-
-            for dim=1:obj.kgrid.dimensions
-                dist=dist+floor(abs(x1(dim,:)-x2(:,dim)));
-                % dist=dist+(abs(x1(dim,:)-x2(:,dim))).^2;
-            end
+            % Val=zeros(length(x2(:,1)),length(x1(1,:)));
+            % dist=zeros(length(x2(:,1)),length(x1(1,:)));
+            % 
+            % for dim=1:obj.kgrid.dimensions
+            %     dist=dist+floor(abs(x1(dim,:)-x2(:,dim)));
+            %     % dist=dist+(abs(x1(dim,:)-x2(:,dim))).^2;
+            % end
+            
+            Val=zeros(length(x2(:,1)),length(x1(:,1)));
+            dist=sum(floor(abs(reshape(x2,[length(x2),1,obj.kgrid.dimensions]) - reshape(x1,[1,length(x1),obj.kgrid.dimensions]))),3);
 
             Val(dist<=m)=1;
         end

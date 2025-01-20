@@ -75,8 +75,8 @@ classdef OffGridBoundaryCondition < kwave.toolbox.BoundaryCondition
     methods(Access=public)
 
         function VariablePadded=applyBoundaryCondition(obj,VariablePadded)
-            tol=1;
-            reps=0;
+            % tol=1;
+            % reps=0;
 
             % Recall the p Values validated by ValidGridPointDistance
             ReducedVariable=VariablePadded(obj.maskPadded==1);
@@ -84,7 +84,7 @@ classdef OffGridBoundaryCondition < kwave.toolbox.BoundaryCondition
             VariableBoundary=zeros(1,obj.offGrid.gridSize);
             VariableBoundary=VariableBoundary + sum(obj.offGrid.BandLimGrid(obj.gridLocations,obj.offGrid.gridLocations,obj.accuracy).' .* ReducedVariable,1);
 
-            while tol>1e-8 || reps <= 20
+            % while tol>1e-8 || reps <= 20
 
                 % Apply the inverse Matrix
                 BoundaryChange = obj.offGrid.InvBandLimMatrix * (obj.BoundaryValue-VariableBoundary.');
@@ -93,14 +93,14 @@ classdef OffGridBoundaryCondition < kwave.toolbox.BoundaryCondition
                 GridChange=GridChange + sum( obj.offGrid.BandLimGrid(obj.gridLocations,obj.offGrid.gridLocations,obj.accuracy) .* BoundaryChange,1).';
                 % For each grid Location compute the new pressure
                 VariablePadded(obj.maskPadded==1)=ReducedVariable + real(GridChange) ;
-                ReducedVariable=ReducedVariable + real(GridChange);
+                % ReducedVariable=ReducedVariable + real(GridChange);
 
-                VariableBoundary=zeros(1,obj.offGrid.gridSize);
-                VariableBoundary=VariableBoundary + sum(obj.offGrid.BandLimGrid(obj.gridLocations,obj.offGrid.gridLocations,obj.accuracy).' .* ReducedVariable,1);
+                % VariableBoundary=zeros(1,obj.offGrid.gridSize);
+                % VariableBoundary=VariableBoundary + sum(obj.offGrid.BandLimGrid(obj.gridLocations,obj.offGrid.gridLocations,obj.accuracy).' .* ReducedVariable,1);
 
-                tol=max(max(abs(obj.BoundaryValue-VariableBoundary)));
-                reps=reps+1;
-            end
+                % tol=max(max(abs(obj.BoundaryValue-VariableBoundary)));
+                % reps=reps+1;
+            % end
         end
 
     end

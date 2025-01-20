@@ -233,36 +233,76 @@
 % ylim([-circ.radius,circ.radius])
 %
 %%
-
+% 
+% clear
+% close all
+% import kwave.toolbox.*
+% kgrid2D = Grid([325, 325], 1e-3);
+% circ.centre=[0,0];
+% circ.radius=0.025;
+% CircleOG=OffGrid(kgrid2D,128,'circle',circ);
+% medium2D=Medium(kgrid2D);
+% medium2D.materialIDGrid=1;
+% source = AcousticSource(kgrid2D);
+% setting=Settings;
+% setting.plotSimulation='off';
+% source.initialPressure = exp( -(kgrid2D.x.^2+kgrid2D.y.^2+kgrid2D.z.^2) ./ (10 * kgrid2D.dx).^2 );
+% 
+% solver1=AcousticSolver(kgrid2D, medium2D, source, [],setting);
+% CircleBCL=OffGridBoundaryCondition(kgrid2D,CircleOG,0.1);
+% CircleBCL.mask=CircleBCL.maskBuilder;
+% solver1.setBoundaryCondition(CircleBCL);
+% 
+% solver2=AcousticSolver(kgrid2D, medium2D, source, [],setting);
+% CircleBCM=OffGridBoundaryCondition(kgrid2D,CircleOG,0.01);
+% CircleBCM.mask=CircleBCM.maskBuilder;
+% solver2.setBoundaryCondition(CircleBCM);
+% 
+% solver3=AcousticSolver(kgrid2D, medium2D, source, [],setting);
+% CircleBCH=OffGridBoundaryCondition(kgrid2D,CircleOG,0.0025);
+% CircleBCH.mask=CircleBCH.maskBuilder;
+% solver3.setBoundaryCondition(CircleBCH);
+% 
+% solver1.run(Nt=100,dt=1e-7)
+% solver2.run(Nt=100,dt=1e-7)
+% solver3.run(Nt=100,dt=1e-7)
+%
+%%
 clear
 close all
 import kwave.toolbox.*
-kgrid2D = Grid([325, 325], 1e-3);
-circ.centre=[0,0];
-circ.radius=0.025;
-CircleOG=OffGrid(kgrid2D,128,'circle',circ);
+kgrid2D = Grid([129, 128], 1e-3,[20,0]);
+line.startPoint=[-0.008,0.016];
+line.endPoint=[0.008,-0.016];
+LineOG=OffGrid(kgrid2D,48,'line',line);
 medium2D=Medium(kgrid2D);
 medium2D.materialIDGrid=1;
 source = AcousticSource(kgrid2D);
 setting=Settings;
+setting.plotSimulation='on';
+source.initialPressure = exp( -(kgrid2D.x-0.036).^2 ./ (10 * kgrid2D.dx).^2 );
+
+LineBC=OffGridBoundaryCondition(kgrid2D,LineOG,0.001);
+LineBC.mask=LineBC.maskBuilder;
+
+LineBC2=BoundaryCondition(kgrid2D);
+LineBC2.mask=zeros(129,128);
+for jx=1:128
+    for  jy=1:128
+        if kgrid2D.xVec(jx)<0.008 && kgrid2D.yVec(jy)<0.016 && kgrid2D.xVec(jx)>-0.008 && kgrid2D.yVec(jy)>-0.016
+            if abs(2*kgrid2D.xVec(jx)+kgrid2D.yVec(jy))<kgrid2D.dx/2
+                LineBC2.mask(jx,jy)=1;
+            end
+        end
+    end
+end
+
+solverBasic=AcousticSolver(kgrid2D, medium2D, source, [],setting);
+solverBasic.setBoundaryCondition(LineBC2);
+solverBasic.run(Nt=150,dt=(0.75)*(0.5)*1e-3/1500);
+
 setting.plotSimulation='off';
-source.initialPressure = exp( -(kgrid2D.x.^2+kgrid2D.y.^2+kgrid2D.z.^2) ./ (10 * kgrid2D.dx).^2 );
+solver=AcousticSolver(kgrid2D, medium2D, source, [],setting);
 
-solver1=AcousticSolver(kgrid2D, medium2D, source, [],setting);
-CircleBCL=OffGridBoundaryCondition(kgrid2D,CircleOG,0.1);
-CircleBCL.mask=CircleBCL.maskBuilder;
-solver1.setBoundaryCondition(CircleBCL);
-
-solver2=AcousticSolver(kgrid2D, medium2D, source, [],setting);
-CircleBCM=OffGridBoundaryCondition(kgrid2D,CircleOG,0.01);
-CircleBCM.mask=CircleBCM.maskBuilder;
-solver2.setBoundaryCondition(CircleBCM);
-
-solver3=AcousticSolver(kgrid2D, medium2D, source, [],setting);
-CircleBCH=OffGridBoundaryCondition(kgrid2D,CircleOG,0.0025);
-CircleBCH.mask=CircleBCH.maskBuilder;
-solver3.setBoundaryCondition(CircleBCH);
-
-solver1.run(Nt=100,dt=1e-7)
-solver2.run(Nt=100,dt=1e-7)
-solver3.run(Nt=100,dt=1e-7)
+solver.setBoundaryCondition(LineBC);
+solver.run(Nt=150,dt=(0.75)*(0.5)*1e-3/1500);
