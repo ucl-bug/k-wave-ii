@@ -95,6 +95,9 @@
 %   of the acoustic density [kg/m^3].
 % * |velocity| - (numeric) Vector field of the acoustic particle velocity
 %   [m/s]
+% * |absorptionType|- (string) Must be a member of { 'on', 'off',
+% 'noAbsorption', 'noDispersion'} defaults to 'off'. Switch to include to
+% exclude each of the absorption terms within the equation of state.
 %
 %% Methods
 % * |setkSpaceCorrection|
@@ -133,6 +136,10 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
         velocityPadded single
         pml kwave.toolbox.SplitFieldPML
     end
+    
+    properties(SetAccess=public,Hidden=false)
+        absorptionType char {mustBeMember( absorptionType, {'off','on', 'noAbsorption', 'noDispersion'})} = 'off'
+    end
 
     properties(SetAccess=private, Hidden=true)
         absorbTauPadded single
@@ -145,19 +152,22 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
         function obj = AcousticSolver(kgrid, medium, source, sensor, settings)
             arguments
                 kgrid(1,1) kwave.toolbox.Grid
-                medium(1,1) kwave.toolbox.AcousticMedium
+                medium(1,1) kwave.toolbox.GridInput
                 source(1,1) kwave.toolbox.AcousticSource
                 sensor
                 settings(1,1) kwave.toolbox.Settings = kwave.toolbox.Settings
             end
+            
+                if ~(isa(medium, 'kwave.toolbox.Medium') || isa(medium, 'kwave.toolbox.AcousticMedium'))
+                    error('AcousticSolver:InvalidMediumType',...
+                        'medium must be an object of Medium OR AcousticMedium.');
+                end
 
             % Pass input arguments to superclass constructor. This calls
-            % setInitialConditions.
-            obj@kwave.toolbox.TimeDomainSolver(kgrid, medium, source, sensor, settings);
-
-            % Initialise PML object.
-            obj.pml = kwave.toolbox.SplitFieldPML(obj.kgrid);
-
+                % setInitialConditions.
+                obj@kwave.toolbox.TimeDomainSolver(kgrid, medium, source, sensor, settings);
+                % Initialise PML object.
+                obj.pml = kwave.toolbox.SplitFieldPML(obj.kgrid);
         end
     end
 

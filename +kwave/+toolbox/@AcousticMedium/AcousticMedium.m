@@ -23,6 +23,8 @@
 %    medium = kwave.toolbox.AcousticMedium(kgrid);
 %    medium.soundSpeed = rand(medium.gridSize);
 %    medium.density = rand(medium.gridSize);
+%    medium.absorptionCoeff = rand(medium.gridSize);
+%    medium.absorptionPower = rand();
 %
 %% Properties
 % * |soundSpeed| - (single) Compressional sound speed [m/s].
@@ -32,18 +34,21 @@
 % * |density| - (single) Mass density [kg/m^2].
 % * |absorptionCoeff| - (single) Power law attenuation coefficient
 %   [dB/(MHz^y cm)]. 
-% * |absorptionPower| - (single) Power law attenuation power.
+% * |absorptionPower| - (single scalar) Power law attenuation power.
 % * |BonA| - (single) Parameter of nonlinearity.
-% * |absorptionType| - string, 'noAbsorption', 'noDispersion', turns off absorption and dispersion terms respectively 
+%
+% In order to model absorption both absorptionCoeff, and absorptionPower
+% must be defiened, and solver.absorptionType must be set for the acoustic
+% solver
 %% See Also
 % * |GridInput|
+% * |AcousticSolver|
 
 classdef AcousticMedium < kwave.toolbox.GridInput
 
     properties
         soundSpeedReference single {mustBeReal, mustBePositive, mustBeFinite}
-        absorptionPower single {mustBeReal, mustBeFinite} = []
-        absorptionType char {mustBeMember( absorptionType, {'noType', 'noAbsorption', 'noDispersion'})} = 'noType'
+        absorptionPower single {mustBeReal, mustBeFinite};
     end
 
     properties(Constant, Hidden=true)
@@ -53,7 +58,6 @@ classdef AcousticMedium < kwave.toolbox.GridInput
             kwave.toolbox.GridField('density');
             kwave.toolbox.GridField('absorptionCoeff');
             kwave.toolbox.GridField('BonA')
-        
         ]);
     end
 

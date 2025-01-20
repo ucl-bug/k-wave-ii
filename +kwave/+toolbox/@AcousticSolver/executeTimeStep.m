@@ -39,6 +39,11 @@ arguments
     dt(1,1) {mustBeNumeric, mustBePositive, mustBeFinite}
 end
 
+% Sets absorption Coefficients only when absorption is requested.
+if ~strcmp(obj.absorptionType,'off')
+    setAbsorptionCoefficients(obj)
+end
+
 % Update time variables to account for changes in time step size.
 currentTimeStep = dt;
 if (~isempty(obj.prevTimeStep))
@@ -47,10 +52,6 @@ end
 
 % Set k-space correction (use currentTimeStep step).
 obj.setkSpaceCorrection(currentTimeStep);
-%
-if ~isempty(obj.medium.absorptionPower)
-    setAbsorptionCoefficients(obj)
-end
 
 % Set PML variables (use average time step dt).
 obj.pml.setupQuarticPML(dt, obj.medium.soundSpeedReference);
@@ -84,7 +85,6 @@ for tIndex = 1:Nt
             obj.densitySplitPadded = obj.densitySplitPadded + obj.source.initialPressurePadded ./ (obj.dimensions * obj.medium.soundSpeedPadded.^2);
             obj.velocityPadded = (dt ./ densityPaddedStg) .* gradient(obj.pressurePadded) / 2;
         else
-
             % Momentum conservation equation.
             % kspace corrected with split time step with current time
             % considerations. Need to add method that transforms and
@@ -104,7 +104,7 @@ for tIndex = 1:Nt
             obj.pressurePadded = obj.medium.soundSpeedPadded.^2 .* ( sum(obj.densitySplitPadded, 4));
 
             % If absorptionPower declaired then add absorption terms
-            if ~isempty(obj.medium.absorptionPower)
+            if ~strcmp(obj.absorptionType,'off')
                 obj.pressurePadded =  obj.pressurePadded  +  obj.medium.soundSpeedPadded.^2 .* ( ...
                     obj.absorbTauPadded .* fracLaplacian(obj, obj.medium.densityPadded .* sum(divergence(obj.velocityPadded),4), obj.medium.absorptionPower/2 -1 ) + ...
                     obj.absorbEtaPadded .* fracLaplacian(obj, sum(obj.densitySplitPadded,4), obj.medium.absorptionPower/2 -0.5 ) ) ;
@@ -122,10 +122,11 @@ for tIndex = 1:Nt
         obj.pressurePadded = obj.medium.soundSpeedPadded.^2 .* ( sum(obj.densitySplitPadded, 4));
 
         % If absorptionPower declaired then add absorption terms
-        if ~isempty(obj.medium.absorptionPower)
-        obj.pressurePadded =  obj.pressurePadded  +  obj.medium.soundSpeedPadded.^2 .* ( ...
-            obj.absorbTauPadded .* fracLaplacian(obj, obj.medium.densityPadded .* sum(divergence(obj.velocityPadded),4), obj.medium.absorptionPower/2 -1 ) + ...
-            obj.absorbEtaPadded .* fracLaplacian(obj, sum(obj.densitySplitPadded,4), obj.medium.absorptionPower/2 -0.5 ) ) ;
+        if ~strcmp(obj.absorptionType,'off')
+            obj.pressurePadded =  obj.pressurePadded  +  obj.medium.soundSpeedPadded.^2 .* ( ...
+                obj.absorbTauPadded .* fracLaplacian(obj, obj.medium.densityPadded .* sum(divergence(obj.velocityPadded),4), obj.medium.absorptionPower/2 -1 ) + ...
+                obj.absorbEtaPadded .* fracLaplacian(obj, sum(obj.densitySplitPadded,4), obj.medium.absorptionPower/2 -0.5 ) ) ;
+
         end
 
     end

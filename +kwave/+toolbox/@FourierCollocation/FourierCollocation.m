@@ -214,8 +214,8 @@ classdef FourierCollocation < handle
     % General class methods with a concrete implementation.
     methods
         f = divergence(obj, f, varargin);
-        f = divergenceSplit(obj, f, options)
-        f= stagger(obj,f,options)
+        f = divergenceSplit(obj, f, options);
+        f= stagger(obj,f,options);
         out = gradient(obj, f, options);
         out = fracLaplacian(obj, f,y, options);
         plotField(obj, f);
