@@ -27,4 +27,8 @@ classdef Sensor < kwave.toolbox.GridInput
     properties
         timeSteps(1,1) single {mustBeInteger, mustBeFinite, mustBePositive} = 1;     
     end
+
+    properties(Hidden)
+        sensorIndex(1,1) single {mustBeInteger, mustBeFinite, mustBeNonnegative} = 0;
+    end
 end

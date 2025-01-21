@@ -169,6 +169,11 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
                         'medium must be an object of Medium OR AcousticMedium.');
                 end
 
+                if ~(isempty(sensor) || isa(sensor, 'kwave.toolbox.AcousticSensor'))
+                    error('AcousticSolver:InvalidSensorType',...
+                        'sensor must be an AcousticSensor or be left empty [].');
+                end
+
             % Pass input arguments to superclass constructor. This calls
                 % setInitialConditions.
                 obj@kwave.toolbox.TimeDomainSolver(kgrid, medium, source, sensor, settings);
