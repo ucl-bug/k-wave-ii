@@ -24,7 +24,7 @@
 classdef AcousticSensor < kwave.toolbox.Sensor
 
     properties 
-        pressureSensor char {mustBeMember( pressureSensor, {'on','off'})} = 'off'
+        pressureSensor char {mustBeMember( pressureSensor, {'on','off'})} = 'on'
         velocitySensor char {mustBeMember( velocitySensor, {'on','off','ongrid'})} = 'off'
         densitySensor char {mustBeMember( densitySensor, {'on','off'})} = 'off'
 
@@ -90,26 +90,30 @@ classdef AcousticSensor < kwave.toolbox.Sensor
             end
         end
 
-        function obj =recordSensorData(obj,Solver)
+        function obj =recordSensorData(obj,Solver,n)
+            mask=Solver.kgrid.returnWithoutGridPadding(obj.maskPadded);
             if strcmp(obj.pressureSensor,'on')
-                obj.pressure(:,n)=Solver.pressure(obj.mask==1);
+                obj.pressure(:,n)=Solver.pressure(mask==1);
             end
             if strcmp(obj.densitySensor,'on')
-                obj.density(:,n)=Solver.density(obj.mask==1);
+                for dim=1:obj.kgrid.dimensions
+                Density=Solver.densitySplit(:,:,:,dim);
+                obj.density(:,n)=obj.density(:,n)+Density(mask==1);
+                end
             end
             if strcmp(obj.densitySensor,'on')
                 for dim=1:Solver.kgrid.dimensions
                     Velocity=Solver.velocity(:,:,:,dim);
-                    obj.velocity(:,n,dim)=Velocity(obj.mask==1,dim);
+                    obj.velocity(:,n,dim)=Velocity(mask==1,dim);
                 end
             elseif strcmp(obj.densitySensor,'onGrid')
                 for dim=1:Solver.kgrid.dimensions
                     GridVelocityPadded=stagger(Solver.velocityPadded(:,:,:,dim),Staggering='backward');
                     GridVelocity=Solver.kgrid.returnWithoutGridPadding(GridVelocityPadded(:,:,:,dim));
-                    obj.velocity(:,n,dim)=GridVelocity(obj.mask==1);
+                    obj.velocity(:,n,dim)=GridVelocity(mask==1);
                 end
             end
-            obj.times(n)=solver.timePoint;
+            obj.times(n)=Solver.timePoint;
         end
     end
 

@@ -30,5 +30,19 @@ classdef Sensor < kwave.toolbox.GridInput
 
     properties(Hidden)
         sensorIndex(1,1) single {mustBeInteger, mustBeFinite, mustBeNonnegative} = 0;
+        totalSensorPoints =0;
+    end
+
+    methods
+        function totalSensorPoints=get.totalSensorPoints(obj)
+            obj.totalSensorPoints= sum(obj.kgrid.returnWithoutGridPadding(obj.maskPadded),'all');
+                totalSensorPoints=obj.totalSensorPoints;
+        end
+        function obj=multiDimMask(obj)
+            obj.multiDimMask=zeros(obj.kgrid.gridSize,obj.kgrid.dimensions);
+            for dim=1;obj.kgrid.dimensions
+                obj.multiDimMask(:,:,:,dim)=obj.kgrid.returnWithoutGridPadding(obj.maskPadded);
+            end
+        end
     end
 end

@@ -77,7 +77,10 @@ kwave.toolbox.Logger.info(['  dt: ' kwave.utilities.scaleSI(options.dt) 's, end 
 
 if (obj.timeStepsTaken==0)
     % Set initial conditions.
-            obj.setInitialConditions;
+    obj.setInitialConditions;
+    if ~isempty(obj.sensor)
+        obj.sensor.initialiseSensorData(options.Nt);
+    end
 end
 
 obj.executeTimeStep(options.Nt, options.dt);

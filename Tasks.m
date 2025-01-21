@@ -12,38 +12,38 @@
 % Numerical Comparison, off-Grid to On-Grid Boundary Condition
 
 %%
-
-close all
-
-import kwave.toolbox.*
-kgrid1D = Grid([256], 1e-3,20);
-mask=zeros(kgrid1D.gridSize);
-mask(2:256/4)=1;
-% mask(3*256/4:end-1)=1;
-medium=AcousticMedium(kgrid1D);
-medium.soundSpeed=1500;
-medium.density = 1000;
-source = AcousticSource(kgrid1D);
-source.initialPressure = exp( -(kgrid1D.x.^2+kgrid1D.y.^2+kgrid1D.z.^2) ./ (10 * kgrid1D.dx).^2 );
-settings = Settings;
-settings.plotSimulation = 'on';
-solver = AcousticSolver(kgrid1D, medium, source,[], settings);
-BC=BoundaryCondition(kgrid1D);
-BC.mask=mask;
-solver.setBoundaryCondition(BC);
-solver.run(Nt=1000,dt=1e-7)
-
-line.startpoint=-((256*1e-3/2)*(1/2));
-line.endpoint=-((256*1e-3/2)*(1/2))-2.5e-3;
-OffGL=OffGrid(kgrid1D,6,[line.startpoint;-((256*1e-3/2)*(1/2))-5e-4;-((256*1e-3/2)*(1/2))-1e-3;-((256*1e-3/2)*(1/2))-1.5e-3;-((256*1e-3/2)*(1/2))-2e-3;line.endpoint]);
-BCOG=OffGridBoundaryCondition(kgrid1D,OffGL,0.01);
-BCOG.mask=BCOG.maskBuilder;
-solver1 = AcousticSolver(kgrid1D, medium, source, [], settings);
-solver1.setBoundaryCondition(BCOG);
-solver1.run(Nt=1000,dt=1e-7)
-
-line.startpoint=-(256*1e-3/2)*(pi/6); %-pi/6 from left edge of the domain, near the halfway point from 0
-line.endpoint=-(256*1e-3/2)*(pi/6)-2.5e-3; % pi/6 from right edge of the domain, near the halfway point from 0
+% 
+% close all
+% 
+% import kwave.toolbox.*
+% kgrid1D = Grid([256], 1e-3,20);
+% mask=zeros(kgrid1D.gridSize);
+% mask(2:256/4)=1;
+% % mask(3*256/4:end-1)=1;
+% medium=AcousticMedium(kgrid1D);
+% medium.soundSpeed=1500;
+% medium.density = 1000;
+% source = AcousticSource(kgrid1D);
+% source.initialPressure = exp( -(kgrid1D.x.^2+kgrid1D.y.^2+kgrid1D.z.^2) ./ (10 * kgrid1D.dx).^2 );
+% settings = Settings;
+% settings.plotSimulation = 'on';
+% solver = AcousticSolver(kgrid1D, medium, source,[], settings);
+% BC=BoundaryCondition(kgrid1D);
+% BC.mask=mask;
+% solver.setBoundaryCondition(BC);
+% solver.run(Nt=1000,dt=1e-7)
+% 
+% line.startpoint=-((256*1e-3/2)*(1/2));
+% line.endpoint=-((256*1e-3/2)*(1/2))-2.5e-3;
+% OffGL=OffGrid(kgrid1D,6,[line.startpoint;-((256*1e-3/2)*(1/2))-5e-4;-((256*1e-3/2)*(1/2))-1e-3;-((256*1e-3/2)*(1/2))-1.5e-3;-((256*1e-3/2)*(1/2))-2e-3;line.endpoint]);
+% BCOG=OffGridBoundaryCondition(kgrid1D,OffGL,0.01);
+% BCOG.mask=BCOG.maskBuilder;
+% solver1 = AcousticSolver(kgrid1D, medium, source, [], settings);
+% solver1.setBoundaryCondition(BCOG);
+% solver1.run(Nt=1000,dt=1e-7)
+% 
+% line.startpoint=-(256*1e-3/2)*(pi/6); %-pi/6 from left edge of the domain, near the halfway point from 0
+% line.endpoint=-(256*1e-3/2)*(pi/6)-2.5e-3; % pi/6 from right edge of the domain, near the halfway point from 0
 
 % OffGL2=OffGrid(kgrid1D,6,'line',line);
 % BCOG2=OffGridBoundaryCondition(kgrid1D,OffGL2,0.01);
@@ -51,46 +51,54 @@ line.endpoint=-(256*1e-3/2)*(pi/6)-2.5e-3; % pi/6 from right edge of the domain,
 % solver2 = AcousticSolver(kgrid1D, medium, source, [], settings);
 % solver2.setBoundaryCondition(BCOG2);
 % solver2.run(Nt=1000,dt=1e-7)
-
-line.startpoint=-(256*1e-3/2)*(pi/5); %-pi/6 from left edge of the domain, near the halfway point from 0
-line.endpoint=-(256*1e-3/2)*(pi/5)-2.5e-3; % pi/6 from right edge of the domain, near the halfway point from 0
-OffGL3=OffGrid(kgrid1D,6,[line.startpoint;line.endpoint]);
-BCOG3=OffGridBoundaryCondition(kgrid1D,OffGL3,0.01);
-BCOG3.mask=BCOG3.maskBuilder;
-solver3 = AcousticSolver(kgrid1D, medium, source, [], settings);
-solver3.setBoundaryCondition(BCOG3);
-solver3.run(Nt=1000,dt=1e-7)
+% 
+% line.startpoint=-(256*1e-3/2)*(pi/5); %-pi/6 from left edge of the domain, near the halfway point from 0
+% line.endpoint=-(256*1e-3/2)*(pi/5)-2.5e-3; % pi/6 from right edge of the domain, near the halfway point from 0
+% OffGL3=OffGrid(kgrid1D,6,[line.startpoint;line.endpoint]);
+% BCOG3=OffGridBoundaryCondition(kgrid1D,OffGL3,0.01);
+% BCOG3.mask=BCOG3.maskBuilder;
+% solver3 = AcousticSolver(kgrid1D, medium, source, [], settings);
+% solver3.setBoundaryCondition(BCOG3);
+% solver3.run(Nt=1000,dt=1e-7)
 
 %%
 
-% 
-% clear
-% close all
-% import kwave.toolbox.*
-% kgrid2D = Grid([128, 128], 1e-3);
-% circ.centre=[0,0];
-% % circ.radius=0.025;
-% circ.radius=0.045;
-% CircleOG=OffGrid(kgrid2D,128,'circle',circ);
-% medium2D=Medium(kgrid2D);
-% medium2D.materialIDGrid=1;
-% source = AcousticSource(kgrid2D);
-% setting=Settings;
-% setting.plotSimulation='off';
-% source.initialPressure = exp( -(kgrid2D.x.^2+kgrid2D.y.^2+kgrid2D.z.^2) ./ (10 * kgrid2D.dx).^2 );
+
+clear
+close all
+import kwave.toolbox.*
+kgrid2D = Grid([128, 128], 1e-3);
+circ.centre=[0,0];
+% circ.radius=0.025;
+circ.radius=0.045;
+CircleOG=OffGrid(kgrid2D,128,'circle',circ);
+medium2D=Medium(kgrid2D);
+medium2D.materialIDGrid=1;
+source = AcousticSource(kgrid2D);
+setting=Settings;
+setting.plotSimulation='on';
+source.initialPressure = exp( -(kgrid2D.x.^2+kgrid2D.y.^2+kgrid2D.z.^2) ./ (10 * kgrid2D.dx).^2 );
 % solver=AcousticSolver(kgrid2D, medium2D, source, [],setting);
 % CircleBC=OffGridBoundaryCondition(kgrid2D,CircleOG);
 % CircleBC.mask=CircleBC.maskBuilder;
 % solver.setBoundaryCondition(CircleBC)
 % solver.run(Nt=500,dt=1e-7)
-% 
-% solver2=AcousticSolver(kgrid2D, medium2D, source, [],setting);
-% Circle=BoundaryCondition(kgrid2D);
-% Circle.mask=zeros(kgrid2D.gridSize);
-% Circle.mask( kgrid2D.x.^2 + kgrid2D.y.^2 < (circ.radius +1*kgrid2D.dx/2)^2  )=1;
-% Circle.mask( kgrid2D.x.^2 + kgrid2D.y.^2 < (circ.radius -1*kgrid2D.dx/2 )^2  )=0;
-% solver2.setBoundaryCondition(Circle)
-% solver2.run(Nt=500,dt=1e-7)
+
+solver2=AcousticSolver(kgrid2D, medium2D, source, [],setting);
+Circle=BoundaryCondition(kgrid2D);
+Circle.mask=zeros(kgrid2D.gridSize);
+Circle.mask( kgrid2D.x.^2 + kgrid2D.y.^2 < (circ.radius +1*kgrid2D.dx/2)^2  )=1;
+Circle.mask( kgrid2D.x.^2 + kgrid2D.y.^2 < (circ.radius -1*kgrid2D.dx/2 )^2  )=0;
+solver2.setBoundaryCondition(Circle)
+solver2.run(Nt=500,dt=1e-7)
+CircleSensor=AcousticSensor(kgrid2D);
+CircleSensor.mask=zeros(kgrid2D.gridSize);
+CircleSensor.mask( kgrid2D.x.^2 + kgrid2D.y.^2 < (circ.radius/2 +1*kgrid2D.dx/2)^2  )=1;
+CircleSensor.mask( kgrid2D.x.^2 + kgrid2D.y.^2 < (circ.radius/2 -1*kgrid2D.dx/2 )^2  )=0;
+CircleSensor.timeSteps=2;
+solver3=AcousticSolver(kgrid2D, medium2D, source, CircleSensor,setting);
+solver3.setBoundaryCondition(Circle);
+solver3.run(Nt=500,dt=1e-7);
 % 
 % 
 % figure(1)

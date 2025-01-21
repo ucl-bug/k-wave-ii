@@ -72,9 +72,11 @@ if (obj.settings.plotSimulation)
     fig = figure;
 end
 
+adj=0;
 if (obj.timeStepsTaken == 0)
     % If no time steps have been taken, include an extra time step to
     % initialise the problem
+    adj=1;
     Nt=Nt+1;
 end
 
@@ -192,13 +194,24 @@ if Nt~=0
                     obj.absorbTauPadded .* fracLaplacian(obj, obj.medium.densityPadded .* sum(divergence(obj.velocityPadded),4), obj.medium.absorptionPower/2 -1 ) + ...
                     obj.absorbEtaPadded .* fracLaplacian(obj, sum(obj.densitySplitPadded,4), obj.medium.absorptionPower/2 -0.5 ) ) ;
             end
+
             if strcmp(obj.BoundCond,'on')
                 obj.pressurePadded = obj.BoundaryCondition.applyBoundaryCondition(obj.pressurePadded);
             end
         end
+        
+        if ~isempty(obj.sensor) && rem(tIndex-adj, obj.sensor.timeSteps) == 0
+            if ~isempty(obj.timeArray)
+                obj.timePoint=obj.timeArray(end)+(tIndex-adj)*dt;
+            else
+                obj.timePoint=(tIndex-adj)*dt;
+            end
+            obj.sensor.sensorIndex=obj.sensor.sensorIndex+1;
+            obj.sensor.recordSensorData(obj,obj.sensor.sensorIndex);
+        end
 
         % Plot.
-        if obj.settings.plotSimulation && (rem(tIndex, obj.settings.plotFrequency) == 0 || tIndex == 1 || tIndex == Nt)
+        if obj.settings.plotSimulation && (rem(tIndex-adj, obj.settings.plotFrequency) == 0 || tIndex == 1 || tIndex == Nt)
             figure(fig);
             obj.plotField(obj.pressure);
         end

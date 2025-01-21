@@ -148,6 +148,7 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
 
         BoundCond char {mustBeMember( BoundCond, {'off','on'})} = 'off'
         BoundaryCondition kwave.toolbox.BoundaryCondition
+        timePoint = 0 ; 
     end
 
     % Constructor.
