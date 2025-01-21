@@ -325,7 +325,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             solver1D.run(Nt=Nt, dt=dt);
             % Legacy setup
             kgrid1DL=kWaveGrid(Nax,dx);
-            kgrid1DL.setTime(Nt, dt)
+            kgrid1DL.setTime(Nt+1, dt)
             source1DL.p0= exp( -((kgrid1DL.x_vec - 25e-3 ).^2) ./ ( 5* kgrid1DL.dx).^2 ) ;
             medium1DL.sound_speed=c0;
             medium1DL.density=rho0;
@@ -379,7 +379,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             solver2Dy.run(Nt=Nt, dt=dt);
 
             kgrid2DxL=kWaveGrid(Nax,dx,Nlat,dx);
-            kgrid2DxL.setTime(Nt, dt)
+            kgrid2DxL.setTime(Nt+1, dt)
             source2DxL.p0=  repmat(source1D.initialPressure, [1, Nlat]);
             medium2DxL.sound_speed=c0;
             medium2DxL.density=rho0;
@@ -389,7 +389,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             medium2DxL.alpha_mode='no_dispersion';
             sensor_data2x = kspaceFirstOrder2D(kgrid2DxL, medium2DxL, source2DxL, sensor2DxL,'PMLInside',false,'Smooth',false,'PMLSize',[pmlSize,0]);
             kgrid2DyL=kWaveGrid(Nlat,dx,Nax,dx);
-            kgrid2DyL.setTime(Nt, dt)
+            kgrid2DyL.setTime(Nt+1, dt)
             source2DyL.p0= repmat(reshape(source1D.initialPressure, 1, []), [Nlat, 1]);
             medium2DyL.sound_speed=c0;
             medium2DyL.density=rho0;
@@ -415,7 +415,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             solver3Dx.run(Nt=Nt, dt=dt);
 
             kgrid3DxL=kWaveGrid(Nax,dx,Nlat,dx,Nlat,dx);
-            kgrid3DxL.setTime(Nt, dt)
+            kgrid3DxL.setTime(Nt+1, dt)
             source3DxL.p0=  repmat(source1D.initialPressure, [1, Nlat, Nlat]);
             medium3DxL.sound_speed=c0;
             medium3DxL.density=rho0;
@@ -737,6 +737,46 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             solver3DzB.run(Nt=Nt, dt=dt);
             testCase.verifyThat(solver3DzA.pressure, IsEqualTo(solver3DzB.pressure, "Within", tol));
             % 
+        end
+
+        function TestInitialVelocityAnalytic(testCase)
+
+            import kwave.toolbox.*
+            import matlab.unittest.constraints.IsEqualTo
+            tol = matlab.unittest.constraints.AbsoluteTolerance(single(1e-6));
+
+            Nax = 256;
+            dx = 4e-3;
+            c0 = 1500;
+            rho0=1000;
+            pmlSize = 20;
+            CFL = 0.25;
+            Nt = 150;
+            dt = CFL * dx / c0;
+
+            kgrid = Grid(Nax, dx, pmlSize);
+            medium = AcousticMedium(kgrid);
+            c0 = 1500;
+            medium.soundSpeed = c0;
+            medium.density = 1000;
+            source = AcousticSource(kgrid);
+            
+
+            v0 = @(x) exp( -(x.^2) ./ (5 * kgrid.dx).^2 )/(c0*rho0);
+            p0= @(x) exp( -(x.^2) ./ (5 * kgrid.dx).^2 );
+
+            source.initialVelocity = v0(kgrid.x);
+            source.initialPressure = p0(kgrid.x);
+            settings = Settings;
+            settings.plotSimulation = 'off';
+            solver = AcousticSolver(kgrid, medium, source, [], settings);
+            solver.run(Nt=Nt, dt=dt);
+            FinTime=Nt*dt;
+            % waves travel at speed of sound, and account for grid shift
+            % from velocity to pressure.
+            PressureActual = single(( p0(kgrid.x -  c0*FinTime) + c0*rho0*v0(kgrid.x - kgrid.dx/2 -  c0*FinTime) + p0(kgrid.x +  c0*FinTime) - c0*rho0*v0(kgrid.x - kgrid.dx/2 + c0*FinTime) ))/2 ;
+            testCase.verifyThat(solver.pressure, IsEqualTo(PressureActual, "Within", tol));
+
         end
     end
 

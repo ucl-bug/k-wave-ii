@@ -50,7 +50,6 @@ classdef TestAcousticSource < kwave.tests.unit.AbstractTestGridInput
             testCase.verifyEqual(source.initialPressure, randValue);
 
         end
-
     end
 
 end
