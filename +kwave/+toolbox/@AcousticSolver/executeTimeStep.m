@@ -108,8 +108,20 @@ if Nt~=0
                     % Then the first time step for velocity MUST be different
                     obj.pressurePadded = obj.pressurePadded + obj.source.initialPressurePadded;
                     obj.densitySplitPadded = obj.densitySplitPadded + obj.source.initialPressurePadded ./ (obj.dimensions * obj.medium.soundSpeedPadded.^2);
-                    obj.velocityPadded = obj.velocityPadded + obj.source.initialVelocityPadded;
-
+                    
+                    % Initial Velocity will not be staggered, so we also
+                    % need to stagger it forwards
+                    if size(obj.source.initialVelocityPadded)==[obj.kgridPadded.gridSize, obj.kgrid.dimensions]
+                    for dim=1:obj.kgrid.dimensions
+                        initialVelcoityStaggered=obj.stagger(obj.source.initialVelocityPadded(:,:,:,dim),Stagger='forward', Type='fourier');
+                        obj.velocityPadded(:,:,:,dim) = obj.velocityPadded(:,:,:,dim) + initialVelcoityStaggered(:,:,:,dim);
+                    end
+                    elseif size(obj.source.initialVelocityPadded)==[obj.kgridPadded.gridSize]
+                        obj.velocityPadded(:,:,:,dim) = obj.velocityPadded(:,:,:,dim) + obj.stagger(obj.source.initialVelocityPadded,Stagger='forward', Type='fourier');
+                    else
+                        error('AcousticSolver:excecuteTimeStep:initialVelocity','Initial Velocity is of an invalid size.')
+                    end
+                     
                     obj.prevTimeStep=0;
                     dt = (currentTimeStep)/2;
                     obj.pml.setupQuarticPML(dt, obj.medium.soundSpeedReference);
