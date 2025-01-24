@@ -183,17 +183,17 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
                         medium3Dz.soundSpeed = c0;
 
                         medium1D.density  = rho0*ones(Nax,1);
-                        medium1D.density(floor(2*Nax/5):floor(3*Nax/5))=rho0/1.1;
+                        medium1D.density(floor(2*Nax/5):floor(3*Nax/5))=rho0*1.1;
                         medium2Dx.density = rho0*ones(Nax,Nlat);
-                        medium2Dx.density(floor(2*Nax/5):floor(3*Nax/5),:)=rho0/1.1;
+                        medium2Dx.density(floor(2*Nax/5):floor(3*Nax/5),:)=rho0*1.1;
                         medium2Dy.density = rho0*ones(Nlat,Nax);
-                        medium2Dy.density(:,floor(2*Nax/5):floor(3*Nax/5))=rho0/1.1;
+                        medium2Dy.density(:,floor(2*Nax/5):floor(3*Nax/5))=rho0*1.1;
                         medium3Dx.density = rho0*ones(Nax,Nlat,Nlat);
-                        medium3Dx.density(floor(2*Nax/5):floor(3*Nax/5),:,:)=rho0/1.1;
+                        medium3Dx.density(floor(2*Nax/5):floor(3*Nax/5),:,:)=rho0*1.1;
                         medium3Dy.density = rho0*ones(Nlat,Nax,Nlat);
-                        medium3Dy.density(:,floor(2*Nax/5):floor(3*Nax/5),:)=rho0/1.1;
+                        medium3Dy.density(:,floor(2*Nax/5):floor(3*Nax/5),:)=rho0*1.1;
                         medium3Dz.density = rho0*ones(Nlat, Nlat,Nax);
-                        medium3Dz.density(:,:,floor(2*Nax/5):floor(3*Nax/5))=rho0/1.1;
+                        medium3Dz.density(:,:,floor(2*Nax/5):floor(3*Nax/5))=rho0*1.1;
                     elseif DomainCase==7    % alpha0 grid heterogeneous | c0 rho0 single scalar valued
                         medium1D.density  = rho0;
                         medium2Dx.density = rho0;
@@ -736,7 +736,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             solver3DzA.run(Nt=Nt, dt=dt);
             solver3DzB.run(Nt=Nt, dt=dt);
             testCase.verifyThat(solver3DzA.pressure, IsEqualTo(solver3DzB.pressure, "Within", tol));
-            % 
+            %
         end
 
         function TestInitialVelocityAnalytic(testCase)
@@ -760,7 +760,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             medium.soundSpeed = c0;
             medium.density = 1000;
             source = AcousticSource(kgrid);
-            
+
 
             v0 = @(x) exp( -(x.^2) ./ (5 * kgrid.dx).^2 )/(c0*rho0);
             p0= @(x) exp( -(x.^2) ./ (5 * kgrid.dx).^2 );
@@ -774,13 +774,168 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             FinTime=Nt*dt;
             % waves travel at speed of sound, and account for grid shift
             % from velocity to pressure.
-            PressureActual = single(( p0(kgrid.x -  c0*FinTime) + c0*rho0*v0(kgrid.x - kgrid.dx/2 -  c0*FinTime) + p0(kgrid.x +  c0*FinTime) - c0*rho0*v0(kgrid.x - kgrid.dx/2 + c0*FinTime) ))/2 ;
+            PressureActual = single(( p0(kgrid.x -  c0*FinTime) + c0*rho0*v0(kgrid.x -  c0*FinTime) + p0(kgrid.x +  c0*FinTime) - c0*rho0*v0(kgrid.x + c0*FinTime) ))/2 ;
             testCase.verifyThat(solver.pressure, IsEqualTo(PressureActual, "Within", tol));
 
         end
+
+        function testVelcityPlaneWaves(testCase)
+
+            import kwave.toolbox.*
+            import matlab.unittest.constraints.IsEqualTo
+
+            % Define tolerance for field comparisons.
+            tol = matlab.unittest.constraints.AbsoluteTolerance(single(1e-6));
+
+            % Test properties.
+            Nax = 256;
+            Nlat = 16;
+            dx = 4e-3;
+            c0 = 1500;
+            rho0 = 1000;
+            alpha0=10;
+            pmlSize = 20;
+            CFL = 0.5;
+            Nt = 150;
+            dt = CFL * dx / c0;
+
+            % Settings.
+            settings = Settings;
+            settings.plotSimulation = 'off';
+
+            % Construct Mediums
+
+            kgrid1D = Grid(Nax, dx, pmlSize);
+            medium1D = AcousticMedium(kgrid1D);
+            source1D = AcousticSource(kgrid1D);
+            source1D.initialPressure=0;
+            source1D.initialVelocity = (1/(rho0*c0)) * exp( -(kgrid1D.xVec - 25e-3).^2 ./ (5 * kgrid1D.dx).^2 );
+
+            kgrid2Dx = Grid([Nax, Nlat], dx, [pmlSize, 0]);
+            medium2Dx = AcousticMedium(kgrid2Dx);
+            source2Dx = AcousticSource(kgrid2Dx);
+            source2Dx.initialVelocity = zeros([Nax,Nlat,1,2]);
+            source2Dx.initialPressure=0;
+            source2Dx.initialVelocity(:,:,:,1) = repmat(source1D.initialVelocity, [1, Nlat]);
+
+            kgrid2Dy = Grid([Nlat, Nax], dx, [0, pmlSize]);
+            medium2Dy = AcousticMedium(kgrid2Dy);
+            source2Dy = AcousticSource(kgrid2Dy);
+            source2Dy.initialVelocity = zeros([Nlat,Nax,1,2]);
+            source2Dy.initialPressure=0;
+            source2Dy.initialVelocity(:,:,:,2) = repmat(reshape(source1D.initialVelocity, 1, []), [Nlat, 1]);
+
+            kgrid3Dx = Grid([Nax, Nlat, Nlat], dx, [pmlSize, 0, 0]);
+            medium3Dx = AcousticMedium(kgrid3Dx);
+            source3Dx = AcousticSource(kgrid3Dx);
+            source3Dx.initialVelocity = zeros([Nax,Nlat,Nlat,3]);
+            source3Dx.initialPressure=0;
+            source3Dx.initialVelocity(:,:,:,1) = repmat(source1D.initialVelocity, [1, Nlat, Nlat]);
+
+            kgrid3Dy = Grid([Nlat, Nax, Nlat], dx, [0,pmlSize, 0]);
+            medium3Dy = AcousticMedium(kgrid3Dy);
+            source3Dy = AcousticSource(kgrid3Dy);
+            source3Dy.initialPressure=0;
+            source3Dy.initialVelocity = zeros([Nlat,Nax,Nlat,3]);
+            source3Dy.initialVelocity(:,:,:,2) = repmat(reshape(source1D.initialVelocity, 1, [], 1), [Nlat, 1, Nlat]);
+
+            kgrid3Dz = Grid([Nlat, Nlat, Nax], dx, [0, 0, pmlSize]);
+            medium3Dz = AcousticMedium(kgrid3Dz);
+            source3Dz = AcousticSource(kgrid3Dz);
+            source3Dz.initialPressure=0;
+            source3Dz.initialVelocity = zeros([Nlat,Nlat,Nax,3]);
+            source3Dz.initialVelocity(:,:,:,3) = repmat(reshape(source1D.initialVelocity, 1, 1, []), [Nlat, Nlat, 1]);
+            absorptionType='off';
+
+
+            medium1D.soundSpeed  = c0;
+            medium1D.density  = rho0;
+            medium1D.absorptionCoeff = alpha0;
+            medium2Dx.soundSpeed = c0;
+            medium2Dx.density = rho0;
+            medium2Dx.absorptionCoeff= alpha0;
+            medium2Dy.soundSpeed = c0;
+            medium2Dy.density = rho0;
+            medium2Dy.absorptionCoeff= alpha0;
+            medium3Dx.soundSpeed = c0;
+            medium3Dx.density = rho0;
+            medium3Dx.absorptionCoeff= alpha0;
+            medium3Dy.soundSpeed = c0;
+            medium3Dy.density = rho0;
+            medium3Dy.absorptionCoeff= alpha0;
+            medium3Dz.soundSpeed = c0;
+            medium3Dz.density = rho0;
+            medium3Dz.absorptionCoeff= alpha0;
+
+            % Running Simulations
+
+            %Reference Solution
+            solver1D = AcousticSolver(kgrid1D, medium1D, source1D, [], settings);
+            solver1D.absorptionType=absorptionType;
+            solver1D.run(Nt=Nt, dt=dt);
+            pressure1D = solver1D.pressure;
+            density1D = solver1D.densitySplit;
+            velocity1D = solver1D.velocity;
+
+            solver2Dx = AcousticSolver(kgrid2Dx, medium2Dx, source2Dx, [], settings);
+            solver2Dx.absorptionType=absorptionType;
+            solver2Dx.run(Nt=Nt, dt=dt);
+            pressure2Dx = squeeze(solver2Dx.pressure(:, end/2));
+            density2Dx = squeeze(solver2Dx.densitySplit(:, end/2, 1, 1));
+            velocity2Dx = squeeze(solver2Dx.velocity(:, end/2, 1, 1));
+
+            solver2Dy = AcousticSolver(kgrid2Dy, medium2Dy, source2Dy, [], settings);
+            solver2Dy.absorptionType=absorptionType;
+            solver2Dy.run(Nt=Nt, dt=dt);
+            pressure2Dy = reshape(squeeze(solver2Dy.pressure(end/2, :)), [], 1);
+            density2Dy = reshape(squeeze(solver2Dy.densitySplit(end/2, :, 1, 2)), [], 1);
+            velocity2Dy = reshape(squeeze(solver2Dy.velocity(end/2, :, 1, 2)), [], 1);
+
+            solver3Dx = AcousticSolver(kgrid3Dx, medium3Dx, source3Dx, [], settings); % Failed 1-5
+            solver3Dx.absorptionType=absorptionType;
+            solver3Dx.run(Nt=Nt, dt=dt);
+            pressure3Dx = squeeze(solver3Dx.pressure(:, end/2, end/2));
+            density3Dx = squeeze(solver3Dx.densitySplit(:, end/2, end/2, 1));
+            velocity3Dx = squeeze(solver3Dx.velocity(:, end/2, end/2, 1));
+
+            solver3Dy = AcousticSolver(kgrid3Dy, medium3Dy, source3Dy, [], settings);
+            solver3Dy.absorptionType=absorptionType;
+            solver3Dy.run(Nt=Nt, dt=dt);
+            pressure3Dy = reshape(squeeze(solver3Dy.pressure(end/2, :, end/2)), [], 1, 1);
+            density3Dy = reshape(squeeze(solver3Dy.densitySplit(end/2, :, end/2, 2)), [], 1, 1);
+            velocity3Dy = reshape(squeeze(solver3Dy.velocity(end/2, :, end/2, 2)), [], 1, 1);
+
+            solver3Dz = AcousticSolver(kgrid3Dz, medium3Dz, source3Dz, [], settings);
+            solver3Dz.absorptionType=absorptionType;
+            solver3Dz.run(Nt=Nt, dt=dt);
+            pressure3Dz = reshape(squeeze(solver3Dz.pressure(end/2, end/2, :)), [], 1, 1);
+            density3Dz = reshape(squeeze(solver3Dz.densitySplit(end/2, end/2, :, 3)), [], 1, 1);
+            velocity3Dz = reshape(squeeze(solver3Dz.velocity(end/2, end/2, :, 3)), [], 1, 1);
+
+            % Testing
+            testCase.verifyThat(pressure2Dx, IsEqualTo(pressure1D, "Within", tol)); %
+            testCase.verifyThat(density2Dx,  IsEqualTo(density1D,  "Within", tol)); %
+            testCase.verifyThat(velocity2Dx, IsEqualTo(velocity1D, "Within", tol)); %
+
+            testCase.verifyThat(pressure2Dy, IsEqualTo(pressure1D, "Within", tol)); %
+            testCase.verifyThat(density2Dy,  IsEqualTo(density1D,  "Within", tol)); %
+            testCase.verifyThat(velocity2Dy, IsEqualTo(velocity1D, "Within", tol)); %
+
+            testCase.verifyThat(pressure3Dx, IsEqualTo(pressure1D, "Within", tol)); %
+            testCase.verifyThat(density3Dx,  IsEqualTo(density1D,  "Within", tol)); %
+            testCase.verifyThat(velocity3Dx, IsEqualTo(velocity1D, "Within", tol)); %
+
+            testCase.verifyThat(pressure3Dy, IsEqualTo(pressure1D, "Within", tol)); %
+            testCase.verifyThat(density3Dy,  IsEqualTo(density1D,  "Within", tol)); %
+            testCase.verifyThat(velocity3Dy, IsEqualTo(velocity1D, "Within", tol)); %
+
+            testCase.verifyThat(pressure3Dz, IsEqualTo(pressure1D, "Within", tol)); %
+            testCase.verifyThat(density3Dz,  IsEqualTo(density1D,  "Within", tol)); %
+            testCase.verifyThat(velocity3Dz, IsEqualTo(velocity1D, "Within", tol)); %
+
+        end
+
     end
-
-
 
 end
 
