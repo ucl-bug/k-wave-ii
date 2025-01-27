@@ -13,6 +13,10 @@
 % * Tests that the simulations produce the same results as the legacy code.
 % * Verfifies than the simulations produce the same result when using the
 %   medium class or acoustic medium class
+% * Tests the numerical solution for the pressure when given both an
+% initial velocity and initial pressure in 1D.
+% * Verifies the plane waves when an initial velocity is given in 1D, 2D
+% and 3D, with consideration for directional velocity.
 
 classdef TestAcousticSolver < matlab.unittest.TestCase
 

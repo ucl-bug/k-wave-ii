@@ -73,44 +73,32 @@ if (obj.settings.plotSimulation)
 end
 
 if (obj.timeStepsTaken == 0)
-    % If no time steps have been taken, include an extra time step to
-    % initialise the problem
+    % Adds a time step if initial conditions need applying.
     Nt=Nt+1;
 end
 
 if Nt~=0
-    % So that no time steps are taken if the problem has been previously
-    % run, but Nt=0 has been requested. The result is the same pressure,
-    % velocity, density etc are returned.
+    %If no time steps are taken for a system that has been run then the
+    %original solution is passed back out.
     for tIndex = 1:Nt
 
         if (tIndex == 1)
             if (obj.timeStepsTaken == 0)
 
                 if isempty(obj.source.initialVelocity)
-                    % Set initial conditions for a photoacoustic initial value problem.
-                    % We do this here, rather than in setInitialConditions, as setting
-                    % the initial particle velocity requires the time step. The
-                    % calculated density term is automatically copied to all components
-                    % of densitySplit via implicit expansion.
+                    % Sets initial conditions with velocity(t=0)=0 through
+                    % assuming V(-t)=v(t).
                     obj.pressurePadded = obj.pressurePadded + obj.source.initialPressurePadded;
                     obj.densitySplitPadded = obj.densitySplitPadded + obj.source.initialPressurePadded ./ (obj.dimensions * obj.medium.soundSpeedPadded.^2);
                     obj.velocityPadded = (dt ./ densityPaddedStg) .* gradient(obj.pressurePadded) / 2;
 
                 else
-                    % If Velocity Initial condition is given then
-                    % obj.velocityPadded = obj.source.initialVelocityPadded;
-                    % obj.pressurePadded = obj.source.initialPressurePadded;
-                    % obj.densitySplitPadded = obj.densitySplitPadded + obj.source.initialPressurePadded ./ (obj.dimensions * obj.medium.soundSpeedPadded.^2);
-                    % But the first new time step must be computed differently.
-                    % So we will want to store
-                    % obj.prevTimeStep=0
-                    % Then the first time step for velocity MUST be different
+                    % If Velocity Initial condition is given the initial
+                    % conditions account for staggering and the offset time
+                    % stepping
                     obj.pressurePadded = obj.pressurePadded + obj.source.initialPressurePadded;
                     obj.densitySplitPadded = obj.densitySplitPadded + obj.source.initialPressurePadded ./ (obj.dimensions * obj.medium.soundSpeedPadded.^2);
                     
-                    % Initial Velocity will not be staggered, so we also
-                    % need to stagger it forwards
                     initialVelocityDimensional=zeros([obj.kgridPadded.gridSize,obj.kgrid.dimensions])+obj.source.initialVelocityPadded;
                     for dim=1:obj.kgrid.dimensions
                         initialVelcoityStaggered=obj.stagger(initialVelocityDimensional(:,:,:,dim), Type='fourier');
@@ -123,10 +111,8 @@ if Nt~=0
                     obj.setkSpaceCorrection(currentTimeStep);
                 end
             else
-                % Momentum conservation equation.
-                % kspace corrected with split time step with current time
-                % considerations. Need to add method that transforms and
-                % untransforms F^-1(F(U(t))kappa_2(k))
+                %If a continued solution alternative correction terms are
+                %required for the first half time step.
                 obj.velocityPadded = pmlSG(pmlSG(obj.velocityPadded) - (dt ./ densityPaddedStg) .* gradient(obj.pressurePadded) + dt .* obj.kappaSplitCorrection( pmlSG(obj.velocityPadded)) );
 
                 dt = currentTimeStep;
@@ -148,16 +134,9 @@ if Nt~=0
                 end
             end
         elseif (tIndex==2) && (obj.timeStepsTaken == 0) && ~isempty(obj.source.initialVelocity)
-            % An elseif tIndex==2 && no time steps had been taken before the initial conditions && we had an initial Velocity
-            % Undates the kspace correction for the prevtime step being 0.aswell as the PML
-            % Computes first time step as above. Check Formula still work with dt1=0.
-            % Resets the current time step and prev time step and the correction aswell as PML
-            % does rest of time step as usual. Carries on as usual.
-
-            % Momentum conservation equation.
-            % kspace corrected with split time step with current time
-            % considerations. This is a special case with dt1=0, which
-            % reduces kappa1 to sinc(ckdt/2), and kappa2 to (2cos(ckdt/2)-1)/dt
+            % when an initial velocity was given and was required for
+            % initial conditions the solution accounts for the adjusted
+            % time steps.
             obj.velocityPadded = pmlSG(pmlSG(obj.velocityPadded) - (dt ./ densityPaddedStg) .* gradient(obj.pressurePadded) + dt .* obj.kappaSplitCorrection( pmlSG(obj.velocityPadded)) );
 
             dt = currentTimeStep;
@@ -179,7 +158,7 @@ if Nt~=0
             end
         else
 
-            
+            % Usual time stepping
 
             % Momentum conservation equation.
             obj.velocityPadded = pmlSG(pmlSG(obj.velocityPadded) - (dt ./ densityPaddedStg) .* gradient(obj.pressurePadded));

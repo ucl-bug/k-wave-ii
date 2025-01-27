@@ -77,7 +77,7 @@ kwave.toolbox.Logger.info(['  dt: ' kwave.utilities.scaleSI(options.dt) 's, end 
 
 if (obj.timeStepsTaken==0)
     % Set initial conditions.
-            obj.setInitialConditions;
+    obj.setInitialConditions;
 end
 
 obj.executeTimeStep(options.Nt, options.dt);
@@ -92,4 +92,5 @@ if isempty(obj.timeArray)
     obj.timeArray = (0:(options.Nt)) * options.dt;
 else
     obj.timeArray = [obj.timeArray, obj.timeArray(end) + (1:options.Nt) * options.dt];
+end
 end

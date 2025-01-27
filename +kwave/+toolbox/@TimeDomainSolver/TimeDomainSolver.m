@@ -88,8 +88,6 @@ classdef(Abstract) TimeDomainSolver < kwave.toolbox.Solver
             % Pass input arguments to superclass constructor.
             obj@kwave.toolbox.Solver(kgrid, medium, source, sensor, settings)
 
-            
-
         end
     end
 
