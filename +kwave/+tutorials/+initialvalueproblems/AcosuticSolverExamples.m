@@ -46,18 +46,18 @@ import kwave.toolbox.*
 % Example C uses a 3D domain with the same size grid spacing in each
 %   dimension.
 % Example D uses a 2D domain with a PML only in the y direction.
-% Example E uses a 2D domain with a PML of the same size in each
+% Example E uses a 3D domain with a PML of the same size in each
 %   dimension.
-%
-%=======================================================================================================
 
-    % 1A)
+% =========================================================================
+
+    % A)
     Nx=128;                 % Number of grid points
     dx=1e-3;                % Distance between grid points [m]
     kgrid = Grid(Nx, dx);   % Construct the grid.
     %
 
-    % 1B)
+    % B)
     % Nx=128;                           % Number of x grid points
     % Ny=54;                            % Number of y grid points
     % dx=1e-3;                          % Distance between grid points in the first dimension [m]
@@ -65,15 +65,26 @@ import kwave.toolbox.*
     % kgrid = Grid([Nx,Ny], [dx,dy]);   % Construct the grid.
     %
 
-    % 1C)
+    % C)
     % Nx=128;                           % Number of x grid points
     % Ny=54;                            % Number of y grid points
     % Nz=129;                           % Number of z grid points
     % dx=1e-3;                          % Distance between grid points in any dimension [m]
-    % kgrid = Grid([Nx,Ny, Nz], dx);   % Construct the grid.
+    % kgrid = Grid([Nx,Ny, Nz], dx);    % Construct the grid.
+    %
+    
+    % D)
+    % PMLx=0;                                       % Number of Grid points either side of the domain for the PML in the x direction
+    % PMLy=20;                                      % Number of Grid points either side of the domain for the PML in the y direction
+    % kgrid = Grid([128,128], 1e-3,[PMLx,PMLy]);    % Construct the grid.
     %
 
-%======================================================================================================
+    % E)
+    % kgrid = Grid([128,64,64], 1e-3,20);   % Construct the grid.
+    %
+
+% =========================================================================
+
 % With the grid we are now required to construct the Medium and the Source.
 % In k-wave-II for the AcousticSolver the medium can be constructed in two
 % ways, through the AcousticMedium class, or through the Medium class. We
@@ -93,7 +104,7 @@ medium=AcousticMedium(kgrid);
 c0=1500; % meters per second.    [m s^{-1}]
 rho0=100; % kilogram per meter^3 [kg m^{-3}]
     
-%======================================================================================================
+% =========================================================================
 
     %
     medium.soundSpeed=c0; % Sets the sound speed everywhere.
@@ -101,11 +112,12 @@ rho0=100; % kilogram per meter^3 [kg m^{-3}]
     %
 
     %
-    % meedium.soundSpeed=ones(kgrid.gridSize)*c0;
-    % meedium.density=ones(kgrid.gridSize)*rho0;
+    % medium.soundSpeed=ones(kgrid.gridSize)*c0;
+    % medium.density=ones(kgrid.gridSize)*rho0;
     %
 
-%======================================================================================================
+% =========================================================================
+
 % If you wish to consider an inhomogeneous domain the values of the
 % soundSpeed and the Density must be changed directly and take the size of
 % the grid.
@@ -132,11 +144,12 @@ source.initialPressure=exp( -(kgrid.x.^2 + kgrid.y.^2 + kgrid.z.^2)/ (10*kgrid.d
 % Nz default to 1 when the problem is only 1D, or 2D for Nz.
 % kgrid.dimensions takes the values 1,2 or 3, and indicate the variable in
 % that dimensional direction.
-%==================================================================================================================================
-    
+
+% =========================================================================
+
     %
     % source.initialVelocity=zeros([kgrid.gridSize,kgrid.dimensions]);          % Ensures the initial velocity is the correct size.
-    % source.initialVelocity(:,:,:,1) = exp( -(kgrid.x.^2)/ (10*kgrid.dx^2));   % The velocity in the x direction
+    % source.initialVelocity(:,:,:,1) = (1./(c0.*rho0)).*exp( -(kgrid.x.^2)/ (10*kgrid.dx^2));   % The velocity in the x direction
     %
 
 % In this example the initial velocity in the y and z directions will
@@ -147,7 +160,7 @@ source.initialPressure=exp( -(kgrid.x.^2 + kgrid.y.^2 + kgrid.z.^2)/ (10*kgrid.d
 % This is contrary to the outputs of the Acoustic Solver. This is
 % detailed later.
 
-%=================================================================================================================================
+% =========================================================================
 
 %% Running the AcousticSolver and outputs
 
@@ -169,7 +182,7 @@ solver=AcousticSolver(kgrid,medium,source,[]);
 dt1=1e-7;
 Nt1=200;
 
-%=========================================================================
+% =========================================================================
 
     %
     solver.run(Nt=Nt1,dt=dt1);
@@ -186,7 +199,8 @@ Nt1=200;
     % solver.run(Nt=0,dt=dt1);
     %
 
-%=========================================================================
+% =========================================================================
+% 
 % Calling the run function with Nt=0 will not run any additional time
 % steps, or if no time steps have been performed, will just initialise the
 % problem.
@@ -223,7 +237,7 @@ Nt1=200;
 % constant value, or as a grid sized variable.
 
 alpha0= 0.5;
-%========================================================================
+% =========================================================================
 
     %
     medium.absorptionCoeff=alpha0;
@@ -233,7 +247,7 @@ alpha0= 0.5;
     % medium.absorptionCoeff=ones(kgrid.gridSize)*alpha0;
     %
 
-%======================================================================
+% =========================================================================
 
 % unlike the absorption coefficient the absorption power on the pother hand
 % must be a scalar value. The code will not run correctly for a non-scalar
@@ -248,7 +262,7 @@ solver2=AcousticSolver(kgrid,medium,source,[]);
 % Before we run the simulation however we must tell the solver to consider
 % the absorption. This is by setting solver.absorptionType
 
-%==========================================================================
+% =========================================================================
 
     %
     solver2.absorptionType='on';
@@ -262,7 +276,7 @@ solver2=AcousticSolver(kgrid,medium,source,[]);
     % solver.absorptionType="noDispersion";
     %
 
-%============================================================================
+% =========================================================================
 
 % The options "noAbosrption" and "noDispersion" will also use a reduced
 % form of the absorption, removing the terms relating to the Absorption and
