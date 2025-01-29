@@ -146,9 +146,11 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
         absorbEtaPadded single
         kappaSplit single
 
-        BoundCond char {mustBeMember( BoundCond, {'off','on'})} = 'off'
-        BoundaryCondition kwave.toolbox.BoundaryCondition
+        PressureBoundCond char {mustBeMember( PressureBoundCond, {'off','on'})} = 'off'
+        PressureBoundaryCondition kwave.toolbox.BoundaryCondition
         timePoint = 0 ; 
+        VelocityBoundCond char {mustBeMember( VelocityBoundCond, {'off','on'})} = 'off'
+        VelocityBoundaryCondition kwave.toolbox.BoundaryCondition
     end
 
     % Constructor.
@@ -208,6 +210,7 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
     end
 
     methods(Access=public)
-        setBoundaryCondition(obj,BoundaryCondition);
+        setPressureBoundaryCondition(obj,BoundaryCondition);
+        setVelocityBoundaryCondition(obj,BoundaryCondition);
     end
 end

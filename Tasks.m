@@ -67,7 +67,7 @@
 clear
 close all
 import kwave.toolbox.*
-kgrid2D = Grid([128, 128], 1e-3);
+kgrid2D = Grid([256, 256], 1e-3,[20,20]);
 circ.centre=[0,0];
 % circ.radius=0.025;
 circ.radius=0.045;
@@ -77,28 +77,45 @@ medium2D.materialIDGrid=1;
 source = AcousticSource(kgrid2D);
 setting=Settings;
 setting.plotSimulation='on';
-source.initialPressure = exp( -(kgrid2D.x.^2+kgrid2D.y.^2+kgrid2D.z.^2) ./ (10 * kgrid2D.dx).^2 );
-% solver=AcousticSolver(kgrid2D, medium2D, source, [],setting);
-% CircleBC=OffGridBoundaryCondition(kgrid2D,CircleOG);
-% CircleBC.mask=CircleBC.maskBuilder;
-% solver.setBoundaryCondition(CircleBC)
-% solver.run(Nt=500,dt=1e-7)
 
+source.initialPressure = exp( -(kgrid2D.x.^2+kgrid2D.y.^2+kgrid2D.z.^2) ./ (10 * kgrid2D.dx).^2 );
+
+
+solver=AcousticSolver(kgrid2D, medium2D, source, [],setting);
+CircleBC=OffGridBoundaryCondition(kgrid2D,CircleOG,accuracy=0.01);
+CircleBC.mask=CircleBC.maskBuilder;
+% solver.setPressureBoundaryCondition(CircleBC)
+
+CircleBCFW=OffGridBoundaryCondition(kgrid2D,CircleOG,accuracy=0.01,staggering="forward");
+CircleBCFW.mask=CircleBCFW.maskBuilder;
+solver.setVelocityBoundaryCondition(CircleBCFW)
+
+solver.run(Nt=500,dt=1e-7)
+% 
 solver2=AcousticSolver(kgrid2D, medium2D, source, [],setting);
 Circle=BoundaryCondition(kgrid2D);
 Circle.mask=zeros(kgrid2D.gridSize);
-Circle.mask( kgrid2D.x.^2 + kgrid2D.y.^2 < (circ.radius +1*kgrid2D.dx/2)^2  )=1;
-Circle.mask( kgrid2D.x.^2 + kgrid2D.y.^2 < (circ.radius -1*kgrid2D.dx/2 )^2  )=0;
-solver2.setBoundaryCondition(Circle)
+Circle.mask( kgrid2D.x.^2 + kgrid2D.y.^2 < (circ.radius +3*kgrid2D.dx/4)^2  )=1;
+Circle.mask( kgrid2D.x.^2 + kgrid2D.y.^2 < (circ.radius -3*kgrid2D.dx/4 )^2  )=0;
+
+CircleForward=BoundaryCondition(kgrid2D);
+CircleForward.mask=zeros(kgrid2D.gridSize);
+CircleForward.mask( (kgrid2D.x+kgrid2D.dx/2).^2 + (kgrid2D.y+kgrid2D.dy/2).^2 < (circ.radius +3*kgrid2D.dx/4)^2  )=1;
+CircleForward.mask( (kgrid2D.x+kgrid2D.dx/2).^2 + (kgrid2D.y+kgrid2D.dy/2).^2 < (circ.radius -3*kgrid2D.dx/4 )^2  )=0;
+
+% solver2.setPressureBoundaryCondition(Circle)
 solver2.run(Nt=500,dt=1e-7)
+
 CircleSensor=AcousticSensor(kgrid2D);
 CircleSensor.mask=zeros(kgrid2D.gridSize);
 CircleSensor.mask( kgrid2D.x.^2 + kgrid2D.y.^2 < (circ.radius/2 +1*kgrid2D.dx/2)^2  )=1;
 CircleSensor.mask( kgrid2D.x.^2 + kgrid2D.y.^2 < (circ.radius/2 -1*kgrid2D.dx/2 )^2  )=0;
 CircleSensor.timeSteps=2;
 solver3=AcousticSolver(kgrid2D, medium2D, source, CircleSensor,setting);
-solver3.setBoundaryCondition(Circle);
+% solver3.setPressureBoundaryCondition(Circle)
+solver3.setVelocityBoundaryCondition(CircleForward);
 solver3.run(Nt=500,dt=1e-7);
+
 % 
 % 
 % figure(1)

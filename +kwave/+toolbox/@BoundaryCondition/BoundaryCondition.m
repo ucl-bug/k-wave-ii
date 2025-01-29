@@ -36,6 +36,10 @@ classdef BoundaryCondition < kwave.toolbox.GridInput
         % For now this is just a scalar applied across the whole boundary, update to allow spatial variation, update to allow temporal variation.
     end
 
+    properties(Hidden)
+        staggering='forward'
+    end
+
     methods(Access=public)
         function VariablePadded=applyBoundaryCondition(obj,VariablePadded)
             ChangeValue=obj.maskPadded.*obj.BoundaryValue - VariablePadded;

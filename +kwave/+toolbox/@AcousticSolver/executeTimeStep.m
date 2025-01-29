@@ -159,6 +159,12 @@ if Nt~=0
             obj.prevTimeStep = currentTimeStep;
             obj.setkSpaceCorrection(currentTimeStep);
             obj.pml.setupQuarticPML(currentTimeStep, obj.medium.soundSpeedReference);
+            
+            if strcmp(obj.VelocityBoundCond,'on')
+                for dim=1:obj.kgrid.dimensions
+                   obj.velocityPadded(:,:,:,dim) = obj.VelocityBoundaryCondition.applyBoundaryCondition(obj.velocityPadded(:,:,:,dim));
+                end
+            end
 
             % Mass conservation equation.
             obj.densitySplitPadded = pml(pml(obj.densitySplitPadded) - dt .* obj.medium.densityPadded .* divergence(obj.velocityPadded));
@@ -173,7 +179,7 @@ if Nt~=0
                     obj.absorbEtaPadded .* fracLaplacian(obj, sum(obj.densitySplitPadded,4), obj.medium.absorptionPower/2 -0.5 ) ) ;
             end
 
-            if strcmp(obj.BoundCond,'on')
+            if strcmp(obj.PressureBoundCond,'on')
                 obj.pressurePadded = obj.BoundaryCondition.applyBoundaryCondition(obj.pressurePadded);
             end
         
@@ -182,6 +188,12 @@ if Nt~=0
             % Momentum conservation equation.
             obj.velocityPadded = pmlSG(pmlSG(obj.velocityPadded) - (dt ./ densityPaddedStg) .* gradient(obj.pressurePadded));
 
+            if strcmp(obj.VelocityBoundCond,'on')
+                for dim=1:obj.kgrid.dimensions
+                    obj.velocityPadded(:,:,:,dim) = obj.VelocityBoundaryCondition.applyBoundaryCondition(obj.velocityPadded(:,:,:,dim));
+                end
+            end
+
             % Mass conservation equation.
             obj.densitySplitPadded = pml(pml(obj.densitySplitPadded) - dt .* obj.medium.densityPadded .* divergence(obj.velocityPadded));
 
@@ -195,8 +207,8 @@ if Nt~=0
                     obj.absorbEtaPadded .* fracLaplacian(obj, sum(obj.densitySplitPadded,4), obj.medium.absorptionPower/2 -0.5 ) ) ;
             end
 
-            if strcmp(obj.BoundCond,'on')
-                obj.pressurePadded = obj.BoundaryCondition.applyBoundaryCondition(obj.pressurePadded);
+            if strcmp(obj.PressureBoundCond,'on')
+                obj.pressurePadded = obj.PressureBoundaryCondition.applyBoundaryCondition(obj.pressurePadded);
             end
         end
         
@@ -213,7 +225,13 @@ if Nt~=0
         % Plot.
         if obj.settings.plotSimulation && (rem(tIndex-adj, obj.settings.plotFrequency) == 0 || tIndex == 1 || tIndex == Nt)
             figure(fig);
+            tiledlayout(1,3)
+            nexttile(1)
             obj.plotField(obj.pressure);
+            nexttile(2)
+            obj.plotField(densityPaddedStg.*obj.medium.soundSpeedPadded.*obj.velocity(:,:,:,1));
+            nexttile(3)
+            obj.plotField(densityPaddedStg.*obj.medium.soundSpeedPadded.*obj.velocity(:,:,:,2));
         end
 
     end

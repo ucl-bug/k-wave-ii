@@ -33,31 +33,43 @@ classdef OffGridBoundaryCondition < kwave.toolbox.BoundaryCondition
         offGrid
         maskBuilder
         accuracy
+        
     end
 
     properties(SetAccess=private, Hidden=true)
         gridLocations
-        
     end
 
     % Constructor.
     methods
-        function obj=OffGridBoundaryCondition(kgrid,offGrid,accuracy)
+        function obj=OffGridBoundaryCondition(kgrid,offGrid,options)
             arguments
                 kgrid(1,1) kwave.toolbox.Grid
                 offGrid(1,1) kwave.toolbox.OffGrid
-                accuracy(1,1) {mustBeNumeric,mustBePositive,mustBeFinite,mustBeReal}
+                options.accuracy(1,1) {mustBeNumeric,mustBePositive,mustBeFinite,mustBeReal} =0.01;
+                options.staggering(1,:) char {mustBeMember(options.staggering, {'none', 'forward', 'backward'})} = 'none'
             end
             obj@kwave.toolbox.BoundaryCondition(kgrid)
-            obj.accuracy=accuracy;
+            obj.accuracy=options.accuracy;
+            obj.staggering=options.staggering;
             obj.offGrid=offGrid;
 
             obj.maskBuilder=zeros(obj.kgrid.gridSize);
             obj.gridLocations=zeros(obj.kgrid.totalGridPoints,obj.kgrid.dimensions);
+
+            if strcmp(obj.staggering,'none')
+                shift= 0;
+            elseif strcmp(obj.staggering,'forward')
+                shift= +1/2;
+            else
+                shift=-1/2;
+            end
+            obj.offGrid.gridLocations = obj.offGrid.gridLocations - shift;
+            
             for j1=1:obj.kgrid.totalGridPoints
                 switch obj.kgrid.dimensions
                     case 1
-                        gridPoint=[obj.kgrid.x(j1)/obj.kgrid.gridSpacing(1)];
+                        gridPoint=obj.kgrid.x(j1)/obj.kgrid.gridSpacing(1);
                     case 2
                         gridPoint=[obj.kgrid.x(j1)/obj.kgrid.gridSpacing(1),obj.kgrid.y(j1)/obj.kgrid.gridSpacing(2)];
                     case 3
@@ -65,7 +77,7 @@ classdef OffGridBoundaryCondition < kwave.toolbox.BoundaryCondition
                 end
                 obj.gridLocations(j1,:)=gridPoint;
             end
-            Dists=sum(obj.offGrid.ValidGridpointDistance(obj.gridLocations, obj.offGrid.gridLocations,obj.accuracy),1);
+            Dists=sum(obj.offGrid.ValidGridpointDistance(obj.offGrid.gridLocations,obj.gridLocations ,obj.accuracy),2);
             obj.maskBuilder(Dists>=1)=1;
             obj.gridLocations=obj.gridLocations(Dists>=1,:);
         end
@@ -78,34 +90,23 @@ classdef OffGridBoundaryCondition < kwave.toolbox.BoundaryCondition
             % tol=1;
             % reps=0;
 
-            % Recall the p Values validated by ValidGridPointDistance
+            % Recall the Values validated by ValidGridPointDistance
             ReducedVariable=VariablePadded(obj.maskPadded==1);
             % For each boundary point compute the pressure
             VariableBoundary=zeros(1,obj.offGrid.gridSize);
             VariableBoundary=VariableBoundary + sum(obj.offGrid.BandLim(obj.gridLocations,obj.offGrid.gridLocations).' .* ReducedVariable,1);
 
-            % while tol>1e-8 || reps <= 20
-
                 % Apply the inverse Matrix
-                BoundaryChange = obj.offGrid.InvBandLimMatrix * (obj.BoundaryValue-VariableBoundary.');
+                BoundaryChange =  obj.offGrid.InvBandLimMatrix * (obj.BoundaryValue-VariableBoundary.');
                 %Compute the Grid re-weighting
                 GridChange=zeros(length(obj.gridLocations(:,1)),1);
                 GridChange=GridChange + sum( obj.offGrid.BandLimGrid(obj.gridLocations,obj.offGrid.gridLocations,obj.accuracy) .* BoundaryChange,1).';
                 % For each grid Location compute the new pressure
                 VariablePadded(obj.maskPadded==1)=ReducedVariable + real(GridChange) ;
-                % ReducedVariable=ReducedVariable + real(GridChange);
 
-                % VariableBoundary=zeros(1,obj.offGrid.gridSize);
-                % VariableBoundary=VariableBoundary + sum(obj.offGrid.BandLimGrid(obj.gridLocations,obj.offGrid.gridLocations,obj.accuracy).' .* ReducedVariable,1);
-
-                % tol=max(max(abs(obj.BoundaryValue-VariableBoundary)));
-                % reps=reps+1;
-            % end
         end
 
     end
 
-    % methods(Access=public)
-    % end
 
 end

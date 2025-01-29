@@ -51,8 +51,11 @@ classdef OffGrid < handle
         % Locations of the Points
         kgridLocations = [];
 
-        gridLocations = [];
+    end
+    properties
 
+    gridLocations = [];
+    
     end
 
     % Dependent properties without set methods. These parameters are not
@@ -64,6 +67,8 @@ classdef OffGrid < handle
         xLoc;
         yLoc;
         zLoc;
+
+        
 
     end
 
