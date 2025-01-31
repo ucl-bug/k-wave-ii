@@ -35,7 +35,7 @@ function executeTimeStep(obj, Nt, dt)
 
 arguments
     obj
-    Nt(1,1) {mustBeInteger, mustBePositive, mustBeFinite}
+    Nt(1,1) {mustBeInteger, mustBeNonnegative, mustBeFinite}
     dt(1,1) {mustBeNumeric, mustBePositive, mustBeFinite}
 end
 
