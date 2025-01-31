@@ -157,9 +157,6 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
                 sensor
                 settings(1,1) kwave.toolbox.Settings = kwave.toolbox.Settings
             end
-
-            % Need way to check is medium ir a Medium Class or an
-            % AcousticMedium Class
             
                 if ~(isa(medium, 'kwave.toolbox.Medium') || isa(medium, 'kwave.toolbox.AcousticMedium'))
                     error('AcousticSolver:InvalidMediumType',...

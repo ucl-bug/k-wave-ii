@@ -39,7 +39,7 @@ arguments
     dt(1,1) {mustBeNumeric, mustBePositive, mustBeFinite}
 end
 
-%
+% Sets absorption Coefficients only when absorption is requested.
 if ~strcmp(obj.absorptionType,'off')
     setAbsorptionCoefficients(obj)
 end
