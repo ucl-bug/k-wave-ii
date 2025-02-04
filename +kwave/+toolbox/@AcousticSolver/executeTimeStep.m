@@ -227,11 +227,11 @@ if Nt~=0
             figure(fig);
             tiledlayout(1,3)
             nexttile(1)
-            obj.plotField(obj.pressure);
+            obj.plotField(real(obj.pressure));
             nexttile(2)
-            obj.plotField(densityPaddedStg.*obj.medium.soundSpeedPadded.*obj.velocity(:,:,:,1));
+            obj.plotField(real(densityPaddedStg.*obj.medium.soundSpeedPadded.*obj.velocity(:,:,:,1)));
             nexttile(3)
-            obj.plotField(densityPaddedStg.*obj.medium.soundSpeedPadded.*obj.velocity(:,:,:,2));
+            obj.plotField(real(densityPaddedStg.*obj.medium.soundSpeedPadded.*obj.velocity(:,:,:,2)));
         end
 
     end

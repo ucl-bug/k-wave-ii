@@ -97,12 +97,12 @@ classdef OffGridBoundaryCondition < kwave.toolbox.BoundaryCondition
             VariableBoundary=VariableBoundary + sum(obj.offGrid.BandLim(obj.gridLocations,obj.offGrid.gridLocations).' .* ReducedVariable,1);
 
                 % Apply the inverse Matrix
-                BoundaryChange =  obj.offGrid.InvBandLimMatrix * (obj.BoundaryValue-VariableBoundary.');
+                BoundaryChange =  real(obj.offGrid.InvBandLimMatrix) * (obj.BoundaryValue-VariableBoundary.');
                 %Compute the Grid re-weighting
                 GridChange=zeros(length(obj.gridLocations(:,1)),1);
                 GridChange=GridChange + sum( obj.offGrid.BandLimGrid(obj.gridLocations,obj.offGrid.gridLocations,obj.accuracy) .* BoundaryChange,1).';
                 % For each grid Location compute the new pressure
-                VariablePadded(obj.maskPadded==1)=ReducedVariable + real(GridChange) ;
+                VariablePadded(obj.maskPadded==1)=ReducedVariable + GridChange ; %real(GridChange) ;
 
         end
 
