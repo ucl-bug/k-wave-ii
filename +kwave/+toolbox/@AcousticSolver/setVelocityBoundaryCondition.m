@@ -55,3 +55,7 @@ if max(size(VelocityBoundaryCondition.maskPadded))~=1
 else
     error('AcousticSolver:BoundaryCondition:MaskError', 'Mask must be given as the size of the computational Grid, and be 0 on the edges')
 end
+
+
+% Need to add requirement for ouward unit normal vectors
+

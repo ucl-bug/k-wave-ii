@@ -33,11 +33,11 @@ classdef OffGridBoundaryCondition < kwave.toolbox.BoundaryCondition
         offGrid
         maskBuilder
         accuracy
-        
     end
 
     properties(SetAccess=private, Hidden=true)
         gridLocations
+
     end
 
     % Constructor.
@@ -86,23 +86,59 @@ classdef OffGridBoundaryCondition < kwave.toolbox.BoundaryCondition
     % Override inherited methods.
     methods(Access=public)
 
-        function VariablePadded=applyBoundaryCondition(obj,VariablePadded)
-            % tol=1;
-            % reps=0;
-
+        function VariablePadded=applyDirichletBoundaryCondition(obj,VariablePadded)
             % Recall the Values validated by ValidGridPointDistance
             ReducedVariable=VariablePadded(obj.maskPadded==1);
             % For each boundary point compute the pressure
             VariableBoundary=zeros(1,obj.offGrid.gridSize);
             VariableBoundary=VariableBoundary + sum(obj.offGrid.BandLim(obj.gridLocations,obj.offGrid.gridLocations).' .* ReducedVariable,1);
+            % Apply the inverse Matrix
+            BoundaryChange =  obj.offGrid.InvBandLimMatrix * (obj.BoundaryValue-VariableBoundary.');
+            %Compute the Grid re-weighting
+            GridChange=zeros(length(obj.gridLocations(:,1)),1);
+            GridChange=GridChange + sum( obj.offGrid.BandLimGrid(obj.gridLocations,obj.offGrid.gridLocations,obj.accuracy) .* BoundaryChange,1).';
+            % For each grid Location compute the new pressure
+            VariablePadded(obj.maskPadded==1)=ReducedVariable + real(GridChange) ;
 
-                % Apply the inverse Matrix
-                BoundaryChange =  real(obj.offGrid.InvBandLimMatrix) * (obj.BoundaryValue-VariableBoundary.');
-                %Compute the Grid re-weighting
-                GridChange=zeros(length(obj.gridLocations(:,1)),1);
-                GridChange=GridChange + sum( obj.offGrid.BandLimGrid(obj.gridLocations,obj.offGrid.gridLocations,obj.accuracy) .* BoundaryChange,1).';
-                % For each grid Location compute the new pressure
-                VariablePadded(obj.maskPadded==1)=ReducedVariable + GridChange ; %real(GridChange) ;
+        end
+
+        function VariablePadded=applyNeumannBoundaryCondition(obj,VariablePadded)
+            switch obj.kgrid.dimensions
+                case 1
+                    VariablePadded=applyDirichletBoundaryCondition(obj,VariablePadded);
+                case 2
+                    % Recall the Values validated by ValidGridPointDistance
+                    Variable1=VariablePadded(:,:,1,1);
+                    Variable2=VariablePadded(:,:,1,2);
+                    ReducedVariable1=Variable1(obj.maskPadded==1);
+                    ReducedVariable2=Variable2(obj.maskPadded==1);
+                    % For each boundary point compute the pressure
+                    VariableBoundary=zeros(obj.offGrid.gridSize,obj.kgrid.dimensions);
+                    VariableBoundary(:,1)=VariableBoundary(:,1) + sum(obj.offGrid.BandLim(obj.gridLocations,obj.offGrid.gridLocations).' .* ReducedVariable1,1).';
+                    VariableBoundary(:,2)=VariableBoundary(:,2) + sum(obj.offGrid.BandLim(obj.gridLocations,obj.offGrid.gridLocations).' .* ReducedVariable2,1).';
+                    normalDeriv=sum( VariableBoundary.*(obj.offGrid.normalVector) ,2 );
+                    CurrBoundaryValue1= (obj.BoundaryValue - normalDeriv).*((obj.offGrid.normalVector(:,1)));
+                    CurrBoundaryValue2= (obj.BoundaryValue - normalDeriv).*((obj.offGrid.normalVector(:,2)));
+                    
+                    % Apply the inverse Matrix to how much each direction
+                    % wants to change
+                    BoundaryChange1 =  obj.offGrid.InvBandLimMatrix * CurrBoundaryValue1;
+                    BoundaryChange2 =  obj.offGrid.InvBandLimMatrix * CurrBoundaryValue2;
+                    
+                    %Compute the Grid re-weighting
+                    GridChange=zeros(length(obj.gridLocations(:,1)),2);
+                    GridChange(:,1)=GridChange(:,1) + sum( obj.offGrid.BandLimGrid(obj.gridLocations,obj.offGrid.gridLocations,obj.accuracy) .* BoundaryChange1,1).';
+                    GridChange(:,2)=GridChange(:,2) + sum( obj.offGrid.BandLimGrid(obj.gridLocations,obj.offGrid.gridLocations,obj.accuracy) .* BoundaryChange2,1).';
+                    % For each grid Location compute the new pressure
+                    Variable1(obj.maskPadded==1)=ReducedVariable1 + real(GridChange(:,1)) ;
+                    Variable2(obj.maskPadded==1)=ReducedVariable2 + real(GridChange(:,2)) ;
+                    VariablePadded(:,:,:,1)=Variable1;
+                    VariablePadded(:,:,:,2)=Variable2;
+                case 3
+
+            end
+
+            
 
         end
 

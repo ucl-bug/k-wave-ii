@@ -159,11 +159,9 @@ if Nt~=0
             obj.prevTimeStep = currentTimeStep;
             obj.setkSpaceCorrection(currentTimeStep);
             obj.pml.setupQuarticPML(currentTimeStep, obj.medium.soundSpeedReference);
-            
+
             if strcmp(obj.VelocityBoundCond,'on')
-                for dim=1:obj.kgrid.dimensions
-                   obj.velocityPadded(:,:,:,dim) = obj.VelocityBoundaryCondition.applyBoundaryCondition(obj.velocityPadded(:,:,:,dim));
-                end
+                obj.velocityPadded = obj.VelocityBoundaryCondition.applyNeumannBoundaryCondition(obj.velocityPadded);
             end
 
             % Mass conservation equation.
@@ -180,18 +178,16 @@ if Nt~=0
             end
 
             if strcmp(obj.PressureBoundCond,'on')
-                obj.pressurePadded = obj.BoundaryCondition.applyBoundaryCondition(obj.pressurePadded);
+                obj.pressurePadded = obj.PressureBoundaryCondition.applyDirichletBoundaryCondition(obj.pressurePadded);
             end
-        
+
         else
 
             % Momentum conservation equation.
             obj.velocityPadded = pmlSG(pmlSG(obj.velocityPadded) - (dt ./ densityPaddedStg) .* gradient(obj.pressurePadded));
 
             if strcmp(obj.VelocityBoundCond,'on')
-                for dim=1:obj.kgrid.dimensions
-                    obj.velocityPadded(:,:,:,dim) = obj.VelocityBoundaryCondition.applyBoundaryCondition(obj.velocityPadded(:,:,:,dim));
-                end
+                obj.velocityPadded = obj.VelocityBoundaryCondition.applyNeumannBoundaryCondition(obj.velocityPadded);
             end
 
             % Mass conservation equation.
@@ -208,10 +204,10 @@ if Nt~=0
             end
 
             if strcmp(obj.PressureBoundCond,'on')
-                obj.pressurePadded = obj.PressureBoundaryCondition.applyBoundaryCondition(obj.pressurePadded);
+                obj.pressurePadded = obj.PressureBoundaryCondition.applyDirichletBoundaryCondition(obj.pressurePadded);
             end
         end
-        
+
         if ~isempty(obj.sensor) && rem(tIndex-adj, obj.sensor.timeSteps) == 0
             if ~isempty(obj.timeArray)
                 obj.timePoint=obj.timeArray(end)+(tIndex-adj)*dt;
@@ -225,13 +221,13 @@ if Nt~=0
         % Plot.
         if obj.settings.plotSimulation && (rem(tIndex-adj, obj.settings.plotFrequency) == 0 || tIndex == 1 || tIndex == Nt)
             figure(fig);
-            tiledlayout(1,3)
-            nexttile(1)
+            % tiledlayout(1,3)
+            % nexttile(1)
             obj.plotField(real(obj.pressure));
-            nexttile(2)
-            obj.plotField(real(densityPaddedStg.*obj.medium.soundSpeedPadded.*obj.velocity(:,:,:,1)));
-            nexttile(3)
-            obj.plotField(real(densityPaddedStg.*obj.medium.soundSpeedPadded.*obj.velocity(:,:,:,2)));
+            % nexttile(2)
+            % obj.plotField(real(densityPaddedStg.*obj.medium.soundSpeedPadded.*obj.velocity(:,:,:,1)));
+            % nexttile(3)
+            % obj.plotField(real(densityPaddedStg.*obj.medium.soundSpeedPadded.*obj.velocity(:,:,:,2)));
         end
 
     end

@@ -51,10 +51,13 @@ classdef OffGrid < handle
         % Locations of the Points
         kgridLocations = [];
 
+
     end
     properties
 
     gridLocations = [];
+
+    normalVector=[];
     
     end
 
@@ -132,9 +135,13 @@ classdef OffGrid < handle
 
                     Nxi=gridSize;
                     kgridLocations=zeros(Nxi,2);
+                    obj.normalVector=zeros(Nxi,2);
 
-                    kgridLocations(:,1)=options.centre(1)+options.radius.*cos(0:2*pi/(Nxi):2*pi*(Nxi-1)/Nxi);
-                    kgridLocations(:,2)=options.centre(2)+options.radius.*sin(0:2*pi/(Nxi):2*pi*(Nxi-1)/Nxi);
+                    kgridLocations(:,1)=options.centre(1)+options.radius.*cos(-pi:2*pi/(Nxi):pi*(Nxi-1)/Nxi);
+                    kgridLocations(:,2)=options.centre(2)+options.radius.*sin(-pi:2*pi/(Nxi):pi*(Nxi-1)/Nxi);
+
+                    obj.normalVector(:,1)=cos(-pi:2*pi/(Nxi):pi*(Nxi-1)/Nxi);
+                    obj.normalVector(:,2)=sin(-pi:2*pi/(Nxi):pi*(Nxi-1)/Nxi);
 
                     obj.kgridLocations=kgridLocations;
                     assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
@@ -206,8 +213,8 @@ classdef OffGrid < handle
             dist=zeros(length(x2(:,1)),length(x1(1,:)));
 
             for dim=1:obj.kgrid.dimensions
-                dist=dist+floor(abs(x1(dim,:)-x2(:,dim)));
-                % dist=dist+(abs(x1(dim,:)-x2(:,dim))).^2;
+                % dist=dist+floor(abs(x1(dim,:)-x2(:,dim)));
+                dist=dist+(abs(x1(dim,:)-x2(:,dim))).^2;
             end
             
             % Val=zeros(length(x2(:,1)),length(x1(:,1)));
