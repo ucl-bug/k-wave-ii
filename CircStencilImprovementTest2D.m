@@ -41,11 +41,12 @@ dt1=2e-7;
 Nt1=((4*radius/medium2D.soundSpeed)/dt1);
 
 solver=AcousticSolver(kgrid2D, medium2D, source, [],setting);
-solver.setVelocityBoundaryCondition(Circle)
+solver.setPressureBoundaryCondition(Circle)
+% solver.setVelocityBoundaryCondition(Circle)
 solver.run(Nt=600,dt=dt1);
 
 
-for j1=3:3
+for j1=7:7
     kgrid2DOG=Grid([ 2*(radius/dx + mVal(j1))+3, 2*(radius/dx + mVal(j1))+3 ],  dx , [20,20]);
     CircleOG=OffGrid(kgrid2DOG,pointcount,'circle',circ);
 
@@ -57,14 +58,15 @@ for j1=3:3
     solverOG=AcousticSolver(kgrid2DOG, medium2DOG, sourceOG, [],setting);
     CircleBC=OffGridBoundaryCondition(kgrid2DOG,CircleOG,accuracy=acc(j1),staggering="forward");
     CircleBC.mask=CircleBC.maskBuilder;
-    solverOG.setVelocityBoundaryCondition(CircleBC)
+    solverOG.setPressureBoundaryCondition(CircleBC)
+    % solverOG.setVelocityBoundaryCondition(CircleBC)
     solverOG.run(Nt=600,dt=dt1)
 
 
     figure(7*(j1-1)+j2)
     tiledlayout(2,4)
     nexttile(2)
-    imagesc(solverOG.kgrid.xVec,solverOG.kgrid.yVec,real(solverOG.pressure))
+    imagesc(solverOG.kgrid.xVec,solverOG.kgrid.yVec,real(solverOG.pressure),[-1,0])
     colorbar
     hold on
     plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
@@ -87,7 +89,7 @@ for j1=3:3
     ylim([-circ.radius,circ.radius])
 
     nexttile(3)
-    imagesc(solver.kgrid.xVec,solver.kgrid.yVec,solver.pressure)
+    imagesc(solver.kgrid.xVec,solver.kgrid.yVec,solver.pressure,[-1,0])
     xlim([-circ.radius,circ.radius])
     ylim([-circ.radius,circ.radius])
     colorbar
@@ -118,7 +120,7 @@ for j1=3:3
     xlim([-circ.radius,circ.radius])
     ylim([-circ.radius,circ.radius])
     nexttile(4)
-    imagesc(solverOG.kgrid.xVec,solverOG.kgrid.yVec,abs(solverOG.source.initialPressure-solverOG.pressure))
+    imagesc(solverOG.kgrid.xVec,solverOG.kgrid.yVec,abs(solverOG.source.initialPressure+solverOG.pressure))
     colorbar
     hold on
     plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')
@@ -126,7 +128,7 @@ for j1=3:3
     xlim([-circ.radius,circ.radius])
     ylim([-circ.radius,circ.radius])
     nexttile(8)
-    imagesc(solver.kgrid.xVec,solver.kgrid.yVec,abs(solver.source.initialPressure-solver.pressure))
+    imagesc(solver.kgrid.xVec,solver.kgrid.yVec,abs(solver.source.initialPressure+solver.pressure))
     colorbar
     hold on
     plot(CircleOG.kgridLocations(:,2),CircleOG.kgridLocations(:,1),'w')

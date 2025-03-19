@@ -93,8 +93,8 @@
 %%
 % 
 % 
-% clear
-% close all
+clear
+close all
 import kwave.toolbox.*
 kgrid2D = Grid([256, 256], 1e-3,[20,20]);
 circ.centre=[0,0];
@@ -135,10 +135,10 @@ solver3.setPressureBoundaryCondition(Circle)
 solver3.run(Nt=500,dt=1e-7); %On grid boundary condition velocity
 
 POINTS=[70,141,282,290,310,330,350,370,390];
-for j1=1:1
+for j1=4:4
 CircleOG=OffGrid(kgrid2D,POINTS(j1),'circle',circ);
 solver=AcousticSolver(kgrid2D, medium2D, source, CircleSensorOG,setting);
-CircleBC=OffGridBoundaryCondition(kgrid2D,CircleOG,accuracy=0.01);
+CircleBC=OffGridBoundaryCondition(kgrid2D,CircleOG,accuracy=0.001);
 CircleBC.mask=CircleBC.maskBuilder;
 solver.setPressureBoundaryCondition(CircleBC)
 % CircleBCFW=OffGridBoundaryCondition(kgrid2D,CircleOG,accuracy=0.01,staggering="forward");
