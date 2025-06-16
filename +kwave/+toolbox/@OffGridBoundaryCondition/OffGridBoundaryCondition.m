@@ -117,8 +117,8 @@ classdef OffGridBoundaryCondition < kwave.toolbox.BoundaryCondition
                     VariableBoundary(:,1)=VariableBoundary(:,1) + sum(obj.offGrid.BandLim(obj.gridLocations,obj.offGrid.gridLocations).' .* ReducedVariable1,1).';
                     VariableBoundary(:,2)=VariableBoundary(:,2) + sum(obj.offGrid.BandLim(obj.gridLocations,obj.offGrid.gridLocations).' .* ReducedVariable2,1).';
                     normalDeriv=sum( VariableBoundary.*(obj.offGrid.normalVector) ,2 );
-                    CurrBoundaryValue1= (obj.BoundaryValue - normalDeriv).*((obj.offGrid.normalVector(:,1)));
-                    CurrBoundaryValue2= (obj.BoundaryValue - normalDeriv).*((obj.offGrid.normalVector(:,2)));
+                    CurrBoundaryValue1= -(obj.BoundaryValue - normalDeriv).*((obj.offGrid.normalVector(:,1)));
+                    CurrBoundaryValue2= -(obj.BoundaryValue - normalDeriv).*((obj.offGrid.normalVector(:,2)));
                     
                     % Apply the inverse Matrix to how much each direction
                     % wants to change

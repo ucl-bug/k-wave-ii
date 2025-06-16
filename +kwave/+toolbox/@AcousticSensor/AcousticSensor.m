@@ -101,12 +101,12 @@ classdef AcousticSensor < kwave.toolbox.Sensor
                 obj.density(:,n)=obj.density(:,n)+Density(mask==1);
                 end
             end
-            if strcmp(obj.densitySensor,'on')
+            if strcmp(obj.velocitySensor,'on')
                 for dim=1:Solver.kgrid.dimensions
                     Velocity=Solver.velocity(:,:,:,dim);
                     obj.velocity(:,n,dim)=Velocity(mask==1,dim);
                 end
-            elseif strcmp(obj.densitySensor,'onGrid')
+            elseif strcmp(obj.velocitySensor,'onGrid')
                 for dim=1:Solver.kgrid.dimensions
                     GridVelocityPadded=stagger(Solver.velocityPadded(:,:,:,dim),Staggering='backward');
                     GridVelocity=Solver.kgrid.returnWithoutGridPadding(GridVelocityPadded(:,:,:,dim));

@@ -12,14 +12,14 @@ circ.radius=radius;
 circ.centre=[0,0];
 
 dxval=[1e-2,5e-3,1e-3,5e-4,1e-4]%,5e-5,1e-5];
-for j2=3:3 %7
+for j2=3:5 %7
 
 dx=dxval(j2)
 % dx=1e-3;
 
 pointcount=floor(2*radius*pi/dx);
 
-kgrid2D=Grid([ 2*(radius/dx)+3, 2*(radius/dx)+3 ],  dx , [20,20]);
+kgrid2D=Grid([ 2*radius*(1/dx)+5, 2*radius*(1/dx)+5 ],  dx , [20,20]);
 
 medium2D=Medium(kgrid2D);
 medium2D.materialIDGrid=1;
@@ -32,21 +32,21 @@ Circle=BoundaryCondition(kgrid2D);
 Circle.mask=zeros(kgrid2D.gridSize);
 % Circle.mask( (kgrid2D.x+kgrid2D.dx/2).^2 + (kgrid2D.y+kgrid2D.dy/2).^2 < (circ.radius +1*kgrid2D.dx/2)^2  )=1;
 % Circle.mask(  (kgrid2D.x+kgrid2D.dx/2).^2 + (kgrid2D.y+kgrid2D.dy/2).^2  < (circ.radius -1*kgrid2D.dx/2 )^2  )=0;
-Circle.mask( (kgrid2D.x).^2 + (kgrid2D.y).^2 < (circ.radius +1*kgrid2D.dx/2)^2  )=1;
-Circle.mask(  (kgrid2D.x).^2 + (kgrid2D.y).^2  < (circ.radius -1*kgrid2D.dx/2 )^2  )=0;
+Circle.mask( (kgrid2D.x).^2 + (kgrid2D.y).^2 < (circ.radius + 3*kgrid2D.dx/2)^2  )=1;
+Circle.mask(  (kgrid2D.x).^2 + (kgrid2D.y).^2  < (circ.radius -0*kgrid2D.dx/1 )^2  )=0;
 
-Circle.normalVector=zeros([2*(radius/dx)+3+40,2*(radius/dx)+3+40,1,2]);
-Circle.normalVector(21:end-20,21:end-20,:,1)=(kgrid2D.x+kgrid2D.dx/2) ./ sqrt( (kgrid2D.x+kgrid2D.dx/2).^2 + (kgrid2D.y).^2 );
-Circle.normalVector(21:end-20,21:end-20,:,2)=(kgrid2D.y+kgrid2D.dy/2) ./ sqrt( (kgrid2D.x).^2 + (kgrid2D.y+kgrid2D.dy/2).^2 );
+Circle.normalVector=zeros([2*radius*(1/dx)+5+40,2*radius*(1/dx)+5+40,1,2]);
+Circle.normalVector(21:end-20,21:end-20,:,1)=(kgrid2D.x) ./ sqrt( (kgrid2D.x).^2 + (kgrid2D.y).^2 );
+Circle.normalVector(21:end-20,21:end-20,:,2)=(kgrid2D.y) ./ sqrt( (kgrid2D.x).^2 + (kgrid2D.y).^2 );
 Circle.normalVector(isnan(Circle.normalVector))=0;
-dt1=2e-7;
+dt1=1e-7;
 Nt1=double((4*radius/medium2D.soundSpeed)/dt1);
 % wave at centre travels to the wall, and back, through the centre and reflects again to centre (4* radius) at the soundspeed
 % in d/V seconds, or (d/V)/dt time steps
 
 solver=AcousticSolver(kgrid2D, medium2D, source, [],setting);
-solver.setPressureBoundaryCondition(Circle)
-% solver.setVelocityBoundaryCondition(Circle)
+%solver.setPressureBoundaryCondition(Circle)
+solver.setVelocityBoundaryCondition(Circle)
 solver.run(Nt=Nt1,dt=dt1);
 
 
@@ -60,13 +60,13 @@ for j1=5:5
     sourceOG.initialPressure = exp( -((kgrid2DOG.x).^2+kgrid2DOG.y.^2+kgrid2DOG.z.^2) ./ (10 * kgrid2DOG.dx).^2 );
 
     solverOG=AcousticSolver(kgrid2DOG, medium2DOG, sourceOG, [],setting);
-    CircleBC=OffGridBoundaryCondition(kgrid2DOG,CircleOG,accuracy=acc(j1));
-    % CircleBC=OffGridBoundaryCondition(kgrid2DOG,CircleOG,accuracy=acc(j1),staggering="forward");
+    % CircleBC=OffGridBoundaryCondition(kgrid2DOG,CircleOG,accuracy=acc(j1));
+    CircleBC=OffGridBoundaryCondition(kgrid2DOG,CircleOG,accuracy=acc(j1),staggering="forward");
     CircleBC.mask=CircleBC.maskBuilder;
-    solverOG.setPressureBoundaryCondition(CircleBC)
+    % solverOG.setPressureBoundaryCondition(CircleBC)
     % solverOG.setVelocityBoundaryCondition(CircleBC)
-    solverOG.run(Nt=Nt1,dt=dt1)
-
+    % solverOG.run(Nt=Nt1,dt=dt1)
+    solverOG.run(Nt=1,dt=dt1)
 
     figure(7*(j1-1)+j2+1)
     tiledlayout(2,4)

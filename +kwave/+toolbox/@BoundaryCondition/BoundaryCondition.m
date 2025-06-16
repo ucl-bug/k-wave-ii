@@ -56,12 +56,19 @@ classdef BoundaryCondition < kwave.toolbox.GridInput
                     VariablePadded=applyDirichletBoundaryCondition(obj,VariablePadded);
                 case 2
                     %This does not change variable in the tangent direction           
-                        Value = obj.normalVector(:,:,:,1).*VariablePadded(:,:,:,1) + obj.normalVector(:,:,:,2).*VariablePadded(:,:,:,2);
-                        ChangeValue=obj.maskPadded.*obj.BoundaryValue - Value;
-                        Val1=(obj.maskPadded~=0).*ChangeValue.*obj.normalVector(:,:,:,1);
-                        Val2=(obj.maskPadded~=0).*ChangeValue.*obj.normalVector(:,:,:,2);
-                        VariablePadded(:,:,:,1)=VariablePadded(:,:,:,1) + Val1(:,:,:);
-                        VariablePadded(:,:,:,2)=VariablePadded(:,:,:,2) + Val2(:,:,:);
+                        % Value = obj.normalVector(:,:,:,1).*VariablePadded(:,:,:,1) + obj.normalVector(:,:,:,2).*VariablePadded(:,:,:,2);
+                        % ChangeValue=obj.maskPadded.*(obj.BoundaryValue - Value);
+                        % Val1=(obj.maskPadded~=0).*ChangeValue.*obj.normalVector(:,:,:,1);
+                        % Val2=(obj.maskPadded~=0).*ChangeValue.*obj.normalVector(:,:,:,2);
+                        % VariablePadded(:,:,:,1)=VariablePadded(:,:,:,1) + Val1(:,:,:);
+                        % VariablePadded(:,:,:,2)=VariablePadded(:,:,:,2) + Val2(:,:,:);
+
+                        %% special case
+                        VariablePadded(:,:,:,1)=VariablePadded(:,:,:,1).*(1-obj.maskPadded);
+                        VariablePadded(:,:,:,2)=VariablePadded(:,:,:,2).*(1-obj.maskPadded);
+
+                        %disp(max(max( abs(obj.maskPadded.*(obj.normalVector(:,:,:,1).*VariablePadded(:,:,:,2) - obj.normalVector(:,:,:,2).*VariablePadded(:,:,:,1) )))));
+                        %disp(max(max( abs(obj.maskPadded.*(obj.normalVector(:,:,:,1).*VariablePadded(:,:,:,1) + obj.normalVector(:,:,:,2).*VariablePadded(:,:,:,2) )))));
                 case 3
                     % Needs to be implemented
                     Value = obj.normalVector(:,:,:,1).*VariablePadded(:,:,:,1) + obj.normalVector(:,:,:,2).*VariablePadded(:,:,:,2)+ obj.normalVector(:,:,:,3).*VariablePadded(:,:,:,3);

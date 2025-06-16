@@ -221,13 +221,15 @@ if Nt~=0
         % Plot.
         if obj.settings.plotSimulation && (rem(tIndex-adj, obj.settings.plotFrequency) == 0 || tIndex == 1 || tIndex == Nt)
             figure(fig);
-            % tiledlayout(1,3)
-            % nexttile(1)
+            tiledlayout(1,4)
+            nexttile(1)
             obj.plotField(real(obj.pressure));
-            % nexttile(2)
-            % obj.plotField(real(densityPaddedStg.*obj.medium.soundSpeedPadded.*obj.velocity(:,:,:,1)));
-            % nexttile(3)
-            % obj.plotField(real(densityPaddedStg.*obj.medium.soundSpeedPadded.*obj.velocity(:,:,:,2)));
+            nexttile(2)
+            obj.plotField(real(densityPaddedStg.*obj.medium.soundSpeedPadded.*obj.velocity(:,:,:,1)));
+            nexttile(3)
+            obj.plotField(real(densityPaddedStg.*obj.medium.soundSpeedPadded.*obj.velocity(:,:,:,2)));
+            % nexttile(4)
+            % obj.plotField(real(densityPaddedStg.*obj.medium.soundSpeedPadded.*( obj.velocity(:,:,:,1).*obj.VelocityBoundaryCondition.normalVector(21:end-20,21:end-20,:,2) - obj.velocity(:,:,:,2).*obj.VelocityBoundaryCondition.normalVector(21:end-20,21:end-20,:,1) )));
         end
 
     end

@@ -45,4 +45,11 @@ classdef Sensor < kwave.toolbox.GridInput
             end
         end
     end
+
+%% Add method to initialise sensor reading
+
+%% Add method to record sensor reading, this way when off-grid overwrites it can use the offgrid methods in recording
+
+%% Acoustic sensor then needs to be able to set up and use multiple sensors as required
+
 end
