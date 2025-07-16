@@ -58,7 +58,7 @@ function run(obj, options)
 
 arguments
     obj
-    options.Nt {mustBeScalarOrEmpty, mustBeInteger, mustBePositive, mustBeFinite} = []
+    options.Nt {mustBeScalarOrEmpty, mustBeInteger, mustBeNonnegative, mustBeFinite} = []
     options.dt {mustBeScalarOrEmpty, mustBeNumeric, mustBePositive, mustBeFinite} = []
     options.CFL {mustBeScalarOrEmpty, mustBeNumeric, mustBePositive, mustBeFinite} = []
     options.EndTime {mustBeScalarOrEmpty, mustBeNumeric, mustBePositive, mustBeFinite} = []
@@ -75,6 +75,11 @@ kwave.toolbox.Logger.info(['Calling ' class(obj) '.run...']);
 obj.kgrid.displayGridSize();
 kwave.toolbox.Logger.info(['  dt: ' kwave.utilities.scaleSI(options.dt) 's, end time: ' kwave.utilities.scaleSI(options.dt * options.Nt) 's, time steps: ' num2str(options.Nt)]);
 
+if (obj.timeStepsTaken==0)
+    % Set initial conditions.
+    obj.setInitialConditions;
+end
+
 obj.executeTimeStep(options.Nt, options.dt);
 
 elapsedTime = between(startTime, datetime('now'));
@@ -84,7 +89,8 @@ kwave.toolbox.Logger.info(['  run completed in ' kwave.utilities.formatDuration(
 obj.prevTimeStep = options.dt;
 obj.timeStepsTaken = obj.timeStepsTaken + options.Nt;
 if isempty(obj.timeArray)
-    obj.timeArray = (0:(options.Nt - 1)) * options.dt;
+    obj.timeArray = (0:(options.Nt)) * options.dt;
 else
     obj.timeArray = [obj.timeArray, obj.timeArray(end) + (1:options.Nt) * options.dt];
+end
 end

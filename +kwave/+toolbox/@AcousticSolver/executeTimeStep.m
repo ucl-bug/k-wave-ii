@@ -35,7 +35,7 @@ function executeTimeStep(obj, Nt, dt)
 
 arguments
     obj
-    Nt(1,1) {mustBeInteger, mustBePositive, mustBeFinite}
+    Nt(1,1) {mustBeInteger, mustBeNonnegative, mustBeFinite}
     dt(1,1) {mustBeNumeric, mustBePositive, mustBeFinite}
 end
 
@@ -72,27 +72,74 @@ if (obj.settings.plotSimulation)
     fig = figure;
 end
 
-for tIndex = 1:Nt
+if (obj.timeStepsTaken == 0)
+    % Adds a time step if initial conditions need applying.
+    Nt=Nt+1;
+end
 
-    if (tIndex == 1)
-        if (obj.timeStepsTaken == 0)
-            % Set initial conditions for a photoacoustic initial value problem.
-            % We do this here, rather than in setInitialConditions, as setting
-            % the initial particle velocity requires the time step. The
-            % calculated density term is automatically copied to all components
-            % of densitySplit via implicit expansion.
-            obj.pressurePadded = obj.source.initialPressurePadded;
-            obj.densitySplitPadded = obj.densitySplitPadded + obj.source.initialPressurePadded ./ (obj.dimensions * obj.medium.soundSpeedPadded.^2);
-            obj.velocityPadded = (dt ./ densityPaddedStg) .* gradient(obj.pressurePadded) / 2;
-        else
-            % Momentum conservation equation.
-            % kspace corrected with split time step with current time
-            % considerations. Need to add method that transforms and
-            % untransforms F^-1(F(U(t))kappa_2(k))
+if Nt~=0
+    %If no time steps are taken for a system that has been run then the
+    %original solution is passed back out.
+    for tIndex = 1:Nt
+
+        if (tIndex == 1)
+            if (obj.timeStepsTaken == 0)
+
+                if isempty(obj.source.initialVelocity)
+                    % Sets initial conditions with velocity(t=0)=0 through
+                    % assuming V(-t)=v(t).
+                    obj.pressurePadded = obj.pressurePadded + obj.source.initialPressurePadded;
+                    obj.densitySplitPadded = obj.densitySplitPadded + obj.source.initialPressurePadded ./ (obj.dimensions * obj.medium.soundSpeedPadded.^2);
+                    obj.velocityPadded = (dt ./ densityPaddedStg) .* gradient(obj.pressurePadded) / 2;
+
+                else
+                    % If Velocity Initial condition is given the initial
+                    % conditions account for staggering and the offset time
+                    % stepping
+                    obj.pressurePadded = obj.pressurePadded + obj.source.initialPressurePadded;
+                    obj.densitySplitPadded = obj.densitySplitPadded + obj.source.initialPressurePadded ./ (obj.dimensions * obj.medium.soundSpeedPadded.^2);
+                    
+                    initialVelocityDimensional=zeros([obj.kgridPadded.gridSize,obj.kgrid.dimensions])+obj.source.initialVelocityPadded;
+                    for dim=1:obj.kgrid.dimensions
+                        initialVelcoityStaggered=obj.stagger(initialVelocityDimensional(:,:,:,dim), Type='fourier');
+                        obj.velocityPadded(:,:,:,dim) = obj.velocityPadded(:,:,:,dim) + initialVelcoityStaggered(:,:,:,dim);
+                    end
+                    clear('initialVelcoityStaggered','initialVelocityDimensional')
+                    obj.prevTimeStep=0;
+                    dt = (currentTimeStep)/2;
+                    obj.pml.setupQuarticPML(dt, obj.medium.soundSpeedReference);
+                    obj.setkSpaceCorrection(currentTimeStep);
+                end
+            else
+                %If a continued solution alternative correction terms are
+                %required for the first half time step.
+                obj.velocityPadded = pmlSG(pmlSG(obj.velocityPadded) - (dt ./ densityPaddedStg) .* gradient(obj.pressurePadded) + dt .* obj.kappaSplitCorrection( pmlSG(obj.velocityPadded)) );
+
+                dt = currentTimeStep;
+                obj.prevTimeStep = currentTimeStep;
+                obj.setkSpaceCorrection(currentTimeStep);
+                obj.pml.setupQuarticPML(currentTimeStep, obj.medium.soundSpeedReference);
+
+                % Mass conservation equation.
+                obj.densitySplitPadded = pml(pml(obj.densitySplitPadded) - dt .* obj.medium.densityPadded .* divergence(obj.velocityPadded));
+
+                % Pressure density relation.
+                obj.pressurePadded = obj.medium.soundSpeedPadded.^2 .* ( sum(obj.densitySplitPadded, 4));
+
+                % If absorptionPower declaired then add absorption terms
+                if ~strcmp(obj.absorptionType,'off')
+                    obj.pressurePadded =  obj.pressurePadded  +  obj.medium.soundSpeedPadded.^2 .* ( ...
+                        obj.absorbTauPadded .* fracLaplacian(obj, obj.medium.densityPadded .* sum(divergence(obj.velocityPadded),4), obj.medium.absorptionPower/2 -1 ) + ...
+                        obj.absorbEtaPadded .* fracLaplacian(obj, sum(obj.densitySplitPadded,4), obj.medium.absorptionPower/2 -0.5 ) ) ;
+                end
+            end
+        elseif (tIndex==2) && (obj.timeStepsTaken == 0) && ~isempty(obj.source.initialVelocity)
+            % when an initial velocity was given and was required for
+            % initial conditions the solution accounts for the adjusted
+            % time steps.
             obj.velocityPadded = pmlSG(pmlSG(obj.velocityPadded) - (dt ./ densityPaddedStg) .* gradient(obj.pressurePadded) + dt .* obj.kappaSplitCorrection( pmlSG(obj.velocityPadded)) );
 
             dt = currentTimeStep;
-
             obj.prevTimeStep = currentTimeStep;
             obj.setkSpaceCorrection(currentTimeStep);
             obj.pml.setupQuarticPML(currentTimeStep, obj.medium.soundSpeedReference);
@@ -109,34 +156,34 @@ for tIndex = 1:Nt
                     obj.absorbTauPadded .* fracLaplacian(obj, obj.medium.densityPadded .* sum(divergence(obj.velocityPadded),4), obj.medium.absorptionPower/2 -1 ) + ...
                     obj.absorbEtaPadded .* fracLaplacian(obj, sum(obj.densitySplitPadded,4), obj.medium.absorptionPower/2 -0.5 ) ) ;
             end
+        else
+
+            % Usual time stepping
+
+            % Momentum conservation equation.
+            obj.velocityPadded = pmlSG(pmlSG(obj.velocityPadded) - (dt ./ densityPaddedStg) .* gradient(obj.pressurePadded));
+
+            % Mass conservation equation.
+            obj.densitySplitPadded = pml(pml(obj.densitySplitPadded) - dt .* obj.medium.densityPadded .* divergence(obj.velocityPadded));
+
+            % Pressure density relation.
+            obj.pressurePadded = obj.medium.soundSpeedPadded.^2 .* ( sum(obj.densitySplitPadded, 4));
+
+            % If absorptionPower declaired then add absorption terms
+            if ~strcmp(obj.absorptionType,'off')
+                obj.pressurePadded =  obj.pressurePadded  +  obj.medium.soundSpeedPadded.^2 .* ( ...
+                    obj.absorbTauPadded .* fracLaplacian(obj, obj.medium.densityPadded .* sum(divergence(obj.velocityPadded),4), obj.medium.absorptionPower/2 -1 ) + ...
+                    obj.absorbEtaPadded .* fracLaplacian(obj, sum(obj.densitySplitPadded,4), obj.medium.absorptionPower/2 -0.5 ) ) ;
+            end
         end
-    else
 
-        % Momentum conservation equation.
-        obj.velocityPadded = pmlSG(pmlSG(obj.velocityPadded) - (dt ./ densityPaddedStg) .* gradient(obj.pressurePadded));
-
-        % Mass conservation equation.
-        obj.densitySplitPadded = pml(pml(obj.densitySplitPadded) - dt .* obj.medium.densityPadded .* divergence(obj.velocityPadded));
-
-        % Pressure density relation.
-        obj.pressurePadded = obj.medium.soundSpeedPadded.^2 .* ( sum(obj.densitySplitPadded, 4));
-
-        % If absorptionPower declaired then add absorption terms
-        if ~strcmp(obj.absorptionType,'off')
-            obj.pressurePadded =  obj.pressurePadded  +  obj.medium.soundSpeedPadded.^2 .* ( ...
-                obj.absorbTauPadded .* fracLaplacian(obj, obj.medium.densityPadded .* sum(divergence(obj.velocityPadded),4), obj.medium.absorptionPower/2 -1 ) + ...
-                obj.absorbEtaPadded .* fracLaplacian(obj, sum(obj.densitySplitPadded,4), obj.medium.absorptionPower/2 -0.5 ) ) ;
-
+        % Plot.
+        if obj.settings.plotSimulation && (rem(tIndex, obj.settings.plotFrequency) == 0 || tIndex == 1 || tIndex == Nt)
+            figure(fig);
+            obj.plotField(obj.pressure);
         end
 
     end
-
-end
-
-% Plot.
-if obj.settings.plotSimulation && (rem(tIndex, obj.settings.plotFrequency) == 0 || tIndex == 1 || tIndex == Nt)
-    figure(fig);
-    obj.plotField(obj.pressure);
 end
 
 end
