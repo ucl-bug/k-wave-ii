@@ -36,7 +36,9 @@
 %   simulation settings.
 %
 %% Properties
-% * |timeArray| - (double) Time points at which update steps were taken.
+% * |prevTimeStep| - (single) Size of the time step used in the last call
+%   to |run|. Set to an empty array if |run| hasn't been called.
+% * |timeArray| - (single) Time points at which update steps were taken.
 % * |timeStepsTaken| - (integer) Number of time steps taken.
 %
 %% Methods
@@ -67,8 +69,9 @@
 classdef(Abstract) TimeDomainSolver < kwave.toolbox.Solver
 
     properties(SetAccess=protected)
+        prevTimeStep single {mustBeScalarOrEmpty} = []
+        timeArray single = []
         timeStepsTaken(1,1) uint64 = 0
-        timeArray single
     end
 
     % Constructor.
@@ -84,9 +87,6 @@ classdef(Abstract) TimeDomainSolver < kwave.toolbox.Solver
 
             % Pass input arguments to superclass constructor.
             obj@kwave.toolbox.Solver(kgrid, medium, source, sensor, settings)
-
-            % Set initial conditions.
-            obj.setInitialConditions;
 
         end
     end
