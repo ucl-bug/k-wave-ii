@@ -30,9 +30,10 @@
 classdef AcousticSource < kwave.toolbox.GridInput
 
     properties(Constant, Hidden=true)
-        requiredProperties = {};
+        requiredProperties = {'initialPressure'};
         gridFields = kwave.toolbox.GridField.createGridFieldsMap([
             kwave.toolbox.GridField('initialPressure', Attributes={'real', 'finite'})
+            kwave.toolbox.GridField('initialVelocity', Attributes={'real', 'finite'}, Type=kwave.toolbox.GridFieldType.VectorField)
         ]);
     end
 
