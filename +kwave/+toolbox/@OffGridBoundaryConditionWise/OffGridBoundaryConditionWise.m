@@ -1,4 +1,4 @@
-%% OffGridBoundaryCondition
+%% OffGridBoundaryConditionKing
 % *Package:* kwave.toolbox
 %
 %% Description
@@ -27,7 +27,7 @@
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
-classdef OffGridBoundaryCondition < kwave.toolbox.BoundaryCondition
+classdef OffGridBoundaryConditionWise < kwave.toolbox.BoundaryCondition
     
     properties(SetAccess=public,Hidden=false)
         offGrid
@@ -37,16 +37,12 @@ classdef OffGridBoundaryCondition < kwave.toolbox.BoundaryCondition
 
     properties(SetAccess=private, Hidden=true)
         gridLocations
-        fullGridLocations
-        boundaryInterpolationMatrix
-        applicationMatrix
-        applicationReorder
 
     end
 
     % Constructor.
     methods
-        function obj=OffGridBoundaryCondition(kgrid,offGrid,options)
+        function obj=OffGridBoundaryConditionWise(kgrid,offGrid,options)
             arguments
                 kgrid(1,1) kwave.toolbox.Grid
                 offGrid(1,1) kwave.toolbox.OffGrid
@@ -70,24 +66,6 @@ classdef OffGridBoundaryCondition < kwave.toolbox.BoundaryCondition
             end
             obj.offGrid.gridLocations = obj.offGrid.gridLocations - shift;
             
-            % Mask builder Steps
-                % 1) identify the closest grid points
-                % 1b) build mask
-                % 2) construct the inverse BLI matrix
-                % 3) construct apply boundary condition matrix
-
-
-                if obj.kgrid.totalGridPoints< obj.offGrid.gridSize
-                    error("Too many boundary points. must be at most as many as total grid points.")
-                end
-                
-                
-            obj.gridLocations=zeros(obj.offGrid.gridSize,obj.kgrid.dimensions);
-            obj.fullGridLocations=zeros(obj.kgrid.totalGridPoints,obj.kgrid.dimensions);
-            metric=zeros(obj.offGrid.gridSize,1)+1e12;
-            indicies=zeros(obj.offGrid.gridSize,1);
-            [Maxi,indMax]=max(metric);
-
             for j1=1:obj.kgrid.totalGridPoints
                 switch obj.kgrid.dimensions
                     case 1
@@ -97,22 +75,11 @@ classdef OffGridBoundaryCondition < kwave.toolbox.BoundaryCondition
                     case 3
                         gridPoint=[obj.kgrid.x(j1)/obj.kgrid.gridSpacing(1),obj.kgrid.y(j1)/obj.kgrid.gridSpacing(2),obj.kgrid.z(j1)/obj.kgrid.gridSpacing(3)];
                 end
-                obj.fullGridLocations(j1,:)=gridPoint;
-                if min(sum( abs(obj.offGrid.gridLocations - gridPoint).^2 ,2)) <= Maxi
-                    metric(indMax)= min(sum( abs(obj.offGrid.gridLocations - gridPoint).^2 ,2));
-                    indicies(indMax)=j1;
-                    obj.gridLocations(indMax,:)=gridPoint;
-                    [Maxi,indMax]=max(metric);
-                    
-                end
+                obj.gridLocations(j1,:)=gridPoint;
             end
-            obj.maskBuilder(indicies)=1;
-
-            [obj.gridLocations(:,1),obj.applicationReorder]=sort(obj.gridLocations(:,1));
-           % obj.gridLocations(:,2)=obj.gridLocations(obj.applicationReorder,2);
-            obj.boundaryInterpolationMatrix=obj.offGrid.BandLim(obj.fullGridLocations,obj.offGrid.gridLocations);
-            obj.applicationMatrix=obj.offGrid.BandLim(obj.offGrid.gridLocations,obj.gridLocations);
-            %Need to think about shifts for Neumann
+            Dists=sum(obj.offGrid.ValidGridpointDistance(obj.offGrid.gridLocations,obj.gridLocations ,obj.accuracy),2);
+            obj.maskBuilder(Dists>=1)=1;
+            obj.gridLocations=obj.gridLocations(Dists>=1,:);
         end
     end
 
@@ -120,17 +87,18 @@ classdef OffGridBoundaryCondition < kwave.toolbox.BoundaryCondition
     methods(Access=public)
 
         function VariablePadded=applyDirichletBoundaryCondition(obj,VariablePadded)
-            
-            % Recall the Vealues validated by ValidGridPointDistance
+            % Recall the Values validated by ValidGridPointDistance
             ReducedVariable=VariablePadded(obj.maskPadded==1);
-            ReducedVariable2=ReducedVariable(obj.applicationReorder);
             % For each boundary point compute the pressure
-            VariableBoundary=zeros(obj.offGrid.gridSize,1);
-            VariableBoundary=VariableBoundary + sum(obj.boundaryInterpolationMatrix.*reshape(obj.kgrid.returnWithoutGridPadding(VariablePadded),1,[]),2) ;
+            VariableBoundary=zeros(1,obj.offGrid.gridSize);
+            VariableBoundary=VariableBoundary +  sum(obj.offGrid.BandLim(obj.gridLocations,obj.offGrid.gridLocations).' .* ReducedVariable,1);
             % Apply the inverse Matrix
-            GridChange =  (obj.applicationMatrix) \ (obj.BoundaryValue-VariableBoundary);
-            ReducedVariable(obj.applicationReorder)=ReducedVariable2 + real(GridChange);
-            VariablePadded(obj.maskPadded==1)=ReducedVariable ;
+            BoundaryChange =  obj.offGrid.InvBandLimMatrix * (obj.BoundaryValue-VariableBoundary.');
+            %Compute the Grid re-weighting
+            GridChange=zeros(length(obj.gridLocations(:,1)),1);
+            GridChange=GridChange + sum( obj.offGrid.BandLimGrid(obj.gridLocations,obj.offGrid.gridLocations,obj.accuracy) .* BoundaryChange,1).';
+            % For each grid Location compute the new pressure
+            VariablePadded(obj.maskPadded==1)=ReducedVariable + real(GridChange) ;
 
         end
 

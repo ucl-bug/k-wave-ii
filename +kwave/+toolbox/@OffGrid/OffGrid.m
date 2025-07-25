@@ -136,12 +136,13 @@ classdef OffGrid < handle
                     Nxi=gridSize;
                     kgridLocations=zeros(Nxi,2);
                     obj.normalVector=zeros(Nxi,2);
+                    
+                    Offset= pi*rand(1,1);
+                    kgridLocations(:,1)=options.centre(1)+options.radius.*cos((-pi:2*pi/(Nxi):pi*(Nxi-1)/Nxi) );
+                    kgridLocations(:,2)=options.centre(2)+options.radius.*sin((-pi:2*pi/(Nxi):pi*(Nxi-1)/Nxi) );
 
-                    kgridLocations(:,1)=options.centre(1)+options.radius.*cos(-pi:2*pi/(Nxi):pi*(Nxi-1)/Nxi);
-                    kgridLocations(:,2)=options.centre(2)+options.radius.*sin(-pi:2*pi/(Nxi):pi*(Nxi-1)/Nxi);
-
-                    obj.normalVector(:,1)=cos(-pi:2*pi/(Nxi):pi*(Nxi-1)/Nxi);
-                    obj.normalVector(:,2)=sin(-pi:2*pi/(Nxi):pi*(Nxi-1)/Nxi);
+                    obj.normalVector(:,1)=cos((-pi:2*pi/(Nxi):pi*(Nxi-1)/Nxi) );
+                    obj.normalVector(:,2)=sin((-pi:2*pi/(Nxi):pi*(Nxi-1)/Nxi) );
 
                     obj.kgridLocations=kgridLocations;
                     assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
@@ -242,8 +243,8 @@ classdef OffGrid < handle
             v=pi*(x1-x2);
             BandLimPointCoEven = sin(v) ./ ( obj.kgrid.gridSize(n) * tan (v/( obj.kgrid.gridSize(n))) );
             BandLimPointCoEven(isnan(BandLimPointCoEven ))=1;
-            BandLimPointCoEven = BandLimPointCoEven - sin(pi*(x1)).*sin(pi*(x2))/( obj.kgrid.gridSize(n))  ...
-                + 1i* sin(pi*(x1)).*cos(pi*(x2))/( obj.kgrid.gridSize(n));
+            %BandLimPointCoEven = BandLimPointCoEven - sin(pi*(x1)).*sin(pi*(x2))/( obj.kgrid.gridSize(n))  ...
+            %    + 1i* sin(pi*(x1)).*cos(pi*(x2))/( obj.kgrid.gridSize(n));
         end
 
         function BandLimGridPoint=BandLimGrid(obj,x1,x2,accuracy)

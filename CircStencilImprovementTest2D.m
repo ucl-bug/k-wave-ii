@@ -12,7 +12,7 @@ circ.radius=radius;
 circ.centre=[0,0];
 
 dxval=[1e-2,5e-3,1e-3,5e-4,1e-4]%,5e-5,1e-5];
-for j2=3:5 %7
+for j2=3:3 %7
 
 dx=dxval(j2)
 % dx=1e-3;
@@ -40,17 +40,17 @@ Circle.normalVector(21:end-20,21:end-20,:,1)=(kgrid2D.x) ./ sqrt( (kgrid2D.x).^2
 Circle.normalVector(21:end-20,21:end-20,:,2)=(kgrid2D.y) ./ sqrt( (kgrid2D.x).^2 + (kgrid2D.y).^2 );
 Circle.normalVector(isnan(Circle.normalVector))=0;
 dt1=1e-7;
-Nt1=double((4*radius/medium2D.soundSpeed)/dt1);
+Nt1=2*double((4*radius/medium2D.soundSpeed)/dt1);
 % wave at centre travels to the wall, and back, through the centre and reflects again to centre (4* radius) at the soundspeed
 % in d/V seconds, or (d/V)/dt time steps
 
 solver=AcousticSolver(kgrid2D, medium2D, source, [],setting);
-%solver.setPressureBoundaryCondition(Circle)
-solver.setVelocityBoundaryCondition(Circle)
+solver.setPressureBoundaryCondition(Circle)
+% solver.setVelocityBoundaryCondition(Circle)
 solver.run(Nt=Nt1,dt=dt1);
 
 
-for j1=5:5
+for j1=4:4
     kgrid2DOG=Grid([ 2*(radius/dx + mVal(j1))+3, 2*(radius/dx + mVal(j1))+3 ],  dx , [20,20]);
     CircleOG=OffGrid(kgrid2DOG,pointcount,'circle',circ);
 
@@ -63,10 +63,10 @@ for j1=5:5
     % CircleBC=OffGridBoundaryCondition(kgrid2DOG,CircleOG,accuracy=acc(j1));
     CircleBC=OffGridBoundaryCondition(kgrid2DOG,CircleOG,accuracy=acc(j1),staggering="forward");
     CircleBC.mask=CircleBC.maskBuilder;
-    % solverOG.setPressureBoundaryCondition(CircleBC)
+    solverOG.setPressureBoundaryCondition(CircleBC)
     % solverOG.setVelocityBoundaryCondition(CircleBC)
-    % solverOG.run(Nt=Nt1,dt=dt1)
-    solverOG.run(Nt=1,dt=dt1)
+    solverOG.run(Nt=Nt1,dt=dt1)
+    % solverOG.run(Nt=1,dt=dt1)
 
     figure(7*(j1-1)+j2+1)
     tiledlayout(2,4)

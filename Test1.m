@@ -39,16 +39,20 @@ import kwave.toolbox.*
         source.initialPressure = zeros(Nx,1);
         source.initialPressure(ceil(3*Nx/4):Nx) = -(cos( 2*pi*(((ceil(3*Nx/4):Nx)-ceil(6*Nx/8))/(Nx-ceil(3*Nx/4))))-1);
         solver=AcousticSolver(kgrid1D, medium1D, source, sensor,setting);
-
-        BC1=OffGridBoundaryCondition(kgrid1D,OG,accuracy=0.005);
+        
+        
+        BC1=OffGridBoundaryConditionWise(kgrid1D,OG,accuracy=0.005);
         BC1.mask=BC1.maskBuilder;
-
-        BC2=OffGridBoundaryCondition(kgrid1D,OG,accuracy=0.005,staggering='forward');
-        BC2.mask=BC2.maskBuilder;
         solver.setPressureBoundaryCondition(BC1)
-        % solver.setVelocityBoundaryCondition(BC2)
 
         solver.run(Nt=800,dt=2.5e-7)
+        
+        solver2=AcousticSolver(kgrid1D, medium1D, source, sensor,setting);
+        BC1=OffGridBoundaryCondition(kgrid1D,OG,accuracy=0.005);
+        BC1.mask=BC1.maskBuilder;
+        solver2.setPressureBoundaryCondition(BC1)
+        solver2.run(Nt=800,dt=2.5e-7)
+
        %  figure(num+1)
        %  plot(solver.timeArray,solver.sensor.pressure(5,:))
        %  hold on

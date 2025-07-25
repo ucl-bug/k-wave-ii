@@ -45,13 +45,16 @@ ck = obj.medium.soundSpeedReference * obj.kgridPadded.k;
 if (dt ~= obj.prevTimeStep)
     dt2 = dt;
     dt1 = obj.prevTimeStep;
-    
+
     obj.kappaSplit = ifftshift ( 2 * (cos( ck * dt2/2) ./ cos( ck * dt1/2) -1) ./ ((dt1 + dt2)) );
     obj.kappa = ifftshift ( 2 * (sin( ck * dt2/2) + sin( ck * dt1/2).* (cos( ck * dt2/2) ./ cos( ck * dt1/2) ) )./ (ck * (dt1 + dt2)));
     obj.kappa(isnan(obj.kappa)) = 1;
     obj.kappaSplit(isnan(obj.kappaSplit)) = 1;
-    
+
 else
     obj.kappa = ifftshift(kwave.toolbox.FourierCollocation.sinc(ck * dt/2));
     obj.kappaSplit=0;
 end
+% obj.kappa = 1;
+% obj.kappaSplit=0;
+
