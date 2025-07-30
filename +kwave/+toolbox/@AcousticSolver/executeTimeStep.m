@@ -72,9 +72,12 @@ if (obj.settings.plotSimulation)
     fig = figure;
 end
 
+adj=0;
+
 if (obj.timeStepsTaken == 0)
     % Adds a time step if initial conditions need applying.
     Nt=Nt+1;
+    adj=1;
 end
 
 if Nt~=0
@@ -177,8 +180,18 @@ if Nt~=0
             end
         end
 
+        if ~isempty(obj.sensor) && rem(tIndex-adj, obj.sensor.timeSteps) == 0
+            if ~isempty(obj.timeArray)
+                obj.timePoint=obj.timeArray(end)+(tIndex-adj)*dt;
+            else
+                obj.timePoint=(tIndex-adj)*dt;
+            end
+            obj.sensor.sensorIndex=obj.sensor.sensorIndex+1;
+            obj.sensor.recordSensorData(obj,obj.sensor.sensorIndex);
+        end
+
         % Plot.
-        if obj.settings.plotSimulation && (rem(tIndex, obj.settings.plotFrequency) == 0 || tIndex == 1 || tIndex == Nt)
+        if obj.settings.plotSimulation && (rem(tIndex-adj, obj.settings.plotFrequency) == 0 || tIndex == 1 || tIndex == Nt)
             figure(fig);
             obj.plotField(obj.pressure);
         end
