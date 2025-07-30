@@ -334,7 +334,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             medium1DL.sound_speed=c0;
             medium1DL.density=rho0;
             sensor1DL.record={'p_final'};
-            sensor_data1 = kspaceFirstOrder1D(kgrid1DL, medium1DL, source1DL, sensor1DL,'PMLInside',false,'Smooth',false);
+            sensor_data1 = kspaceFirstOrder1D(kgrid1DL, medium1DL, source1DL, sensor1DL,'PMLInside',false,'Smooth',false,'PlotSim',false);
             testCase.verifyThat(solver1D.pressure, IsEqualTo(single(sensor_data1.p_final), "Within", tol));
 
             % Staggered Density
@@ -344,7 +344,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             medium1DL.density=rho0M;
             solver1D = AcousticSolver(kgrid1D, medium1D, source1D, [], settings);
             solver1D.run(Nt=Nt, dt=dt);
-            sensor_data1 = kspaceFirstOrder1D(kgrid1DL, medium1DL, source1DL, sensor1DL,'PMLInside',false,'Smooth',false);
+            sensor_data1 = kspaceFirstOrder1D(kgrid1DL, medium1DL, source1DL, sensor1DL,'PMLInside',false,'Smooth',false,'PlotSim',false);
             testCase.verifyThat(solver1D.pressure, IsEqualTo(single(sensor_data1.p_final), "Within", tol));
 
             % PowerLaw
@@ -355,7 +355,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             solver1D = AcousticSolver(kgrid1D, medium1D, source1D, [], settings);
             solver1D.absorptionType="on";
             solver1D.run(Nt=Nt, dt=dt);
-            sensor_data1 = kspaceFirstOrder1D(kgrid1DL, medium1DL, source1DL, sensor1DL,'PMLInside',false,'Smooth',false);
+            sensor_data1 = kspaceFirstOrder1D(kgrid1DL, medium1DL, source1DL, sensor1DL,'PMLInside',false,'Smooth',false,'PlotSim',false);
             testCase.verifyThat(solver1D.pressure, IsEqualTo(single(sensor_data1.p_final), "Within", tol));
 
             % 2D case no dispersion
@@ -391,7 +391,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             medium2DxL.alpha_coeff=alpha0;
             sensor2DxL.record={'p_final'};
             medium2DxL.alpha_mode='no_dispersion';
-            sensor_data2x = kspaceFirstOrder2D(kgrid2DxL, medium2DxL, source2DxL, sensor2DxL,'PMLInside',false,'Smooth',false,'PMLSize',[pmlSize,0]);
+            sensor_data2x = kspaceFirstOrder2D(kgrid2DxL, medium2DxL, source2DxL, sensor2DxL,'PMLInside',false,'Smooth',false,'PMLSize',[pmlSize,0],'PlotSim',false);
             kgrid2DyL=kWaveGrid(Nlat,dx,Nax,dx);
             kgrid2DyL.setTime(Nt+1, dt)
             source2DyL.p0= repmat(reshape(source1D.initialPressure, 1, []), [Nlat, 1]);
@@ -401,7 +401,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             medium2DyL.alpha_coeff=alpha0;
             sensor2DyL.record={'p_final'};
             medium2DyL.alpha_mode='no_absorption';
-            sensor_data2y = kspaceFirstOrder2D(kgrid2DyL, medium2DyL, source2DyL, sensor2DyL,'PMLInside',false,'Smooth',false,'PMLSize',[0,pmlSize]);
+            sensor_data2y = kspaceFirstOrder2D(kgrid2DyL, medium2DyL, source2DyL, sensor2DyL,'PMLInside',false,'Smooth',false,'PMLSize',[0,pmlSize],'PlotSim',false);
 
             testCase.verifyThat(solver2Dx.pressure, IsEqualTo(single(sensor_data2x.p_final), "Within", tol));
             testCase.verifyThat(solver2Dy.pressure, IsEqualTo(single(sensor_data2y.p_final), "Within", tol));
@@ -426,7 +426,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             medium3DxL.alpha_power  = 1.2;
             medium3DxL.alpha_coeff=alpha0*0.9;
             sensor3DxL.record={'p_final'};
-            sensor_data3x = kspaceFirstOrder3D(kgrid3DxL, medium3DxL, source3DxL, sensor3DxL,'PMLInside',false,'Smooth',false,'PMLSize',[pmlSize,0,0]);
+            sensor_data3x = kspaceFirstOrder3D(kgrid3DxL, medium3DxL, source3DxL, sensor3DxL,'PMLInside',false,'Smooth',false,'PMLSize',[pmlSize,0,0],'PlotSim',false);
             testCase.verifyThat(solver3Dx.pressure, IsEqualTo(single(sensor_data3x.p_final), "Within", tol));
         end
 
@@ -937,6 +937,123 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             testCase.verifyThat(density3Dz,  IsEqualTo(density1D,  "Within", tol)); %
             testCase.verifyThat(velocity3Dz, IsEqualTo(velocity1D, "Within", tol)); %
 
+        end
+
+        function testAgainstLegacyNonLinearity(testCase)
+
+            import kwave.toolbox.*
+            import kwave.legacy.*
+            import matlab.unittest.constraints.IsEqualTo
+
+            % Define tolerance for field comparisons.
+            tol = matlab.unittest.constraints.AbsoluteTolerance(single(1e-6));
+
+            % Test properties.
+            Nax = 256;
+            Nlat = 16;
+            dx = 4e-3;
+            c0 = 1500;
+            rho0 = 1000;
+            alpha0=0.5;
+            BonA=6;
+            pmlSize = 20;
+            CFL = 0.25;
+            Nt = 150;
+            dt = CFL * dx / c0;
+
+            % New setup
+            kgrid1D = Grid(Nax, dx, pmlSize);
+            medium1D = AcousticMedium(kgrid1D);
+            medium1D.soundSpeed  = c0;
+            medium1D.density  = rho0;
+            source1D = AcousticSource(kgrid1D);
+            source1D.initialPressure = exp( -(kgrid1D.xVec - 25e-3).^2 ./ (5 * kgrid1D.dx).^2 );
+            settings = Settings;
+            settings.plotSimulation = 'off';
+            solver1D = AcousticSolver(kgrid1D, medium1D, source1D, [], settings);
+            solver1D.run(Nt=Nt, dt=dt);
+            % Legacy setup
+            kgrid1DL=kWaveGrid(Nax,dx);
+            kgrid1DL.setTime(Nt+1, dt)
+            source1DL.p0= exp( -((kgrid1DL.x_vec - 25e-3 ).^2) ./ ( 5* kgrid1DL.dx).^2 ) ;
+
+
+
+                        % New setup
+            kgrid1D = Grid(Nax, dx, pmlSize);
+            medium1D = AcousticMedium(kgrid1D);
+            medium1D.soundSpeed  = c0;
+            medium1D.density  = rho0;
+            medium1D.BonA = BonA;
+            source1D = AcousticSource(kgrid1D);
+            source1D.initialPressure = exp( -(kgrid1D.xVec - 25e-3).^2 ./ (5 * kgrid1D.dx).^2 );
+            settings = Settings;
+            settings.plotSimulation = 'off';
+            solver1D = AcousticSolver(kgrid1D, medium1D, source1D, [], settings);
+
+            solver1D.nonLinearity="on";
+            solver1D.run(Nt=Nt, dt=dt);
+            % Legacy setup
+            kgrid1DL=kWaveGrid(Nax,dx);
+            kgrid1DL.setTime(Nt+1, dt)
+            source1DL.p0= exp( -((kgrid1DL.x_vec - 25e-3 ).^2) ./ ( 5* kgrid1DL.dx).^2 ) ;
+            medium1DL.sound_speed=c0;
+            medium1DL.density=rho0;
+            medium1DL.BonA=BonA;
+            sensor1DL.record={'p_final'};
+            sensor_data1 = kspaceFirstOrder1D(kgrid1DL, medium1DL, source1DL, sensor1DL,'PMLInside',false,'Smooth',false,'PlotSim',false);
+            testCase.verifyThat(solver1D.pressure, IsEqualTo(single(sensor_data1.p_final), "Within", tol));
+
+            % 2D case with absorptions
+            kgrid2Dx = Grid([Nax, Nlat], dx, [pmlSize, 0]);
+            medium2Dx = AcousticMedium(kgrid2Dx);
+            source2Dx = AcousticSource(kgrid2Dx);
+            source2Dx.initialPressure = repmat(source1D.initialPressure, [1, Nlat]);
+            medium2Dx.soundSpeed = c0;
+            medium2Dx.density = rho0;
+            medium2Dx.absorptionCoeff= alpha0;
+            medium2Dx.absorptionPower= 1.9;
+            medium2Dx.BonA = BonA;
+            solver2Dx = AcousticSolver(kgrid2Dx, medium2Dx, source2Dx, [], settings);
+            solver2Dx.absorptionType='noDispersion';
+            solver2Dx.nonLinearity="on";
+            solver2Dx.run(Nt=Nt, dt=dt);
+
+            kgrid2DxL=kWaveGrid(Nax,dx,Nlat,dx);
+            kgrid2DxL.setTime(Nt+1, dt)
+            source2DxL.p0=  repmat(source1D.initialPressure, [1, Nlat]);
+            medium2DxL.sound_speed=c0;
+            medium2DxL.density=rho0;
+            medium2DxL.alpha_power  = 1.9;
+            medium2DxL.alpha_coeff=alpha0;
+            medium2DxL.BonA = BonA;
+            sensor2DxL.record={'p_final'};
+            medium2DxL.alpha_mode='no_dispersion';
+            sensor_data2x = kspaceFirstOrder2D(kgrid2DxL, medium2DxL, source2DxL, sensor2DxL,'PMLInside',false,'Smooth',false,'PMLSize',[pmlSize,0],'PlotSim',false);
+            testCase.verifyThat(solver2Dx.pressure, IsEqualTo(single(sensor_data2x.p_final), "Within", tol));
+
+            % 3D case without absorptions
+            kgrid3Dx = Grid([Nax, Nlat,Nlat], dx, [pmlSize, 0,0]);
+            medium3Dx = AcousticMedium(kgrid3Dx);
+            source3Dx = AcousticSource(kgrid3Dx);
+            source3Dx.initialPressure = repmat(source1D.initialPressure, [1, Nlat, Nlat]);
+            medium3Dx.soundSpeed = c0;
+            medium3Dx.density = rho0;
+            medium3Dx.BonA = BonA;
+            solver3Dx = AcousticSolver(kgrid3Dx, medium3Dx, source3Dx, [], settings);
+            solver3Dx.absorptionType="off";
+            solver3Dx.nonLinearity="on";
+            solver3Dx.run(Nt=Nt, dt=dt);
+
+            kgrid3DxL=kWaveGrid(Nax,dx,Nlat,dx,Nlat,dx);
+            kgrid3DxL.setTime(Nt+1, dt)
+            source3DxL.p0=  repmat(source1D.initialPressure, [1, Nlat, Nlat]);
+            medium3DxL.sound_speed=c0;
+            medium3DxL.density=rho0;
+            medium3DxL.BonA=BonA;
+            sensor3DxL.record={'p_final'};
+            sensor_data3x = kspaceFirstOrder3D(kgrid3DxL, medium3DxL, source3DxL, sensor3DxL,'PMLInside',false,'Smooth',false,'PMLSize',[pmlSize,0,0],'PlotSim',false);
+            testCase.verifyThat(solver3Dx.pressure, IsEqualTo(single(sensor_data3x.p_final), "Within", tol));
         end
 
     end

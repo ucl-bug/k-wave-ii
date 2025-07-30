@@ -99,7 +99,7 @@ medium=AcousticMedium(kgrid);
 % the AcousticMedium. The Sound Speed. And the Mean density. These can be
 % called either as constants across the entire domain, or defined on the
 % grid for this example we will remain homogeneous. As such the following
-% Commands can either be called
+% Commands can either be called, using,
 
 c0=1500; % meters per second.    [m s^{-1}]
 rho0=100; % kilogram per meter^3 [kg m^{-3}]
@@ -122,6 +122,13 @@ rho0=100; % kilogram per meter^3 [kg m^{-3}]
 % soundSpeed and the Density must be changed directly and take the size of
 % the grid.
 
+    % medium.soundSpeed=ones(kgrid.gridSize)*c0;
+    % medium.density=ones(kgrid.gridSize)*rho0;
+
+    % medium.soundSpeed(1:52,:)=1.1*c0;
+    % medium.density(1:52,:)=rho0/1.1;
+
+% =========================================================================
 % For the AcousticSource there is only one property that is required. The
 % Initial Pressure. This is also defined on the grid.
 
@@ -288,4 +295,30 @@ solver2=AcousticSolver(kgrid,medium,source,[]);
 
 solver2.run(Nt=Nt1,dt=dt1);
 
-    
+% ===========================================================================
+%% Including Non-linearity.
+%
+% Just like to include absorption, nonlinearity terms can be included by
+% turning nonlinearity on. Though we additionally need to ensure the
+% medium parameter BonA is set.
+
+BonA = 6;
+
+medium.BonA=BonA;  
+
+solver3=AcousticSolver(kgrid,medium,source,[]);
+
+ solver3.nonLinearity='on';
+
+ % Unlike for the absorption however the non;inear terms are either on or
+ % off.
+
+    % solver3.nonLinearity='off';
+
+ % and once again the solution is run as usual.
+
+ solver3.run(Nt=Nt1,dt=dt1);
+
+ % Using both this section and the section above it is equally possible to
+ % include both absorption and nonlinearity in a single solver by turning
+ % both of these on.

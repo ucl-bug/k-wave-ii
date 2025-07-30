@@ -98,6 +98,9 @@
 % * |absorptionType|- (string) Must be a member of { 'on', 'off',
 % 'noAbsorption', 'noDispersion'} defaults to 'off'. Switch to include to
 % exclude each of the absorption terms within the equation of state.
+% * |nonLinearity| - (string) Must be a member of {'on', 'off'}. Defaults
+% to off. To include nonlinearity terms. obj.medium.BonA must also be
+% defined. Changes the equation of state and conservation of Mass. 
 %
 %% Methods
 % * |setkSpaceCorrection|
@@ -139,6 +142,7 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
     
     properties(SetAccess=public,Hidden=false)
         absorptionType char {mustBeMember( absorptionType, {'off','on', 'noAbsorption', 'noDispersion'})} = 'off'
+         nonLinearity char {mustBeMember( nonLinearity, {'off','on'})} = 'off'
     end
 
     properties(SetAccess=private, Hidden=true)

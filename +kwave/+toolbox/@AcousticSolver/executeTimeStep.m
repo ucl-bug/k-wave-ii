@@ -67,6 +67,7 @@ if length(obj.medium.densityPadded)~= 1
 else
     densityPaddedStg=obj.medium.densityPadded;
 end
+densityMultiplier=obj.medium.densityPadded;
 
 if (obj.settings.plotSimulation)
     fig = figure;
@@ -98,7 +99,7 @@ if Nt~=0
                     % stepping
                     obj.pressurePadded = obj.pressurePadded + obj.source.initialPressurePadded;
                     obj.densitySplitPadded = obj.densitySplitPadded + obj.source.initialPressurePadded ./ (obj.dimensions * obj.medium.soundSpeedPadded.^2);
-                    
+
                     initialVelocityDimensional=zeros([obj.kgridPadded.gridSize,obj.kgrid.dimensions])+obj.source.initialVelocityPadded;
                     for dim=1:obj.kgrid.dimensions
                         initialVelcoityStaggered=obj.stagger(initialVelocityDimensional(:,:,:,dim), Type='fourier');
@@ -121,7 +122,10 @@ if Nt~=0
                 obj.pml.setupQuarticPML(currentTimeStep, obj.medium.soundSpeedReference);
 
                 % Mass conservation equation.
-                obj.densitySplitPadded = pml(pml(obj.densitySplitPadded) - dt .* obj.medium.densityPadded .* divergence(obj.velocityPadded));
+                if ~strcmp(obj.nonLinearity,'off')
+                    densityMultiplier = 2* sum(obj.densitySplitPadded,4) + obj.medium.densityPadded;
+                end
+                obj.densitySplitPadded = pml(pml(obj.densitySplitPadded) - dt .* densityMultiplier .* divergence(obj.velocityPadded));
 
                 % Pressure density relation.
                 obj.pressurePadded = obj.medium.soundSpeedPadded.^2 .* ( sum(obj.densitySplitPadded, 4));
@@ -131,6 +135,10 @@ if Nt~=0
                     obj.pressurePadded =  obj.pressurePadded  +  obj.medium.soundSpeedPadded.^2 .* ( ...
                         obj.absorbTauPadded .* fracLaplacian(obj, obj.medium.densityPadded .* sum(divergence(obj.velocityPadded),4), obj.medium.absorptionPower/2 -1 ) + ...
                         obj.absorbEtaPadded .* fracLaplacian(obj, sum(obj.densitySplitPadded,4), obj.medium.absorptionPower/2 -0.5 ) ) ;
+                end
+                if ~strcmp(obj.nonLinearity,'off')
+                    obj.pressurePadded =  obj.pressurePadded  +  obj.medium.soundSpeedPadded.^2 .* ( ...
+                        obj.medium.BonA.*  ( sum(obj.densitySplitPadded, 4)).^2 ./ (2 * obj.medium.densityPadded)  );
                 end
             end
         elseif (tIndex==2) && (obj.timeStepsTaken == 0) && ~isempty(obj.source.initialVelocity)
@@ -145,7 +153,10 @@ if Nt~=0
             obj.pml.setupQuarticPML(currentTimeStep, obj.medium.soundSpeedReference);
 
             % Mass conservation equation.
-            obj.densitySplitPadded = pml(pml(obj.densitySplitPadded) - dt .* obj.medium.densityPadded .* divergence(obj.velocityPadded));
+            if ~strcmp(obj.nonLinearity,'off')
+                densityMultiplier = 2* sum(obj.densitySplitPadded,4) + obj.medium.densityPadded;
+            end
+            obj.densitySplitPadded = pml(pml(obj.densitySplitPadded) - dt .* densityMultiplier .* divergence(obj.velocityPadded));
 
             % Pressure density relation.
             obj.pressurePadded = obj.medium.soundSpeedPadded.^2 .* ( sum(obj.densitySplitPadded, 4));
@@ -156,6 +167,10 @@ if Nt~=0
                     obj.absorbTauPadded .* fracLaplacian(obj, obj.medium.densityPadded .* sum(divergence(obj.velocityPadded),4), obj.medium.absorptionPower/2 -1 ) + ...
                     obj.absorbEtaPadded .* fracLaplacian(obj, sum(obj.densitySplitPadded,4), obj.medium.absorptionPower/2 -0.5 ) ) ;
             end
+            if ~strcmp(obj.nonLinearity,'off')
+                obj.pressurePadded =  obj.pressurePadded  +  obj.medium.soundSpeedPadded.^2 .* ( ...
+                    obj.medium.BonA.*  ( sum(obj.densitySplitPadded, 4)).^2 ./ (2 * obj.medium.densityPadded)  );
+            end
         else
 
             % Usual time stepping
@@ -164,8 +179,10 @@ if Nt~=0
             obj.velocityPadded = pmlSG(pmlSG(obj.velocityPadded) - (dt ./ densityPaddedStg) .* gradient(obj.pressurePadded));
 
             % Mass conservation equation.
-            obj.densitySplitPadded = pml(pml(obj.densitySplitPadded) - dt .* obj.medium.densityPadded .* divergence(obj.velocityPadded));
-
+            if ~strcmp(obj.nonLinearity,'off')
+                densityMultiplier = 2* sum(obj.densitySplitPadded,4) + obj.medium.densityPadded;
+            end
+            obj.densitySplitPadded = pml(pml(obj.densitySplitPadded) - dt .* densityMultiplier .* divergence(obj.velocityPadded));
             % Pressure density relation.
             obj.pressurePadded = obj.medium.soundSpeedPadded.^2 .* ( sum(obj.densitySplitPadded, 4));
 
@@ -174,6 +191,10 @@ if Nt~=0
                 obj.pressurePadded =  obj.pressurePadded  +  obj.medium.soundSpeedPadded.^2 .* ( ...
                     obj.absorbTauPadded .* fracLaplacian(obj, obj.medium.densityPadded .* sum(divergence(obj.velocityPadded),4), obj.medium.absorptionPower/2 -1 ) + ...
                     obj.absorbEtaPadded .* fracLaplacian(obj, sum(obj.densitySplitPadded,4), obj.medium.absorptionPower/2 -0.5 ) ) ;
+            end
+            if ~strcmp(obj.nonLinearity,'off')
+                obj.pressurePadded =  obj.pressurePadded  +  obj.medium.soundSpeedPadded.^2 .* ( ...
+                    obj.medium.BonAPadded.*  ( sum(obj.densitySplitPadded, 4)).^2 ./ (2 * obj.medium.densityPadded)  );
             end
         end
 
