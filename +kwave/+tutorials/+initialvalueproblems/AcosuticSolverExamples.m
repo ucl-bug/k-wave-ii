@@ -15,6 +15,8 @@
 % * Setup
 % * Running the AcousticSolver and outputs
 % * Including Absorption
+% * Inlcuding NonLinearity
+% * Including a temporal sensor
 %
 % See Also:
 % * kwave.tutorials.initialvalueproblems.homogeneousMedium2D
@@ -322,3 +324,132 @@ solver3=AcousticSolver(kgrid,medium,source,[]);
  % Using both this section and the section above it is equally possible to
  % include both absorption and nonlinearity in a single solver by turning
  % both of these on.
+
+ % =======================================================================
+ %% Sensor Data
+ %
+ % Although optional we can also include in the declaration of the solver
+ % the inclusion of a sensor, which will be compatible with any of the
+ % above. The sensor requires two properties, with an optional third. The
+ % Sensor is initialised with the grid.
+ %
+ %  Test properties.
+
+ sensor= AcousticSensor(kgrid);
+
+ % Just as with the medium and the source the grid must be the same as used
+ % in the solver. To build the sensor fully we prescribe a mask
+ % sensor.mask that must be the size of the space. The resulting sensor data
+ % from the solver will be the temporal distribution at the grid locations
+ % marked with a 1 in the mask.
+
+ sensor.mask=zeros(kgrid.gridSize);
+
+ % =========================================================================
+    
+    %
+    sensor.mask(floor(Nx/2))=1;
+    %
+
+    %
+    % sensor.mask(floor(Nx/2)-5:floor(Nx/2)+5)=1;
+    % 
+
+  % Or id 2D/3D
+    
+    %
+    % sensor.mask(floor(Nx/2),floor(Ny/2))=1;
+    %
+
+    %
+    % sensor.mask(floor(Nx/2),floor(Ny/2):Ny-10)=1;
+    %
+
+    % 
+    % sensor.mask(floor(Nx/2),floor(Ny/2),15)=1;
+    %
+
+    %
+    % sensor.mask(floor(Nx/2),floor(Ny/2):Ny-10,floor(Nz/3))=1;
+    %
+
+ % =========================================================================
+
+% What remains to be declared is the sensor type, which defaults to
+% recording just the pressure. For both the pressure and the density there
+% are two options "on" and "off"
+
+% =========================================================================
+
+    sensor.pressureSensor='on';
+    sensor.densitySensor='on';
+
+    %
+    % sensor.pressureSensor='off';
+    %
+    %
+    % sensor.densitySensor='off';
+    %
+
+% While for the Velocity we have "on", "off" and "ongrid".
+    
+    %
+    sensor.velocitySensor='on';
+    %
+    
+    %
+    % sensor.velocitySensor='off';
+    % sensor.velocitySensor='ongrid';
+    %
+
+% =========================================================================
+%
+% The ongrid option applies a fourier shift to the velocity such that the
+% resulting velocity field is produced on the grid locations. This is since
+% the velocity is usually computed under spatial staggering, and so this
+% process aligns the sensor readings with the grid, and are realistic of
+% what a real sensor at this location would observe, though it should be
+% noted that the time steps are also staggered and NOT accounted for.
+
+% The final option of this process is to prescribe a regularity for the
+% readings to be taken by setting sensor.timeSteps which is usally
+% defaulted to 1. (reads every time step). A value of 2 would read
+% alternate time steps. ETC
+% =========================================================================
+
+    %
+    % sensor.timeSteps = 2;
+    %
+
+% =========================================================================
+%
+% Finally we initialise the solver to include the sensor and run the
+% simulation as usual.
+
+solver4=AcousticSolver(kgrid,medium,source,sensor);
+
+ solver4.run(Nt=0,dt=dt1);
+ solver4.run(Nt=floor(Nt1/2),dt=dt1);
+ solver4.run(Nt=ceil(Nt1/4),dt=2*dt1);
+
+ % With the simulations run to recall the temporal distributions the
+ % variables are called with;
+
+ % * solver4.sensor.pressure; % Temporal distribution of the pressure 
+ % * solver4.sensor.denisty; % Temporal distribution of the density
+ % * solver4.sensor.velocity; % Temporal distribution of the velocity
+
+% Each of these is a matrix with a size given by the number of 1's in the
+% mask by the total number of time steps recorded.
+%
+% Note that the call .sensor is the same irrespective of the nae asigned to
+% the sensor in its construction.
+
+% There is an additional output with is just a vector of the times.
+
+% * solver4.sensor.times;
+
+% Which are the time points in which the data was read, which is of
+% importance when considering variable time steps or if not all time points
+% are read.
+% =========================================================================

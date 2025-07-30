@@ -85,7 +85,8 @@
 %   medium properties.
 % * |source| - (kwave.toolbox.AcousticSource) Object which defines the
 %   source properties.
-% * |sensor| - ...Not yet implemented...
+% * |sensor| - (kwave.toolbox.AcousticSensor) Object which defines the
+%   sensor properties.
 % * |settings| - (kwave.toolbox.Settings) Object which defines the
 %   simulation settings.
 %
@@ -149,6 +150,8 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
         absorbTauPadded single
         absorbEtaPadded single
         kappaSplit single
+
+        timePoint = 0;
     end
 
     % Constructor.
@@ -166,6 +169,12 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
                     error('AcousticSolver:InvalidMediumType',...
                         'medium must be an object of Medium OR AcousticMedium.');
                 end
+
+                if ~(isempty(sensor) || isa(sensor, 'kwave.toolbox.AcousticSensor'))
+                    error('AcousticSolver:InvalidSensorType',...
+                        'sensor must be an AcousticSensor or be left empty [].');
+                end
+
 
             % Pass input arguments to superclass constructor. This calls
                 % setInitialConditions.

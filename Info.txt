@@ -2,15 +2,17 @@ This Branch is to upload Matthew Kings last major code changes before the end of
 
 Targets: 
   Acoustic Solver, non-linear
-        [CODE DONE, COMMENTS ADDED,TESTING REQUIRED ][ Req:  USUAL PAPRAMETERS]
+        [CODE DONE, COMMENTS ADDED, TESTED, TUTORIAL GIVEN ][ Req:  USUAL PAPRAMETERS]
 
   Off-Grid "Grid"
 
   Off-Grid source
 
   Sensor
+        [CODE DONE, ADDED, TESTED, TUTORIAL GIVEN ][ Comments needed in Sensor and Acoustic Sensor]
 
   Off-Grid Sensor
+
 
   Example/Tutorials
     Acoustic Solver, absorption, nonlinearity
