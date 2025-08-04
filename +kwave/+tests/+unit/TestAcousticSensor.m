@@ -92,30 +92,22 @@ classdef TestAcousticSensor  < matlab.unittest.TestCase
             %Reference Solution
             solver1D = AcousticSolver(kgrid1D, medium1D, source1D, sensor1D, settings);
             solver1D.run(Nt=Nt, dt=dt);
-            pressure1D = single(solver1D.sensor.pressure);
-            density1D = single(solver1D.sensor.density);
-
                        
             PressureActual = single((c0*rho0*initialVel(kgrid1D.xVec(floor(Nax/2)) -  c0*sensor1D.times ) - c0*rho0*initialVel(kgrid1D.xVec(floor(Nax/2)) + c0*sensor1D.times ) ))/2 ;
-            testCase.verifyThat(pressure1D, IsEqualTo( PressureActual, "Within",tol))
+            testCase.verifyThat(solver1D.sensor.pressure, IsEqualTo( PressureActual, "Within",tol))
 
             solver2Dx = AcousticSolver(kgrid2Dx, medium2Dx, source2Dx, sensor2Dx, settings);
             solver2Dx.run(Nt=Nt-10, dt=dt);
             solver2Dx.run(Nt=10, dt=dt);
-            pressure2Dx = single(solver2Dx.sensor.pressure);
-            density2Dx = single(solver2Dx.sensor.density);
-            velocity2Dx = single(solver2Dx.sensor.velocity);
 
-            testCase.verifyThat(pressure2Dx, IsEqualTo(pressure1D, "Within", tol)); %
-            testCase.verifyThat(density2Dx,  IsEqualTo(density1D,  "Within", tol)); %
+            testCase.verifyThat(solver2Dx.sensor.pressure, IsEqualTo(solver1D.sensor.pressure, "Within", tol)); %
+            testCase.verifyThat(solver2Dx.sensor.density,  IsEqualTo(solver1D.sensor.density,  "Within", tol)); %
 
             solver3Dx = AcousticSolver(kgrid3Dx, medium3Dx, source3Dx, sensor3Dx, settings);
             solver3Dx.run(Nt=Nt, dt=dt);
-            pressure3Dx = single(solver3Dx.sensor.pressure);
-            velocity3Dx = single(solver3Dx.sensor.velocity);
 
-            testCase.verifyThat(pressure3Dx, IsEqualTo(pressure2Dx, "Within", tol)); %
-            testCase.verifyThat(velocity3Dx, IsEqualTo(velocity2Dx, "Within", tol)); %
+            testCase.verifyThat(solver3Dx.sensor.pressure, IsEqualTo(solver2Dx.sensor.pressure, "Within", tol)); %
+            testCase.verifyThat(solver3Dx.sensor.velocity, IsEqualTo(solver2Dx.sensor.velocity, "Within", tol)); %
 
             % Testing
 
