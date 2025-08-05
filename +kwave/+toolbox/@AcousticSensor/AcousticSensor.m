@@ -38,7 +38,7 @@ classdef AcousticSensor < kwave.toolbox.Sensor
                     id=1;
                     obj.pressure=zeros(obj.totalSensorPoints,1);
                  end
-                 if (strcmp(obj.velocitySensor,'on') || strcmp(obj.velocitySensor,'onGrid')) && isempty(obj.velocity)
+                 if (strcmp(obj.velocitySensor,'on') || strcmp(obj.velocitySensor,'ongrid')) && isempty(obj.velocity)
                     id=1;
                     obj.velocity=zeros(obj.totalSensorPoints,1,obj.kgrid.dimensions);
                  end
@@ -64,7 +64,7 @@ classdef AcousticSensor < kwave.toolbox.Sensor
                          obj.density=[obj.density,zeros(obj.totalSensorPoints,floor(Nt/obj.timeSteps))];
                      end
                 end
-                if strcmp(obj.velocitySensor,'on') || strcmp(obj.velocitySensor,'onGrid')
+                if strcmp(obj.velocitySensor,'on') || strcmp(obj.velocitySensor,'ongrid')
                      if isempty(obj.velocity)
                         id=1;
                         obj.velocity=[zeros(obj.totalSensorPoints,obj.kgrid.dimensions,floor(Nt/obj.timeSteps)+1)];
@@ -92,10 +92,11 @@ classdef AcousticSensor < kwave.toolbox.Sensor
             end
             if strcmp(obj.velocitySensor,'on')
                 obj.velocity(:,:,n)=obj.ProcessSensorData(Solver.velocity,obj.kgrid.dimensions,'none');
-            elseif strcmp(obj.velocitySensor,'onGrid')
+            elseif strcmp(obj.velocitySensor,'ongrid')
                 GridVelocityPadded=zeros(size(Solver.velocityPadded));
                 for dim=1:Solver.kgrid.dimensions
-                    GridVelocityPadded(:,:,:,dim)=stagger(Solver.velocityPadded(:,:,:,dim),Staggering='backward');
+                    Unstagger=Solver.stagger(Solver.velocityPadded(:,:,:,dim),Staggering='backward');
+                    GridVelocityPadded(:,:,:,dim)=Unstagger(:,:,:,dim);
                 end
                 obj.velocity(:,:,n)=obj.ProcessSensorData(Solver.kgrid.returnWithoutGridPadding(GridVelocityPadded),obj.kgrid.dimensions,'none');
             end

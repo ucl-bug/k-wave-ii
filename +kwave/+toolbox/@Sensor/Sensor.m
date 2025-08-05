@@ -31,10 +31,10 @@ classdef Sensor < kwave.toolbox.GridInput
     properties(Hidden)
         sensorIndex(1,1) single {mustBeInteger, mustBeFinite, mustBeNonnegative} = 0;
         totalSensorPoints =0;
-        maskBuilder kwave.toolbox.GridField
+        maskBuilder= 0;
         % Mask builder puts 1's in locations used for the computation of
         % the sensor data, used by sensor.mask=sensor.maskbuilder
-        BLIMat =[];
+        BLIMat =1;
         % Uses the Off-grid to compute the conversion matrix from the mask
         % to the off-grid points such that V(x)B(x,xi)=V(xi)
     end
@@ -45,12 +45,30 @@ classdef Sensor < kwave.toolbox.GridInput
     end
 
     methods
-        function obj = setOffGrid(OffGrid)
+        function obj=setOffGrid(obj,OffGrid,accuracy)
             obj.OffGrid=OffGrid;
             obj.OffGridApplied='on'; 
-            obj.maskBuilder = [] ;
-            OffGrid.maskBuilder
-            obj.BLIMat = [];
+            if nargin<2
+                accuracy=0.05;
+            end
+            obj.maskBuilder= zeros(obj.kgrid.gridSize);
+            gridLocations=zeros(obj.kgrid.totalGridPoints,obj.kgrid.dimensions);
+
+            for j1=1:obj.kgrid.totalGridPoints
+                switch obj.kgrid.dimensions
+                    case 1
+                        gridPoint=obj.kgrid.x(j1)/obj.kgrid.gridSpacing(1);
+                    case 2
+                        gridPoint=[obj.kgrid.x(j1)/obj.kgrid.gridSpacing(1),obj.kgrid.y(j1)/obj.kgrid.gridSpacing(2)];
+                    case 3
+                        gridPoint=[obj.kgrid.x(j1)/obj.kgrid.gridSpacing(1),obj.kgrid.y(j1)/obj.kgrid.gridSpacing(2),obj.kgrid.z(j1)/obj.kgrid.gridSpacing(3)];
+                end
+                gridLocations(j1,:)=gridPoint; 
+            end
+            Indexes=obj.OffGrid.ValidGridpointDistance(gridLocations,obj.OffGrid.gridLocations,accuracy);
+            Indexes=max(Indexes,[],1);
+            obj.maskBuilder(Indexes==1)=1;
+            obj.BLIMat = obj.OffGrid.BandLimGrid(gridLocations(Indexes==1,:),obj.OffGrid.gridLocations,accuracy);
         end
     end
 
@@ -70,22 +88,19 @@ classdef Sensor < kwave.toolbox.GridInput
             end
         end
         function SensorOutput=ProcessSensorData(obj,Variable,dim,string)
-            if strcmp(obj.OffGridApplied,'off')
             mask=obj.kgrid.returnWithoutGridPadding(obj.maskPadded);
             if ~strcmp(string,'sum')
                 SensorOutput=zeros(obj.totalSensorPoints,dim);
                 for dimension=1:dim
                     Var=Variable(:,:,:,dim);
-                    SensorOutput(:,dim)=Var(mask==1);
+                    SensorOutput(:,dim)=obj.BLIMat*Var(mask==1);
                 end
             else
                 SensorOutput=zeros(obj.totalSensorPoints,1);
                 for dimension=1:dim
                     Var=Variable(:,:,:,dim);
-                    SensorOutput=SensorOutput+Var(mask==1);
+                    SensorOutput=SensorOutput+obj.BLIMat*Var(mask==1);
                 end
-            end
-            else
             end
         end
     end
