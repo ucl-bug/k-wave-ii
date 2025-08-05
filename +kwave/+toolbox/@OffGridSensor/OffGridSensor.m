@@ -1,4 +1,4 @@
-%% Sensor
+%% OffGridSensor
 % *Package:* kwave.toolbox
 % *Superclasses:* kwave.toolbox.GridInput
 %
@@ -15,7 +15,7 @@
 %% Writing Notes
 %
 
-classdef Sensor < kwave.toolbox.GridInput
+classdef OffGridSensor < kwave.toolbox.Sensor
 
     properties(Constant, Hidden=true)
         requiredProperties = {'mask'};
@@ -31,36 +31,14 @@ classdef Sensor < kwave.toolbox.GridInput
     properties(Hidden)
         sensorIndex(1,1) single {mustBeInteger, mustBeFinite, mustBeNonnegative} = 0;
         totalSensorPoints =0;
-        maskBuilder kwave.toolbox.GridField
-        % Mask builder puts 1's in locations used for the computation of
-        % the sensor data, used by sensor.mask=sensor.maskbuilder
-        BLIMat =[];
-        % Uses the Off-grid to compute the conversion matrix from the mask
-        % to the off-grid points such that V(x)B(x,xi)=V(xi)
     end
+    
+    methods public 
 
-    properties
-        OffGridApplied char {mustBeMember( OffGridApplied, {'off','on'})} = 'off'
-        OffGrid kwave.toolbox.OffGrid
     end
-
-    methods
-        function obj = setOffGrid(OffGrid)
-            obj.OffGrid=OffGrid;
-            obj.OffGridApplied='on'; 
-            obj.maskBuilder = [] ;
-            OffGrid.maskBuilder
-            obj.BLIMat = [];
-        end
-    end
-
     methods
         function totalSensorPoints=get.totalSensorPoints(obj)
-            if strcmp(obj.OffGridApplied,'off')
-                obj.totalSensorPoints= sum(obj.kgrid.returnWithoutGridPadding(obj.maskPadded),'all');
-            else
-                obj.totalSensorPoints= obj.OffGrid.gridSize;
-            end
+            obj.totalSensorPoints= sum(obj.kgrid.returnWithoutGridPadding(obj.maskPadded),'all');
             totalSensorPoints=obj.totalSensorPoints;
         end
         function obj=multiDimMask(obj)
@@ -70,7 +48,6 @@ classdef Sensor < kwave.toolbox.GridInput
             end
         end
         function SensorOutput=ProcessSensorData(obj,Variable,dim,string)
-            if strcmp(obj.OffGridApplied,'off')
             mask=obj.kgrid.returnWithoutGridPadding(obj.maskPadded);
             if ~strcmp(string,'sum')
                 SensorOutput=zeros(obj.totalSensorPoints,dim);
@@ -84,8 +61,6 @@ classdef Sensor < kwave.toolbox.GridInput
                     Var=Variable(:,:,:,dim);
                     SensorOutput=SensorOutput+Var(mask==1);
                 end
-            end
-            else
             end
         end
     end

@@ -86,14 +86,18 @@ classdef OffGrid < handle
 
     % Constructor.
     methods
-        function obj = OffGrid(kgrid, gridSize, kgridLocations,options)
+        function obj = OffGrid(kgrid, kgridLocations,options)
 
             obj.kgrid = kgrid;
-            obj.gridSize=prod(gridSize);
 
             if isnumeric(kgridLocations)
-                %           assert(size(kgridLocations)==[obj.gridSize,obj.kgrid.dimensions] || size(kgridLocations)==[prod(obj.gridSize),obj.kgrid.dimensions])
-                obj.kgridLocations = reshape(kgridLocations,[prod(obj.gridSize),obj.kgrid.dimensions]);
+                    [A,B]=size(kgridLocations); 
+                    if B~=kgrid.dimensions && A==kgrid.dimensions
+                        kgridLocations=kgridLocations.';
+                        [A,B]=size(kgridLocations); 
+                    end
+                    assert(B==kgrid.dimensions);
+                    obj.kgridLocations=kgridLocations;
                 switch obj.kgrid.dimensions
                     case 1
                         assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
@@ -110,11 +114,11 @@ classdef OffGrid < handle
 
                 if strcmp(kgridLocations,'ball')
                     % Ball requires a centre point and a radius
-                    assert( ~isempty(options.radius), ~isempty(options.centre))
+                    assert( ~isempty(options.radius), ~isempty(options.centre), ~isempty(options.pointsTheta), ~isempty(options.pointsPhi))
                     assert( obj.kgrid.dimensions==3)
 
-                    Nxi=gridSize(1);
-                    Nyi=gridSize(2);
+                    Nxi=options.pointsTheta;
+                    Nyi=options.pointsPhi;
                     kgridLocations=zeros(Nxi,Nyi,3);
 
                     kgridLocations(:,:,1)=options.centre(1)+cos(0:2*pi/(Nxi-1):2*pi).'.*(cos(-pi/2:pi/(Nyi-1):pi/2));
@@ -122,7 +126,7 @@ classdef OffGrid < handle
                     kgridLocations(:,:,3)=options.centre(3)+kgridLocations(:,:,3)+(sin(-pi/2:pi/(Nyi-1):pi/2));
 
                     kgridLocations=kgridLocations.*options.radius;
-                    obj.kgridLocations = reshape(kgridLocations,[prod(obj.gridSize),obj.kgrid.dimensions]);
+                    obj.kgridLocations = reshape(kgridLocations,[Nxi*Nyi,obj.kgrid.dimensions]);
 
                     assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
                     assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
@@ -131,10 +135,10 @@ classdef OffGrid < handle
                 elseif strcmp(kgridLocations,'circle')
                     % Circles require a centre point and a radius, must be
                     % in 2D
-                    assert( ~isempty(options.radius), ~isempty(options.centre))
+                    assert( ~isempty(options.radius), ~isempty(options.centre), ~isempty(options.points))
                     assert( obj.kgrid.dimensions==2)
 
-                    Nxi=gridSize;
+                    Nxi=options.points;
                     kgridLocations=zeros(Nxi,2);
                     obj.normalVector=zeros(Nxi,2);
                     
@@ -150,13 +154,12 @@ classdef OffGrid < handle
 
                 elseif strcmp(kgridLocations,'line')
                     % Lines need to be in 2D and be given a 2D start and End Point 
-                    assert( ~isempty(options.startPoint), ~isempty(options.endPoint))
+                    assert( ~isempty(options.startPoint), ~isempty(options.endPoint), ~isempty(options.points))
                     assert(all(size(options.startPoint)==[1,2]));
                     assert(all(size(options.endPoint)==[1,2]));
                     assert( obj.kgrid.dimensions==2)
-                    assert( all(size(gridSize)==[1,1]) )
 
-                    Nxi=gridSize;
+                    Nxi=options.points;
                     kgridLocations=zeros(Nxi,2);
 
                     kgridLocations(:,1)=((0.5:1:Nxi-0.5))*options.startPoint(1)/Nxi + ( 1- ((0.5:1:Nxi-0.5)/Nxi))*options.endPoint(1);
@@ -166,32 +169,70 @@ classdef OffGrid < handle
                     assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
                     assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
 
+                elseif strcmp(kgridLocations,'arc')
+                    assert( ~isempty(options.radius), ~isempty(options.points),(obj.kgrid.dimensions==2))
+                    if ~isempty(options.centre)
+                        assert(~isempty(options.startAngle),~isempty(options.endAngle))
+                        assert( options.startAngle<2*pi, options.startAngle>0, options.endAngle>0, options.startAngle<options.endAngle)
+                        N=options.points;
+                        angles= ((N-1)*options.startAngle + options.endAngle )/ N: (options.endAngle-options.startAngle)/(options.points) :((N-1)*options.endAngle + options.startAngle )/ N;
+
+                        kgridLocations(:,1)=options.centre(1)+options.radius.*cos(angles );
+                        kgridLocations(:,2)=options.centre(2)+options.radius.*sin(angles );
+                        obj.kgridLocations=kgridLocations;
+                        assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
+                        assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
+
+                    elseif ~isempty(options.diameter)
+                        assert( ~isempty(options.midpoint),~isempty(options.focusPosition))
+                        varphi_max = asin(options.diameter ./ (2 * options.radius));
+                        dvarphi = 2 * varphi_max ./ options.points;
+                        t = linspace(-varphi_max + dvarphi/2, varphi_max - dvarphi/2, num_points);
+
+                        centre= options.midpoint - (options.midpoint-options.focusPosition)*options.radius/abs(options.midpoint-options.focusPosition) ;
+
+                        kgridLocations(:,1)=centre(1)+options.radius.*cos(t );
+                        kgridLocations(:,2)=centre(2)+options.radius.*sin(t );
+                        obj.kgridLocations=kgridLocations;
+                        assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
+                        assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
+                    else
+                        error("Method requires either the centre point or the diameter to define the arc.")
+                    end
+
+                    % elseif strcmP(kgridLocations, 'NAME')
+                    % % For use to build new examples
+                    % % Assert required parameters as options.SUBNAME
+                    % % Assert that the required additional parameters are of
+                    % the correct form.
+                    % % Asser that the grid has the correct dimensions
+                    % %
+                    % % Define the points
+                    %    Nxi=gridSize;
+                    %    kgridLocations=zeros(Nxi,obj.kgrid.dimensions);
+                    % %
+                    % %
+                    % %
+                    % Assign to the object
+                    %    obj.kgridLocations=kgridLocations;
+                    % Make sure that the maximum locations are all within the grid.
+                    %    assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
+                    %    assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2) % etc
+
+                    % ADd instructions to the Summary.
+
                 end
 
-                % elseif strcmP(kgridLocations, 'NAME')
-                % % For use to build new examples
-                % % Assert required parameters as options.SUBNAME
-                % % Assert that the required additional parameters are of
-                    % the correct form.
-                % % Asser that the grid has the correct dimensions
-                % % 
-                % % Define the points
-                    Nxi=gridSize;
-                    kgridLocations=zeros(Nxi,obj.kgrid.dimensions);
-                % %
-                % %
-                % %
-                % Assign to the object
-                    obj.kgridLocations=kgridLocations;
-                % Make sure that the maximum locations are all within the grid.    
-                    assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
-                %    assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2) % etc
-                
-                % ADd instructions to the Summary.
+            elseif isa(kgridLocations,'kwave.toolbox.OffGrid')
+                assert(isa(options,'kwave.toolbox.OffGrid'))
+                assert( obj.kgrid == kgridLocations.kgrid && obj.kgrid== options.kgrid )
+
+                kgridLocations=[kgridLocations.kgridLocations; options.kgridLocations];
+                obj.kgridLocations=unique(kgridLocations,'rows');
 
             end
-            
-            
+
+            obj.gridSize=length(obj.kgridLocations(:,1));
             obj.gridLocations=obj.kgridLocations;
             switch obj.kgrid.dimensions
                 case 1
@@ -206,6 +247,7 @@ classdef OffGrid < handle
             end
 
         end
+
     end
 
     % Get methods for dependent properties.
