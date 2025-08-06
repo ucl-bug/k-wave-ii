@@ -74,6 +74,11 @@ classdef TestOffGrid  < matlab.unittest.TestCase
             arc2.focusPosition=[0,-2*dx];
             OffGrid2DArc2=OffGrid(kgrid2Dx,'arc',arc2);
 
+            disk.radius=5*dx;
+            disk.points=75;
+            disk.centre=[0,0];
+            OffGrid2DDisk=OffGrid(kgrid2Dx,'filledCircle',disk);
+
             OffGrid2Dadded=OffGrid(kgrid2Dx,OffGrid2DLine,OffGrid2DArc);
 
             kgrid3Dx = Grid([Nax, Nlat, Nlat], dx, [pmlSize, 0, 0]);
@@ -84,6 +89,10 @@ classdef TestOffGrid  < matlab.unittest.TestCase
             ball.pointsTheta=10;
             ball.pointsPhi=20;
             OffGrid3DBall=OffGrid(kgrid3Dx,'ball',ball);
+            
+            disk.centre=[0,0,dx];
+            disk.focusPoint=[0,dx,dx/2];
+            OffGrid3DDisk=OffGrid(kgrid3Dx,'disk',disk);
 
 
 

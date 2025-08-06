@@ -149,10 +149,10 @@ classdef OffGrid < handle
                     angle = @(t) GOLDEN_ANGLE.*t;
 
                     radial = @(t) sqrt( options.radius^2 .* t / (Nxi-1) );
-                    planex=radial(Parametrrisation).*cos(angle(Parametrisation));
-                    planey=radial(Parametrrisation).*sin(angle(Parametrisation));
+                    planex=radial(Parametrisation).*cos(angle(Parametrisation));
+                    planey=radial(Parametrisation).*sin(angle(Parametrisation));
 
-                    n=(options.focusPoint - options.centre)/abs((options.focusPoint - options.centre));
+                    n=(options.focusPoint - options.centre)/norm((options.focusPoint - options.centre));
                     ni=sqrt( 1- n(3)^2);
                     
                     kgridLocations(:,1)=options.centre(1)+n(1)*n(3)*planex/ni -n(2)*planey/ni;
@@ -162,8 +162,9 @@ classdef OffGrid < handle
                     obj.kgridLocations=kgridLocations;
                     assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
                     assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
+                    assert(max(abs(obj.zLoc))<obj.kgrid.zSize/2)
 
-                elseif strcmp(kgridLocations,'Filledcircle')
+                elseif strcmp(kgridLocations,'filledCircle')
                     % Circles require a centre point and a radius, must be
                     % in 2D
                     assert( ~isempty(options.radius), ~isempty(options.centre), ~isempty(options.points))
@@ -180,8 +181,8 @@ classdef OffGrid < handle
 
                     radial = @(t) sqrt( options.radius^2 .* t / (Nxi-1) );
 
-                    kgridLocations(:,1)=options.centre(1)+radial(Parametrrisation).*cos(angle(Parametrisation));
-                    kgridLocations(:,2)=options.centre(2)+radial(Parametrrisation).*sin(angle(Parametrisation));
+                    kgridLocations(:,1)=options.centre(1)+radial(Parametrisation).*cos(angle(Parametrisation));
+                    kgridLocations(:,2)=options.centre(2)+radial(Parametrisation).*sin(angle(Parametrisation));
 
                     obj.kgridLocations=kgridLocations;
                     assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
