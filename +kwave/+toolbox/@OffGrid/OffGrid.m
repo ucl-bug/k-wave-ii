@@ -132,6 +132,62 @@ classdef OffGrid < handle
                     assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
                     assert(max(abs(obj.zLoc))<obj.kgrid.zSize/2)
 
+                elseif strcmp(kgridLocations,'disk')
+                    % Disk requires a centre point, a radius and a tangent
+                    % vector
+
+                    assert( ~isempty(options.radius), ~isempty(options.centre), ~isempty(options.points), ~isempty(options.focusPoint))
+                    assert( obj.kgrid.dimensions==3)
+
+                    Nxi=options.points;
+                    kgridLocations=zeros(Nxi,3);
+                    
+                    Parametrisation = 0:1:Nxi-1;
+
+                    GOLDEN_ANGLE = 2.39996322972865332223155550663361385312499901105811504;
+
+                    angle = @(t) GOLDEN_ANGLE.*t;
+
+                    radial = @(t) sqrt( options.radius^2 .* t / (Nxi-1) );
+                    planex=radial(Parametrrisation).*cos(angle(Parametrisation));
+                    planey=radial(Parametrrisation).*sin(angle(Parametrisation));
+
+                    n=(options.focusPoint - options.centre)/abs((options.focusPoint - options.centre));
+                    ni=sqrt( 1- n(3)^2);
+                    
+                    kgridLocations(:,1)=options.centre(1)+n(1)*n(3)*planex/ni -n(2)*planey/ni;
+                    kgridLocations(:,2)=options.centre(2)+n(2)*n(3)*planex/ni -n(1)*planey/ni;
+                    kgridLocations(:,3)=options.centre(3)+ni*planex;
+
+                    obj.kgridLocations=kgridLocations;
+                    assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
+                    assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
+
+                elseif strcmp(kgridLocations,'Filledcircle')
+                    % Circles require a centre point and a radius, must be
+                    % in 2D
+                    assert( ~isempty(options.radius), ~isempty(options.centre), ~isempty(options.points))
+                    assert( obj.kgrid.dimensions==2)
+
+                    Nxi=options.points;
+                    kgridLocations=zeros(Nxi,2);
+                    
+                    Parametrisation = 0:1:Nxi-1;
+
+                    GOLDEN_ANGLE = 2.39996322972865332223155550663361385312499901105811504;
+
+                    angle = @(t) GOLDEN_ANGLE.*t;
+
+                    radial = @(t) sqrt( options.radius^2 .* t / (Nxi-1) );
+
+                    kgridLocations(:,1)=options.centre(1)+radial(Parametrrisation).*cos(angle(Parametrisation));
+                    kgridLocations(:,2)=options.centre(2)+radial(Parametrrisation).*sin(angle(Parametrisation));
+
+                    obj.kgridLocations=kgridLocations;
+                    assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
+                    assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
+
+
                 elseif strcmp(kgridLocations,'circle')
                     % Circles require a centre point and a radius, must be
                     % in 2D
@@ -170,29 +226,32 @@ classdef OffGrid < handle
                     assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
 
                 elseif strcmp(kgridLocations,'arc')
+                    
                     assert( ~isempty(options.radius), ~isempty(options.points),(obj.kgrid.dimensions==2))
-                    if ~isempty(options.centre)
+                    if isfield(options,'centre')
                         assert(~isempty(options.startAngle),~isempty(options.endAngle))
                         assert( options.startAngle<2*pi, options.startAngle>0, options.endAngle>0, options.startAngle<options.endAngle)
                         N=options.points;
-                        angles= ((N-1)*options.startAngle + options.endAngle )/ N: (options.endAngle-options.startAngle)/(options.points) :((N-1)*options.endAngle + options.startAngle )/ N;
+                        angles= ((N-1)*options.startAngle + options.endAngle )/ N: (options.endAngle-options.startAngle)/(N+2) :((N-1)*options.endAngle + options.startAngle )/ N;
+                        kgridLocations=zeros(N,2);
 
-                        kgridLocations(:,1)=options.centre(1)+options.radius.*cos(angles );
-                        kgridLocations(:,2)=options.centre(2)+options.radius.*sin(angles );
+                        kgridLocations(:,1)=options.centre(1)+options.radius.*cos(angles ).';
+                        kgridLocations(:,2)=options.centre(2)+options.radius.*sin(angles ).';
                         obj.kgridLocations=kgridLocations;
                         assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
                         assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
 
-                    elseif ~isempty(options.diameter)
+                    elseif isfield(options,'diameter')
                         assert( ~isempty(options.midpoint),~isempty(options.focusPosition))
                         varphi_max = asin(options.diameter ./ (2 * options.radius));
                         dvarphi = 2 * varphi_max ./ options.points;
-                        t = linspace(-varphi_max + dvarphi/2, varphi_max - dvarphi/2, num_points);
+                        t = linspace(-varphi_max + dvarphi/2, varphi_max - dvarphi/2, options.points);
 
                         centre= options.midpoint - (options.midpoint-options.focusPosition)*options.radius/abs(options.midpoint-options.focusPosition) ;
-
-                        kgridLocations(:,1)=centre(1)+options.radius.*cos(t );
-                        kgridLocations(:,2)=centre(2)+options.radius.*sin(t );
+                        
+                        kgridLocations=zeros(options.points,2);
+                        kgridLocations(:,1)=centre(1)+options.radius.*cos(t ).';
+                        kgridLocations(:,2)=centre(2)+options.radius.*sin(t ).';
                         obj.kgridLocations=kgridLocations;
                         assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
                         assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)

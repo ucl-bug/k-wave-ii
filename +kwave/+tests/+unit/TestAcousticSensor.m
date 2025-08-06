@@ -1,16 +1,9 @@
-%% TestAcousticSolverGrid
+%% TestAcousticSensor
 % *Package:* kwave.tests.unit
-% *Superclasses:* matlab.unittest.AbstractTestGrid
-%
-% Parameterised unit tests for the AcousticSolver class using grid sizes
-% defined in |AbstractTestGrid|.
+% *Superclasses:* matlab.unittest.AbstractTestGridInput
 %
 %% Description
-% Runs the following tests for the AcousticSolver:
-% * Verifies that initial value problems in a homogeneous and lossless
-%   medium match k-Wave-I.
-% * Verifies that if the initial velocity is specified as 0 the result is
-% the same as if it was not specified.
+%
 
 classdef TestAcousticSensor  < matlab.unittest.TestCase
 
@@ -94,6 +87,7 @@ classdef TestAcousticSensor  < matlab.unittest.TestCase
             solver1D.run(Nt=Nt, dt=dt);
                        
             PressureActual = single((c0*rho0*initialVel(kgrid1D.xVec(floor(Nax/2)) -  c0*sensor1D.times ) - c0*rho0*initialVel(kgrid1D.xVec(floor(Nax/2)) + c0*sensor1D.times ) ))/2 ;
+            VelocityActual = single((initialVel(kgrid1D.xVec(floor(Nax/2)) -  c0*sensor1D.times +dt/2 ) + initialVel(kgrid1D.xVec(floor(Nax/2)) + c0*sensor1D.times +dt/2 ) ))/2 ;
             testCase.verifyThat(solver1D.sensor.pressure, IsEqualTo( PressureActual, "Within",tol))
 
             solver2Dx = AcousticSolver(kgrid2Dx, medium2Dx, source2Dx, sensor2Dx, settings);
@@ -108,6 +102,7 @@ classdef TestAcousticSensor  < matlab.unittest.TestCase
 
             testCase.verifyThat(solver3Dx.sensor.pressure, IsEqualTo(solver2Dx.sensor.pressure, "Within", tol)); %
             testCase.verifyThat(solver3Dx.sensor.velocity(:,1,:), IsEqualTo(solver2Dx.sensor.velocity(:,1,:), "Within", tol)); %
+            testCase.verifyThat(reshape(solver3Dx.sensor.velocity(:,1,:),[1,151]), IsEqualTo(VelocityActual, "Within", tol)); %
 
             % Testing
 
@@ -204,6 +199,9 @@ classdef TestAcousticSensor  < matlab.unittest.TestCase
             solver1D.run(Nt=Nt, dt=dt);
                        
             PressureActual = single((c0*rho0*initialVel(-dx/3 -  c0*sensor1D.times ) - c0*rho0*initialVel(-dx/3 + c0*sensor1D.times ) ))/2 ;
+
+            VelocityActual = single((initialVel(-dx/2 -  c0*sensor1D.times +dt/2 ) + initialVel(-dx/2 + c0*sensor1D.times +dt/2 ) ))/2 ;
+            
             testCase.verifyThat(solver1D.sensor.pressure(1,:), IsEqualTo( PressureActual, "Within",tol))
 
             solver2Dx = AcousticSolver(kgrid2Dx, medium2Dx, source2Dx, sensor2Dx, settings);
@@ -218,6 +216,7 @@ classdef TestAcousticSensor  < matlab.unittest.TestCase
 
             testCase.verifyThat(solver3Dx.sensor.pressure(3,:), IsEqualTo(solver2Dx.sensor.pressure(3,:), "Within", tol)); %
             testCase.verifyThat(solver3Dx.sensor.velocity(1,1,:), IsEqualTo(solver2Dx.sensor.velocity(1,1,:), "Within", tol)); %
+            testCase.verifyThat(reshape(solver3Dx.sensor.velocity(2,1,:),[1,151]), IsEqualTo(VelocityActual, "Within", tol)); %
             % Testing
             end
       end
