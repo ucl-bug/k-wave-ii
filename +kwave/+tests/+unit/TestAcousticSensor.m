@@ -114,9 +114,10 @@ classdef TestAcousticSensor  < matlab.unittest.TestCase
 
             import kwave.toolbox.*
             import matlab.unittest.constraints.IsEqualTo
-
+            
+            Tol=3e-6;
             % Define tolerance for field comparisons.
-            tol = matlab.unittest.constraints.AbsoluteTolerance(single(0.05));
+            tol = matlab.unittest.constraints.AbsoluteTolerance(single(Tol));
 
             % Test properties.
             Nax = 256;
@@ -142,7 +143,7 @@ classdef TestAcousticSensor  < matlab.unittest.TestCase
 
             
             OffGrid1D=OffGrid(kgrid1D,[-dx/3,0,dx/3]);
-            sensor1D.setOffGrid(OffGrid1D,0.05);
+            sensor1D.setOffGrid(OffGrid1D,Tol);
             sensor1D.mask=sensor1D.maskBuilder;
             sensor1D.pressureSensor='on';
             sensor1D.densitySensor='on';
@@ -163,7 +164,7 @@ classdef TestAcousticSensor  < matlab.unittest.TestCase
             
             sensor2Dx= AcousticSensor(kgrid2Dx);
             OffGrid2D=OffGrid(kgrid2Dx,[-dx/3 -dx/2; 0 0; dx/3 dx/2]);
-            sensor2Dx.setOffGrid(OffGrid2D,0.05);
+            sensor2Dx.setOffGrid(OffGrid2D,Tol);
             sensor2Dx.mask=sensor2Dx.maskBuilder;
             sensor2Dx.pressureSensor='on';
             sensor2Dx.densitySensor='on';
@@ -180,7 +181,7 @@ classdef TestAcousticSensor  < matlab.unittest.TestCase
             sensor3Dx= AcousticSensor(kgrid3Dx);
 
             OffGrid3D=OffGrid(kgrid3Dx,[-dx/3 -dx/2 dx/4; 0 0 dx/4; dx/3 dx/2 dx/4 ; dx/2 0 0]);
-            sensor3Dx.setOffGrid(OffGrid3D,0.05);
+            sensor3Dx.setOffGrid(OffGrid3D,Tol);
             sensor3Dx.mask=sensor3Dx.maskBuilder;
 
             sensor3Dx.pressureSensor='on';

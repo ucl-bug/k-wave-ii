@@ -39,7 +39,7 @@ classdef Sensor < kwave.toolbox.GridInput
         % to the off-grid points such that V(x)B(x,xi)=V(xi)
     end
 
-    properties
+    properties 
         OffGridApplied char {mustBeMember( OffGridApplied, {'off','on'})} = 'off'
         OffGrid kwave.toolbox.OffGrid
     end
@@ -47,7 +47,7 @@ classdef Sensor < kwave.toolbox.GridInput
     methods
         function obj=setOffGrid(obj,OffGrid,accuracy)
             obj.OffGrid=OffGrid;
-            obj.OffGridApplied='on'; 
+            obj.OffGridApplied='on';
             if nargin<2
                 accuracy=0.05;
             end
@@ -63,11 +63,22 @@ classdef Sensor < kwave.toolbox.GridInput
                     case 3
                         gridPoint=[obj.kgrid.x(j1)/obj.kgrid.gridSpacing(1),obj.kgrid.y(j1)/obj.kgrid.gridSpacing(2),obj.kgrid.z(j1)/obj.kgrid.gridSpacing(3)];
                 end
-                gridLocations(j1,:)=gridPoint; 
+                gridLocations(j1,:)=gridPoint;
             end
             Indexes=obj.OffGrid.ValidGridpointDistance(gridLocations,obj.OffGrid.gridLocations,accuracy);
             Indexes=max(Indexes,[],1);
             obj.maskBuilder(Indexes==1)=1;
+
+            % if min( obj.maskBuilder(1,:,:,:)==1,[],'all')==1 || min( obj.maskBuilder(end,:,:,:)==1,[],'all')==1 
+            %     disp('Accuracy may be limited by proximity of off grid points to outer edge of the domain in x co-ordinate.')
+            % end
+            % if min( obj.maskBuilder(:,1,:,:)==1,[],'all')==1 || min( obj.maskBuilder(:,end,:,:)==1,[],'all')==1
+            %     disp('Accuracy may be limited by proximity of off grid points to outer edge of the domain in y co-ordinate.')
+            % end
+            % if  min( obj.maskBuilder(:,:,1,:)==1,[],'all')==1 || min( obj.maskBuilder(:,:,end,:)==1,[],'all')==1
+            %     disp('Accuracy may be limited by proximity of off grid points to outer edge of the domain in z co-ordinate.')
+            % end
+            
             obj.BLIMat = obj.OffGrid.BandLimGrid(gridLocations(Indexes==1,:),obj.OffGrid.gridLocations,accuracy);
         end
     end

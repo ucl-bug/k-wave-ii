@@ -23,7 +23,6 @@ classdef TestOffGrid  < matlab.unittest.TestCase
 
         end
 
-
         function runPreBuilds(testCase)
 
             % Test each of the prebuilds run in turn.
@@ -86,15 +85,12 @@ classdef TestOffGrid  < matlab.unittest.TestCase
 
             ball.centre=[0,0,0];
             ball.radius=5*dx;
-            ball.pointsTheta=10;
-            ball.pointsPhi=20;
+            ball.points=1000;
             OffGrid3DBall=OffGrid(kgrid3Dx,'ball',ball);
             
             disk.centre=[0,0,dx];
             disk.focusPoint=[0,dx,dx/2];
             OffGrid3DDisk=OffGrid(kgrid3Dx,'disk',disk);
-
-
 
           end
       end

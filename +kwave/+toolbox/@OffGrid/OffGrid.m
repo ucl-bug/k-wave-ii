@@ -114,20 +114,22 @@ classdef OffGrid < handle
 
                 if strcmp(kgridLocations,'ball')
                     % Ball requires a centre point and a radius
-                    assert( ~isempty(options.radius), ~isempty(options.centre), ~isempty(options.pointsTheta), ~isempty(options.pointsPhi))
+                    assert( ~isempty(options.radius), ~isempty(options.centre), ~isempty(options.points))
                     assert( obj.kgrid.dimensions==3)
 
-                    Nxi=options.pointsTheta;
-                    Nyi=options.pointsPhi;
-                    kgridLocations=zeros(Nxi,Nyi,3);
+                    ratio = pi * (3 - sqrt(5));
+                    off = 2 / options.points;
+                    k = 0:options.points-1;
+                    y = k * off - 1 + (off/2); %equal spaced heights
+                    r = sqrt(1 - (y.^2)); %radial ratio for the circle x,z (x^2 + z^2= r^2 = 1-y^2)
+                    phi = k * ratio;
 
-                    kgridLocations(:,:,1)=options.centre(1)+cos(0:2*pi/(Nxi-1):2*pi).'.*(cos(-pi/2:pi/(Nyi-1):pi/2));
-                    kgridLocations(:,:,2)=options.centre(2)+sin(0:2*pi/(Nxi-1):2*pi).'.*(cos(-pi/2:pi/(Nyi-1):pi/2));
-                    kgridLocations(:,:,3)=options.centre(3)+kgridLocations(:,:,3)+(sin(-pi/2:pi/(Nyi-1):pi/2));
-
-                    kgridLocations=kgridLocations.*options.radius;
-                    obj.kgridLocations = reshape(kgridLocations,[Nxi*Nyi,obj.kgrid.dimensions]);
-
+                    kgridLocations=zeros(options.points,3);
+                    kgridLocations(:,1)=options.centre(1)+options.radius .* cos(phi) .* r;
+                    kgridLocations(:,2)=options.centre(2)+options.radius*y;
+                    kgridLocations(:,3)=options.centre(3)+options.radius .* sin(phi) .* r;
+                    
+                    obj.kgridLocations=kgridLocations;
                     assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
                     assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
                     assert(max(abs(obj.zLoc))<obj.kgrid.zSize/2)
