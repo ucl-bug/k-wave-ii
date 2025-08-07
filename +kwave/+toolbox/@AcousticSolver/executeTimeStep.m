@@ -115,16 +115,20 @@ if Nt~=0
                     obj.setkSpaceCorrection(currentTimeStep);
                 end
 
-        elseif ((tIndex==2) && (obj.timeStepsTaken == 0)) || ((tIndex==1) && (obj.timeStepsTaken ~= 0))
-            % when an initial velocity was given and was required for
-            % initial conditions the solution accounts for the adjusted
-            % time steps.
-            obj.velocityPadded = pmlSG(pmlSG(obj.velocityPadded) - (dt ./ densityPaddedStg) .* gradient(obj.pressurePadded) + dt .* obj.kappaSplitCorrection( pmlSG(obj.velocityPadded)) );
-
-            dt = currentTimeStep;
-            obj.prevTimeStep = currentTimeStep;
-            obj.setkSpaceCorrection(currentTimeStep);
-            obj.pml.setupQuarticPML(currentTimeStep, obj.medium.soundSpeedReference);
+        else
+            % Usual time stepping, additional update term in velocity is 0
+            % after setkSpaceCorrection(obj.prevTimeStep), completed on
+            % first itteration.
+            
+            % Conservation of Momentum (with variable time stepping)
+            obj.velocityPadded = pmlSG( pmlSG(obj.velocityPadded) - dt* gradient(obj.pressurePadded)./ densityPaddedStg + dt*obj.kappaSplitCorrection( pmlSG(obj.velocityPadded)) );
+            
+            if  (tIndex<3) && ((tIndex==2) && (obj.timeStepsTaken == 0)) || ((tIndex==1) && (obj.timeStepsTaken ~= 0))
+                dt = currentTimeStep;
+                obj.prevTimeStep = currentTimeStep;
+                obj.setkSpaceCorrection(obj.prevTimeStep); % Uses Prev time step to prevent comparison with small error.
+                obj.pml.setupQuarticPML(currentTimeStep, obj.medium.soundSpeedReference);
+            end
 
             % Mass conservation equation.
             if ~strcmp(obj.nonLinearity,'off')
@@ -145,31 +149,7 @@ if Nt~=0
                 obj.pressurePadded =  obj.pressurePadded  +  obj.medium.soundSpeedPadded.^2 .* ( ...
                     obj.medium.BonA.*  ( sum(obj.densitySplitPadded, 4)).^2 ./ (2 * obj.medium.densityPadded)  );
             end
-        else
-
-            % Usual time stepping
-
-            % Momentum conservation equation.
-            obj.velocityPadded = pmlSG(pmlSG(obj.velocityPadded) - (dt ./ densityPaddedStg) .* gradient(obj.pressurePadded));
-
-            % Mass conservation equation.
-            if ~strcmp(obj.nonLinearity,'off')
-                densityMultiplier = 2* sum(obj.densitySplitPadded,4) + obj.medium.densityPadded;
-            end
-            obj.densitySplitPadded = pml(pml(obj.densitySplitPadded) - dt .* densityMultiplier .* divergence(obj.velocityPadded));
-            % Pressure density relation.
-            obj.pressurePadded = obj.medium.soundSpeedPadded.^2 .* ( sum(obj.densitySplitPadded, 4));
-
-            % If absorptionPower declaired then add absorption terms
-            if ~strcmp(obj.absorptionType,'off')
-                obj.pressurePadded =  obj.pressurePadded  +  obj.medium.soundSpeedPadded.^2 .* ( ...
-                    obj.absorbTauPadded .* fracLaplacian(obj, obj.medium.densityPadded .* sum(divergence(obj.velocityPadded),4), obj.medium.absorptionPower/2 -1 ) + ...
-                    obj.absorbEtaPadded .* fracLaplacian(obj, sum(obj.densitySplitPadded,4), obj.medium.absorptionPower/2 -0.5 ) ) ;
-            end
-            if ~strcmp(obj.nonLinearity,'off')
-                obj.pressurePadded =  obj.pressurePadded  +  obj.medium.soundSpeedPadded.^2 .* ( ...
-                    obj.medium.BonAPadded.*  ( sum(obj.densitySplitPadded, 4)).^2 ./ (2 * obj.medium.densityPadded)  );
-            end
+        
         end
 
         if ~isempty(obj.sensor) && rem(tIndex-adj, obj.sensor.timeSteps) == 0

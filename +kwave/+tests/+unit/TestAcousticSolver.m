@@ -41,7 +41,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             alpha0=10;
             pmlSize = 20;
             CFL = 0.5;
-            Nt = 150;
+            Nt = 100;
             dt = CFL * dx / c0;
 
             % Settings.

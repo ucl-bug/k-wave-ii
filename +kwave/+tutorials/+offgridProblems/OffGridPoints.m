@@ -78,7 +78,7 @@ Ogrid3D=OffGrid(kgrid3D,points3D);
 % We will now use a fixed number of Offgrid points given by Nxi
 Nxi=70;
 %
-% In 2D the line and circle constructors can be used,
+% In 2D the line, filled circle, arc and circle constructors can be used,
 % In order to produce a line two positions must be given, these are the
 % start and end point, as well as the number of points
 line.startPoint=[-0.4,-0.3];
@@ -86,7 +86,31 @@ line.endPoint=[0.4,0.3];
 line.points=Nxi;
 % The line between these two points is then given by
 OgridLine=OffGrid(kgrid2D,'line',line);
-% While for a circle we need to describe the centre point and the radius
+% If instead we wish to define a curve we can do so in two ways. In both
+% cases the numeber of points and the radius of curvature are required
+arc.radius=0.8;
+arc.points=Nxi;
+arc2.radius=0.8;
+arc.points=Nxi;
+%Then we can either define the centre of the circle and the angles that
+%define the arc (0,4 pi)
+arc.centre=[-0.6,0];
+arc.startAngle=7*pi/8;
+arc.endAndle=9*pi/8;
+% The start angle must be less than the end Angle. Note that the centre of
+% the circle does not need to be in the domain, only the entire arc.
+OGridArc1=OffGrid(kgrid2D,'arc',arc);
+% We can alternatively provide a fixed midpoint of the arc, the distance
+% between thetwo ends as the diameter, and a focus Point
+arc2.midPoint=[0.2,0];
+arc2.focusPoint=[0.1,0];
+arc2.diameter=0.4;
+OGridArc2=OffGrid(kgrid2D,'arc',arc2);
+%The focus point is defined such that it lies on the line normal from the
+%arc at the midpoint in the direction of the imagined centre of the circle.
+%This dictates the orientation of the line.
+
+% For a full circle we need only to describe the centre point and the radius
 circ.centre=[0.1,0.1];
 circ.radius=0.3;
 circ.points=Nxi;
@@ -94,25 +118,31 @@ OgridCircle=OffGrid(kgrid2D,'circle',circ);
 % In both of these example all of the grid points are evenly distributed
 % along their respective shapes.
 %
+% To generate a filled circle this is declared exacly as before, however it
+% should be considered that a larger number of points will with to be
+% considered
+OgridFilledCircle=OffGrid(kgrid2D,'filledCircle',circ);
+%
 % If points are defined in more than one OffGrid object they can be merged
 % calling both of the OffGrid operators
  OGridMerge=OffGrid(kgrid2D,OgridCircle,OgridLine);
 % It must be ensured that all three use the same underlying grid.
 %
 % In 3D we can use the ball constructor, The ball constructor like the
-% circle requires both the centre and the radius, however it also requires
-% two numbers for the points, pointsTheta, and pointsPhi. The sphere is
-% parametrised by theta in [0,2pi), in the xy plane. Each disk is then
-% described by the number of points options.pointsTheta. The second
-% co-ordinate is phi in [-pi/2,pi/2] describes the height of the disks 
-% constructing the ball with options.pointsPhi describing the number of 
-% cross-sections, with a total number of boundary points given by their
-% product.
-% WARNING: THE DENSITY OF THE POINTS AT THE TOP AND BOTTOM COMPARED TO THE
-% CENTRE HAS NOT BEEN TESTED FOR EFFECTS ON ACCURACY.
-% WARNING: OTHER PARAMETRISATIONS EXIST AND MAY PROVIDE BETTER RESULTS.
+% circle requires both the centre, the radius and the number of points. y
+% values on the sphere are evenly distributed across the Nxi points with
+% the x and z points in a spiral following the goldon ratio. 
 sphere.centre=[0.05,-0.05,0];
 sphere.radius=0.2;
-sphere.pointsTheta=Nxi;
-sphere.pointsPhi=Nxi;
+sphere.points=Nxi;
 OgridBall=OffGrid(kgrid3D,'ball',sphere);
+%
+% Also in 3D we can define a disk just as a filled circle in 2D now with an
+% additional input options.focusPoint. the Focus point is a point along the
+% unit normal from the disk at the centre, fixing the orientation of the
+% disk, just as with the second implementation of the disk.
+disk.centre=[0.05,-0.05,0.01];
+disk.radius=0.25;
+disk.focusPoint=[0.04,-0.06,0.02];
+disk.points=Nxi;
+OgridDisk=OffGrid(kgrid3D,'disk',disk);

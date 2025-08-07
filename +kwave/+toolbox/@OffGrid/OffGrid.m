@@ -233,7 +233,7 @@ classdef OffGrid < handle
                     assert( ~isempty(options.radius), ~isempty(options.points),(obj.kgrid.dimensions==2))
                     if isfield(options,'centre')
                         assert(~isempty(options.startAngle),~isempty(options.endAngle))
-                        assert( options.startAngle<2*pi, options.startAngle>0, options.endAngle>0, options.startAngle<options.endAngle)
+                        assert( options.startAngle<4*pi, options.startAngle>0, options.endAngle>0, options.startAngle<options.endAngle)
                         N=options.points;
                         angles= ((N-1)*options.startAngle + options.endAngle )/ N: (options.endAngle-options.startAngle)/(N+2) :((N-1)*options.endAngle + options.startAngle )/ N;
                         kgridLocations=zeros(N,2);
