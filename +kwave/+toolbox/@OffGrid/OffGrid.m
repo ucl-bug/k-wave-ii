@@ -1,27 +1,71 @@
 %% OffGrid
 % *Package:* kwave.toolbox
 %
-% Summary
+% Store points off of a spatial grid.
 %
 %% Syntax
-%
+% OffGrid( kgrid, kgridPoints, options )
 %% Description
+% The OffGrid objects are for the implementation and use of shapes that do
+% not adhear to the gridpoints, equipped with the bandlimited interpolation
+% functions allowing for interaction with the grid.
+% When constructing a set of offgrid points these points can either be fed
+% to the constructor as a vector of the vector co-ordinates according to
+% the grid space, or by utilising a contrustion key word and providing the
+% equivalent option terms. Additionally any two OffGrid  onbjects on the 
+% same domain can be merged by calling a constuctor with the grid, and both
+% OffGrid objects to be included.
 %
 %% Input Arguments
 %
+% kgrid = kwave.toolbox.Grid
+% kgridPoints = numerical Array of size [Nxi, dim], where Nxi is the number
+% of offFGrid points to be given and dim is the dimension of the space.
+% Each row kgridPoints(n,:) is a vector contained within the Grid.
+%
+% kgridPoints =  String. A number of preset domains are included and called
+% by the appropriate string with options.parameters.
+% For a 2D grid. kgridPoints can take the names
+%   "line"          requires options.points, option.startPoint, option.endPoint
+%   "arc"           requires options.points, options.radius,options.diameter,
+%                               options.midPoint, options. focusPoint
+%                   OR       options.points, options.radius, options.centre,
+%                               options.startAngle, options.endAngle
+%   "circle"        requires options.points, options.centre, options.radius
+%   "filledCircle"  requires options.points, options.centre, options.radius
+%   "parrallel"     requires options.points, options.corner1, options.corner2,
+%                               options.corner3
+% 
+% For a 3D grid. kgridPoints can take the names
+%   "ball"          requires options.points, options.centre, options.radius
+%   "disk"          requires options.points, options.centre, options.radius, 
+%                               options.focusPoint
+%   "bowl"          requires options.points, options.midPoint, options.radius, 
+%                               options.focusPoint, options.diameter
+%
+% For any two offGrid domain the grid can be merged by providing the first
+% OffGrid object as kgridValues and the second as the options input. The
+% result will use all points contained in both, removing any repetitions.
+% In this way inductively any number of offGrid domains can be merged.
+% kgridPoints = kwave.toolbox.OffGrid, options = kwave.toolbox.OffGrid
 %% Properties
+%   kgrid
+%   gridSize
+%   kgridLocations
+%   gridLocations        
+%   xLoc;
+%   yLoc;
+%   zLoc;
 %
 %% Methods
-%
-%% Writing Notes,
-% Everything that happens should be invariant up to Nx X Ny constant.
-% Inputs are kgrid, Nx, Ny, GridLocations
-% Grid Locations needs to be an Nx x Ny x kgrid.dimensions array
-% when I reffer to the grid Nx and Ny I need to write kgrid.Nx and kgrid.Ny
-% (:,:,1) are the x co-ordinates wrt the grid must be given
-% (:,:,2) are the y co-ordinates wrt the grid if given
-% (:,:,3) are the z co-ordinates wrt the grid if given
-%
+%   obj.ValidGridpointDistance(x1,x2,accuracy)
+%   obj.BandLimGridCoOdd(x1,x2,dim)
+%   obj.BandLimCoOdd(x1,x2,dim)
+%   obj.BandLimGridCoEven(x1,x2,dim)
+%   obj.BandLimCoEven(x1,x2,dim)
+%   obj.BandLimeGrid(x1,x2,accuracy)
+%   obj.BandLim(x1,x2)
+%   obj.InvBandLimMatrix()
 %% Example
 % kgrid = Grid([10, 10, 10], 1e-3);
 % Nx=10;
@@ -32,11 +76,28 @@
 % Locs(:,:,2)=sin(0:2*pi/(Nx-1):2*pi).'.*(cos(-pi/2:pi/(Ny-1):pi/2));
 % Locs(:,:,3)=Locs(:,:,3)+(sin(-pi/2:pi/(Ny-1):pi/2));
 % Locs=Locs.*rad;
-% OffGridBall=OffGrid(kgrid,[Nx,Ny],Locs);
+% OffGridBall=OffGrid(kgrid,Locs);
 %
 % ball.radius=0.003;
 % ball.centre=[0,0,0];
 % OffGridBall2=OffGrid(kgrid,[Nx,Ny],'ball',ball);
+%
+% Copyright (C) 2025- The k-Wave Authors.
+%
+% This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
+% software: you can redistribute it and/or modify it under the terms of the
+% GNU Lesser General Public License as published by the Free Software
+% Foundation, either version 3 of the License, or (at your option) any
+% later version.
+%
+% k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
+% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+% FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+% License for more details.
+%
+% You should have received a copy of the GNU Lesser General Public License
+% along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
+%
 classdef OffGrid < handle
 
     % Properties set by constructor.
@@ -44,44 +105,23 @@ classdef OffGrid < handle
 
         %
         kgrid kwave.toolbox.Grid
-
         % Grid size [grid points].
         gridSize(1,1) double {mustBeInteger, mustBePositive, mustBeFinite} = [1];
-
         % Locations of the Points
         kgridLocations = [];
-
-
     end
     properties
-
     gridLocations = [];
-
-    normalVector=[];
-    
     end
 
     % Dependent properties without set methods. These parameters are not
     % stored but re-computed each time they are needed.
     properties(Dependent=true, GetAccess=public, SetAccess=private)
-
         % Nx,Ny,Nz vectors containing copies of the grid
         % coordinates for each point [m].
         xLoc;
         yLoc;
         zLoc;
-
-        
-
-    end
-
-    properties(Hidden, Dependent=true, SetAccess=private)
-
-        % InvBandLimMatrix
-
-        % BandLimGrid
-
-        % Distaces
     end
 
     % Constructor.
@@ -94,7 +134,7 @@ classdef OffGrid < handle
                     [A,B]=size(kgridLocations); 
                     if B~=kgrid.dimensions && A==kgrid.dimensions
                         kgridLocations=kgridLocations.';
-                        [A,B]=size(kgridLocations); 
+                        [~,B]=size(kgridLocations); 
                     end
                     assert(B==kgrid.dimensions);
                     obj.kgridLocations=kgridLocations;
@@ -146,9 +186,9 @@ classdef OffGrid < handle
                     
                     Parametrisation = 0:1:Nxi-1;
 
-                    GOLDEN_ANGLE = 2.39996322972865332223155550663361385312499901105811504;
+                    ratio = pi * (3 - sqrt(5));
 
-                    angle = @(t) GOLDEN_ANGLE.*t;
+                    angle = @(t) ratio.*t;
 
                     radial = @(t) sqrt( options.radius^2 .* t / (Nxi-1) );
                     planex=radial(Parametrisation).*cos(angle(Parametrisation));
@@ -157,15 +197,56 @@ classdef OffGrid < handle
                     n=(options.focusPoint - options.centre)/norm((options.focusPoint - options.centre));
                     ni=sqrt( 1- n(3)^2);
                     
-                    kgridLocations(:,1)=options.centre(1)+n(1)*n(3)*planex/ni -n(2)*planey/ni;
-                    kgridLocations(:,2)=options.centre(2)+n(2)*n(3)*planex/ni -n(1)*planey/ni;
-                    kgridLocations(:,3)=options.centre(3)+ni*planex;
+                    kgridLocations(:,1)=options.centre(1)-n(1)*n(3)*planey/ni +n(2)*planex/ni;
+                    kgridLocations(:,2)=options.centre(2)-n(2)*n(3)*planey/ni -n(1)*planex/ni;
+                    kgridLocations(:,3)=options.centre(3)+ni*planey;
 
                     obj.kgridLocations=kgridLocations;
                     assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
                     assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
                     assert(max(abs(obj.zLoc))<obj.kgrid.zSize/2)
 
+                elseif strcmp(kgridLocations,'bowl')
+                    % The bowl takes midPoint, focusPoint, diameter, radius and points
+
+                    assert( ~isempty(options.radius), ~isempty(options.midPoint), ~isempty(options.points), ~isempty(options.focusPoint))
+                    assert( obj.kgrid.dimensions==3)
+
+                     ratio = pi * (3 - sqrt(5));
+
+                    %Angle from base
+                    maxAngle=acos( options.diameter/ (2*options.radius));
+                    anglesZ=linspace(-pi/2, maxAngle,options.points);
+                    anglesXY=ratio*(0:1:options.points-1);
+
+                    %Unit bowl under the origin, midpoint=[0,0,-1]
+                    bowlx=cos(anglesXY) .* sin(anglesZ);
+                    bowly=sin(anglesXY) .* sin(anglesZ);
+                    bowlz=cos(anglesZ);
+                    
+                    % normal vector { roatated to from (0,0,1) }
+                    n=(options.focusPoint - options.midPoint)/norm((options.focusPoint - options.midPoint));
+                    ni=sqrt( 1- n(3)^2);
+                    kgridLocations=zeros(options.points,3);
+                    % applies rotation matricies
+                    if abs(n(3))~=1
+                        kgridLocations(:,1)=options.midPoint(1)+options.radius*n(1)+options.radius*(n(2)*bowlx/ni -n(1)*n(3)*bowly/ni - n(1)*bowlz);
+                        kgridLocations(:,2)=options.midPoint(2)+options.radius*n(2)+options.radius*(-n(1)*bowlx/ni -n(2)*n(3)*bowly/ni - n(2)*bowlz);
+                        kgridLocations(:,3)=options.midPoint(3)+options.radius*n(3)+options.radius*(ni*bowly - n(3)*bowlz);
+                    elseif n(3)==1
+                        kgridLocations(:,1)=options.midPoint(1)+options.radius*(bowly);
+                        kgridLocations(:,2)=options.midPoint(2)+options.radius*(bowlx);
+                        kgridLocations(:,3)=options.midPoint(3)+options.radius+options.radius*(n(3)*bowlz);
+                    elseif n(3)==-1
+                            kgridLocations(:,1)=options.midPoint(1)-options.radius*bowlx;
+                        kgridLocations(:,2)=options.midPoint(2)-options.radius*bowly;
+                        kgridLocations(:,3)=options.midPoint(3)-options.radius-options.radius*bowlz;
+                    end
+                    obj.kgridLocations=kgridLocations;
+                    assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
+                    assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
+                    assert(max(abs(obj.zLoc))<obj.kgrid.zSize/2)
+                   
                 elseif strcmp(kgridLocations,'filledCircle')
                     % Circles require a centre point and a radius, must be
                     % in 2D
@@ -199,15 +280,40 @@ classdef OffGrid < handle
 
                     Nxi=options.points;
                     kgridLocations=zeros(Nxi,2);
-                    obj.normalVector=zeros(Nxi,2);
                     
                     kgridLocations(:,1)=options.centre(1)+options.radius.*cos((-pi:2*pi/(Nxi):pi*(Nxi-1)/Nxi) );
                     kgridLocations(:,2)=options.centre(2)+options.radius.*sin((-pi:2*pi/(Nxi):pi*(Nxi-1)/Nxi) );
 
-                    obj.normalVector(:,1)=cos((-pi:2*pi/(Nxi):pi*(Nxi-1)/Nxi) );
-                    obj.normalVector(:,2)=sin((-pi:2*pi/(Nxi):pi*(Nxi-1)/Nxi) );
-
                     obj.kgridLocations=kgridLocations;
+                    assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
+                    assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
+
+                elseif strcmp(kgridLocations,'parrallel')
+                    % Constructs a parrallelagram based on three corners
+                    % given with edges between (corner1 and corner2) asnd
+                    % (corner1 and corner3)
+                    assert( ~isempty(options.corner1), ~isempty(options.corner2), ~isempty(options.corner3), ~isempty(options.points))
+                    assert( obj.kgrid.dimensions==2)
+                    assert(all(size(options.corner1)==[1,2]));
+                    assert(all(size(options.corner2)==[1,2]));
+                    assert(all(size(options.corner3)==[1,2]));
+                    assert(max(options.corner1~=options.corner2)==1 && max(options.corner1~=options.corner3)==1 && max(options.corner2~=options.corner3)==1);
+                    HalfPerim=norm(options.corner1-options.corner2) + norm(options.corner1-options.corner3);
+                    
+                    Nxi=options.points;
+                    Nxy=ceil(norm(options.corner1-options.corner2)*Nxi/(2*HalfPerim));
+                    Nxz=ceil(Nxi/2 -Nxy);
+                    Nxyz=Nxi-2*Nxy-Nxz;
+                    corner4=options.corner2+options.corner3-options.corner1;
+
+                    locs=[linspace(options.corner1(1),options.corner2(1),Nxy+1).',linspace(options.corner1(2),options.corner2(2),Nxy+1).' ; ...
+                      linspace(options.corner2(1),corner4(1),Nxyz+1).',linspace(options.corner2(2),corner4(2),Nxyz+1).' ;  ...
+                      linspace(corner4(1),options.corner3(1),Nxy+1).',linspace(corner4(2),options.corner3(2),Nxy+1).' ;  ...
+                      linspace(options.corner3(1),options.corner1(1),Nxz+1).',linspace(options.corner3(2),options.corner1(2),Nxz+1).'];
+                    
+                    obj.kgridLocations=unique(locs,"rows");
+                    assert(length(obj.kgridLocations(:,1))==Nxi)
+
                     assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
                     assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
 
@@ -245,16 +351,19 @@ classdef OffGrid < handle
                         assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
 
                     elseif isfield(options,'diameter')
-                        assert( ~isempty(options.midpoint),~isempty(options.focusPosition))
+                        assert( ~isempty(options.midPoint),~isempty(options.focusPoint))
                         varphi_max = asin(options.diameter ./ (2 * options.radius));
                         dvarphi = 2 * varphi_max ./ options.points;
                         t = linspace(-varphi_max + dvarphi/2, varphi_max - dvarphi/2, options.points);
 
-                        centre= options.midpoint - (options.midpoint-options.focusPosition)*options.radius/abs(options.midpoint-options.focusPosition) ;
+         
+                        n=(options.midPoint-options.focusPoint)/norm(options.midPoint-options.focusPoint);
+                        circlesegx= options.radius.*cos(t).'-options.radius;
+                        circlesegy= options.radius.*sin(t).';
                         
                         kgridLocations=zeros(options.points,2);
-                        kgridLocations(:,1)=centre(1)+options.radius.*cos(t ).';
-                        kgridLocations(:,2)=centre(2)+options.radius.*sin(t ).';
+                        kgridLocations(:,1)=options.midPoint(1)+n(1)*circlesegx-n(2)*circlesegy;
+                        kgridLocations(:,2)=options.midPoint(2)+n(2)*circlesegx+n(1)*circlesegy;
                         obj.kgridLocations=kgridLocations;
                         assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
                         assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)

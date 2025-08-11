@@ -20,7 +20,7 @@
 % density.
 %
 %    kgrid = kwave.toolbox.Grid([128, 128], 1e-3);
-%    medium = kwave.toolbox.AcousticMedium(kgrid);
+%    medium = kwave.toolbox.Medium(kgrid);
 %    medium.soundSpeed = rand(medium.gridSize);
 %    medium.density = rand(medium.gridSize);
 %    medium.specificHeat = rand(medium.gridSize);

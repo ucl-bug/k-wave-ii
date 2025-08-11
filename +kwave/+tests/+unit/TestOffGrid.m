@@ -69,9 +69,15 @@ classdef TestOffGrid  < matlab.unittest.TestCase
             arc2.radius=5*dx;
             arc2.points=40;
             arc2.diameter=2*dx;
-            arc2.midpoint=[0,-5*dx];
-            arc2.focusPosition=[0,-2*dx];
+            arc2.midPoint=[0,-5*dx];
+            arc2.focusPoint=[0,-2*dx];
             OffGrid2DArc2=OffGrid(kgrid2Dx,'arc',arc2);
+
+            parral.corner1=[-4*dx,-4*dx];
+            parral.corner2=[-4*dx,4*dx];
+            parral.corner3=[4*dx,-4*dx];
+            parral.points=40;
+            OgridParrallelagram=OffGrid(kgrid2Dx,'parrallel',parral);
 
             disk.radius=5*dx;
             disk.points=75;
@@ -91,6 +97,13 @@ classdef TestOffGrid  < matlab.unittest.TestCase
             disk.centre=[0,0,dx];
             disk.focusPoint=[0,dx,dx/2];
             OffGrid3DDisk=OffGrid(kgrid3Dx,'disk',disk);
+
+            bowl.midPoint=[0,0,dx];
+            bowl.focusPoint=[0,0,dx/2];
+            bowl.radius=2*dx;
+            bowl.diameter=3*dx;
+            bowl.points=750;
+            OffGrid3DBowl=OffGrid(kgrid3Dx,'bowl',bowl);
 
           end
       end

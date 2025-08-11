@@ -2,17 +2,52 @@
 % *Package:* kwave.toolbox
 % *Superclasses:* kwave.toolbox.GridInput
 %
+% Class used to define the sensor locations and read the variables 
+% to produce the sensor data.
+%
 %% Syntax
+%   sensor = Sensor(kgrid);
 %
 %% Description
+% This class is used to define the locations of sensors and to record
+% the sensor data at time intervals. The sensor class must have a mask
+% defined. and can be given an offFGrid object, using the BLI to constuct
+% the sensor data.
 %
 %% Examples
+% Define the grid and sensor objects, and assign the mask, both by defining
+% a mask directly, and by using an offGrid object.
+%
+%    kgrid = kwave.toolbox.Grid([128, 128], 1e-3);
+%    sensor = kwave.toolbox.Sensor(kgrid);
+%    sensor.mask=zeros(128,128);
+%    sensor.mask(12:254,12:24)=1;
+%
+%    sensor2=kwave.toolbox.Sensor(kgrid);
+%    circ.radius=5e-2;
+%    circ.centre=[0,0];
+%    circ.points=315;
+%    offGrid=OffGrid(kgrid,'circle',circ);
+%    sensor2.setOffGrid(kgrid,offGrid,1e-4);
+%    sensor2.mask=sensor2.maskBuilder;
 %
 %% Properties
-%
+% * |mask| - GridField type indicating grid locations that of 0,1's
+% variable locations that contribute to the sensor data.
+% * |maskbuilder| - For use with setOfFGrid to define the appropriate mask
+% * |timeSteps| - (scalar positive integer), regularity of recorded sensor data
+%   the number of time steps.
+% * |sensorIndex| - Index numbers for sensor points
+% * |totalSensorPoints| - The total number of sensor points
+% * |BLIMat| - For use with the OffGrid methods, used to compute the sensor
+% firled from the variables
+% * |OffGridApplied| -  'on' 'off' witch that declares if offgrid methods
+% are being used. automatically turned on when calling setOffGrid(OffGrid,accuracy)
+% * |OffGrid| -  the Offgrid object used to call the oggrid methods.
 %% See Also
-%
-%% Writing Notes
+% * |GridInput|
+% * |AcousticSensor|
+% * |OffGrid|
 %
 
 classdef Sensor < kwave.toolbox.GridInput

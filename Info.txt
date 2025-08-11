@@ -5,6 +5,7 @@ Targets:
         [CODE DONE, COMMENTS ADDED, TESTED, TUTORIAL GIVEN ][ Req:  USUAL PAPRAMETERS]
 
   Off-Grid "Grid"
+        [CODE DONE, COMMENTS ADDED, TESTED, TUTORIAL GIVEN ][More presets to add]
 
   Off-Grid source
 
@@ -12,6 +13,7 @@ Targets:
         [CODE DONE, ADDED, TESTED, TUTORIAL GIVEN ][ Comments needed in Sensor and Acoustic Sensor]
 
   Off-Grid Sensor
+        [CODE DONE, ADDED, TESTED, TUTORIAL GIVEN, integrated into Sensor][ Comments needed in Sensor and Acoustic Sensor]
 
 
   Example/Tutorials

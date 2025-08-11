@@ -91,21 +91,21 @@ OgridLine=OffGrid(kgrid2D,'line',line);
 arc.radius=0.8;
 arc.points=Nxi;
 arc2.radius=0.8;
-arc.points=Nxi;
+arc2.points=Nxi;
 %Then we can either define the centre of the circle and the angles that
 %define the arc (0,4 pi)
 arc.centre=[-0.6,0];
-arc.startAngle=7*pi/8;
-arc.endAndle=9*pi/8;
+arc.startAngle=15*pi/8;
+arc.endAngle=17*pi/8;
 % The start angle must be less than the end Angle. Note that the centre of
 % the circle does not need to be in the domain, only the entire arc.
-OGridArc1=OffGrid(kgrid2D,'arc',arc);
+OgridArc1=OffGrid(kgrid2D,'arc',arc);
 % We can alternatively provide a fixed midpoint of the arc, the distance
 % between thetwo ends as the diameter, and a focus Point
-arc2.midPoint=[0.2,0];
-arc2.focusPoint=[0.1,0];
+arc2.midPoint=[-0.2,0];
+arc2.focusPoint=[-0.1,0];
 arc2.diameter=0.4;
-OGridArc2=OffGrid(kgrid2D,'arc',arc2);
+OgridArc2=OffGrid(kgrid2D,'arc',arc2);
 %The focus point is defined such that it lies on the line normal from the
 %arc at the midpoint in the direction of the imagined centre of the circle.
 %This dictates the orientation of the line.
@@ -121,11 +121,23 @@ OgridCircle=OffGrid(kgrid2D,'circle',circ);
 % To generate a filled circle this is declared exacly as before, however it
 % should be considered that a larger number of points will with to be
 % considered
+circ.points=Nxi^2;
 OgridFilledCircle=OffGrid(kgrid2D,'filledCircle',circ);
+%
+% To construct a parrallelagram we can use the ckey word parrallel and
+% provide 3 corners. corner1, corner2 and corner3. corner1 is considered to
+% have edges to corner2 and corner3 which do not connect. The number of
+% points used is distributed approximately according to the the ratio of
+% the lengths and perimeters
+parral.corner1=[-0.4,0.3];
+parral.corner2=[-0.1,-0.1];
+parral.corner3=[0.1,0.1];
+parral.points=Nxi*10;
+OgridParrallelagram=OffGrid(kgrid2D,'parrallel',parral);
 %
 % If points are defined in more than one OffGrid object they can be merged
 % calling both of the OffGrid operators
- OGridMerge=OffGrid(kgrid2D,OgridCircle,OgridLine);
+ OgridMerge=OffGrid(kgrid2D,OgridCircle,OgridLine);
 % It must be ensured that all three use the same underlying grid.
 %
 % In 3D we can use the ball constructor, The ball constructor like the
@@ -134,7 +146,7 @@ OgridFilledCircle=OffGrid(kgrid2D,'filledCircle',circ);
 % the x and z points in a spiral following the goldon ratio. 
 sphere.centre=[0.05,-0.05,0];
 sphere.radius=0.2;
-sphere.points=Nxi;
+sphere.points=Nxi*10;
 OgridBall=OffGrid(kgrid3D,'ball',sphere);
 %
 % Also in 3D we can define a disk just as a filled circle in 2D now with an
@@ -144,5 +156,45 @@ OgridBall=OffGrid(kgrid3D,'ball',sphere);
 disk.centre=[0.05,-0.05,0.01];
 disk.radius=0.25;
 disk.focusPoint=[0.04,-0.06,0.02];
-disk.points=Nxi;
+disk.points=Nxi*5;
 OgridDisk=OffGrid(kgrid3D,'disk',disk);
+%
+% Expanding the disk, we can also describe a bowl. we now give a midPoint
+% as the midPoint On the disk, the focusPoint as above, the radius of
+% curvature and the diameter, equivalent to the example for arc2 in 2D.
+bowl.midPoint=[0.05,-0.05,0.01];
+bowl.radius=0.25;
+bowl.diameter=0.4;
+bowl.focusPoint=[0.04,-0.06,0.02];
+bowl.points=Nxi*10;
+OgridBowl=OffGrid(kgrid3D,'bowl',bowl);
+
+
+figure(1)
+plot(Ogrid1D.kgridLocations(:,1),0,'x')
+xlim([-0.5,0.5])
+
+figure(2)
+hold off
+plot(Ogrid2D.kgridLocations(:,1),Ogrid2D.kgridLocations(:,2),'bx')
+xlim([-0.5,0.5])
+ylim([-0.5,0.5])
+hold on
+plot(OgridLine.kgridLocations(:,1),OgridLine.kgridLocations(:,2),'r')
+plot(OgridArc1.kgridLocations(:,1),OgridArc1.kgridLocations(:,2),'m')
+plot(OgridArc2.kgridLocations(:,1),OgridArc2.kgridLocations(:,2),'k')
+plot(OgridCircle.kgridLocations(:,1),OgridCircle.kgridLocations(:,2),'y')
+plot(OgridFilledCircle.kgridLocations(:,1),OgridFilledCircle.kgridLocations(:,2),'c+')
+plot(OgridMerge.kgridLocations(:,1),OgridMerge.kgridLocations(:,2),'g*')
+plot(OgridParrallelagram.kgridLocations(:,1),OgridParrallelagram.kgridLocations(:,2),'ro')
+
+figure(3)
+hold off
+scatter3(Ogrid3D.kgridLocations(:,1),Ogrid3D.kgridLocations(:,2),Ogrid3D.kgridLocations(:,3),'b')
+xlim([-0.5,0.5])
+ylim([-0.5,0.5])
+zlim([-0.5,0.5])
+hold on
+scatter3(OgridBall.kgridLocations(:,1),OgridBall.kgridLocations(:,2),OgridBall.kgridLocations(:,3),'r')
+scatter3(OgridDisk.kgridLocations(:,1),OgridDisk.kgridLocations(:,2),OgridDisk.kgridLocations(:,3),'m')
+scatter3(OgridBowl.kgridLocations(:,1),OgridBowl.kgridLocations(:,2),OgridBowl.kgridLocations(:,3),'k')
