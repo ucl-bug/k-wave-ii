@@ -16,7 +16,7 @@ Targets:
         [CODE DONE, ADDED, TESTED, TUTORIAL GIVEN, integrated into Sensor][ Comments needed in Sensor and Acoustic Sensor]
 
 
-  Example/Tutorials
+  Example/Tutorial
     Acoustic Solver, absorption, nonlinearity
     Medium-grid, space-grid
     Off-Grid setup
