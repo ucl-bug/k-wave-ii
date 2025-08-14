@@ -84,6 +84,14 @@ classdef TestOffGrid  < matlab.unittest.TestCase
             disk.centre=[0,0];
             OffGrid2DDisk=OffGrid(kgrid2Dx,'filledCircle',disk);
 
+            circSegment.points=150;
+            circSegment.radius=3*dx;
+            circSegment.innerDiameter=2*dx;
+            circSegment.outerDiameter=4*dx;
+            circSegment.midPoint=[2*dx,0];
+            circSegment.focusPoint=[dx,0];
+            OgridCircleSegment=OffGrid(kgrid2Dx,'circleSegment',circSegment);
+
             OffGrid2Dadded=OffGrid(kgrid2Dx,OffGrid2DLine,OffGrid2DArc);
 
             kgrid3Dx = Grid([Nax, Nlat, Nlat], dx, [pmlSize, 0, 0]);

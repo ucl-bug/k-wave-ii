@@ -18,7 +18,7 @@
 % that can build common shapes.
 %
 % See Also:
-% * 
+% * +intialvalueproblems/AcosusicSolverExamples.m
 %
 
 %% Setup
@@ -135,6 +135,21 @@ parral.corner3=[0.1,0.1];
 parral.points=Nxi*10;
 OgridParrallelagram=OffGrid(kgrid2D,'parrallel',parral);
 %
+% To generate a circle segment, which generates a segment slice of a ring,
+% the radius of curvature of the OUTSIDE
+% The diameter of the outside of the ring
+% The diameter of the inside of the ring
+% the midPoint of the outside of the ring
+% a focusPoint of the outside of the ring on the centre beam
+% Suggested: midpoint of inside of the ring for focusPoints
+circSegment.points=(Nxi^2) /2;
+circSegment.radius=0.3;
+circSegment.innerDiameter=0.2;
+circSegment.outerDiameter=0.4;
+circSegment.midPoint=[-0.2,0.15];
+circSegment.focusPoint=[-0.1,0.075];
+OgridCircleSegment=OffGrid(kgrid2D,'circleSegment',circSegment);
+%
 % If points are defined in more than one OffGrid object they can be merged
 % calling both of the OffGrid operators
  OgridMerge=OffGrid(kgrid2D,OgridCircle,OgridLine);
@@ -169,6 +184,8 @@ bowl.focusPoint=[0.04,-0.06,0.02];
 bowl.points=Nxi*10;
 OgridBowl=OffGrid(kgrid3D,'bowl',bowl);
 
+% The below plots demonstrate each of the off-grid point sets, plotted
+% seperately for 1D, 2D and 3D.
 
 figure(1)
 plot(Ogrid1D.kgridLocations(:,1),0,'x')
@@ -187,6 +204,7 @@ plot(OgridCircle.kgridLocations(:,1),OgridCircle.kgridLocations(:,2),'y')
 plot(OgridFilledCircle.kgridLocations(:,1),OgridFilledCircle.kgridLocations(:,2),'c+')
 plot(OgridMerge.kgridLocations(:,1),OgridMerge.kgridLocations(:,2),'g*')
 plot(OgridParrallelagram.kgridLocations(:,1),OgridParrallelagram.kgridLocations(:,2),'ro')
+plot(OgridCircleSegment.kgridLocations(:,1),OgridCircleSegment.kgridLocations(:,2),'m.')
 
 figure(3)
 hold off

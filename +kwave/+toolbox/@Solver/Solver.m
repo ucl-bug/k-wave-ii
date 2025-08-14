@@ -33,7 +33,9 @@
 %   properties. 
 % * |source| - (kwave.toolbox.GridInput) Object which defines the source
 %   properties. 
-% * |sensor| - ...Not yet implemented...
+% * |sensor| - [] empty OR (kwave.toolbox.GridInput) Object which defines
+% the sensor.
+%   properties. 
 % * |settings| - (kwave.toolbox.Settings) Object which defines the
 %   simulation settings.
 %
@@ -42,7 +44,7 @@
 %
 % * |medium| - (kwave.toolbox.GridInput) Handle for medium object.
 % * |source| - (kwave.toolbox.GridInput) Handle for source object.
-% * |sensor| - ...Not yet implemented...
+% * |sensor| - (kwave.toolbox.GridInput) HAndle for a sensor object OR [] empty
 % * |settings| - (kwave.toolbox.Settings) Handle for settings object.
 %
 %% Template Methods
@@ -100,6 +102,10 @@ classdef(Abstract) Solver < kwave.toolbox.FourierCollocation
             end
             if (source.kgrid ~= kgrid)
                 kwave.toolbox.Logger.error('Solver:gridMismatch', 'The source input references a different Grid object to the kgrid input.');
+            end
+            assert( (isa(sensor, 'kwave.toolbox.Sensor') || isempty(sensor)))
+            if isa(sensor, 'kwave.toolbox.Sensor') && (sensor.kgrid ~= kgrid)
+                kwave.toolbox.Logger.error('Solver:gridMismatch', 'The sensor input references a different Grid object to the kgrid input.');
             end
 
             % Check the required input properties have been defined.

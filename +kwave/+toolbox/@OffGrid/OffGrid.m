@@ -271,6 +271,41 @@ classdef OffGrid < handle
                     assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
                     assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
 
+                 elseif strcmp(kgridLocations,'circleSegment')
+                    % Circle segment, requires the inner and outer
+                    % diameter the outer centre point, a focus point
+                    % (recommended mid inner point) the radius of curvature
+                    % for the outer arc and the number of points.
+
+                    assert( ~isempty(options.radius), ~isempty(options.midPoint),~isempty(options.focusPoint), ~isempty(options.points), ~isempty(options.innerDiameter), ~isempty(options.outerDiameter))
+                    assert( obj.kgrid.dimensions==2)
+
+                    Nxi=options.points;
+                    kgridLocations=zeros(Nxi,2);
+                    
+                    Parametrisation = 0:1:Nxi-1;
+
+                    GOLDEN_ANGLE =  pi * (3 - sqrt(5));
+                    MaxAngle = asin( options.outerDiameter / (2*options.radius));
+                    radInt=options.radius*options.innerDiameter/options.outerDiameter;
+
+                    angle = @(t) mod(GOLDEN_ANGLE.*t,2*MaxAngle) - MaxAngle;
+
+                    radial = @(t) options.radius + (( 1- t / (Nxi-1) ).^2) .* (radInt - options.radius);
+
+                    n=(options.midPoint-options.focusPoint)/norm(options.midPoint-options.focusPoint);
+                    %n=[-1,0];
+                    circlesegx= radial(Parametrisation).'.*cos(angle(Parametrisation)).'-options.radius;
+                    circlesegy= radial(Parametrisation).'.*sin(angle(Parametrisation)).';
+                        
+                    kgridLocations(:,1)=options.midPoint(1)+n(1)*circlesegx-n(2)*circlesegy;
+                    kgridLocations(:,2)=options.midPoint(2)+n(2)*circlesegx+n(1)*circlesegy;
+
+
+                    obj.kgridLocations=kgridLocations;
+                    assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
+                    assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
+
 
                 elseif strcmp(kgridLocations,'circle')
                     % Circles require a centre point and a radius, must be
