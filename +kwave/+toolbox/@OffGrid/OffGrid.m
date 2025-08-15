@@ -109,6 +109,7 @@ classdef OffGrid < handle
         gridSize(1,1) double {mustBeInteger, mustBePositive, mustBeFinite} = [1];
         % Locations of the Points
         kgridLocations = [];
+        normal =[];
     end
     properties
     gridLocations = [];

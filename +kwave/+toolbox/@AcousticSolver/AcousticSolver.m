@@ -102,11 +102,14 @@
 % * |nonLinearity| - (string) Must be a member of {'on', 'off'}. Defaults
 % to off. To include nonlinearity terms. obj.medium.BonA must also be
 % defined. Changes the equation of state and conservation of Mass. 
+% * |boundaryCondition|- (string) Must be a member of {'on', 'off'}.
+% Defaults to 'off'. Becomes 'on' with applyBoundaryCondition method.
 %
 %% Methods
 % * |setkSpaceCorrection|
 % * |setAbsorptionCoefficients|
 % * |kappaSplitCorrection|
+% * |applyBoundaryConditon|
 %
 % Copyright (C) 2024- The k-Wave Authors.
 %
@@ -144,13 +147,14 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
     properties(SetAccess=public,Hidden=false)
         absorptionType char {mustBeMember( absorptionType, {'off','on', 'noAbsorption', 'noDispersion'})} = 'off'
          nonLinearity char {mustBeMember( nonLinearity, {'off','on'})} = 'off'
+         boundaryCondition char {mustBeMember( boundaryCondition, {'off','on'})} = 'off'
     end
 
     properties(SetAccess=private, Hidden=true)
         absorbTauPadded single
         absorbEtaPadded single
         kappaSplit single
-
+        boundary 
         timePoint = 0;
     end
 
@@ -205,5 +209,6 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
         setAbsorptionCoefficients(obj)
         setkSpaceCorrection(obj, dt);
         fCorrected = kappaSplitCorrection(obj, f);
+        applyBoundarConditon(obj,AcousticBoundaryConditon);
     end
 end
