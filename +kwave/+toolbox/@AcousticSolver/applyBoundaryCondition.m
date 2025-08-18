@@ -31,7 +31,7 @@
 
 function applyBoundaryCondition(obj, Boundary)
 
-assert(isa(Boundary,'kwave.toolbox.AcousticBoundaryCondition'))
+assert(isa(Boundary,'kwave.toolbox.AcousticBndryCond'))
 
 obj.boundaryCondition='on';
-obj.boundary=Boundandary;
+obj.boundary=Boundary;

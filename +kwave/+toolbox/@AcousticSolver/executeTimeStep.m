@@ -149,8 +149,8 @@ if Nt~=0
                 obj.pressurePadded =  obj.pressurePadded  +  obj.medium.soundSpeedPadded.^2 .* ( ...
                     obj.medium.BonA.*  ( sum(obj.densitySplitPadded, 4)).^2 ./ (2 * obj.medium.densityPadded)  );
             end
-            if strcmp(obj.boundaryCondition,'on') && strcmp(obj.boundary.pressurebndy ,'on')
-                obj.pressurePadded =obj.Boundary.applyPressureBndry(obj);
+            if strcmp(obj.boundaryCondition,'on') && strcmp(obj.boundary.pressureBndry ,'on')
+                obj.pressurePadded =obj.boundary.applyPressureBndry(obj);
             end
         
         end

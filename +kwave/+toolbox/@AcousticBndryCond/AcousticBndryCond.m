@@ -1,4 +1,4 @@
-%% AcousticSensor
+%% AcousticBndryCond
 % *Package:* kwave.toolbox
 % *Superclasses:* kwave.toolbox.BoundaryCondition
 %
@@ -9,7 +9,7 @@
 %% Properties
 %% See Also
 
-classdef AcousticBoundaryCondition < kwave.toolbox.BoundaryCondition
+classdef AcousticBndryCond < kwave.toolbox.BoundaryCondition
 
     properties 
         pressureBndry char {mustBeMember( pressureBndry, {'on','off'})} = 'off';
@@ -18,7 +18,7 @@ classdef AcousticBoundaryCondition < kwave.toolbox.BoundaryCondition
 
     methods(Access=public)
         function pressurePadded =applyPressureBndry(obj,Solver)
-                pressurePadded=obj.ApplyBoundaryCondition(Solver.pressurePadded,1,'dirichlet','none');
+                pressurePadded=obj.ApplyBoundaryCondition(Solver.pressurePadded,'dirichlet',1,'none');
         end
 
         function velocityPadded=applyVelocityBndry(obj,Solver,stag)

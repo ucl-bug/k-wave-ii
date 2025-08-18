@@ -38,7 +38,7 @@ classdef BoundaryCondition < kwave.toolbox.GridInput
         OffGridApplied char {mustBeMember( OffGridApplied, {'off','on'})} = 'off'
         OffGrid kwave.toolbox.OffGrid
         normal 
-        bndyVal = 0;
+        bndryVal = 0;
     end
 
     methods
@@ -93,20 +93,35 @@ classdef BoundaryCondition < kwave.toolbox.GridInput
             else
                 SensorOutput=zeros(obj.totalSensorPoints,1);
                 for dimension=1:dim
-                    Var=Variable(:,:,:,dim);
+                    Var=VariablePadded(:,:,:,dim);
                     SensorOutput=SensorOutput+obj.BLIMat*Var(mask==1);
                 end
             end
         end
 
+        function Mat=ExpansionFunction(obj,Matrix) 
+            switch obj.kgrid.dimensions
+                case 1
+                     Mat=kwave.toolbox.expandMatrix(   Matrix, obj.kgrid.gridPadding(1),0);
+                case 2
+                    Mat=kwave.toolbox.expandMatrix(   Matrix, [obj.kgrid.gridPadding(1),obj.kgrid.gridPadding(1),obj.kgrid.gridPadding(2),obj.kgrid.gridPadding(2)],0);
+                case 3
+                    Mat=kwave.toolbox.expandMatrix(   Matrix, [obj.kgrid.gridPadding(1),obj.kgrid.gridPadding(1),obj.kgrid.gridPadding(2),obj.kgrid.gridPadding(2),obj.kgrid.gridPadding(3),obj.kgrid.gridPadding(3)],0);
+            end
+        end
+
         function VariablePadded = ApplyBoundaryCondition(obj,VariablePadded,bndrytype,dim,string)
-            BoundaryValue =ProcessSensorData(obj,VariablePadded,dim,string);
+            Variable=obj.kgrid.returnWithoutGridPadding(VariablePadded);
+            BoundaryValue =obj.ProcessSensorData(Variable,dim,string);
+            mask=obj.kgrid.returnWithoutGridPadding(obj.maskPadded);
+            
             if strcmp(bndrytype,'dirichlet')
                 Change=obj.BoundaryScaleMatrix.*(obj.bndryVal - BoundaryValue);
+                
                 for dimension=1:length(Change(1,1,1,:))
-                    Var=VariablePadded(:,:,:,dimension);
-                    Var(obj.maskPadded==1)=Var(onj.maskPadded==1) + Change(:,:,:,Dimesion);
-                    VariablePadded(:,:,:,dimension)=Var;
+                    Var=Variable(:,:,:,dimension);
+                    Var(mask==1) = + real(sum(obj.BLIMat.' * Change(:,:,:,dimension),2));
+                    VariablePadded(:,:,:,dimension)=VariablePadded(:,:,:,dimension) + obj.ExpansionFunction(Var);
                 end
             elseif strcmp(bndrytype,'neumann')
                 Change=obj.BoundaryScaleMatrix*(obj.bndryVal - sum(BoundaryValue.*obj.normal,2));
