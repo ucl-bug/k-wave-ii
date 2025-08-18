@@ -210,7 +210,7 @@ classdef OffGrid < handle
                 elseif strcmp(kgridLocations,'bowl')
                     % The bowl takes midPoint, focusPoint, diameter, radius and points
 
-                    assert( ~isempty(options.radius), ~isempty(options.midPoint), ~isempty(options.points), ~isempty(options.focusPoint))
+                    assert( ~isempty(options.radius), ~isempty(options.midPoint), ~isempty(options.points), ~isempty(options.focusPoint),~isempty(options.diameter))
                     assert( obj.kgrid.dimensions==3)
 
                      ratio = pi * (3 - sqrt(5));
@@ -242,6 +242,60 @@ classdef OffGrid < handle
                             kgridLocations(:,1)=options.midPoint(1)-options.radius*bowlx;
                         kgridLocations(:,2)=options.midPoint(2)-options.radius*bowly;
                         kgridLocations(:,3)=options.midPoint(3)-options.radius-options.radius*bowlz;
+                    end
+                    obj.kgridLocations=kgridLocations;
+                    assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
+                    assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
+                    assert(max(abs(obj.zLoc))<obj.kgrid.zSize/2)
+                   
+                    elseif strcmp(kgridLocations,'sphericalSegment')
+                    % This is an annulous of the bowl, with the same inputs
+                    % as for the bowl, with the inclusion of the
+                    % innerDiameter which defines the radius of the circle.
+                    % Combined with the bowl sphericalSegment greater than a 
+                    % hemisphere can be generated.
+
+                    % options.bowlPos is the equivalent to options.midPoint,
+                    % but note it is no longer included in the
+                    % sphericalSegmanet, unlike bowl
+
+                    % The outer daiameter is the diameter at the top bowl
+                    % opening. The innerDiameter is the diameter of the
+                    % bootom bowl opening
+
+                    assert( ~isempty(options.radius), ~isempty(options.bowlPos), ~isempty(options.points), ~isempty(options.focusPoint),~isempty(options.outerDiameter),~isempty(options.innerDiameter))
+                    assert( obj.kgrid.dimensions==3)
+
+                     ratio = pi * (3 - sqrt(5));
+
+                    %Angle from base
+                    maxAngle=acos( options.outerDiameter/ (2*options.radius));
+                    minAngle=acos( options.innerDiameter/ (2*options.radius));
+                    anglesZ=linspace(minAngle, maxAngle,options.points);
+                    anglesXY=ratio*(0:1:options.points-1);
+
+                    %Unit bowl under the origin, midpoint=[0,0,-1]
+                    bowlx=cos(anglesXY) .* sin(anglesZ);
+                    bowly=sin(anglesXY) .* sin(anglesZ);
+                    bowlz=cos(anglesZ);
+                    
+                    % normal vector { roatated to from (0,0,1) }
+                    n=(options.focusPoint - options.bowlPos)/norm((options.focusPoint - options.bowlPos));
+                    ni=sqrt( 1- n(3)^2);
+                    kgridLocations=zeros(options.points,3);
+                    % applies rotation matricies
+                    if abs(n(3))~=1
+                        kgridLocations(:,1)=options.bowlPos(1)+options.radius*n(1)+options.radius*(n(2)*bowlx/ni -n(1)*n(3)*bowly/ni - n(1)*bowlz);
+                        kgridLocations(:,2)=options.bowlPos(2)+options.radius*n(2)+options.radius*(-n(1)*bowlx/ni -n(2)*n(3)*bowly/ni - n(2)*bowlz);
+                        kgridLocations(:,3)=options.bowlPos(3)+options.radius*n(3)+options.radius*(ni*bowly - n(3)*bowlz);
+                    elseif n(3)==1
+                        kgridLocations(:,1)=options.bowlPos(1)+options.radius*(bowly);
+                        kgridLocations(:,2)=options.bowlPos(2)+options.radius*(bowlx);
+                        kgridLocations(:,3)=options.bowlPos(3)+options.radius+options.radius*(n(3)*bowlz);
+                    elseif n(3)==-1
+                        kgridLocations(:,1)=options.bowlPos(1)-options.radius*bowlx;
+                        kgridLocations(:,2)=options.bowlPos(2)-options.radius*bowly;
+                        kgridLocations(:,3)=options.bowlPos(3)-options.radius-options.radius*bowlz;
                     end
                     obj.kgridLocations=kgridLocations;
                     assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)

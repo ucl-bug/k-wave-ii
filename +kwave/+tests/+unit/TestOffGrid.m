@@ -113,6 +113,14 @@ classdef TestOffGrid  < matlab.unittest.TestCase
             bowl.points=750;
             OffGrid3DBowl=OffGrid(kgrid3Dx,'bowl',bowl);
 
+            holebowl.bowlPos=[0,0,dx];
+            holebowl.focusPoint=[0,0,dx/2];
+            holebowl.radius=2*dx;
+            holebowl.outerDiameter=3*dx;
+            holebowl.innerDiameter=dx;
+            holebowl.points=750;
+            OffGrid3DSphericalSegment=OffGrid(kgrid3Dx,'sphericalSegment',holebowl);
+
           end
       end
 

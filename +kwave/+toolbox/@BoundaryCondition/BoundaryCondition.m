@@ -38,7 +38,7 @@ classdef BoundaryCondition < kwave.toolbox.GridInput
         OffGridApplied char {mustBeMember( OffGridApplied, {'off','on'})} = 'off'
         OffGrid kwave.toolbox.OffGrid
         normal 
-        bndyVal =0;
+        bndyVal = 0;
     end
 
     methods
