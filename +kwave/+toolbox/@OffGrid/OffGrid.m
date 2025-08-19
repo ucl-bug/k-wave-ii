@@ -82,7 +82,7 @@
 % ball.centre=[0,0,0];
 % OffGridBall2=OffGrid(kgrid,[Nx,Ny],'ball',ball);
 %
-% Copyright (C) 2025- The k-Wave Authors.
+%% Copyright (C) 2025- The k-Wave Authors.
 %
 % This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
 % software: you can redistribute it and/or modify it under the terms of the
@@ -141,22 +141,23 @@ classdef OffGrid < handle
                     obj.kgridLocations=kgridLocations;
                 switch obj.kgrid.dimensions
                     case 1
-                        assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
+                        assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
                     case 2
-                        assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
-                        assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
+                        assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2,'NOT ON GRID','Off grid points are not contained within the grid')
+                        assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
                     case 3
-                        assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
-                        assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
-                        assert(max(abs(obj.zLoc))<obj.kgrid.zSize/2)
+                        assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2,'NOT ON GRID','Off grid points are not contained within the grid')
+                        assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
+                        assert(max(abs(obj.zLoc))<obj.kgrid.zSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
                 end
 
             elseif ischar(kgridLocations)
 
                 if strcmp(kgridLocations,'ball')
                     % Ball requires a centre point and a radius
-                    assert( ~isempty(options.radius), ~isempty(options.centre), ~isempty(options.points))
-                    assert( obj.kgrid.dimensions==3)
+                    assert( ~isempty(options.radius), ~isempty(options.centre), ~isempty(options.points),'MISSING INPUTS','prebuild requires; radius, centre AND points')
+                    assert( obj.kgrid.dimensions==3,'INCORRECT GRID',' This prebuild requires a 3D grid')
+                    assert( options.radius>0,'BAD INPUTS',' the radius must be positive.' )
 
                     ratio = pi * (3 - sqrt(5));
                     off = 2 / options.points;
@@ -171,16 +172,17 @@ classdef OffGrid < handle
                     kgridLocations(:,3)=options.centre(3)+options.radius .* sin(phi) .* r;
                     
                     obj.kgridLocations=kgridLocations;
-                    assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
-                    assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
-                    assert(max(abs(obj.zLoc))<obj.kgrid.zSize/2)
+                    assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
+                    assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2,'NOT ON GRID','Off grid points are not contained within the grid')
+                    assert(max(abs(obj.zLoc))<obj.kgrid.zSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
 
                 elseif strcmp(kgridLocations,'disk')
                     % Disk requires a centre point, a radius and a tangent
                     % vector
 
-                    assert( ~isempty(options.radius), ~isempty(options.centre), ~isempty(options.points), ~isempty(options.focusPoint))
-                    assert( obj.kgrid.dimensions==3)
+                    assert( ~isempty(options.radius), ~isempty(options.centre), ~isempty(options.points), ~isempty(options.focusPoint),'MISSING INPUTS','prebuild requires; radius, centre, focusPoint AND points')
+                    assert( obj.kgrid.dimensions==3,'INCORRECT GRID',' This prebuild requires a 3D grid')
+                    assert( options.radius >0,'BAD INPUTS',' the radius must be positive.' )
 
                     Nxi=options.points;
                     kgridLocations=zeros(Nxi,3);
@@ -203,16 +205,17 @@ classdef OffGrid < handle
                     kgridLocations(:,3)=options.centre(3)+ni*planey;
 
                     obj.kgridLocations=kgridLocations;
-                    assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
-                    assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
-                    assert(max(abs(obj.zLoc))<obj.kgrid.zSize/2)
+                    assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
+                    assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2,'NOT ON GRID','Off grid points are not contained within the grid')
+                    assert(max(abs(obj.zLoc))<obj.kgrid.zSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
 
                 elseif strcmp(kgridLocations,'bowl')
                     % The bowl takes midPoint, focusPoint, diameter, radius and points
 
-                    assert( ~isempty(options.radius), ~isempty(options.midPoint), ~isempty(options.points), ~isempty(options.focusPoint),~isempty(options.diameter))
-                    assert( obj.kgrid.dimensions==3)
-
+                    assert( ~isempty(options.radius), ~isempty(options.midPoint), ~isempty(options.points), ~isempty(options.focusPoint),~isempty(options.diameter),'MISSING INPUTS','prebuild requires; radius, midPoint, focusPoint, diameter AND points')
+                    assert( obj.kgrid.dimensions==3,'INCORRECT GRID',' This prebuild requires a 3D grid')
+                    assert( options.diameter <= 2*options.radius,'BAD INPUTS',' the diameter can not be more than double the radius of curvature.' )
+                    assert( options.diameter >0,'BAD INPUTS',' the diameter must be positive.' )
                      ratio = pi * (3 - sqrt(5));
 
                     %Angle from base
@@ -244,27 +247,17 @@ classdef OffGrid < handle
                         kgridLocations(:,3)=options.midPoint(3)-options.radius-options.radius*bowlz;
                     end
                     obj.kgridLocations=kgridLocations;
-                    assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
-                    assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
-                    assert(max(abs(obj.zLoc))<obj.kgrid.zSize/2)
+                    assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
+                    assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2,'NOT ON GRID','Off grid points are not contained within the grid')
+                    assert(max(abs(obj.zLoc))<obj.kgrid.zSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
                    
                     elseif strcmp(kgridLocations,'sphericalSegment')
-                    % This is an annulous of the bowl, with the same inputs
-                    % as for the bowl, with the inclusion of the
-                    % innerDiameter which defines the radius of the circle.
-                    % Combined with the bowl sphericalSegment greater than a 
-                    % hemisphere can be generated.
 
-                    % options.bowlPos is the equivalent to options.midPoint,
-                    % but note it is no longer included in the
-                    % sphericalSegmanet, unlike bowl
-
-                    % The outer daiameter is the diameter at the top bowl
-                    % opening. The innerDiameter is the diameter of the
-                    % bootom bowl opening
-
-                    assert( ~isempty(options.radius), ~isempty(options.bowlPos), ~isempty(options.points), ~isempty(options.focusPoint),~isempty(options.outerDiameter),~isempty(options.innerDiameter))
-                    assert( obj.kgrid.dimensions==3)
+                    assert( ~isempty(options.radius), ~isempty(options.bowlPos), ~isempty(options.points), ~isempty(options.focusPoint),~isempty(options.outerDiameter),~isempty(options.innerDiameter),'MISSING INPUTS','prebuild requires; radius, bowlPos, focusPoint, innerDiameter, outerDiameter AND points')
+                    assert( obj.kgrid.dimensions==3,'INCORRECT GRID',' This prebuild requires a 3D grid')
+                    assert( options.outerDiameter <= 2*options.radius,'BAD INPUTS',' the outer Diameter can not be more than double the radius of curvature.' )
+                    assert( options.innerDiameter < options.outerDiameter,'BAD INPUTS',' the outer Diameter must be larger than the inner diameter.' )
+                    assert( options.innerDiameter >=0,'BAD INPUTS',' the inner Diameter must be non negative.' )
 
                      ratio = pi * (3 - sqrt(5));
 
@@ -298,15 +291,16 @@ classdef OffGrid < handle
                         kgridLocations(:,3)=options.bowlPos(3)-options.radius-options.radius*bowlz;
                     end
                     obj.kgridLocations=kgridLocations;
-                    assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
-                    assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
-                    assert(max(abs(obj.zLoc))<obj.kgrid.zSize/2)
+                    assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
+                    assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2,'NOT ON GRID','Off grid points are not contained within the grid')
+                    assert(max(abs(obj.zLoc))<obj.kgrid.zSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
                    
                 elseif strcmp(kgridLocations,'filledCircle')
                     % Circles require a centre point and a radius, must be
                     % in 2D
-                    assert( ~isempty(options.radius), ~isempty(options.centre), ~isempty(options.points))
-                    assert( obj.kgrid.dimensions==2)
+                    assert( ~isempty(options.radius), ~isempty(options.centre), ~isempty(options.points),'MISSING INPUTS','prebuild requires; radius, centrer AND points')
+                    assert( obj.kgrid.dimensions==2,'INCORRECT GRID',' This prebuild requires a 2D grid')
+                    assert( options.radius >0 ,'BAD INPUTS',' the radius must be positive.' )
 
                     Nxi=options.points;
                     kgridLocations=zeros(Nxi,2);
@@ -323,8 +317,8 @@ classdef OffGrid < handle
                     kgridLocations(:,2)=options.centre(2)+radial(Parametrisation).*sin(angle(Parametrisation));
 
                     obj.kgridLocations=kgridLocations;
-                    assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
-                    assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
+                    assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
+                    assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2,'NOT ON GRID','Off grid points are not contained within the grid')
 
                  elseif strcmp(kgridLocations,'circleSegment')
                     % Circle segment, requires the inner and outer
@@ -332,8 +326,11 @@ classdef OffGrid < handle
                     % (recommended mid inner point) the radius of curvature
                     % for the outer arc and the number of points.
 
-                    assert( ~isempty(options.radius), ~isempty(options.midPoint),~isempty(options.focusPoint), ~isempty(options.points), ~isempty(options.innerDiameter), ~isempty(options.outerDiameter))
-                    assert( obj.kgrid.dimensions==2)
+                    assert( ~isempty(options.radius), ~isempty(options.midPoint),~isempty(options.focusPoint), ~isempty(options.points), ~isempty(options.innerDiameter), ~isempty(options.outerDiameter),'MISSING INPUTS','prebuild requires; radius, midPoint, focusPoint, innerDiameter, outerDiameter AND points')
+                    assert( obj.kgrid.dimensions==2,'INCORRECT GRID',' This prebuild requires a 2D grid')
+                    assert( options.innerDiameter < options.outerDiameter,'BAD INPUTS',' the outer Diameter must be larger than the inner diameter.' )
+                    assert( options.outerDiameter <= 2*options.radius,'BAD INPUTS',' the outer Diameter less than or equal to 2 x the radius of curvature.' )
+                    assert( options.innerDiameter >=0,'BAD INPUTS',' the inner Diameter must be non-negative.' )
 
                     Nxi=options.points;
                     kgridLocations=zeros(Nxi,2);
@@ -358,15 +355,16 @@ classdef OffGrid < handle
 
 
                     obj.kgridLocations=kgridLocations;
-                    assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
-                    assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
+                    assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
+                    assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2,'NOT ON GRID','Off grid points are not contained within the grid')
 
 
                 elseif strcmp(kgridLocations,'circle')
                     % Circles require a centre point and a radius, must be
                     % in 2D
-                    assert( ~isempty(options.radius), ~isempty(options.centre), ~isempty(options.points))
-                    assert( obj.kgrid.dimensions==2)
+                    assert( ~isempty(options.radius), ~isempty(options.centre), ~isempty(options.points),'MISSING INPUTS','prebuild requires; radius, centre AND points')
+                    assert( obj.kgrid.dimensions==2,'INCORRECT GRID',' This prebuild requires a 2D grid')
+                    assert( options.radius >0,'BAD INPUTS',' the radius must be positive.' )
 
                     Nxi=options.points;
                     kgridLocations=zeros(Nxi,2);
@@ -375,19 +373,16 @@ classdef OffGrid < handle
                     kgridLocations(:,2)=options.centre(2)+options.radius.*sin((-pi:2*pi/(Nxi):pi*(Nxi-1)/Nxi) );
 
                     obj.kgridLocations=kgridLocations;
-                    assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
-                    assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
+                    assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
+                    assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2,'NOT ON GRID','Off grid points are not contained within the grid')
 
                 elseif strcmp(kgridLocations,'parrallel')
-                    % Constructs a parrallelagram based on three corners
-                    % given with edges between (corner1 and corner2) asnd
-                    % (corner1 and corner3)
-                    assert( ~isempty(options.corner1), ~isempty(options.corner2), ~isempty(options.corner3), ~isempty(options.points))
-                    assert( obj.kgrid.dimensions==2)
-                    assert(all(size(options.corner1)==[1,2]));
-                    assert(all(size(options.corner2)==[1,2]));
-                    assert(all(size(options.corner3)==[1,2]));
-                    assert(max(options.corner1~=options.corner2)==1 && max(options.corner1~=options.corner3)==1 && max(options.corner2~=options.corner3)==1);
+                    assert( ~isempty(options.corner1), ~isempty(options.corner2), ~isempty(options.corner3), ~isempty(options.points),'MISSING INPUTS','prebuild requires; corner1, corner2, corner3 AND points')
+                    assert( obj.kgrid.dimensions==2,'INCORRECT GRID',' This prebuild requires a 2D grid')
+                    assert(all(size(options.corner1)==[1,2]),'BAD INPUTS','the corner1 has the wrong dimensions, size [1,2] req');
+                    assert(all(size(options.corner2)==[1,2]),'BAD INPUTS','the corner2 has the wrong dimensions, size [1,2] req');
+                    assert(all(size(options.corner3)==[1,2]),'BAD INPUTS','the corner3 has the wrong dimensions, size [1,2] req');
+                    assert(max(options.corner1~=options.corner2)==1 && max(options.corner1~=options.corner3)==1 && max(options.corner2~=options.corner3)==1,'BAD INPUTS','The corners must be distinct.');
                     HalfPerim=norm(options.corner1-options.corner2) + norm(options.corner1-options.corner3);
                     
                     Nxi=options.points;
@@ -409,10 +404,11 @@ classdef OffGrid < handle
 
                 elseif strcmp(kgridLocations,'line')
                     % Lines need to be in 2D and be given a 2D start and End Point 
-                    assert( ~isempty(options.startPoint), ~isempty(options.endPoint), ~isempty(options.points))
-                    assert(all(size(options.startPoint)==[1,2]));
-                    assert(all(size(options.endPoint)==[1,2]));
-                    assert( obj.kgrid.dimensions==2)
+                    assert( ~isempty(options.startPoint), ~isempty(options.endPoint), ~isempty(options.points),'MISSING INPUTS','prebuild requires; startPoint, endPoint AND points')
+                    assert(all(size(options.startPoint)==[1,2]),'BAD INPUTS','the start point has the wrong dimensions, size [1,2] req');
+                    assert(all(size(options.endPoint)==[1,2]),'BAD INPUTS','the end point has the wrong dimensions, size [1,2] req');
+                    assert(max(options.startPoint~=options.endPoint)==1,'BAD INPUTS','The start and end Point must be distinct.');
+                    assert( obj.kgrid.dimensions==2,'INCORRECT GRID',' This prebuild requires a 2D grid')
 
                     Nxi=options.points;
                     kgridLocations=zeros(Nxi,2);
@@ -421,15 +417,15 @@ classdef OffGrid < handle
                     kgridLocations(:,2)=((0.5:1:Nxi-0.5))*options.startPoint(2)/Nxi + ( 1- ((0.5:1:Nxi-0.5)/Nxi))*options.endPoint(2);
 
                     obj.kgridLocations=kgridLocations;
-                    assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
-                    assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
+                    assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
+                    assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2,'NOT ON GRID','Off grid points are not contained within the grid')
 
                 elseif strcmp(kgridLocations,'arc')
-                    
-                    assert( ~isempty(options.radius), ~isempty(options.points),(obj.kgrid.dimensions==2))
+                    assert((obj.kgrid.dimensions==2),'INCORRECT GRID',' This prebuild requires a 2D grid')
+                    assert( ~isempty(options.radius), ~isempty(options.points),'MISSING INPUTS','prebuild requires; radius, diameter AND points. Additional requirements are centre, startAngle AND endAngle. OR midPoint, diameter and focusPoint.')
                     if isfield(options,'centre')
-                        assert(~isempty(options.startAngle),~isempty(options.endAngle))
-                        assert( options.startAngle<4*pi, options.startAngle>0, options.endAngle>0, options.startAngle<options.endAngle)
+                        assert(~isempty(options.startAngle),~isempty(options.endAngle),'MISSING INPUTS','prebuild requires; radius, diameter AND points. Additional requirements are centre, startAngle AND endAngle. OR midPoint, diameter and focusPoint.')
+                        assert( options.startAngle<4*pi, options.startAngle>0, options.endAngle>0, options.startAngle<options.endAngle,'BAD INPUTS','the start angle must be between 0 and the end Angle. The end Angle must be between 0 and 4 pi. ')
                         N=options.points;
                         angles= ((N-1)*options.startAngle + options.endAngle )/ N: (options.endAngle-options.startAngle)/(N+2) :((N-1)*options.endAngle + options.startAngle )/ N;
                         kgridLocations=zeros(N,2);
@@ -437,11 +433,13 @@ classdef OffGrid < handle
                         kgridLocations(:,1)=options.centre(1)+options.radius.*cos(angles ).';
                         kgridLocations(:,2)=options.centre(2)+options.radius.*sin(angles ).';
                         obj.kgridLocations=kgridLocations;
-                        assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
-                        assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
+                        assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
+                        assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2,'NOT ON GRID','Off grid points are not contained within the grid')
 
-                    elseif isfield(options,'diameter')
-                        assert( ~isempty(options.midPoint),~isempty(options.focusPoint))
+                    elseif isfield(options,'diameter','MISSING INPUTS','prebuild requires; radius, diameter AND points. Additional requirements are centre, startAngle AND endAngle. OR midPoint, diameter and focusPoint.')
+                        assert( ~isempty(options.midPoint),~isempty(options.focusPoint),'MISSING INPUTS','prebuild requires; radius, diameter AND points. Additional requirements are centre, startAngle AND endAngle. OR midPoint, diameter and focusPoint.')
+                        assert( options.diameter >0,'BAD INPUTS',' the diameter must be positive.' )
+                        assert( 2*options.radius >= options.diameter,'BAD INPUTS',' the diameter must be less than or equal to twice the radius.' )
                         varphi_max = asin(options.diameter ./ (2 * options.radius));
                         dvarphi = 2 * varphi_max ./ options.points;
                         t = linspace(-varphi_max + dvarphi/2, varphi_max - dvarphi/2, options.points);
@@ -455,10 +453,10 @@ classdef OffGrid < handle
                         kgridLocations(:,1)=options.midPoint(1)+n(1)*circlesegx-n(2)*circlesegy;
                         kgridLocations(:,2)=options.midPoint(2)+n(2)*circlesegx+n(1)*circlesegy;
                         obj.kgridLocations=kgridLocations;
-                        assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
-                        assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
+                        assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
+                        assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2,'NOT ON GRID','Off grid points are not contained within the grid')
                     else
-                        error("Method requires either the centre point or the diameter to define the arc.")
+                        error('MISSING INPUTS','prebuild requires; radius, diameter AND points. Additional requirements are centre, startAngle AND endAngle. OR midPoint, diameter and focusPoint.')
                     end
 
                     % elseif strcmP(kgridLocations, 'NAME')

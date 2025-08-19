@@ -1,17 +1,47 @@
 % *Package:* kwave.toolbox
 % *Superclasses:* kwave.toolbox.GridInput
 %
-% Short Summary
+% The Boundary Condition class is a set of methods that can be applied to a
+% general variable to alter it's value at a set of given points, 'the
+% boundary.' This can be done by setting a mask with the grid, or by
+% assigning an OffGrid. Subclasses contain methods for the passing of the
+% correct variables and calling the methods.
 %
 %% Syntax
 %   BoundaryCondition = BoundaryCondition(kgrid);
 %
 %% Description
-% 
+%  The Boundary Condition class acts similarly to the sensor class. When
+%  constucted a mask must be generated. This can be either by writing the
+%  mask manually for a on-grid boundary. Or by assigning an off-grid object
+%  and using the mask builder.  The methods contained adapt based on the
+%  presence of the BLI terms when an offgrid is applied, with these set to
+%  1's when on grid methods are used.
 %% Examples
+%    kgrid = kwave.toolbox.Grid([128, 128], 1e-3);
+%    BoundaryCondition = kwave.toolbox.BoundaryCondition(kgrid);
+%    BoundaryCondition.mask=zeros(128,128);
+%    BoundaryCondition.mask(12,:)=1;
+%    BoundaryCondition.bndryVal=0;
+%
+%    BoundaryCondition2=kwave.toolbox.BoundaryCondition(kgrid);
+%    circ.radius=5e-2;
+%    circ.centre=[0,0];
+%    circ.points=315;
+%    offGrid=OffGrid(kgrid,'circle',circ);
+%    BoundaryCondition2.setOffGrid(kgrid,offGrid,1e-4);
+%    BoundaryCondition2.mask=BoundaryCondition2.maskBuilder;
+%    BoundaryCondition2.bndryVal=0;
 %
 %% Properties
-%
+% * |mask|
+% * |OffGridApplied| -  'on' 'off' witch that declares if offgrid methods
+% are being used. automatically turned on when calling setOffGrid(OffGrid,accuracy)
+% * |OffGrid| -  the Offgrid object used to call the oggrid methods.
+% * |normal| - the outward unit normal to the boundary for use in the
+% neumann boundary condition, NOT YET IMPLEMENTED
+% * |bndryVal| - scalar or vecot of values of the time invariant value at
+% the boundary of the domain. Defaults to 0.
 %% See Also
 % * |GridInput|
 % * |OffGrid|
@@ -120,7 +150,7 @@ classdef BoundaryCondition < kwave.toolbox.GridInput
                 
                 for dimension=1:length(Change(1,1,1,:))
                     Var=Variable(:,:,:,dimension);
-                    Var(mask==1) = + real(sum(obj.BLIMat.' * Change(:,:,:,dimension),2));
+                    Var(mask==1) = + real(sum(obj.BLIMat.' * Change(:,:,:,dimension),2)); %Check, what does change look like? dim 2 in 2D?
                     VariablePadded(:,:,:,dimension)=VariablePadded(:,:,:,dimension) + obj.ExpansionFunction(Var);
                 end
             elseif strcmp(bndrytype,'neumann')
