@@ -150,7 +150,7 @@ if Nt~=0
                     obj.medium.BonA.*  ( sum(obj.densitySplitPadded, 4)).^2 ./ (2 * obj.medium.densityPadded)  );
             end
             if strcmp(obj.boundaryCondition,'on') && strcmp(obj.boundary.pressureBndry ,'on')
-                obj.pressurePadded =obj.boundary.applyPressureBndry(obj);
+                obj.pressurePadded = obj.boundary.applyPressureBndry(obj);
             end
         
         end

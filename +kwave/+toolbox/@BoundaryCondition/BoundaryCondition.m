@@ -146,12 +146,12 @@ classdef BoundaryCondition < kwave.toolbox.GridInput
             mask=obj.kgrid.returnWithoutGridPadding(obj.maskPadded);
             
             if strcmp(bndrytype,'dirichlet')
-                Change=obj.BoundaryScaleMatrix.*(obj.bndryVal - BoundaryValue);
+                Change=obj.BoundaryScaleMatrix*(obj.bndryVal - BoundaryValue);
                 
                 for dimension=1:length(Change(1,1,1,:))
-                    Var=Variable(:,:,:,dimension);
-                    Var(mask==1) = + real(sum(obj.BLIMat.' * Change(:,:,:,dimension),2)); %Check, what does change look like? dim 2 in 2D?
-                    VariablePadded(:,:,:,dimension)=VariablePadded(:,:,:,dimension) + obj.ExpansionFunction(Var);
+                    Var=zeros(size(Variable(:,:,:,dimension)));
+                    Var(mask==1) = + real((obj.BLIMat.' * Change(:,:,:,dimension))); %Check, what does change look like? dim 2 in 2D?
+                        VariablePadded(:,:,:,dimension)=VariablePadded(:,:,:,dimension) + obj.ExpansionFunction(Var);
                 end
             elseif strcmp(bndrytype,'neumann')
                 Change=obj.BoundaryScaleMatrix*(obj.bndryVal - sum(BoundaryValue.*obj.normal,2));
