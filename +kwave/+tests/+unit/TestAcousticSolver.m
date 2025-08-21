@@ -1103,6 +1103,49 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             
 
         end
+
+        function TestUnStaggeredAnalytic(testCase)
+
+            import kwave.toolbox.*
+            import matlab.unittest.constraints.IsEqualTo
+            
+
+            Nax = 256;
+            dx = 4e-3;
+            c0 = 1500;
+            rho0=1000;
+            pmlSize = 20;
+            CFL = 0.25;
+            Nt = 150;
+            dt = CFL * dx / c0;
+
+            kgrid = Grid(Nax, dx, pmlSize);
+            medium = AcousticMedium(kgrid);
+            c0 = 1500;
+            medium.soundSpeed = c0;
+            medium.density = 1000;
+            source = AcousticSource(kgrid);
+
+
+            v0 = @(x) exp( -(x.^2) ./ (5 * kgrid.dx).^2 )/(c0*rho0);
+            p0= @(x) exp( -(x.^2) ./ (5 * kgrid.dx).^2 );
+
+            source.initialVelocity = v0(kgrid.x);
+            source.initialPressure = p0(kgrid.x);
+            settings = Settings;
+            settings.plotSimulation = 'off';
+            settings.spatialStaggering='off';
+            tol = matlab.unittest.constraints.AbsoluteTolerance(single(1e-6));
+            solver = AcousticSolver(kgrid, medium, source, [], settings);
+            solver.run(Nt=Nt, dt=dt);
+            FinTime=Nt*dt;
+            % waves travel at speed of sound, and account for grid shift
+            % from velocity to pressure.
+            PressureActual = cast(( p0(kgrid.x -  c0*FinTime) + c0*rho0*v0(kgrid.x -  c0*FinTime) + p0(kgrid.x +  c0*FinTime) - c0*rho0*v0(kgrid.x + c0*FinTime) )/2 , 'single') ;
+            testCase.verifyThat(solver.pressure, IsEqualTo(PressureActual, "Within", tol));
+
+        end
+
     end
 
 end

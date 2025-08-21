@@ -74,25 +74,25 @@ classdef AcousticBndryCond < kwave.toolbox.BoundaryCondition
                 pressurePadded=obj.ApplyBoundaryCondition(Solver.pressurePadded,'dirichlet',1,'none');
         end
 
-        function velocityPadded=applyVelocityBndry(obj,Solver,stag)
-            GridVelocityPadded=zeros(size(Solver.velocityPadded));
-            if strcmp(stag,'on')
-                for dim=1:Solver.kgrid.dimensions
-                    Unstagger=Solver.stagger(Solver.velocityPadded(:,:,:,dim),Staggering='backward');
-                    GridVelocityPadded(:,:,:,dim)=Unstagger(:,:,:,dim);
-                end
-                velocityUnstg=obj.ApplyBoundaryCondition(GridVelocityPadded,Solver.kgrid.dimensions,'neumann','none');
-                velocityPadded=zeros(size(Solver.velocityPadded));
-                for dim=1:Solver.kgrid.dimensions
-                    Unstagger=Solver.stagger(velocityUnstg,Staggering='backward');
-                    velocityPadded(:,:,:,dim)=Unstagger(:,:,:,dim);
-                end
-            else
-                velocityPadded=obj.ApplyBoundaryCondition(Solver.velocityPadded,3,'neumann','none');
-            end  
-        end
-
-    end
+    %     function velocityPadded=applyVelocityBndry(obj,Solver,stag)
+    %         GridVelocityPadded=zeros(size(Solver.velocityPadded));
+    %         if strcmp(stag,'on')
+    %             for dim=1:Solver.kgrid.dimensions
+    %                 Unstagger=Solver.stagger(Solver.velocityPadded(:,:,:,dim),Staggering='backward');
+    %                 GridVelocityPadded(:,:,:,dim)=Unstagger(:,:,:,dim);
+    %             end
+    %             velocityUnstg=obj.ApplyBoundaryCondition(GridVelocityPadded,Solver.kgrid.dimensions,'neumann','none');
+    %             velocityPadded=zeros(size(Solver.velocityPadded));
+    %             for dim=1:Solver.kgrid.dimensions
+    %                 Unstagger=Solver.stagger(velocityUnstg,Staggering='backward');
+    %                 velocityPadded(:,:,:,dim)=Unstagger(:,:,:,dim);
+    %             end
+    %         else
+    %             velocityPadded=obj.ApplyBoundaryCondition(Solver.velocityPadded,3,'neumann','none');
+    %         end  
+    %     end
+  
+   end
 
 
 

@@ -18,7 +18,7 @@ classdef TestAcousticBoundaryCondition  < matlab.unittest.TestCase
             tol = matlab.unittest.constraints.AbsoluteTolerance(single(15e-4));
             %Accuracy of 1D on-grid reflection
 
-            Nax = 257;
+            Nax = 256;
             dx = 4e-3;
             c0 = 1500;
             rho0 = 1000;
@@ -29,7 +29,7 @@ classdef TestAcousticBoundaryCondition  < matlab.unittest.TestCase
 
             %256/2= 128. 3*128/4=96, [32,224]
             %Nt = ((225-33) )/ (CFL); 
-               Nt=(((Nax-33-33) )/CFL);
+            Nt=(((Nax+2-33-33) )/CFL);
 
             kgrid1D = Grid(Nax, dx, pmlSize);
             medium1D = AcousticMedium(kgrid1D);
@@ -46,7 +46,7 @@ classdef TestAcousticBoundaryCondition  < matlab.unittest.TestCase
 
             AcousticBoundary1D=AcousticBndryCond(kgrid1D);
             AcousticBoundary1D.mask=zeros(Nax,1);
-            AcousticBoundary1D.mask([29,30,31,32,33,225,226,227,228,229])=1;
+            AcousticBoundary1D.mask([27,28,29,30,32,33,225,226,227,228,229])=1;
             AcousticBoundary1D.pressureBndry='on';
 
             settings = Settings;
@@ -55,52 +55,70 @@ classdef TestAcousticBoundaryCondition  < matlab.unittest.TestCase
             solver1D = AcousticSolver(kgrid1D, medium1D, source1D, [], settings);
             solver1D.applyBoundaryCondition(AcousticBoundary1D)
 
-           % solver1D.run(Nt=Nt, dt=dt);
-           % 
-           % results = solver1D.pressure;
-           % expectedResults = -single(initialPressure(kgrid1D.xVec));
-           % testCase.verifyThat(results, IsEqualTo(expectedResults, "Within", tol)); %
-           % 
-           %  OffPoints=OffGrid(kgrid1D,[31.5,32.5,33.5,224.5,225.5,226.5]*dx-129*dx);
-           %  Nt=(((129+129-33.5-33.5) )/CFL);
-           %  AcousticBoundary1DOff=AcousticBndryCond(kgrid1D);
-           %  AcousticBoundary1DOff.pressureBndry = 'on';
-           %  AcousticBoundary1DOff.setOffGrid(OffPoints,0.00125);
-           %  AcousticBoundary1DOff.mask=AcousticBoundary1DOff.maskBuilder;
-           % 
-           %  solver1DOG = AcousticSolver(kgrid1D, medium1D, source1D, [], settings);
-           %  solver1DOG.applyBoundaryCondition(AcousticBoundary1DOff)
-           % 
-           % solver1DOG.run(Nt=Nt, dt=dt);
-           % results = solver1DOG.pressure;
-           % testCase.verifyThat(results, IsEqualTo(expectedResults, "Within", tol)); %
+           solver1D.run(Nt=Nt, dt=dt);
 
-            kgrid2D = Grid([Nax,Nax], dx, [pmlSize,0]);
-            medium2D = AcousticMedium(kgrid2D);
-            medium2D.soundSpeed  = c0;
-            medium2D.density  = rho0;
-            source2D = AcousticSource(kgrid2D);
-            Nt=384;
+           results = solver1D.pressure;
+           expectedResults = -single(initialPressure(kgrid1D.xVec));
+           testCase.verifyThat(results, IsEqualTo(expectedResults, "Within", tol)); %
 
-            source2D.initialPressure=0;
-            initialPressure = @(x,y) exp( -( x).^2 ./ (10 * kgrid2D.dx).^2 );
-            source2D.initialPressure =  initialPressure(kgrid2D.x,kgrid2D.yVec);
-            line1.startPoint=[-(129-33.5)*dx,-128*dx];
-            line1.endPoint=[-(129-33.5)*dx,128*dx];
-            line2.startPoint=[(129-33.5)*dx,-128*dx];
-            line2.endPoint=[(129-33.5)*dx,128*dx];
-            line1.points=258;
-            line2.points=258;
-            OffPoints1=OffGrid(kgrid2D,'line',line1);
-            OffPoints2=OffGrid(kgrid2D,'line',line2);
-            OffPoints=OffGrid(kgrid2D,OffPoints1,OffPoints2);
-            AcousticBoundary2DOff=AcousticBndryCond(kgrid2D);
-            AcousticBoundary2DOff.pressureBndry = 'on';
-            AcousticBoundary2DOff.setOffGrid(OffPoints2,0.00125);
-            AcousticBoundary2DOff.mask=AcousticBoundary2DOff.maskBuilder;
-            solver2DOG = AcousticSolver(kgrid2D, medium2D, source2D, [], settings);
-            solver2DOG.applyBoundaryCondition(AcousticBoundary2DOff)
-            solver2DOG.run(Nt=Nt, dt=dt);
+            OffPoints=OffGrid(kgrid1D,[31.5,32.5,33.5,224.5,225.5,226.5]*dx-129*dx);
+            Nt=(((129+129-33.5-33.5) )/CFL);
+            AcousticBoundary1DOff=AcousticBndryCond(kgrid1D);
+            AcousticBoundary1DOff.pressureBndry = 'on';
+            AcousticBoundary1DOff.setOffGrid(OffPoints,0.00125);
+            AcousticBoundary1DOff.mask=AcousticBoundary1DOff.maskBuilder;
+
+            solver1DOG = AcousticSolver(kgrid1D, medium1D, source1D, [], settings);
+            solver1DOG.applyBoundaryCondition(AcousticBoundary1DOff)
+
+           solver1DOG.run(Nt=Nt, dt=dt);
+           results = solver1DOG.pressure;
+           testCase.verifyThat(results, IsEqualTo(expectedResults, "Within", tol)); %
+
+            % kgrid2D = Grid([Nax,Nax], dx, pmlSize);
+            % medium2D = AcousticMedium(kgrid2D);
+            % medium2D.soundSpeed  = c0;
+            % medium2D.density  = rho0;
+            % source2D = AcousticSource(kgrid2D);
+            % source2D.initialPressure=0;
+            % initialPressure = @(x,y) exp( -(( x).^2 + (y.'.^2)) ./ (10* kgrid2D.dx).^2 );
+            % source2D.initialPressure =  initialPressure(kgrid2D.xVec,kgrid2D.yVec);
+            % Nt = 2*round(((Nax-132-132) )/CFL);
+            % 
+            % radius=(Nax/2-132)*dx;
+            % AcousticBoundary2D=AcousticBndryCond(kgrid2D);
+            % AcousticBoundary2D.mask=zeros(Nax,Nax);
+            % AcousticBoundary2D.mask((kgrid2D.x.^2 + kgrid2D.y.^2)>=(radius-dx/2).^2)=1;
+            % AcousticBoundary2D.mask((kgrid2D.x.^2 + kgrid2D.y.^2)>=(radius+dx/2).^2)=0;
+            % AcousticBoundary2D.pressureBndry='on';
+            % solver2D = AcousticSolver(kgrid2D, medium2D, source2D, [], settings);
+            % solver2D.applyBoundaryCondition(AcousticBoundary2D)
+            % solver2D.run(Nt=Nt, dt=dt);
+            % expectedResults = -solver2D.pressure(round(Nax)/2-50:round(Nax)/2+49,round(Nax)/2-50:round(Nax)/2+49);
+            % solver2D.run(Nt=Nt, dt=dt);
+            % results = solver2D.pressure(round(Nax)/2-50:round(Nax)/2+49,round(Nax)/2-50:round(Nax)/2+49);
+
+            
+            % 
+            % source2D.initialPressure=0;
+            % initialPressure = @(x,y) exp( -( x).^2 ./ (10 * kgrid2D.dx).^2 );
+            % source2D.initialPressure =  initialPressure(kgrid2D.x,kgrid2D.yVec);
+            % line1.startPoint=[-(129-33.5)*dx,-128*dx];
+            % line1.endPoint=[-(129-33.5)*dx,128*dx];
+            % line2.startPoint=[(129-33.5)*dx,-128*dx];
+            % line2.endPoint=[(129-33.5)*dx,128*dx];
+            % line1.points=258;
+            % line2.points=258;
+            % OffPoints1=OffGrid(kgrid2D,'line',line1);
+            % OffPoints2=OffGrid(kgrid2D,'line',line2);
+            % OffPoints=OffGrid(kgrid2D,OffPoints1,OffPoints2);
+            % AcousticBoundary2DOff=AcousticBndryCond(kgrid2D);
+            % AcousticBoundary2DOff.pressureBndry = 'on';
+            % AcousticBoundary2DOff.setOffGrid(OffPoints2,0.00125);
+            % AcousticBoundary2DOff.mask=AcousticBoundary2DOff.maskBuilder;
+            % solver2DOG = AcousticSolver(kgrid2D, medium2D, source2D, [], settings);
+            % solver2DOG.applyBoundaryCondition(AcousticBoundary2DOff)
+            % solver2DOG.run(Nt=Nt, dt=dt);
 
             % source2D.initialPressure=0;
             % initialPressure = @(x,y) exp( -(( x).^2 + (y.'.^2)) ./ (5 * kgrid2D.dx).^2 );
@@ -111,20 +129,22 @@ classdef TestAcousticBoundaryCondition  < matlab.unittest.TestCase
             % source2D.initialVelocity(:,:,:,1) =  initialVelocity1(kgrid2D.xVec,kgrid2D.yVec);
             % source2D.initialVelocity(:,:,:,2) =  initialVelocity2(kgrid2D.xVec,kgrid2D.yVec);
             % 
-            % circ.radius=(129-66)*dx;
+
+            % circ.radius=(Nax-132)*dx;
             % circ.centre=[0,0];
-            % Nt = round(((129+129-66-66) )/CFL); 
-            % circ.points= floor(2*pi*circ.radius/dx);
+            % circ.points= floor(2*pi*circ.radius/dx)+2;
             % OffPoints=OffGrid(kgrid2D,'circle',circ);
             % AcousticBoundary2DOff=AcousticBndryCond(kgrid2D);
             % AcousticBoundary2DOff.pressureBndry = 'on';
-            % AcousticBoundary2DOff.setOffGrid(OffPoints,0.00125);
+            % AcousticBoundary2DOff.setOffGrid(OffPoints,0.000625);
             % AcousticBoundary2DOff.mask=AcousticBoundary2DOff.maskBuilder;
             % solver2DOG = AcousticSolver(kgrid2D, medium2D, source2D, [], settings);
             % solver2DOG.applyBoundaryCondition(AcousticBoundary2DOff)
-            % solver2DOG.run(Nt=10, dt=dt);
-            % expectedResults = -solver2DOG.pressure(100:158,100:158);
-            % solver2DOG.run(Nt=Nt-20, dt=dt);
+            % solver2DOG.run(Nt=Nt, dt=dt);
+            % expectedResults = -solver2DOG.pressure(round(Nax)/2-50:round(Nax)/2+49,round(Nax)/2-50:round(Nax)/2+49);
+            % solver2DOG.run(Nt=Nt, dt=dt);
+            % results = solver2DOG.pressure(round(Nax)/2-50:round(Nax)/2+49,round(Nax)/2-50:round(Nax)/2+49);
+           
             % results = solver2DOG.pressure(100:158,100:158);
             % %expectedResults = single(initialPressure(kgrid2D.xVec,kgrid2D.yVec));
             % testCase.verifyThat(results, IsEqualTo(expectedResults, "Within", tol)); %

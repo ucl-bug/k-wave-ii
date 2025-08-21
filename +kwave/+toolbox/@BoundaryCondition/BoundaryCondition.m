@@ -112,21 +112,14 @@ classdef BoundaryCondition < kwave.toolbox.GridInput
             totalSensorPoints=obj.totalSensorPoints;
         end
 
-        function SensorOutput=ProcessSensorData(obj,Variable,dim,string)
+        function SensorOutput=ProcessSensorData(obj,Variable,dim)
             mask=obj.kgrid.returnWithoutGridPadding(obj.maskPadded);
-            if ~strcmp(string,'sum')
-                SensorOutput=zeros(obj.totalSensorPoints,dim);
-                for dimension=1:dim
-                    Var=Variable(:,:,:,dimension);
-                    SensorOutput(:,dimension)=obj.BLIMat*Var(mask==1);
-                end
-            else
-                SensorOutput=zeros(obj.totalSensorPoints,1);
-                for dimension=1:dim
-                    Var=VariablePadded(:,:,:,dim);
-                    SensorOutput=SensorOutput+obj.BLIMat*Var(mask==1);
-                end
+            SensorOutput=zeros(obj.totalSensorPoints,dim);
+            for dimension=1:dim
+                Var=Variable(:,:,:,dimension);
+                SensorOutput(:,dimension)=obj.BLIMat*Var(mask==1);
             end
+
         end
 
         function Mat=ExpansionFunction(obj,Matrix) 
@@ -142,10 +135,10 @@ classdef BoundaryCondition < kwave.toolbox.GridInput
 
         function VariablePadded = ApplyBoundaryCondition(obj,VariablePadded,bndrytype,dim,string)
             Variable=obj.kgrid.returnWithoutGridPadding(VariablePadded);
-            BoundaryValue =obj.ProcessSensorData(Variable,dim,string);
+            BoundaryValue =obj.ProcessSensorData(Variable,dim);
             mask=obj.kgrid.returnWithoutGridPadding(obj.maskPadded);
             
-            if strcmp(bndrytype,'dirichlet')
+            % if strcmp(bndrytype,'dirichlet')
                 Change=obj.BoundaryScaleMatrix*(obj.bndryVal - BoundaryValue);
                 
                 for dimension=1:length(Change(1,1,1,:))
@@ -153,14 +146,14 @@ classdef BoundaryCondition < kwave.toolbox.GridInput
                     Var(mask==1) = + real((obj.BLIMat.' * Change(:,:,:,dimension))); %Check, what does change look like? dim 2 in 2D?
                         VariablePadded(:,:,:,dimension)=VariablePadded(:,:,:,dimension) + obj.ExpansionFunction(Var);
                 end
-            elseif strcmp(bndrytype,'neumann')
-                Change=obj.BoundaryScaleMatrix*(obj.bndryVal - sum(BoundaryValue.*obj.normal,2));
-                for dimension=1:dim
-                    Var=VariablePadded(:,:,:,dimension);
-                    Var(obj.maskPadded==1)=Var(obj.maskPadded==1) + Change(:,dimension).*obj.normal(:,dimension);
-                    VariablePadded(:,:,:,dimension)=Var;
-                end
-            end
+            % elseif strcmp(bndrytype,'neumann')
+            %     Change=obj.BoundaryScaleMatrix*(obj.bndryVal - sum(BoundaryValue.*obj.normal,2));
+            %     for dimension=1:dim
+            %         Var=VariablePadded(:,:,:,dimension);
+            %         Var(obj.maskPadded==1)=Var(obj.maskPadded==1) + Change(:,dimension).*obj.normal(:,dimension);
+            %         VariablePadded(:,:,:,dimension)=Var;
+            %     end
+            % end
         end
     end
 end
