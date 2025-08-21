@@ -114,12 +114,11 @@ if Nt~=0
                         if strcmp(obj.settings.spatialStaggering,'on')
                             initialVelcoityStaggered=obj.stagger(initialVelocityDimensional(:,:,:,dim), Type='fourier');
                             obj.velocityPadded(:,:,:,dim) = obj.velocityPadded(:,:,:,dim) + initialVelcoityStaggered(:,:,:,dim);
-                            clear('initialVelcoityStaggered','initialVelocityDimensional')
                         else
                             obj.velocityPadded(:,:,:,dim) = obj.velocityPadded(:,:,:,dim) + initialVelocityDimensional(:,:,:,dim);
-                            clear('initialVelocityDimensional')
                         end
                     end
+                    clear('initialVelcoityStaggered','initialVelocityDimensional')
                     obj.prevTimeStep=0;
                     dt = (currentTimeStep)/2;
                     obj.pml.setupQuarticPML(dt, obj.medium.soundSpeedReference);

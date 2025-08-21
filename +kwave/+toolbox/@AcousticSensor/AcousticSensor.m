@@ -122,7 +122,7 @@ classdef AcousticSensor < kwave.toolbox.Sensor
 
         function obj =recordSensorData(obj,Solver,n)
 
-            if strcmp(obj.velocitySensor,'ongrid') && strcmp(Solver.settings.spatialStagger,'on')
+            if strcmp(obj.velocitySensor,'ongrid') && strcmp(Solver.settings.spatialStaggering,'on')
                 obj.velocitySensor='on';
                 disp("Velocity computed on grid, sensor automatically record on-grid");
             end
