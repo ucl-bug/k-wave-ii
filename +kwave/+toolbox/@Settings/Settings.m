@@ -23,6 +23,8 @@
 %   running simulation. Default = 'on'.
 % * |simulationDataType| - ('single', 'double') Data-type used for
 %   simulation calculations. Default = 'single'.
+% * |spatialStaggering| - ('on','off') option to turn off the statial
+%   staggering between equations.
 
 % Copyright (C) 2022- University College London.
 %
@@ -47,5 +49,6 @@ classdef Settings < handle
         plotScale(1,2) double = [-1, 1]
         plotSimulation(1,1) matlab.lang.OnOffSwitchState = 'on'
         simulationDataType(1,:) char {mustBeMember(simulationDataType, {'single', 'double'})} = 'single'
+        spatialStaggering(1,:) char {mustBeMember(spatialStaggering, {'on', 'off'})} = 'on'
     end
 end

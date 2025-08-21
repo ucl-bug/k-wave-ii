@@ -58,13 +58,19 @@ obj.pml.setupQuarticPML(dt, obj.medium.soundSpeedReference);
 
 % Anonymous functions to simplify code within time loop.
 pml = @(x) obj.pml.applyPML(x);
-pmlSG = @(x) obj.pml.applyPML(x, Staggered=true);
-gradient = @(x) obj.gradient(x, Staggering='forward');
-divergence = @(x) obj.divergenceSplit(x, Staggering='backward');
-
-if length(obj.medium.densityPadded)~= 1
-    densityPaddedStg=obj.stagger(obj.medium.densityPadded,Stagger='forward', Type='linInterpolate');
+if strcmp(obj.settings.spatialStaggering,'on')
+    pmlSG = @(x) obj.pml.applyPML(x, Staggered=true);
+    gradient = @(x) obj.gradient(x, Staggering='forward');
+    divergence = @(x) obj.divergenceSplit(x, Staggering='backward');
+    if length(obj.medium.densityPadded)~= 1
+        densityPaddedStg=obj.stagger(obj.medium.densityPadded,Stagger='forward', Type='linInterpolate');
+    else
+        densityPaddedStg=obj.medium.densityPadded;
+    end
 else
+    pmlSG = @(x) obj.pml.applyPML(x);
+    gradient = @(x) obj.gradient(x);
+    divergence = @(x) obj.divergenceSplit(x);
     densityPaddedStg=obj.medium.densityPadded;
 end
 densityMultiplier=obj.medium.densityPadded;
@@ -105,10 +111,15 @@ if Nt~=0
 
                     initialVelocityDimensional=zeros([obj.kgridPadded.gridSize,obj.kgrid.dimensions])+obj.source.initialVelocityPadded;
                     for dim=1:obj.kgrid.dimensions
-                        initialVelcoityStaggered=obj.stagger(initialVelocityDimensional(:,:,:,dim), Type='fourier');
-                        obj.velocityPadded(:,:,:,dim) = obj.velocityPadded(:,:,:,dim) + initialVelcoityStaggered(:,:,:,dim);
+                        if strcmp(obj.settings.spatialStaggering,'on')
+                            initialVelcoityStaggered=obj.stagger(initialVelocityDimensional(:,:,:,dim), Type='fourier');
+                            obj.velocityPadded(:,:,:,dim) = obj.velocityPadded(:,:,:,dim) + initialVelcoityStaggered(:,:,:,dim);
+                            clear('initialVelcoityStaggered','initialVelocityDimensional')
+                        else
+                            obj.velocityPadded(:,:,:,dim) = obj.velocityPadded(:,:,:,dim) + initialVelocityDimensional(:,:,:,dim);
+                            clear('initialVelocityDimensional')
+                        end
                     end
-                    clear('initialVelcoityStaggered','initialVelocityDimensional')
                     obj.prevTimeStep=0;
                     dt = (currentTimeStep)/2;
                     obj.pml.setupQuarticPML(dt, obj.medium.soundSpeedReference);
