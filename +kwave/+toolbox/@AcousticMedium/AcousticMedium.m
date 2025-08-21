@@ -47,8 +47,8 @@
 classdef AcousticMedium < kwave.toolbox.GridInput
 
     properties
-        soundSpeedReference single {mustBeReal, mustBePositive, mustBeFinite}
-        absorptionPower single {mustBeReal, mustBeFinite};
+        soundSpeedReference {mustBeReal, mustBePositive, mustBeFinite}
+        absorptionPower {mustBeReal, mustBeFinite};
     end
 
     properties(Constant, Hidden=true)

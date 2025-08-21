@@ -138,30 +138,30 @@ classdef FourierCollocation < handle
     % constructor and stored to save compute time during derivative
     % calculations.
     properties(SetAccess=immutable, GetAccess=private, Hidden=true)
-        ddxNoShift single
-        ddyNoShift single
-        ddzNoShift single
+        ddxNoShift 
+        ddyNoShift 
+        ddzNoShift 
 
-        ddxShiftPos single
-        ddyShiftPos single
-        ddzShiftPos single
+        ddxShiftPos 
+        ddyShiftPos 
+        ddzShiftPos 
 
-        ddxShiftNeg single
-        ddyShiftNeg single
-        ddzShiftNeg single
+        ddxShiftNeg 
+        ddyShiftNeg 
+        ddzShiftNeg 
 
-        xShiftPos single
-        yShiftPos single
-        zShiftPos single
+        xShiftPos 
+        yShiftPos 
+        zShiftPos 
 
-        xShiftNeg single
-        yShiftNeg single
-        zShiftNeg single
+        xShiftNeg 
+        yShiftNeg 
+        zShiftNeg 
     end
 
     % k-Space correction term.
     properties
-        kappa single
+        kappa
     end
 
     % Constructor.

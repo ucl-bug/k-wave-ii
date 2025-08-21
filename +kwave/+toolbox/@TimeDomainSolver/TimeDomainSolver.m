@@ -69,8 +69,8 @@
 classdef(Abstract) TimeDomainSolver < kwave.toolbox.Solver
 
     properties(SetAccess=protected)
-        prevTimeStep single {mustBeScalarOrEmpty} = []
-        timeArray single = []
+        prevTimeStep {mustBeScalarOrEmpty} = []
+        timeArray
         timeStepsTaken(1,1) uint64 = 0
     end
 
@@ -87,6 +87,8 @@ classdef(Abstract) TimeDomainSolver < kwave.toolbox.Solver
 
             % Pass input arguments to superclass constructor.
             obj@kwave.toolbox.Solver(kgrid, medium, source, sensor, settings)
+
+            timeArray = typecast([], settings.simulationDataType);
 
         end
     end

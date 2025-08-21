@@ -68,6 +68,7 @@ kwave.utilities.mustBeAllOrNoneEmpty(options.Nt, options.dt)
 if isempty(options.Nt)
     [options.Nt, options.dt] = obj.autoComputeTimeStep(options.CFL, options.EndTime);
 end
+options.dt=cast(options.dt,obj.settings.simulationDataType);
 
 startTime = datetime('now');
 

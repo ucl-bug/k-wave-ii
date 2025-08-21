@@ -50,7 +50,8 @@ function setAbsorptionCoefficients(obj)
 arguments
     obj
 end
-validateattributes( obj.medium.absorptionPower, {'single'}, {'scalar'})
+validateattributes( obj.medium.absorptionPower, {'single' 'double'} ,{'scalar'})
+obj.medium.absorptionPower=cast(obj.medium.absorptionPower,obj.settings.simulationDataType);
 
 % convert the absorption coefficient to nepers.(rad/s)^-y.m^-1
 alphaCoeffPadded = 5 * obj.medium.absorptionCoeffPadded * (((1e-6)/(2*pi) )^obj.medium.absorptionPower ) / (log10(exp(1)));

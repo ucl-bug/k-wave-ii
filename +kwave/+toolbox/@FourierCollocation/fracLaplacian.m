@@ -63,7 +63,7 @@ function ddf = fracLaplacian(obj, f,y, options)
 arguments
     obj
     f(:,:,:,1)
-    y single
+    y
     options.Staggering(1,:) char {mustBeMember(options.Staggering, {'none', 'forward', 'backward'})} = 'none'
 end
 

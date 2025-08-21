@@ -106,7 +106,7 @@ classdef OffGrid < handle
         %
         kgrid kwave.toolbox.Grid
         % Grid size [grid points].
-        gridSize(1,1) double {mustBeInteger, mustBePositive, mustBeFinite} = [1];
+        gridSize(1,1) single {mustBeInteger, mustBePositive, mustBeFinite} = 1;
         % Locations of the Points
         kgridLocations = [];
         normal =[];
@@ -209,6 +209,9 @@ classdef OffGrid < handle
                     assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2,'NOT ON GRID','Off grid points are not contained within the grid')
                     assert(max(abs(obj.zLoc))<obj.kgrid.zSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
 
+                    obj.normal=zeros(Nxi,3)-n;
+                    
+
                 elseif strcmp(kgridLocations,'bowl')
                     % The bowl takes midPoint, focusPoint, diameter, radius and points
 
@@ -232,25 +235,37 @@ classdef OffGrid < handle
                     n=(options.focusPoint - options.midPoint)/norm((options.focusPoint - options.midPoint));
                     ni=sqrt( 1- n(3)^2);
                     kgridLocations=zeros(options.points,3);
+                    obj.normal=zeros(options.points,3);
                     % applies rotation matricies
                     if abs(n(3))~=1
                         kgridLocations(:,1)=options.midPoint(1)+options.radius*n(1)+options.radius*(n(2)*bowlx/ni -n(1)*n(3)*bowly/ni - n(1)*bowlz);
                         kgridLocations(:,2)=options.midPoint(2)+options.radius*n(2)+options.radius*(-n(1)*bowlx/ni -n(2)*n(3)*bowly/ni - n(2)*bowlz);
                         kgridLocations(:,3)=options.midPoint(3)+options.radius*n(3)+options.radius*(ni*bowly - n(3)*bowlz);
+                        obj.normal(:,1)=-(n(2)*bowlx/ni -n(1)*n(3)*bowly/ni - n(1)*bowlz);
+                        obj.normal(:,2)=-(-n(1)*bowlx/ni -n(2)*n(3)*bowly/ni - n(2)*bowlz);
+                        obj.normal(:,3)=-(ni*bowly - n(3)*bowlz);
                     elseif n(3)==1
                         kgridLocations(:,1)=options.midPoint(1)+options.radius*(bowly);
                         kgridLocations(:,2)=options.midPoint(2)+options.radius*(bowlx);
                         kgridLocations(:,3)=options.midPoint(3)+options.radius+options.radius*(n(3)*bowlz);
+                        obj.normal(:,1)=-bowly;
+                        obj.normal(:,2)=-bowlx;
+                        obj.normal(:,3)=-bowlz;
                     elseif n(3)==-1
-                            kgridLocations(:,1)=options.midPoint(1)-options.radius*bowlx;
+                        kgridLocations(:,1)=options.midPoint(1)-options.radius*bowlx;
                         kgridLocations(:,2)=options.midPoint(2)-options.radius*bowly;
                         kgridLocations(:,3)=options.midPoint(3)-options.radius-options.radius*bowlz;
+                        obj.normal(:,1)=bowlx;
+                        obj.normal(:,2)=bowly;
+                        obj.normal(:,3)=bowlz;
                     end
                     obj.kgridLocations=kgridLocations;
                     assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
                     assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2,'NOT ON GRID','Off grid points are not contained within the grid')
                     assert(max(abs(obj.zLoc))<obj.kgrid.zSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
                    
+
+
                     elseif strcmp(kgridLocations,'sphericalSegment')
 
                     assert( ~isempty(options.radius), ~isempty(options.bowlPos), ~isempty(options.points), ~isempty(options.focusPoint),~isempty(options.outerDiameter),~isempty(options.innerDiameter),'MISSING INPUTS','prebuild requires; radius, bowlPos, focusPoint, innerDiameter, outerDiameter AND points')
@@ -259,7 +274,7 @@ classdef OffGrid < handle
                     assert( options.innerDiameter < options.outerDiameter,'BAD INPUTS',' the outer Diameter must be larger than the inner diameter.' )
                     assert( options.innerDiameter >=0,'BAD INPUTS',' the inner Diameter must be non negative.' )
 
-                     ratio = pi * (3 - sqrt(5));
+                    ratio = pi * (3 - sqrt(5));
 
                     %Angle from base
                     maxAngle=acos( options.outerDiameter/ (2*options.radius));
@@ -276,19 +291,29 @@ classdef OffGrid < handle
                     n=(options.focusPoint - options.bowlPos)/norm((options.focusPoint - options.bowlPos));
                     ni=sqrt( 1- n(3)^2);
                     kgridLocations=zeros(options.points,3);
+                    obj.normal=zeros(options.points,3);
                     % applies rotation matricies
                     if abs(n(3))~=1
                         kgridLocations(:,1)=options.bowlPos(1)+options.radius*n(1)+options.radius*(n(2)*bowlx/ni -n(1)*n(3)*bowly/ni - n(1)*bowlz);
                         kgridLocations(:,2)=options.bowlPos(2)+options.radius*n(2)+options.radius*(-n(1)*bowlx/ni -n(2)*n(3)*bowly/ni - n(2)*bowlz);
                         kgridLocations(:,3)=options.bowlPos(3)+options.radius*n(3)+options.radius*(ni*bowly - n(3)*bowlz);
+                        obj.normal(:,1)=-(n(2)*bowlx/ni -n(1)*n(3)*bowly/ni - n(1)*bowlz);
+                        obj.normal(:,2)=-(-n(1)*bowlx/ni -n(2)*n(3)*bowly/ni - n(2)*bowlz);
+                        obj.normal(:,3)=-(ni*bowly - n(3)*bowlz);
                     elseif n(3)==1
                         kgridLocations(:,1)=options.bowlPos(1)+options.radius*(bowly);
                         kgridLocations(:,2)=options.bowlPos(2)+options.radius*(bowlx);
-                        kgridLocations(:,3)=options.bowlPos(3)+options.radius+options.radius*(n(3)*bowlz);
+                        kgridLocations(:,3)=options.bowlPos(3)+options.radius+options.radius*(bowlz);
+                        obj.normal(:,1)=-bowly;
+                        obj.normal(:,2)=-bowlx;
+                        obj.normal(:,3)=-bowlz;
                     elseif n(3)==-1
                         kgridLocations(:,1)=options.bowlPos(1)-options.radius*bowlx;
                         kgridLocations(:,2)=options.bowlPos(2)-options.radius*bowly;
                         kgridLocations(:,3)=options.bowlPos(3)-options.radius-options.radius*bowlz;
+                        obj.normal(:,1)=bowlx;
+                        obj.normal(:,2)=bowly;
+                        obj.normal(:,3)=bowlz;
                     end
                     obj.kgridLocations=kgridLocations;
                     assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2,'NOT ON GRID','Off grid points are not contained within the grid')

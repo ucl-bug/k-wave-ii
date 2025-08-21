@@ -747,7 +747,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
 
             import kwave.toolbox.*
             import matlab.unittest.constraints.IsEqualTo
-            tol = matlab.unittest.constraints.AbsoluteTolerance(single(1e-6));
+            
 
             Nax = 256;
             dx = 4e-3;
@@ -773,13 +773,17 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             source.initialPressure = p0(kgrid.x);
             settings = Settings;
             settings.plotSimulation = 'off';
-            solver = AcousticSolver(kgrid, medium, source, [], settings);
-            solver.run(Nt=Nt, dt=dt);
-            FinTime=Nt*dt;
-            % waves travel at speed of sound, and account for grid shift
-            % from velocity to pressure.
-            PressureActual = single(( p0(kgrid.x -  c0*FinTime) + c0*rho0*v0(kgrid.x -  c0*FinTime) + p0(kgrid.x +  c0*FinTime) - c0*rho0*v0(kgrid.x + c0*FinTime) ))/2 ;
-            testCase.verifyThat(solver.pressure, IsEqualTo(PressureActual, "Within", tol));
+
+            
+                    tol = matlab.unittest.constraints.AbsoluteTolerance(single(1e-6));
+                settings.simulationDataType=type;
+                solver = AcousticSolver(kgrid, medium, source, [], settings);
+                solver.run(Nt=Nt, dt=dt);
+                FinTime=Nt*dt;
+                % waves travel at speed of sound, and account for grid shift
+                % from velocity to pressure.
+                PressureActual = cast(( p0(kgrid.x -  c0*FinTime) + c0*rho0*v0(kgrid.x -  c0*FinTime) + p0(kgrid.x +  c0*FinTime) - c0*rho0*v0(kgrid.x + c0*FinTime) )/2 , 'single') ;
+                testCase.verifyThat(solver.pressure, IsEqualTo(PressureActual, "Within", tol));
 
         end
 
@@ -1056,6 +1060,52 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             testCase.verifyThat(solver3Dx.pressure, IsEqualTo(single(sensor_data3x.p_final), "Within", tol));
         end
 
+        function testTimeRestartandPrecision(testCase)
+            import kwave.toolbox.*
+            import kwave.legacy.*
+            import matlab.unittest.constraints.IsEqualTo
+
+            % Define tolerance for field comparisons.
+            settings = Settings;
+            settings.plotSimulation = 'off';
+            for ind=1:2
+                tol = matlab.unittest.constraints.AbsoluteTolerance(single(1e-6));
+                settings.simulationDataType='single';
+                if ind==2
+                    tol = matlab.unittest.constraints.AbsoluteTolerance(single(1e-12));
+                    settings.simulationDataType='double';
+                end
+
+
+                % Test properties.
+                Nax = 256;
+                dx = 4e-3;
+                c0 = 1500;
+                rho0 = 1000;
+                pmlSize = 20;
+                CFL = 0.25;
+                Nt = 150;
+                dt = CFL * dx / c0;
+
+                kgrid1D = Grid(Nax, dx, pmlSize);
+                medium1D = AcousticMedium(kgrid1D);
+                medium1D.soundSpeed  = c0;
+                medium1D.density  = rho0;
+                source1D = AcousticSource(kgrid1D);
+                source1D.initialPressure = exp( -(kgrid1D.xVec - 25e-3).^2 ./ (5 * kgrid1D.dx).^2 );
+
+                solver1D = AcousticSolver(kgrid1D, medium1D, source1D, [], settings);
+                solver1D.run(Nt=Nt, dt=dt);
+                solver1D2 = AcousticSolver(kgrid1D, medium1D, source1D, [], settings);
+                solver1D2.run(Nt=0, dt=dt);
+                solver1D2.run(Nt=20, dt=2*dt);
+                solver1D2.run(Nt=20, dt=dt/2);
+                solver1D2.run(Nt=100, dt=dt);
+                testCase.verifyThat(solver1D2.pressure, IsEqualTo(solver1D2.pressure, "Within", tol));
+            end
+            
+
+        end
     end
 
 end

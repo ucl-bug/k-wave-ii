@@ -138,22 +138,22 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
 
     % PDE variables on padded domain, and PML variables.
     properties(SetAccess=private, Hidden=true)
-        pressurePadded single
-        densitySplitPadded single
-        velocityPadded single
+        pressurePadded
+        densitySplitPadded
+        velocityPadded
         pml kwave.toolbox.SplitFieldPML
     end
     
     properties(SetAccess=public,Hidden=false)
-        absorptionType char {mustBeMember( absorptionType, {'off','on', 'noAbsorption', 'noDispersion'})} = 'off'
+         absorptionType char {mustBeMember( absorptionType, {'off','on', 'noAbsorption', 'noDispersion'})} = 'off'
          nonLinearity char {mustBeMember( nonLinearity, {'off','on'})} = 'off'
          boundaryCondition char {mustBeMember( boundaryCondition, {'off','on'})} = 'off'
     end
 
     properties(SetAccess=private, Hidden=true)
-        absorbTauPadded single
-        absorbEtaPadded single
-        kappaSplit single
+        absorbTauPadded
+        absorbEtaPadded
+        kappaSplit
         boundary 
         timePoint = 0;
     end
