@@ -1,0 +1,240 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      -->
+<title>Medium</title>
+<meta name="generator" content="MATLAB 25.1">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2025-08-19">
+<meta name="DC.source" content="Medium.m">
+<style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style>
+</head>
+<body>
+<div class="content">
+<h1>Medium</h1>
+<!--introduction-->
+<p>
+<b>Package:</b> kwave.toolbox <b>Superclasses:</b> kwave.toolbox.GridInput</p>
+<p>Class used to define the acoustic medium properties for a simulation.</p>
+<!--/introduction-->
+<h2>Contents</h2>
+<div>
+<ul>
+<li>
+<a href="#1">Syntax</a>
+</li>
+<li>
+<a href="#2">Description</a>
+</li>
+<li>
+<a href="#3">Examples</a>
+</li>
+<li>
+<a href="#4">Properties</a>
+</li>
+<li>
+<a href="#5">See Also</a>
+</li>
+</ul>
+</div>
+<h2 id="1">Syntax</h2>
+<pre class="language-matlab">medium = Medium(kgrid);
+</pre>
+<h2 id="2">Description</h2>
+<p>This class is used to define the acoustic medium properties. The constructor takes an object of the <tt>kwave.toolbox.Grid</tt> class which defines the grid size. All medium properties can be scalar or have the same size as the grid with the exception of <tt>alphaPower</tt> and <tt>soundSpeedReference</tt>, which must be scalar. The <tt><a href="Medium-soundSpeed.html">soundSpeed</a></tt> and <tt><a href="Medium-density.html">density</a></tt> must be defined.</p>
+<h2 id="3">Examples</h2>
+<p>Define the grid and medium objects, and assign the sound speed and density.</p>
+<pre>  kgrid = kwave.toolbox.Grid([128, 128], 1e-3);
+  medium = kwave.toolbox.AcousticMedium(kgrid);
+  medium.soundSpeed = rand(medium.gridSize);
+  medium.density = rand(medium.gridSize);
+  medium.specificHeat = rand(medium.gridSize);
+  medium.thermalConductivity = rand(medium.gridSize);</pre>
+<h2 id="4">Properties</h2>
+<div>
+<ul>
+<li>
+<tt><a href="Medium-soundSpeed.html">soundSpeed</a></tt> - (single) Compressional sound speed [m/s].</li>
+<li>
+<tt>soundSpeedReference</tt> - (single) Reference compressional sound speed used in the k-space correction [m/s]. Automatically defined in kWaveAcoustic if not defined by the user.</li>
+<li>
+<tt><a href="Medium-density.html">density</a></tt> - (single) Mass density [kg/m^2].</li>
+<li>
+<tt><a href="Medium-absorptionCoeff.html">absorptionCoeff</a></tt> - (single) Power law attenuation coefficient [dB/(MHz^y cm)].</li>
+<li>
+<tt><a href="Medium-absorptionPower.html">absorptionPower</a></tt> - (single) Power law attenuation power.</li>
+<li>
+<tt><a href="Medium-BonA.html">BonA</a></tt> - (single) Parameter of nonlinearity.</li>
+<li>
+<tt>diffusionReference</tt> - (numeric) Reference diffusion coefficient used in the k-space correction term [m^2/s]. Automatically defined in ThermalSolver if not defined by the user.</li>
+<li>
+<tt><a href="Medium-specificHeat.html">specificHeat</a></tt> - (numeric) Specific heat capacity at constant pressure [J/kg/K].</li>
+<li>
+<tt><a href="Medium-thermalConductivity.html">thermalConductivity</a></tt> - (numeric) Thermal conductivity [W/m/K].</li>
+</ul>
+</div>
+<h2 id="5">See Also</h2>
+<div>
+<ul>
+<li>
+<tt>GridInput</tt>
+</li>
+</ul>
+</div>
+<p class="footer">
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2025a</a>
+<br>
+</p>
+</div>
+<!--
+##### SOURCE BEGIN #####
+%% Medium
+% *Package:* kwave.toolbox
+% *Superclasses:* kwave.toolbox.GridInput
+%
+% Class used to define the acoustic medium properties for a simulation.
+%
+%% Syntax
+%   medium = Medium(kgrid);
+%
+%% Description
+% This class is used to define the acoustic medium properties. The
+% constructor takes an object of the |kwave.toolbox.Grid| class which
+% defines the grid size. All medium properties can be scalar or have the
+% same size as the grid with the exception of |alphaPower| and
+% |soundSpeedReference|, which must be scalar. The |soundSpeed| and
+% |density| must be defined.
+%
+%% Examples
+% Define the grid and medium objects, and assign the sound speed and
+% density.
+%
+%    kgrid = kwave.toolbox.Grid([128, 128], 1e-3);
+%    medium = kwave.toolbox.AcousticMedium(kgrid);
+%    medium.soundSpeed = rand(medium.gridSize);
+%    medium.density = rand(medium.gridSize);
+%    medium.specificHeat = rand(medium.gridSize);
+%    medium.thermalConductivity = rand(medium.gridSize);
+%
+%% Properties
+% * |soundSpeed| - (single) Compressional sound speed [m/s].
+% * |soundSpeedReference| - (single) Reference compressional sound speed
+%   used in the k-space correction [m/s]. Automatically defined in
+%   kWaveAcoustic if not defined by the user.
+% * |density| - (single) Mass density [kg/m^2].
+% * |absorptionCoeff| - (single) Power law attenuation coefficient
+%   [dB/(MHz^y cm)].
+% * |absorptionPower| - (single) Power law attenuation power.
+% * |BonA| - (single) Parameter of nonlinearity.
+% * |diffusionReference| - (numeric) Reference diffusion coefficient used
+%   in the k-space correction term [m^2/s]. Automatically defined in
+%   ThermalSolver if not defined by the user.
+% * |specificHeat| - (numeric) Specific heat capacity at constant pressure
+%   [J/kg/K].
+% * |thermalConductivity| - (numeric) Thermal conductivity [W/m/K].
+%% See Also
+% * |GridInput|
+
+classdef Medium < kwave.toolbox.GridInput
+
+    properties
+        soundSpeedReference single {mustBeReal, mustBePositive, mustBeFinite}
+        diffusionReference {mustBeReal, mustBeFinite}
+        materialTable (:,7) single {mustBeReal, mustBeNonnegative, mustBeFinite} =  kwave.toolbox.BuildMaterialTable()
+    end
+
+    properties(Constant, Hidden=false)
+        requiredProperties = {'materialIDGrid'}; %'soundSpeed', 'density', 'specificHeat', 'thermalConductivity'};
+        gridFields = kwave.toolbox.GridField.createGridFieldsMap([
+            kwave.toolbox.GridField('materialIDGrid')
+
+            ]);
+    end
+
+    methods
+        soundSpeed = soundSpeedPadded(obj)
+        density = densityPadded(obj)
+        absorptionCoeff = absorptionCoeffPadded(obj)
+        absorptionPower = absorptionPower(obj)
+        BonA = BonAPadded(obj)
+        specificHeat = specificHeatPadded(obj)
+        thermalConductivity = thermalConductivityPadded(obj)
+        soundSpeed = soundSpeed(obj)
+        density = density(obj)
+        absorptionCoeff = absorptionCoeff(obj)
+        BonA = BonA(obj)
+        specificHeat = specificHeat(obj)
+        thermalConductivity = thermalConductivity(obj)
+    end
+end
+
+##### SOURCE END #####
+-->
+</body>
+</html>

@@ -1,0 +1,423 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      -->
+<title>Coding Standard</title>
+<meta name="generator" content="MATLAB 25.1">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2025-08-19">
+<meta name="DC.source" content="codingStandard.m">
+<style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style>
+</head>
+<body>
+<div class="content">
+<h1>Coding Standard</h1>
+<!--introduction-->
+<p>MATLAB coding standard used for k-Wave II.</p>
+<!--/introduction-->
+<h2>Contents</h2>
+<div>
+<ul>
+<li>
+<a href="#1">Naming</a>
+</li>
+<li>
+<a href="#2">Code</a>
+</li>
+<li>
+<a href="#7">Brackets and Commas</a>
+</li>
+<li>
+<a href="#9">Code Comments</a>
+</li>
+<li>
+<a href="#10">Indentation and Line Breaks</a>
+</li>
+<li>
+<a href="#11">Error messages</a>
+</li>
+<li>
+<a href="#12">Class and Function Documentation</a>
+</li>
+</ul>
+</div>
+<h2 id="1">Naming</h2>
+<div>
+<ul>
+<li>Namespaces uses <tt>+lowercase</tt>.</li>
+<li>Class names use <tt>TitleCase</tt>.</li>
+<li>Function names and script filenames use <tt>camelCase</tt>.</li>
+<li>Test classes use <tt>TestMyClassName</tt> or <tt>TestMyFunctionName</tt>.</li>
+<li>Variables use <tt>camelCase</tt>.</li>
+<li>Name-Value arguments use <tt>TitleCase</tt>.</li>
+<li>Descriptive naming should be used for the user-facing API where possible, e.g., <tt>soundSpeed</tt> rather than <tt>c</tt>. Break this rule for internal variables for commonly used symbols (e.g. <tt>c</tt> for sound speed, <tt>p</tt> for pressure), as long as the symbol is well known and stays within a limited scope (e.g., a function) where a short comment at the top says what the single letter stands for.</li>
+</ul>
+</div>
+<h2 id="2">Code</h2>
+<div>
+<ul>
+<li>Each line of code should only contain one statement.</li>
+<li>Each line of executed code should be terminated with a semicolon without a preceding space.</li>
+<li>Class properties and argument validation code should not be terminated with a semicolon.</li>
+<li>For element-wise multiply, divide, and power operations, use a preceding period, even when acting on a scalar.</li>
+<li>Always use a period before the transpose operator, unless the conjugate transpose is required.</li>
+<li>Mathematical operands and assignments, e.g., <tt>+ * &amp;&amp; = &gt;</tt> etc., should be space padded. Exceptions are power <tt>^</tt>, the colon operator <tt>:</tt>, the not operator <tt>~</tt>, and the <tt>-</tt> sign when used to signify a negative number.</li>
+</ul>
+</div>
+<pre class="codeinput">x = 1:10;
+x = a .* b.^2;
+x = a &amp;&amp; ~b;
+x = 10 - 3.4;
+x = -1e-3;
+x = [1, 2, 3].';
+</pre>
+<div>
+<ul>
+<li>Break the previous two rules if it helps readability for simple multiply and divide operations using scalar literals.</li>
+</ul>
+</div>
+<pre class="codeinput">x = 2*pi;
+x = 1/pi;
+</pre>
+<div>
+<ul>
+<li>Decimals should have a preceding zero.</li>
+<li>Always preceed the imaginary unit with a number, e.g., <tt>1i</tt>.</li>
+</ul>
+</div>
+<pre class="codeinput">x = 0.5 + 1i;
+</pre>
+<div>
+<ul>
+<li>Align multiple similar lines of code if it makes sense for readability (similarly for comments).</li>
+</ul>
+</div>
+<pre class="codeinput">windSpeed        = exp( x -   w .* t);
+waterTemperature = exp(-x - 3*w .* t);
+</pre>
+<div>
+<ul>
+<li>If long lines of code become difficult to read, then break lines of code using <tt>...</tt> and align for readability.</li>
+</ul>
+</div>
+<h2 id="7">Brackets and Commas</h2>
+<div>
+<ul>
+<li>Brackets should have no interior spaces. Break this rule if needed for readability when using multiple nested brackets.</li>
+<li>Brackets should follow immediately after function names with no space.</li>
+<li>Commas should be used to separate multiple inputs, outputs, or matrix values.</li>
+<li>All commas should be followed by a space.</li>
+</ul>
+</div>
+<pre class="codeinput">x = (a - b).^2;
+[a, b, c] = myFunc(x, y, z);
+x = [1, 2, 3];
+x = [1; 2; 3];
+</pre>
+<div>
+<ul>
+<li>Logical statements should be grouped using brackets</li>
+</ul>
+</div>
+<pre class="codeinput">
+<span class="keyword">if</span> (myHeight &gt; 10) &amp;&amp; (myDog.Name == <span class="string">"Fido"</span>)
+    disp(<span class="string">'Excellent.'</span>);
+<span class="keyword">end</span>
+</pre>
+<h2 id="9">Code Comments</h2>
+<div>
+<ul>
+<li>All code comments should be written as sentences, including capitals and periods.</li>
+<li>Comments should be limited to a maximum column width of 75 characters (the default in MATLAB).</li>
+<li>Comments that span multiple lines should be aligned at the first character of each line.</li>
+<li>Code comments should appear on the previous line, rather than inline. Break this rule with common sense.</li>
+<li>Comments should be preceded by a blank line.</li>
+</ul>
+</div>
+<h2 id="10">Indentation and Line Breaks</h2>
+<div>
+<ul>
+<li>Statements inside conditional loops and if-statements (etc) should be indented.</li>
+<li>Each code indent level should be 4 spaces.</li>
+<li>Include a blank line at the beginning and end of the conditional IFF the code on the inside contains a comment.</li>
+<li>All files should end with a blank new line.</li>
+<li>Trailing spaces after lines of code or comments should be removed.</li>
+</ul>
+</div>
+<pre class="codeinput">
+<span class="comment">% Increment the counter if radius exceed maximum value. There are no</span>
+<span class="comment">% comments inside the if statement, so do not include additional line</span>
+<span class="comment">% breaks.</span>
+<span class="keyword">if</span> radius &gt; maximumRadius
+    counter = counter + 1;
+<span class="keyword">end</span>
+
+<span class="comment">% Loop through possible heights and calculate weight. There are comments</span>
+<span class="comment">% inside the if state, so include additional line breaks.</span>
+<span class="keyword">for</span> index = 1:length(heightArray)
+
+    <span class="comment">% Assign current height.</span>
+    height = heightArray(index);
+
+    <span class="comment">% Calculate current weight based on time of day.</span>
+    weight(index) = height .* now;
+
+<span class="keyword">end</span>
+</pre>
+<h2 id="11">Error messages</h2>
+<div>
+<ul>
+<li>Error messages should use the <tt>kwave.toolbox.Logger</tt> class.</li>
+<li>Error messages should begin with a capital letter (except when using a variable or function name) and end with a period.</li>
+<li>Error messages should use a two part identifier in the form <tt>ClassName:errorIdentifier</tt> or <tt>functionName:errorIdentifier</tt>.</li>
+</ul>
+</div>
+<pre class="codeinput">kwave.toolbox.Logger.error(<span class="string">'Grid:incorrectInputSize'</span>, <span class="string">'gridSpacing must be a scalar or the same length as gridSize.'</span>);
+</pre>
+<h2 id="12">Class and Function Documentation</h2>
+<p>Classes should be written using <a href="https://uk.mathworks.com/help/matlab/matlab_oop/methods-in-separate-files.html">methods in separate files</a>. Class and function documentation should be written using <a href="https://uk.mathworks.com/help/matlab/matlab_prog/marking-up-matlab-comments-for-publishing.html">publishing markup</a>. The following structure and headings should be used. <a href="matlab:edit('kwave.docfiles.general.classDocsExample')">Open template in MATLAB Editor</a>.</p>
+<div>
+<ul>
+<li>functionName or className</li>
+<li>Syntax</li>
+<li>Description</li>
+<li>Examples</li>
+<li>Input Arguments</li>
+<li>Name-Value Arguments</li>
+<li>Output Arguments</li>
+<li>Properties (classes only)</li>
+<li>Methods (classes only)</li>
+<li>See Also</li>
+</ul>
+</div>
+<p class="footer">
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2025a</a>
+<br>
+</p>
+</div>
+<!--
+##### SOURCE BEGIN #####
+%% Coding Standard
+% 
+% MATLAB coding standard used for k-Wave II.
+%
+%% Naming
+% * Namespaces uses |+lowercase|.
+% * Class names use |TitleCase|.
+% * Function names and script filenames  use |camelCase|.
+% * Test classes use |TestMyClassName| or |TestMyFunctionName|.
+% * Variables use |camelCase|.
+% * Name-Value arguments use |TitleCase|.
+% * Descriptive naming should be used for the user-facing API where
+%   possible, e.g., |soundSpeed| rather than |c|. Break this rule for
+%   internal variables for commonly used symbols (e.g. |c| for sound speed,
+%   |p| for pressure), as long as the symbol is well known and stays within
+%   a limited scope (e.g., a function) where a short comment at the top
+%   says what the single letter stands for.
+%
+%% Code
+% * Each line of code should only contain one statement.
+% * Each line of executed code should be terminated with a semicolon
+%   without a preceding space. 
+% * Class properties and argument validation code should not be terminated
+%   with a semicolon.
+% * For element-wise multiply, divide, and power operations, use a
+%   preceding period, even when acting on a scalar.
+% * Always use a period before the transpose operator, unless the conjugate
+%   transpose is required.
+% * Mathematical operands and assignments, e.g., |+ * && = >| etc., should
+%   be space padded. Exceptions are power |^|, the colon operator |:|, the
+%   not operator |~|, and the |-| sign when used to signify a negative
+%   number.
+
+x = 1:10;
+x = a .* b.^2;
+x = a && ~b;
+x = 10 - 3.4;
+x = -1e-3;
+x = [1, 2, 3].';
+
+%%
+% * Break the previous two rules if it helps readability for simple
+%   multiply and divide operations using scalar literals.
+
+x = 2*pi;
+x = 1/pi;
+
+%%
+% * Decimals should have a preceding zero.
+% * Always preceed the imaginary unit with a number, e.g., |1i|.
+
+x = 0.5 + 1i;
+
+%%
+% * Align multiple similar lines of code if it makes sense for readability
+%   (similarly for comments).
+
+windSpeed        = exp( x -   w .* t);
+waterTemperature = exp(-x - 3*w .* t);
+
+%%
+% * If long lines of code become difficult to read, then break lines of
+%   code using |...| and align for readability.
+
+%% Brackets and Commas
+% * Brackets should have no interior spaces. Break this rule if needed for
+%   readability when using multiple nested brackets. 
+% * Brackets should follow immediately after function names with no space.
+% * Commas should be used to separate multiple inputs, outputs, or matrix
+%   values.
+% * All commas should be followed by a space. 
+
+x = (a - b).^2;
+[a, b, c] = myFunc(x, y, z);
+x = [1, 2, 3];
+x = [1; 2; 3];
+
+%%
+% * Logical statements should be grouped using brackets
+
+if (myHeight > 10) && (myDog.Name == "Fido")
+    disp('Excellent.');
+end
+
+%% Code Comments
+% * All code comments should be written as sentences, including capitals
+%   and periods.
+% * Comments should be limited to a maximum column width of 75 characters
+%   (the default in MATLAB).
+% * Comments that span multiple lines should be aligned at the first
+%   character of each line.
+% * Code comments should appear on the previous line, rather
+%   than inline. Break this rule with common sense.
+% * Comments should be preceded by a blank line.
+%
+%% Indentation and Line Breaks
+% * Statements inside conditional loops and if-statements (etc) should be
+%   indented.
+% * Each code indent level should be 4 spaces.
+% * Include a blank line at the beginning and end of the conditional IFF
+%   the code on the inside contains a comment.
+% * All files should end with a blank new line.
+% * Trailing spaces after lines of code or comments should be removed.
+
+% Increment the counter if radius exceed maximum value. There are no
+% comments inside the if statement, so do not include additional line
+% breaks.
+if radius > maximumRadius
+    counter = counter + 1;
+end
+
+% Loop through possible heights and calculate weight. There are comments
+% inside the if state, so include additional line breaks.
+for index = 1:length(heightArray)
+    
+    % Assign current height.
+    height = heightArray(index);
+    
+    % Calculate current weight based on time of day.
+    weight(index) = height .* now;
+    
+end
+
+%% Error messages
+% * Error messages should use the |kwave.toolbox.Logger| class.
+% * Error messages should begin with a capital letter (except when using a
+%   variable or function name) and end with a period.
+% * Error messages should use a two part identifier in the form
+% |ClassName:errorIdentifier| or 
+%   |functionName:errorIdentifier|.
+
+kwave.toolbox.Logger.error('Grid:incorrectInputSize', 'gridSpacing must be a scalar or the same length as gridSize.');
+
+%% Class and Function Documentation
+% Classes should be written using
+% <https://uk.mathworks.com/help/matlab/matlab_oop/methods-in-separate-files.html
+% methods in separate files>. Class and function documentation should be
+% written using
+% <https://uk.mathworks.com/help/matlab/matlab_prog/marking-up-matlab-comments-for-publishing.html
+% publishing markup>. The following structure and headings should be used.
+% <matlab:edit('kwave.docfiles.general.classDocsExample') Open template in
+% MATLAB Editor>.
+%
+% * functionName or className
+% * Syntax
+% * Description
+% * Examples
+% * Input Arguments
+% * Name-Value Arguments
+% * Output Arguments
+% * Properties (classes only)
+% * Methods (classes only)
+% * See Also
+
+##### SOURCE END #####
+-->
+</body>
+</html>

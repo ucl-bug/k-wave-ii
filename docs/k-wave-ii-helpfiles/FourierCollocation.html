@@ -1,0 +1,458 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      -->
+<title>FourierCollocation</title>
+<meta name="generator" content="MATLAB 25.1">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2025-08-19">
+<meta name="DC.source" content="FourierCollocation.m">
+<style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style>
+</head>
+<body>
+<div class="content">
+<h1>FourierCollocation</h1>
+<!--introduction-->
+<p>
+<b>Package:</b> kwave.toolbox</p>
+<p>Derivative calculation using the Fourier collocation spectral method.</p>
+<!--/introduction-->
+<h2>Contents</h2>
+<div>
+<ul>
+<li>
+<a href="#1">Description</a>
+</li>
+<li>
+<a href="#2">Examples</a>
+</li>
+<li>
+<a href="#3">Input Arguments</a>
+</li>
+<li>
+<a href="#4">Properties</a>
+</li>
+<li>
+<a href="#5">Methods</a>
+</li>
+</ul>
+</div>
+<h2 id="1">Description</h2>
+<p>Class used to calculate differential operators using the Fourier collocation spectral method. The class constructor takes a <tt>kwave.toolbox.Grid</tt> object which defines the discrete locations where the input field is defined. Calculations are always performed on the padded grid. Methods are provided for calculating the gradient of a scalar field, and the divergence of a vector field.</p>
+<p>Vector fields are stored by concatenating the Cartesian components in the fourth dimension. For example, in 2D, a vector field has size <tt>(Nx, Ny, 1, 2)</tt>, where <tt>(:, :, 1, 1)</tt> is the x-component, and <tt>(:, :, 1, 2)</tt> is the y-component. The <tt><a href="FourierCollocation-divergence.html">divergence</a></tt> method acts on each vector component individually using <tt><a href="FourierCollocation-divergenceSplit.html">divergenceSplit</a></tt>, and then sums the results. The calculations allow shifting to and from the staggered grid by setting the <tt>Staggering</tt> option.</p>
+<p>To include k-space dispersion correction in the derivative calculations, the property kappa should be defined. As this is a computational parameter, kappa must be defined on the padded grid, or be scalar. If kappa is scalar or not defined, derivative calculations use 1D FFTs, otherwise, ND FFTs are used.</p>
+<h2 id="2">Examples</h2>
+<p>Calculate the gradient of a scalar field in 2D, and compare with the MATLAB <tt><a href="matlab:doc('gradient')">gradient</a></tt> function.</p>
+<pre class="language-matlab">
+<span class="comment">% Define input field.</span>
+[x, y] = meshgrid(-2:.2:2, -2:.2:2);
+z = x .* exp(-x.^2 - y.^2);
+</pre>
+<pre class="language-matlab">
+<span class="comment">% Define input field.</span>
+kgrid = kwave.toolbox.Grid([40, 40], 0.2);
+f = kgrid.x .* exp(-kgrid.x.^2 - kgrid.y.^2);
+</pre>
+<pre class="language-matlab">
+<span class="comment">% Compute gradient using k-Wave.</span>
+fourierDiffOps = kwave.toolbox.FourierCollocation(kgrid);
+gradf = fourierDiffOps.gradient(f);
+</pre>
+<pre class="language-matlab">
+<span class="comment">% Compute gradient using finite differences with MATLAB gradient function.</span>
+[fy, fx] = gradient(f, kgrid.dx);
+</pre>
+<pre class="language-matlab">
+<span class="comment">% Plot.</span>
+figure;
+subplot(2, 3, 1);
+imagesc(gradf(:, :, :, 1));
+colorbar;
+axis <span class="string">image</span>;
+title(<span class="string">'k-Wave \partialf/\partialx'</span>);
+</pre>
+<pre class="language-matlab">subplot(2, 3, 2);
+imagesc(fx);
+colorbar;
+axis <span class="string">image</span>;
+title(<span class="string">'Finite Difference \partialf/\partialx'</span>);
+</pre>
+<pre class="language-matlab">subplot(2, 3, 3);
+imagesc(abs(gradf(:, :, :, 1) - fx));
+colorbar;
+axis <span class="string">image</span>;
+title(<span class="string">'Difference'</span>);
+</pre>
+<pre class="language-matlab">subplot(2, 3, 4);
+imagesc(gradf(:, :, :, 2));
+colorbar;
+axis <span class="string">image</span>;
+title(<span class="string">'k-Wave \partialf/\partialy'</span>);
+</pre>
+<pre class="language-matlab">subplot(2, 3, 5);
+imagesc(fy);
+colorbar;
+axis <span class="string">image</span>;
+title(<span class="string">'Finite Difference \partialf/\partialy'</span>);
+</pre>
+<pre class="language-matlab">subplot(2, 3, 6);
+imagesc(abs(gradf(:, :, :, 2) - fy));
+colorbar;
+axis <span class="string">image</span>;
+title(<span class="string">'Difference'</span>);
+</pre>
+<h2 id="3">Input Arguments</h2>
+<div>
+<ul>
+<li>
+<tt>kgrid</tt> - (kwave.toolbox.Grid) Object which defines the simulation grid size.</li>
+</ul>
+</div>
+<h2 id="4">Properties</h2>
+<p>Input objects:</p>
+<div>
+<ul>
+<li>
+<tt>kgrid</tt> - (kwave.toolbox.Grid) Handle for grid object.</li>
+</ul>
+</div>
+<p>Other properties:</p>
+<div>
+<ul>
+<li>
+<tt>dimensions</tt> - (double) Number of grid dimensions (1, 2, or 3).</li>
+</ul>
+</div>
+<h2 id="5">Methods</h2>
+<div>
+<ul>
+<li>
+<tt><a href="FourierCollocation-divergence.html">divergence</a></tt>
+</li>
+<li>
+<tt><a href="FourierCollocation-divergenceSplit.html">divergenceSplit</a></tt>
+</li>
+<li>
+<tt><a href="FourierCollocation-gradient.html">gradient</a></tt>
+</li>
+<li>
+<tt>fractionalLaplacian</tt>
+</li>
+<li>
+<tt><a href="FourierCollocation-stagger.html">stagger</a></tt>
+</li>
+<li>
+<tt><a href="FourierCollocation-plotField.html">plotField</a></tt>
+</li>
+<li>
+<tt><a href="FourierCollocation-sinc.html">sinc</a></tt>
+</li>
+</ul>
+</div>
+<p class="footer">
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2025a</a>
+<br>
+</p>
+</div>
+<!--
+##### SOURCE BEGIN #####
+%% FourierCollocation
+% *Package:* kwave.toolbox
+%
+% Derivative calculation using the Fourier collocation spectral method.
+%
+%% Description
+% Class used to calculate differential operators using the Fourier
+% collocation spectral method. The class constructor takes a
+% |kwave.toolbox.Grid| object which defines the discrete locations where
+% the input field is defined. Calculations are always performed on the
+% padded grid. Methods are provided for calculating the gradient of a
+% scalar field, and the divergence of a vector field.
+%
+% Vector fields are stored by concatenating the Cartesian components in the
+% fourth dimension. For example, in 2D, a vector field has size |(Nx, Ny,
+% 1, 2)|, where |(:, :, 1, 1)| is the x-component, and |(:, :, 1, 2)| is
+% the y-component. The |divergence| method acts on each vector component
+% individually using |divergenceSplit|, and then sums the results. The
+% calculations allow shifting to and from the staggered grid by setting the
+% |Staggering| option.
+%
+% To include k-space dispersion correction in the derivative calculations,
+% the property kappa should be defined. As this is a computational
+% parameter, kappa must be defined on the padded grid, or be scalar. If
+% kappa is scalar or not defined, derivative calculations use 1D FFTs,
+% otherwise, ND FFTs are used.
+%
+%% Examples
+% Calculate the gradient of a scalar field in 2D, and compare with the
+% MATLAB |<matlab:doc('gradient') gradient>| function.
+%
+%   % Define input field.
+%   [x, y] = meshgrid(-2:.2:2, -2:.2:2);
+%   z = x .* exp(-x.^2 - y.^2);
+%   
+%   % Define input field.
+%   kgrid = kwave.toolbox.Grid([40, 40], 0.2);
+%   f = kgrid.x .* exp(-kgrid.x.^2 - kgrid.y.^2);
+%   
+%   % Compute gradient using k-Wave.
+%   fourierDiffOps = kwave.toolbox.FourierCollocation(kgrid);
+%   gradf = fourierDiffOps.gradient(f);
+%   
+%   % Compute gradient using finite differences with MATLAB gradient function.
+%   [fy, fx] = gradient(f, kgrid.dx);
+%   
+%   % Plot.
+%   figure;
+%   subplot(2, 3, 1);
+%   imagesc(gradf(:, :, :, 1));
+%   colorbar;
+%   axis image;
+%   title('k-Wave \partialf/\partialx');
+%   
+%   subplot(2, 3, 2);
+%   imagesc(fx);
+%   colorbar;
+%   axis image;
+%   title('Finite Difference \partialf/\partialx');
+%   
+%   subplot(2, 3, 3);
+%   imagesc(abs(gradf(:, :, :, 1) - fx));
+%   colorbar;
+%   axis image;
+%   title('Difference');
+%   
+%   subplot(2, 3, 4);
+%   imagesc(gradf(:, :, :, 2));
+%   colorbar;
+%   axis image;
+%   title('k-Wave \partialf/\partialy');
+%   
+%   subplot(2, 3, 5);
+%   imagesc(fy);
+%   colorbar;
+%   axis image;
+%   title('Finite Difference \partialf/\partialy');
+%   
+%   subplot(2, 3, 6);
+%   imagesc(abs(gradf(:, :, :, 2) - fy));
+%   colorbar;
+%   axis image;
+%   title('Difference');
+%
+%% Input Arguments
+% * |kgrid| - (kwave.toolbox.Grid) Object which defines the simulation grid
+%   size.
+%
+%% Properties
+% Input objects:
+%
+% * |kgrid| - (kwave.toolbox.Grid) Handle for grid object.
+%
+% Other properties:
+%
+% * |dimensions| - (double) Number of grid dimensions (1, 2, or 3).
+%
+%% Methods
+% * |divergence|
+% * |divergenceSplit|
+% * |gradient|
+% * |fractionalLaplacian|
+% * |stagger|
+% * |plotField|
+% * |sinc|
+
+% Copyright (C) 2022- University College London.
+%
+% This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
+% software: you can redistribute it and/or modify it under the terms of the
+% GNU Lesser General Public License as published by the Free Software
+% Foundation, either version 3 of the License, or (at your option) any
+% later version.
+% 
+% k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
+% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+% FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+% License for more details.
+% 
+% You should have received a copy of the GNU Lesser General Public License
+% along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
+
+classdef FourierCollocation < handle
+
+    % Properties set by the constructor.
+    properties(SetAccess=immutable)
+        dimensions
+        kgrid
+    end
+
+    % Hidden properties that can be set internally or by derived classes.
+    properties(SetAccess=immutable, Hidden=true)
+        kgridPadded kwave.toolbox.Grid
+    end
+
+    % Internal 1D derivative operators defined with no staggering, forward
+    % staggering, and backward staggering. These are computed in the
+    % constructor and stored to save compute time during derivative
+    % calculations.
+    properties(SetAccess=immutable, GetAccess=private, Hidden=true)
+        ddxNoShift single
+        ddyNoShift single
+        ddzNoShift single
+
+        ddxShiftPos single
+        ddyShiftPos single
+        ddzShiftPos single
+
+        ddxShiftNeg single
+        ddyShiftNeg single
+        ddzShiftNeg single
+
+        xShiftPos single
+        yShiftPos single
+        zShiftPos single
+
+        xShiftNeg single
+        yShiftNeg single
+        zShiftNeg single
+    end
+
+    % k-Space correction term.
+    properties
+        kappa single
+    end
+
+    % Constructor.
+    methods
+        function obj = FourierCollocation(kgrid)
+            arguments
+                kgrid(1,1) kwave.toolbox.Grid
+            end
+
+            % Assign properties.
+            obj.dimensions = kgrid.dimensions;
+
+            % Assign grid and expanded grid.
+            obj.kgrid = kgrid;
+            obj.kgridPadded = kwave.toolbox.Grid(kgrid.gridSize(1:kgrid.dimensions) + 2 * kgrid.gridPadding(1:kgrid.dimensions), kgrid.gridSpacing(1:kgrid.dimensions));
+
+            % Assign derivative operators.
+            obj.ddxNoShift = reshape(ifftshift(1i * obj.kgridPadded.kxVec), [], 1, 1);
+            obj.ddyNoShift = reshape(ifftshift(1i * obj.kgridPadded.kyVec), 1, [], 1);
+            obj.ddzNoShift = reshape(ifftshift(1i * obj.kgridPadded.kzVec), 1, 1, []);
+            
+            obj.ddxShiftPos = reshape(ifftshift(1i * obj.kgridPadded.kxVec .* exp( 1i.*obj.kgridPadded.kxVec * obj.kgridPadded.dx/2)), [], 1, 1);
+            obj.ddyShiftPos = reshape(ifftshift(1i * obj.kgridPadded.kyVec .* exp( 1i.*obj.kgridPadded.kyVec * obj.kgridPadded.dy/2)), 1, [], 1);
+            obj.ddzShiftPos = reshape(ifftshift(1i * obj.kgridPadded.kzVec .* exp( 1i.*obj.kgridPadded.kzVec * obj.kgridPadded.dz/2)), 1, 1, []);
+
+            obj.ddxShiftNeg = reshape(ifftshift(1i * obj.kgridPadded.kxVec .* exp(-1i.*obj.kgridPadded.kxVec * obj.kgridPadded.dx/2)), [], 1, 1);
+            obj.ddyShiftNeg = reshape(ifftshift(1i * obj.kgridPadded.kyVec .* exp(-1i.*obj.kgridPadded.kyVec * obj.kgridPadded.dy/2)), 1, [], 1);
+            obj.ddzShiftNeg = reshape(ifftshift(1i * obj.kgridPadded.kzVec .* exp(-1i.*obj.kgridPadded.kzVec * obj.kgridPadded.dz/2)), 1, 1, []);
+
+            obj.xShiftPos = reshape(ifftshift( exp( 1i.*obj.kgridPadded.kxVec * obj.kgridPadded.dx/2)), [], 1, 1);
+            obj.yShiftPos = reshape(ifftshift( exp( 1i.*obj.kgridPadded.kyVec * obj.kgridPadded.dy/2)), 1, [], 1);
+            obj.zShiftPos = reshape(ifftshift( exp( 1i.*obj.kgridPadded.kzVec * obj.kgridPadded.dz/2)), 1, 1, []);
+
+            obj.xShiftNeg = reshape(ifftshift( exp(-1i.*obj.kgridPadded.kxVec * obj.kgridPadded.dx/2)), [], 1, 1);
+            obj.yShiftNeg = reshape(ifftshift( exp(-1i.*obj.kgridPadded.kyVec * obj.kgridPadded.dy/2)), 1, [], 1);
+            obj.zShiftNeg = reshape(ifftshift( exp(-1i.*obj.kgridPadded.kzVec * obj.kgridPadded.dz/2)), 1, 1, []);
+        end
+    end
+
+    % Set and get methods.
+    methods
+        function set.kappa(obj, val)
+            if numel(val) ~= 1
+                obj.kgrid.validateSize(val, IncludePadding=true, VariableName='kappa'); %#ok<MCSUP>
+            end
+            obj.kappa = val;
+        end
+    end
+
+    % General class methods with a concrete implementation.
+    methods
+        f = divergence(obj, f, varargin);
+        f = divergenceSplit(obj, f, options);
+        f= stagger(obj,f,options);
+        out = gradient(obj, f, options);
+        out = fracLaplacian(obj, f,y, options);
+        plotField(obj, f);
+    end
+
+    % Static class methods with a concrete implementation.
+    methods(Static)
+        y = sinc(x);
+    end
+
+end
+
+##### SOURCE END #####
+-->
+</body>
+</html>

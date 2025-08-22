@@ -1,0 +1,9 @@
+site_name: k-Wave-II
+plugins:
+  - search
+  - literate-nav
+nav:
+  - Home: index.md
+  - About: about.md
+  - Help: k-wave-ii-helpfiles/
+theme: readthedocs

@@ -1,0 +1,300 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      -->
+<title>Solver</title>
+<meta name="generator" content="MATLAB 25.1">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2025-08-19">
+<meta name="DC.source" content="Solver.m">
+<style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style>
+</head>
+<body>
+<div class="content">
+<h1>Solver</h1>
+<!--introduction-->
+<p>
+<b>Package:</b> kwave.toolbox <b>Superclasses:</b> kwave.toolbox.FourierCollocation</p>
+<p>Superclass of all kwave.toolbox solver classes.</p>
+<!--/introduction-->
+<h2>Contents</h2>
+<div>
+<ul>
+<li>
+<a href="#1">Description</a>
+</li>
+<li>
+<a href="#2">Input Arguments</a>
+</li>
+<li>
+<a href="#3">Properties</a>
+</li>
+<li>
+<a href="#4">Template Methods</a>
+</li>
+<li>
+<a href="#5">See Also</a>
+</li>
+</ul>
+</div>
+<h2 id="1">Description</h2>
+<p>Abstract class used to define solvers in k-Wave. All solver classes should be derived from this class.</p>
+<p>The <tt>Solver</tt> class codifies the common features of a solver in k-Wave. In particular, solvers must take grid, medium, source, sensor, and settings objects that define the problem specifics. These objects must use the same <tt>kwave.toolbox.Grid</tt> object. Solvers must also implement a <tt>run</tt> method as a common interface to obtaining the solution.</p>
+<p>The <tt>Solver</tt> class is derived from <tt>kwave.toolbox.FourierCollocation</tt>. This superclass implements common methods to calculate differential operators using the Fourier collocation spectral method. See class documentation for futher details.</p>
+<p>The constructor calls the <tt>checkRequiredProperties</tt> method for the input medium, source, and sensor objects.</p>
+<p>Classes derived from <tt>Solver</tt> should define padded variants of any PDE variables that can be accessed by the user, and implement set and get methods that add and remove the grid padding.</p>
+<h2 id="2">Input Arguments</h2>
+<div>
+<ul>
+<li>
+<tt>kgrid</tt> - (kwave.toolbox.Grid) Object which defines the simulation grid size.</li>
+<li>
+<tt>medium</tt> - (kwave.toolbox.GridInput) Object which defines the medium properties.</li>
+<li>
+<tt>source</tt> - (kwave.toolbox.GridInput) Object which defines the source properties.</li>
+<li>
+<tt>sensor</tt> - ...Not yet implemented...</li>
+<li>
+<tt>settings</tt> - (kwave.toolbox.Settings) Object which defines the simulation settings.</li>
+</ul>
+</div>
+<h2 id="3">Properties</h2>
+<p>Input objects:</p>
+<div>
+<ul>
+<li>
+<tt>medium</tt> - (kwave.toolbox.GridInput) Handle for medium object.</li>
+<li>
+<tt>source</tt> - (kwave.toolbox.GridInput) Handle for source object.</li>
+<li>
+<tt>sensor</tt> - ...Not yet implemented...</li>
+<li>
+<tt>settings</tt> - (kwave.toolbox.Settings) Handle for settings object.</li>
+</ul>
+</div>
+<h2 id="4">Template Methods</h2>
+<div>
+<ul>
+<li>
+<tt>run</tt>
+</li>
+</ul>
+</div>
+<h2 id="5">See Also</h2>
+<div>
+<ul>
+<li>
+<tt>kwave.toolbox.FourierCollocation</tt>
+</li>
+<li>
+<tt>kwave.toolbox.Grid</tt>
+</li>
+<li>
+<tt>kwave.toolbox.GridInput</tt>
+</li>
+<li>
+<tt>kwave.toolbox.Settings</tt>
+</li>
+</ul>
+</div>
+<p class="footer">
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2025a</a>
+<br>
+</p>
+</div>
+<!--
+##### SOURCE BEGIN #####
+%% Solver
+% *Package:* kwave.toolbox
+% *Superclasses:* kwave.toolbox.FourierCollocation
+%
+% Superclass of all kwave.toolbox solver classes.
+%
+%% Description
+% Abstract class used to define solvers in k-Wave. All solver classes
+% should be derived from this class.
+%
+% The |Solver| class codifies the common features of a solver in k-Wave. In
+% particular, solvers must take grid, medium, source, sensor, and
+% settings objects that define the problem specifics. These objects must
+% use the same |kwave.toolbox.Grid| object. Solvers must also
+% implement a |run| method as a common interface to obtaining the solution.
+%
+% The |Solver| class is derived from |kwave.toolbox.FourierCollocation|.
+% This superclass implements common methods to calculate differential
+% operators using the Fourier collocation spectral method. See class
+% documentation for futher details.
+%
+% The constructor calls the |checkRequiredProperties| method for the input
+% medium, source, and sensor objects. 
+%
+% Classes derived from |Solver| should define padded variants of
+% any PDE variables that can be accessed by the user, and implement set and
+% get methods that add and remove the grid padding.
+%
+%% Input Arguments
+% * |kgrid| - (kwave.toolbox.Grid) Object which defines the simulation grid
+%   size. 
+% * |medium| - (kwave.toolbox.GridInput) Object which defines the medium
+%   properties. 
+% * |source| - (kwave.toolbox.GridInput) Object which defines the source
+%   properties. 
+% * |sensor| - ...Not yet implemented...
+% * |settings| - (kwave.toolbox.Settings) Object which defines the
+%   simulation settings.
+%
+%% Properties
+% Input objects:
+%
+% * |medium| - (kwave.toolbox.GridInput) Handle for medium object.
+% * |source| - (kwave.toolbox.GridInput) Handle for source object.
+% * |sensor| - ...Not yet implemented...
+% * |settings| - (kwave.toolbox.Settings) Handle for settings object.
+%
+%% Template Methods
+% * |run|
+%
+%% See Also
+% * |kwave.toolbox.FourierCollocation|
+% * |kwave.toolbox.Grid|
+% * |kwave.toolbox.GridInput|
+% * |kwave.toolbox.Settings|
+
+% Copyright (C) 2024- The k-Wave Authors.
+%
+% This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
+% software: you can redistribute it and/or modify it under the terms of the
+% GNU Lesser General Public License as published by the Free Software
+% Foundation, either version 3 of the License, or (at your option) any
+% later version.
+% 
+% k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
+% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+% FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+% License for more details.
+% 
+% You should have received a copy of the GNU Lesser General Public License
+% along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
+
+classdef(Abstract) Solver < kwave.toolbox.FourierCollocation
+
+    % Properties set by the constructor.
+    properties(SetAccess=immutable)
+        medium
+        source
+        sensor
+        settings
+    end
+
+    % Constructor.
+    methods
+        function obj = Solver(kgrid, medium, source, sensor, settings)
+            arguments
+                kgrid(1,1) kwave.toolbox.Grid
+                medium(1,1) kwave.toolbox.GridInput
+                source(1,1) kwave.toolbox.GridInput
+                sensor
+                settings(1,1) kwave.toolbox.Settings
+            end
+
+            % Pass input arguments to superclass constructor.
+            obj@kwave.toolbox.FourierCollocation(kgrid)
+
+            % Check inputs reference the same grid object.
+            if (medium.kgrid ~= kgrid)
+                kwave.toolbox.Logger.error('Solver:gridMismatch', 'The medium input references a different Grid object to the kgrid input.');
+            end
+            if (source.kgrid ~= kgrid)
+                kwave.toolbox.Logger.error('Solver:gridMismatch', 'The source input references a different Grid object to the kgrid input.');
+            end
+
+            % Check the required input properties have been defined.
+            medium.checkRequiredProperties;
+            source.checkRequiredProperties;
+
+            % Assign properties.
+            obj.medium = medium;
+            obj.source = source;
+            obj.sensor = sensor;
+            obj.settings = settings;
+
+        end
+    end
+
+    % Abstract methods that must be implemented by sub-classes.
+    methods(Abstract)
+        run(obj);
+    end
+
+end
+
+##### SOURCE END #####
+-->
+</body>
+</html>
