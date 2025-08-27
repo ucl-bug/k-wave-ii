@@ -60,7 +60,6 @@ classdef GenerateDocumentation
             initialValueProblemsFilenames = obj.generateHTML('/+kwave/+tutorials/+initialvalueproblems', evalCode=true, showCode=true);
             toolboxFilenames = obj.generateHTML('/+kwave/+toolbox');
             testFilenames = obj.generateHTML('/+kwave/+tests');
-            unitTestFilenames = obj.generateHTML('/+kwave/+tests/+unit');
             utilityFilenames = obj.generateHTML('/+kwave/+utilities');
             developerFilenames = obj.generateHTML('/+kwave/+docfiles/+developer', showCode=true);
 
@@ -69,7 +68,6 @@ classdef GenerateDocumentation
             obj.helpTocAddSection(initialValueProblemsFilenames, 'Initial Value Problems');
             obj.helpTocAddSection(toolboxFilenames, 'Toolbox Functions');
             obj.helpTocAddSection(testFilenames, 'Test Functions');
-            obj.helpTocAddSection(unitTestFilenames, 'Unit Tests');
             obj.helpTocAddSection(utilityFilenames, 'Utility Functions');
             obj.helpTocAddSection(developerFilenames, 'Developer Documentation');
             obj.helpTocFinish;
@@ -184,21 +182,19 @@ classdef GenerateDocumentation
 
 
                 % Rename to include classname if a class method.
+                [~, filename, ext] = fileparts(htmlFile);
+                %disp([htmlFile, ' ', fullFileNameMD, ' ', bareFilename]); % full name, full name, bare name
                 if mFilenames(ind).isClassMethod
-                    [~, htmlFilename, ~] = fileparts(htmlFile);
                     [~, className, ~] = fileparts(mFilenames(ind).className);
-                    newHtmlFile = fullfile(obj.helpDirHtml, [className '-' htmlFilename '.html']);
+                    filename = [className '-' filename];
+                    newHtmlFile = fullfile(obj.helpDirHtml, [filename '.html']);
                     movefile(htmlFile, newHtmlFile);
-                    htmlFile = newHtmlFile;
-                    [~, mdFilename, ~] = fileparts(fullFileNameMD);
-                    newMdFile = fullfile(obj.helpDirMd, [className '-' mdFilename '.md']);
+                    newMdFile = fullfile(obj.helpDirMd, [filename '.md']);
                     movefile(fullFileNameMD, newMdFile);
-                    fullFileNameMD = newMdFile;
-
                 end
-                [~, fileName, ext] = fileparts(htmlFile);
-                mFilenames(ind).htmlFileName = [fileName, ext];
-                mFilenames(ind).mdFileName = [fileName, '.md'];
+                mFilenames(ind).htmlFileName = [filename, ext];
+                mFilenames(ind).mdFileName = [filename, '.md'];
+                %disp([mFilenames(ind).htmlFileName, ' ', mFilenames(ind).mdFileName]); % file only name
 
                 % Change back to root directory.
                 cd(obj.rootPath);
