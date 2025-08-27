@@ -32,8 +32,8 @@
 classdef GenerateDocumentation
 
     properties(SetAccess=immutable, Hidden=true)
-        helpDir;
-        helpDirWeb
+        helpDirHtml;
+        helpDirMd;
         rootPath;
     end
 
@@ -51,8 +51,8 @@ classdef GenerateDocumentation
                 obj.rootPath = [filesep obj.rootPath];
             end
             addpath(obj.rootPath);
-            obj.helpDir = fullfile(obj.rootPath, 'helpfiles');
-            obj.helpDirWeb = fullfile(obj.rootPath, 'helpfilesweb');
+            obj.helpDirHtml = fullfile(obj.rootPath, 'helpfiles');
+            obj.helpDirMd = fullfile(obj.rootPath, 'helpfilesweb');
             obj.createHelpDir;
 
             % Generate HTML files.
@@ -76,7 +76,7 @@ classdef GenerateDocumentation
 
             % Build searchable docs.
             disp('Generating search database...');
-            builddocsearchdb(obj.helpDir);
+            builddocsearchdb(obj.helpDirHtml);
 
         end
     end
@@ -85,14 +85,14 @@ classdef GenerateDocumentation
 
         % Create empty helpfiles directory.
         function createHelpDir(obj)
-            if exist(obj.helpDir, 'file')
-                rmdir(obj.helpDir, 's');
+            if exist(obj.helpDirHtml, 'file')
+                rmdir(obj.helpDirHtml, 's');
             end
-            mkdir(obj.helpDir);
-            if exist(obj.helpDirWeb, 'file')
-                rmdir(obj.helpDirWeb, 's');
+            mkdir(obj.helpDirHtml);
+            if exist(obj.helpDirMd, 'file')
+                rmdir(obj.helpDirMd, 's');
             end
-            mkdir(obj.helpDirWeb);
+            mkdir(obj.helpDirMd);
         end
 
         % Convert m-files in specified directory to HTML using publish.
@@ -120,6 +120,7 @@ classdef GenerateDocumentation
             [mFilenames(:).className] = deal('');
             [mFilenames(:).title] = deal('');
             [mFilenames(:).htmlFileName] = deal('');
+            [mFilenames(:).mdFileName] = deal('');
 
             % Loop over m-files.
             for ind = 1:numFiles
@@ -142,6 +143,7 @@ classdef GenerateDocumentation
                     mFilenames(ind).isClass = true;
                 end
 
+                bareFilename = filename;
                 if obj.isClassMethod(mFileRelativeFolder, filename)
                     mFilenames(ind).isClassMethod = true;
                     mFilenames(ind).className = [mFileRelativeFolder(2:end) '.m']; % Convert folder name to class name by removing the leading "@" character.
@@ -162,23 +164,41 @@ classdef GenerateDocumentation
                 % Publish to html.
                 htmlFile = publish(filename, ...
                     'format', 'html', ...
-                    'outputDir', obj.helpDir, ...
+                    'outputDir', obj.helpDirHtml, ...
                     'evalCode', options.evalCode, ...
                     'showCode', options.showCode);
 
                 % Publish to md.
-                kwave.utilities.mToMarkdown(fullfile(mFilenames(ind).folder, mFilenames(ind).name), obj.helpDirWeb);
+                inputFunctionFullFileName = fullfile(mFilenames(ind).folder, mFilenames(ind).name);
+                % Create full paths for .mlx (matlab live script) and .md (markdown) files.
+                fullFileNameMLX  = fullfile(obj.helpDirMd, [bareFilename '.mlx']);
+                fullFileNameMD   = fullfile(obj.helpDirMd, [bareFilename '.md']);
+                % Print details of conversion from .m to .md
+                disp(['Converting ', filename, ' to ' [bareFilename '.md']]);
+                % Converts the .m file into a .mlx file and saves it.
+                matlab.internal.liveeditor.openAndSave(inputFunctionFullFileName, fullFileNameMLX);
+                % Exports the .mlx file into a .md file.
+                export(fullFileNameMLX, fullFileNameMD, Format="markdown", HideCode=true);
+                % Deletes the intermediate .mlx file
+                delete(fullFileNameMLX);
+
 
                 % Rename to include classname if a class method.
                 if mFilenames(ind).isClassMethod
                     [~, htmlFilename, ~] = fileparts(htmlFile);
                     [~, className, ~] = fileparts(mFilenames(ind).className);
-                    newHtmlFile = fullfile(obj.helpDir, [className '-' htmlFilename '.html']);
+                    newHtmlFile = fullfile(obj.helpDirHtml, [className '-' htmlFilename '.html']);
                     movefile(htmlFile, newHtmlFile);
                     htmlFile = newHtmlFile;
+                    [~, mdFilename, ~] = fileparts(fullFileNameMD);
+                    newMdFile = fullfile(obj.helpDirMd, [className '-' mdFilename '.md']);
+                    movefile(fullFileNameMD, newMdFile);
+                    fullFileNameMD = newMdFile;
+
                 end
                 [~, fileName, ext] = fileparts(htmlFile);
                 mFilenames(ind).htmlFileName = [fileName, ext];
+                mFilenames(ind).mdFileName = [fileName, '.md'];
 
                 % Change back to root directory.
                 cd(obj.rootPath);
@@ -190,10 +210,10 @@ classdef GenerateDocumentation
                 for ind2 = 1:numFiles
                     if mFilenames(ind1).isClass && mFilenames(ind2).isClassMethod && strcmp(mFilenames(ind2).className, mFilenames(ind1).name)
 
-                        disp(['Replacing links to method ', mFilenames(ind2).name, ' from class ', mFilenames(ind1).name]);
+                        disp(['Replacing html links to method ', mFilenames(ind2).name, ' from class ', mFilenames(ind1).name]);
                         [~, methodName, ~] = fileparts(mFilenames(ind2).name);
                         htmlFileName = mFilenames(ind1).htmlFileName;
-                        htmlFile = fullfile(obj.helpDir, htmlFileName);
+                        htmlFile = fullfile(obj.helpDirHtml, htmlFileName);
 
                         % Read in HTML file.
                         fid = fopen(htmlFile, 'r');
@@ -212,6 +232,24 @@ classdef GenerateDocumentation
                         fprintf(fid, '%s', fileContents.');
                         fclose(fid);
 
+                        disp(['Replacing md links to method ', mFilenames(ind2).name, ' from class ', mFilenames(ind1).name]);
+                        mdFileName = mFilenames(ind1).mdFileName;
+                        mdFile = fullfile(obj.helpDirMd, mdFileName);
+
+                        % Read in md file.
+                        fid = fopen(mdFile, 'r');
+                        fileContents = fread(fid, '*char');
+                        fclose(fid);
+
+                        % Add links, and save to md file. The |methodName| 
+                        % syntax is published as `methodName`. The quotes are included
+                        % in the search to avoid adding links to code snippets.
+                        fileContents = strrep(fileContents.', ...
+                            ['`' methodName '`'], ...
+                            ['[' methodName '](' mFilenames(ind2).mdFileName ')']);
+                        fid = fopen(mdFile, 'w');
+                        fprintf(fid, '%s', fileContents.');
+                        fclose(fid);
                     end
                 end
             end
@@ -276,7 +314,7 @@ classdef GenerateDocumentation
 
         % Convenience function to call writelines.
         function addToXML(obj, line)
-            filename = fullfile(obj.helpDir, 'helptoc.xml');
+            filename = fullfile(obj.helpDirHtml, 'helptoc.xml');
             writelines(line, filename, 'WriteMode','append');
         end
 
