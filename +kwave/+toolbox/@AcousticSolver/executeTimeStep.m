@@ -166,12 +166,16 @@ if Nt~=0
         end
 
         if ~isempty(obj.sensor) && rem(tIndex-adj, obj.sensor.timeSteps) == 0
-            if ~isempty(obj.timeArray)
+            if ~isempty(obj.timeArray) 
                 obj.timePoint=obj.timeArray(end)+(tIndex-adj)*dt;
+                if (tIndex-adj)*dt~=0
+                    obj.sensor.sensorIndex=obj.sensor.sensorIndex+1;
+                end
             else
                 obj.timePoint=(tIndex-adj)*dt;
+                obj.sensor.sensorIndex=obj.sensor.sensorIndex+1;
             end
-            obj.sensor.sensorIndex=obj.sensor.sensorIndex+1;
+            
             obj.sensor.recordSensorData(obj,obj.sensor.sensorIndex);
         end
 

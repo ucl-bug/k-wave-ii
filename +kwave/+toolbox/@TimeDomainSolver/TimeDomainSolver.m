@@ -88,7 +88,7 @@ classdef(Abstract) TimeDomainSolver < kwave.toolbox.Solver
             % Pass input arguments to superclass constructor.
             obj@kwave.toolbox.Solver(kgrid, medium, source, sensor, settings)
 
-            timeArray = typecast([], settings.simulationDataType);
+            obj.timeArray = typecast([], settings.simulationDataType);
 
         end
     end

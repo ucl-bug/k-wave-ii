@@ -75,9 +75,6 @@ classdef BoundaryCondition < kwave.toolbox.GridInput
         function obj=setOffGrid(obj,OffGrid,accuracy)
             obj.OffGrid=OffGrid;
             obj.OffGridApplied='on';
-            if nargin<2
-                accuracy=0.05;
-            end
             obj.maskBuilder= zeros(obj.kgrid.gridSize);
             gridLocations=zeros(obj.kgrid.totalGridPoints,obj.kgrid.dimensions);
 
@@ -85,10 +82,10 @@ classdef BoundaryCondition < kwave.toolbox.GridInput
                 switch obj.kgrid.dimensions
                     case 1
                         gridPoint=obj.kgrid.x(j1)/obj.kgrid.gridSpacing(1);
-                    case 2
-                        gridPoint=[obj.kgrid.x(j1)/obj.kgrid.gridSpacing(1),obj.kgrid.y(j1)/obj.kgrid.gridSpacing(2)];
-                    case 3
-                        gridPoint=[obj.kgrid.x(j1)/obj.kgrid.gridSpacing(1),obj.kgrid.y(j1)/obj.kgrid.gridSpacing(2),obj.kgrid.z(j1)/obj.kgrid.gridSpacing(3)];
+                    % case 2
+                    %     gridPoint=[obj.kgrid.x(j1)/obj.kgrid.gridSpacing(1),obj.kgrid.y(j1)/obj.kgrid.gridSpacing(2)];
+                    % case 3
+                    %     gridPoint=[obj.kgrid.x(j1)/obj.kgrid.gridSpacing(1),obj.kgrid.y(j1)/obj.kgrid.gridSpacing(2),obj.kgrid.z(j1)/obj.kgrid.gridSpacing(3)];
                 end
                 gridLocations(j1,:)=gridPoint;
             end
@@ -126,14 +123,14 @@ classdef BoundaryCondition < kwave.toolbox.GridInput
             switch obj.kgrid.dimensions
                 case 1
                      Mat=kwave.toolbox.expandMatrix(   Matrix, obj.kgrid.gridPadding(1),0);
-                case 2
-                    Mat=kwave.toolbox.expandMatrix(   Matrix, [obj.kgrid.gridPadding(1),obj.kgrid.gridPadding(1),obj.kgrid.gridPadding(2),obj.kgrid.gridPadding(2)],0);
-                case 3
-                    Mat=kwave.toolbox.expandMatrix(   Matrix, [obj.kgrid.gridPadding(1),obj.kgrid.gridPadding(1),obj.kgrid.gridPadding(2),obj.kgrid.gridPadding(2),obj.kgrid.gridPadding(3),obj.kgrid.gridPadding(3)],0);
+                % case 2
+                %     Mat=kwave.toolbox.expandMatrix(   Matrix, [obj.kgrid.gridPadding(1),obj.kgrid.gridPadding(1),obj.kgrid.gridPadding(2),obj.kgrid.gridPadding(2)],0);
+                % case 3
+                %     Mat=kwave.toolbox.expandMatrix(   Matrix, [obj.kgrid.gridPadding(1),obj.kgrid.gridPadding(1),obj.kgrid.gridPadding(2),obj.kgrid.gridPadding(2),obj.kgrid.gridPadding(3),obj.kgrid.gridPadding(3)],0);
             end
         end
 
-        function VariablePadded = ApplyBoundaryCondition(obj,VariablePadded,bndrytype,dim,string)
+        function VariablePadded = ApplyBoundaryCondition(obj,VariablePadded,~,dim,~)
             Variable=obj.kgrid.returnWithoutGridPadding(VariablePadded);
             BoundaryValue =obj.ProcessSensorData(Variable,dim);
             mask=obj.kgrid.returnWithoutGridPadding(obj.maskPadded);

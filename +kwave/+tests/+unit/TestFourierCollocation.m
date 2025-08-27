@@ -215,7 +215,7 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
 
             x = linspace(-10, 10, 100);
             testCase.actualSolution = testCase.solver.sinc(pi * x);
-            testCase.referenceSolution = sinc(x);
+            testCase.referenceSolution = sin(pi*x)./(pi*x);
             testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));
         end
 

@@ -51,23 +51,23 @@ arguments
     obj
 end
 validateattributes( obj.medium.absorptionPower, {'single' 'double'} ,{'scalar'})
-obj.medium.absorptionPower=cast(obj.medium.absorptionPower,obj.settings.simulationDataType);
+absorptionPower=cast(obj.medium.absorptionPower,obj.settings.simulationDataType);
 
 % convert the absorption coefficient to nepers.(rad/s)^-y.m^-1
-alphaCoeffPadded = 5 * obj.medium.absorptionCoeffPadded * (((1e-6)/(2*pi) )^obj.medium.absorptionPower ) / (log10(exp(1)));
+alphaCoeffPadded = 5 * obj.medium.absorptionCoeffPadded * (((1e-6)/(2*pi) )^absorptionPower ) / (log10(exp(1)));
 
 % Applies Formula, sets eta to 0 is applicable
-if strcmp(obj.absorptionType,'noDispersion') || obj.medium.absorptionPower ==0 || obj.medium.absorptionPower==2
+if strcmp(obj.absorptionType,'noDispersion') || absorptionPower ==0 || absorptionPower==2
     obj.absorbEtaPadded =0;
 else
-    obj.absorbEtaPadded =   -2 .* alphaCoeffPadded .* obj.medium.soundSpeedPadded.^(obj.medium.absorptionPower    ) .* tan(pi .* obj.medium.absorptionPower  / 2);
+    obj.absorbEtaPadded =   -2 .* alphaCoeffPadded .* obj.medium.soundSpeedPadded.^(absorptionPower) .* tan(pi .* absorptionPower  / 2);
 end
 
 % Applies Formula, sets tau to 0 is applicable
 if strcmp(obj.absorptionType,'noAbsorption')
     obj.absorbTauPadded = 0;
 else
-    obj.absorbTauPadded =  -2 .* alphaCoeffPadded .* obj.medium.soundSpeedPadded.^(obj.medium.absorptionPower  - 1);
+    obj.absorbTauPadded =  -2 .* alphaCoeffPadded .* obj.medium.soundSpeedPadded.^(absorptionPower  - 1);
 end
 
 end

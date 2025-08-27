@@ -58,10 +58,10 @@ classdef AcousticSensor < kwave.toolbox.Sensor
         velocitySensor char {mustBeMember( velocitySensor, {'on','off','ongrid'})} = 'off'
         densitySensor char {mustBeMember( densitySensor, {'on','off'})} = 'off'
 
-        pressure single
-        velocity single;
-        density single;
-        times single;
+        pressure single = [];
+        velocity single = [];
+        density single = [];
+        times single = [];
     end
 
     methods(Access=public)
@@ -74,7 +74,7 @@ classdef AcousticSensor < kwave.toolbox.Sensor
                  end
                  if strcmp(obj.densitySensor,'on') && isempty(obj.density)
                     id=1;
-                    obj.pressure=zeros(obj.totalSensorPoints,1);
+                    obj.density=zeros(obj.totalSensorPoints,1);
                  end
                  if (strcmp(obj.velocitySensor,'on') || strcmp(obj.velocitySensor,'ongrid')) && isempty(obj.velocity)
                     id=1;

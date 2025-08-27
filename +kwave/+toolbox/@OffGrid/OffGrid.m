@@ -199,10 +199,21 @@ classdef OffGrid < handle
 
                     n=(options.focusPoint - options.centre)/norm((options.focusPoint - options.centre));
                     ni=sqrt( 1- n(3)^2);
-                    
-                    kgridLocations(:,1)=options.centre(1)-n(1)*n(3)*planey/ni +n(2)*planex/ni;
-                    kgridLocations(:,2)=options.centre(2)-n(2)*n(3)*planey/ni -n(1)*planex/ni;
-                    kgridLocations(:,3)=options.centre(3)+ni*planey;
+
+                    if n(3)==1
+                        kgridLocations(:,1)=options.centre(1)-planex;
+                        kgridLocations(:,2)=options.centre(2)-planey;
+                        kgridLocations(:,3)=options.centre(3);
+
+                    elseif n(3)==-1
+                        kgridLocations(:,1)=options.centre(1)+planex;
+                        kgridLocations(:,2)=options.centre(2)+planey;
+                        kgridLocations(:,3)=options.centre(3);
+                    else
+                        kgridLocations(:,1)=options.centre(1)-n(1)*n(3)*planey/ni +n(2)*planex/ni;
+                        kgridLocations(:,2)=options.centre(2)-n(2)*n(3)*planey/ni -n(1)*planex/ni;
+                        kgridLocations(:,3)=options.centre(3)+ni*planey;
+                    end
 
                     obj.kgridLocations=kgridLocations;
                     assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
@@ -329,6 +340,7 @@ classdef OffGrid < handle
 
                     Nxi=options.points;
                     kgridLocations=zeros(Nxi,2);
+                    obj.normal=zeros(Nxi,2);
                     
                     Parametrisation = 0:1:Nxi-1;
 
@@ -340,6 +352,8 @@ classdef OffGrid < handle
 
                     kgridLocations(:,1)=options.centre(1)+radial(Parametrisation).*cos(angle(Parametrisation));
                     kgridLocations(:,2)=options.centre(2)+radial(Parametrisation).*sin(angle(Parametrisation));
+                    obj.normal(:,1)=cos(angle(Parametrisation));
+                    obj.normal(:,2)=sin(angle(Parametrisation));
 
                     obj.kgridLocations=kgridLocations;
                     assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
@@ -359,6 +373,7 @@ classdef OffGrid < handle
 
                     Nxi=options.points;
                     kgridLocations=zeros(Nxi,2);
+                    obj.normal=zeros(Nxi,2);
                     
                     Parametrisation = 0:1:Nxi-1;
 
@@ -378,6 +393,15 @@ classdef OffGrid < handle
                     kgridLocations(:,1)=options.midPoint(1)+n(1)*circlesegx-n(2)*circlesegy;
                     kgridLocations(:,2)=options.midPoint(2)+n(2)*circlesegx+n(1)*circlesegy;
 
+                    obj.normal(:,1) = (abs(angle(Parametrisation).')<=178*MaxAngle/180).*(radial(Parametrisation).' < (radInt+options.radius)/2).* -(n(1)*cos(angle(Parametrisation)).' - n(2)*sin(angle(Parametrisation)).');
+                    obj.normal(:,2) = (abs(angle(Parametrisation).')<=178*MaxAngle/180).*(radial(Parametrisation).' < (radInt+options.radius)/2).* -(n(2)*cos(angle(Parametrisation)).' + n(1)*sin(angle(Parametrisation)).');
+                    obj.normal(:,1) = obj.normal(:,1) + (abs(angle(Parametrisation).')<=178*MaxAngle/180).*(radial(Parametrisation).' >= (radInt+options.radius)/2).* (n(1)*cos(angle(Parametrisation)).' - n(2)*sin(angle(Parametrisation)).');
+                    obj.normal(:,2) = obj.normal(:,2) + (abs(angle(Parametrisation).')<=178*MaxAngle/180).*(radial(Parametrisation).' >= (radInt+options.radius)/2).* (n(2)*cos(angle(Parametrisation)).' + n(1)*sin(angle(Parametrisation)).');
+                    obj.normal(:,1) =  obj.normal(:,1) + (angle(Parametrisation).'>178*MaxAngle/180) .* (n(1)*cos(MaxAngle) - n(2)*sin(MaxAngle));
+                    obj.normal(:,2) =  obj.normal(:,2) + (angle(Parametrisation).'>178*MaxAngle/180) .* (n(2)*cos(MaxAngle) + n(1)*sin(MaxAngle));
+                    obj.normal(:,1) =  obj.normal(:,1) + (angle(Parametrisation).'<-178*MaxAngle/180) .* (n(1)*cos(MaxAngle) + n(2)*sin(MaxAngle));
+                    obj.normal(:,2) =  obj.normal(:,2) + (angle(Parametrisation).'<-178*MaxAngle/180) .* (n(2)*cos(MaxAngle) - n(1)*sin(MaxAngle));
+
 
                     obj.kgridLocations=kgridLocations;
                     assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
@@ -393,9 +417,13 @@ classdef OffGrid < handle
 
                     Nxi=options.points;
                     kgridLocations=zeros(Nxi,2);
+                    obj.normal=zeros(Nxi,2);
                     
                     kgridLocations(:,1)=options.centre(1)+options.radius.*cos((-pi:2*pi/(Nxi):pi*(Nxi-1)/Nxi) );
                     kgridLocations(:,2)=options.centre(2)+options.radius.*sin((-pi:2*pi/(Nxi):pi*(Nxi-1)/Nxi) );
+
+                    obj.normal(:,1)=cos((-pi:2*pi/(Nxi):pi*(Nxi-1)/Nxi) );
+                    obj.normal(:,2)=sin((-pi:2*pi/(Nxi):pi*(Nxi-1)/Nxi) );
 
                     obj.kgridLocations=kgridLocations;
                     assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
@@ -407,7 +435,7 @@ classdef OffGrid < handle
                     assert(all(size(options.corner1)==[1,2]),'BAD INPUTS','the corner1 has the wrong dimensions, size [1,2] req');
                     assert(all(size(options.corner2)==[1,2]),'BAD INPUTS','the corner2 has the wrong dimensions, size [1,2] req');
                     assert(all(size(options.corner3)==[1,2]),'BAD INPUTS','the corner3 has the wrong dimensions, size [1,2] req');
-                    assert(max(options.corner1~=options.corner2)==1 && max(options.corner1~=options.corner3)==1 && max(options.corner2~=options.corner3)==1,'BAD INPUTS','The corners must be distinct.');
+                    assert( any(options.corner1~=options.corner2) && any(options.corner1~=options.corner3) && any(options.corner2~=options.corner3),'BAD INPUTS','The corners must be distinct.');
                     HalfPerim=norm(options.corner1-options.corner2) + norm(options.corner1-options.corner3);
                     
                     Nxi=options.points;
@@ -421,8 +449,15 @@ classdef OffGrid < handle
                       linspace(corner4(1),options.corner3(1),Nxy+1).',linspace(corner4(2),options.corner3(2),Nxy+1).' ;  ...
                       linspace(options.corner3(1),options.corner1(1),Nxz+1).',linspace(options.corner3(2),options.corner1(2),Nxz+1).'];
                     
-                    obj.kgridLocations=unique(locs,"rows");
-                    assert(length(obj.kgridLocations(:,1))==Nxi)
+                    normal12= [options.corner2(2)-options.corner1(2) , -options.corner2(1)+options.corner1(1)];
+                    normal24= [corner4(2)-options.corner2(2) , -corner4(1)+options.corner2(1)];
+                    normal43= [options.corner3(2)-corner4(2) , -options.corner3(1)+corner4(1)];
+                    normal31= [options.corner1(2)-options.corner3(2) , -options.corner1(1)+options.corner3(1)];
+                    normal= [zeros(Nxy+1,2)+normal12 ; zeros(Nxyz+1,2)+normal24 ; zeros(Nxy+1,2)+normal43 ; zeros(Nxz+1,2)+normal31 ];
+
+                    [obj.kgridLocations,ia,~]=unique(locs,"rows");
+                    assert(length(obj.kgridLocations(:,1))==Nxi);
+                    obj.normal=normal(ia,:);
 
                     assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
                     assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
@@ -432,7 +467,7 @@ classdef OffGrid < handle
                     assert( ~isempty(options.startPoint), ~isempty(options.endPoint), ~isempty(options.points),'MISSING INPUTS','prebuild requires; startPoint, endPoint AND points')
                     assert(all(size(options.startPoint)==[1,2]),'BAD INPUTS','the start point has the wrong dimensions, size [1,2] req');
                     assert(all(size(options.endPoint)==[1,2]),'BAD INPUTS','the end point has the wrong dimensions, size [1,2] req');
-                    assert(max(options.startPoint~=options.endPoint)==1,'BAD INPUTS','The start and end Point must be distinct.');
+                    assert(any(options.startPoint~=options.endPoint),'BAD INPUTS','The start and end Point must be distinct.');
                     assert( obj.kgrid.dimensions==2,'INCORRECT GRID',' This prebuild requires a 2D grid')
 
                     Nxi=options.points;
@@ -461,7 +496,7 @@ classdef OffGrid < handle
                         assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
                         assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2,'NOT ON GRID','Off grid points are not contained within the grid')
 
-                    elseif isfield(options,'diameter','MISSING INPUTS','prebuild requires; radius, diameter AND points. Additional requirements are centre, startAngle AND endAngle. OR midPoint, diameter and focusPoint.')
+                    elseif isfield(options,'diameter')
                         assert( ~isempty(options.midPoint),~isempty(options.focusPoint),'MISSING INPUTS','prebuild requires; radius, diameter AND points. Additional requirements are centre, startAngle AND endAngle. OR midPoint, diameter and focusPoint.')
                         assert( options.diameter >0,'BAD INPUTS',' the diameter must be positive.' )
                         assert( 2*options.radius >= options.diameter,'BAD INPUTS',' the diameter must be less than or equal to twice the radius.' )
@@ -481,7 +516,7 @@ classdef OffGrid < handle
                         assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
                         assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2,'NOT ON GRID','Off grid points are not contained within the grid')
                     else
-                        error('MISSING INPUTS','prebuild requires; radius, diameter AND points. Additional requirements are centre, startAngle AND endAngle. OR midPoint, diameter and focusPoint.')
+                        error('OffGrid:MISSINGINPUTS','prebuild requires; radius, diameter AND points. Additional requirements are centre, startAngle AND endAngle. OR midPoint, diameter and focusPoint.')
                     end
 
                     % elseif strcmP(kgridLocations, 'NAME')

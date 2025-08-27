@@ -73,6 +73,12 @@ classdef TestOffGrid  < matlab.unittest.TestCase
             arc2.focusPoint=[0,-2*dx];
             OffGrid2DArc2=OffGrid(kgrid2Dx,'arc',arc2);
 
+            arcb.radius=5*dx;
+            arcb.points=40;
+            arcb.midPoint=[0,-5*dx];
+            arcb.focusPoint=[0,-2*dx];
+            testCase.verifyError(@() OffGrid(kgrid2Dx,'arc',arcb), 'OffGrid:MISSINGINPUTS');
+
             parral.corner1=[-4*dx,-4*dx];
             parral.corner2=[-4*dx,4*dx];
             parral.corner3=[4*dx,-4*dx];
@@ -105,6 +111,12 @@ classdef TestOffGrid  < matlab.unittest.TestCase
             disk.centre=[0,0,dx];
             disk.focusPoint=[0,dx,dx/2];
             OffGrid3DDisk=OffGrid(kgrid3Dx,'disk',disk);
+            disk2.centre=[0,0,dx];
+            disk2.focusPoint=[0,0,-dx/2];
+            OffGrid3DDisk2=OffGrid(kgrid3Dx,'disk',disk2);
+            disk3.centre=[0,0,dx];
+            disk3.focusPoint=[0,0,dx/2];
+            OffGrid3DDisk3=OffGrid(kgrid3Dx,'disk',disk3);
 
             bowl.midPoint=[0,0,dx];
             bowl.focusPoint=[0,0,dx/2];
@@ -112,14 +124,34 @@ classdef TestOffGrid  < matlab.unittest.TestCase
             bowl.diameter=3*dx;
             bowl.points=750;
             OffGrid3DBowl=OffGrid(kgrid3Dx,'bowl',bowl);
+            bowl2.midPoint=[0,0,-dx];
+            bowl2.focusPoint=[0,0,-dx/2];
+            bowl2.radius=2*dx;
+            bowl2.diameter=3*dx;
+            bowl2.points=750;
+            OffGrid3DBowl2=OffGrid(kgrid3Dx,'bowl',bowl2);
+            bowl3.midPoint=[0,0,dx];
+            bowl3.focusPoint=[dx/20,dx/20,dx/2];
+            bowl3.radius=2*dx;
+            bowl3.diameter=3*dx;
+            bowl3.points=750;
+            OffGrid3DBowl3=OffGrid(kgrid3Dx,'bowl',bowl3);
 
             holebowl.bowlPos=[0,0,dx];
             holebowl.focusPoint=[0,0,dx/2];
+            holebowl.points=750;
             holebowl.radius=2*dx;
             holebowl.outerDiameter=3*dx;
             holebowl.innerDiameter=dx;
-            holebowl.points=750;
             OffGrid3DSphericalSegment=OffGrid(kgrid3Dx,'sphericalSegment',holebowl);
+            holebowl.bowlPos=[0,0,-dx];
+            holebowl.focusPoint=[0,0,-dx/2];
+            holebowl.points=750;
+            OffGrid3DSphericalSegment2=OffGrid(kgrid3Dx,'sphericalSegment',holebowl);
+            holebowl.bowlPos=[0,0,dx];
+            holebowl.focusPoint=[dx/20,dx/20,dx/2];
+            holebowl.points=750;
+            OffGrid3DSphericalSegment3=OffGrid(kgrid3Dx,'sphericalSegment',holebowl);
 
           end
       end

@@ -24,6 +24,56 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
 
         % Compare plane waves in 2D and 3D against a reference simulation
         % in 1D.
+
+                function testInputErrors(testCase)
+
+            import kwave.toolbox.*
+
+            kgrid = Grid([10, 10, 10], 1e-3);
+            kgridIncorrect = Grid(10, 2e-3);
+
+            % Medium using correct kgrid.
+            medium = AcousticMedium(kgrid);
+            medium.soundSpeed=1500;
+            medium.density=1000;
+
+            % Medium using incorrect kgrid.
+            mediumIncorrect = AcousticMedium(kgridIncorrect);
+            mediumIncorrect.soundSpeed=1500;
+            mediumIncorrect.density = 1000;
+
+            % Source using correct kgrid.
+            source = AcousticSource(kgrid);
+            source.initialPressure=zeros(kgrid.gridSize);
+
+            % Source using incorrect kgrid.
+            sourceIncorrect = AcousticSource(kgridIncorrect);
+            sourceIncorrect.initialPressure=zeros(kgridIncorrect.gridSize);
+            % Source using correct kgrid.
+            sensor = AcousticSensor(kgrid);
+            sensor.mask=zeros(kgrid.gridSize);
+
+            % Source using incorrect kgrid.
+            sensorIncorrect = AcousticSensor(kgridIncorrect);
+            sensorIncorrect.mask=zeros(kgridIncorrect.gridSize);
+
+            testCase.verifyWarningFree(@() ...
+                AcousticSolver(kgrid, medium, source, sensor));
+
+            testCase.verifyError(@() ...
+                AcousticSolver(kgrid, mediumIncorrect, source,sensor), ...
+                'Solver:gridMismatch');
+
+            testCase.verifyError(@() ...
+                AcousticSolver(kgrid, medium, source, sensorIncorrect), ...
+                'Solver:gridMismatch');
+
+            testCase.verifyError(@() ...
+                AcousticSolver(kgrid, medium, sourceIncorrect, sensor), ...
+                'Solver:gridMismatch');
+
+                end
+
         function testPlaneWaves(testCase)
 
             import kwave.toolbox.*

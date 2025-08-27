@@ -7,6 +7,21 @@
 
 classdef TestAcousticSensor  < matlab.unittest.TestCase
 
+    methods(Test)
+
+        %Verify error when thermal medium used in Acoustic Solver
+        function testMissingProperties(testCase)
+            import kwave.toolbox.*
+            kgrid = Grid([10, 10, 10], 1e-3);
+            medium = AcousticMedium(kgrid);
+            medium.soundSpeed  = 1500;
+            medium.density  = 1000;
+            source = AcousticSource(kgrid);
+            sensor=Sensor(kgrid);
+            testCase.verifyError(@() AcousticSolver(kgrid, medium, source, sensor), 'AcousticSolver:InvalidSensorType');
+        end
+    end
+
     % Parameterized tests.
       methods(Test)
             function testVelcityPlaneWaves(testCase)
@@ -105,6 +120,19 @@ classdef TestAcousticSensor  < matlab.unittest.TestCase
             testCase.verifyThat(reshape(solver3Dx.sensor.velocity(:,1,:),[1,151]), IsEqualTo(VelocityActual, "Within", tol)); %
 
             % Testing
+
+            % Test time restarting
+            sensor1D2= AcousticSensor(kgrid1D);
+            sensor1D2.mask=zeros(Nax,1);
+            sensor1D2.mask(floor(Nax/2))=1;
+            sensor1D2.pressureSensor='on';
+            sensor1D2.densitySensor='on';
+            sensor1D2.velocitySensor='on';
+            solver1D2 = AcousticSolver(kgrid1D, medium1D, source1D, sensor1D2, settings);
+            solver1D2.run(Nt=0, dt=dt);
+            solver1D2.run(Nt=10, dt=dt);
+            solver1D2.run(Nt=Nt-10, dt=dt);
+            testCase.verifyThat(solver1D.sensor.pressure, IsEqualTo( solver1D2.sensor.pressure, "Within",tol))
 
 
             end

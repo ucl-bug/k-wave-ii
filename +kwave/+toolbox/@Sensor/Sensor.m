@@ -83,9 +83,6 @@ classdef Sensor < kwave.toolbox.GridInput
         function obj=setOffGrid(obj,OffGrid,accuracy)
             obj.OffGrid=OffGrid;
             obj.OffGridApplied='on';
-            if nargin<2
-                accuracy=0.05;
-            end
             obj.maskBuilder= zeros(obj.kgrid.gridSize);
             gridLocations=zeros(obj.kgrid.totalGridPoints,obj.kgrid.dimensions);
 
@@ -127,12 +124,12 @@ classdef Sensor < kwave.toolbox.GridInput
             end
             totalSensorPoints=obj.totalSensorPoints;
         end
-        function obj=multiDimMask(obj)
-            obj.multiDimMask=zeros(obj.kgrid.gridSize,obj.kgrid.dimensions);
-            for dim=1;obj.kgrid.dimensions
-                obj.multiDimMask(:,:,:,dim)=obj.kgrid.returnWithoutGridPadding(obj.maskPadded);
-            end
-        end
+        % function obj=multiDimMask(obj)
+        %     obj.multiDimMask=zeros(obj.kgrid.gridSize,obj.kgrid.dimensions);
+        %     for dim=1;obj.kgrid.dimensions
+        %         obj.multiDimMask(:,:,:,dim)=obj.kgrid.returnWithoutGridPadding(obj.maskPadded);
+        %     end
+        % end
         function SensorOutput=ProcessSensorData(obj,Variable,dim,string)
             mask=obj.kgrid.returnWithoutGridPadding(obj.maskPadded);
             if ~strcmp(string,'sum')
