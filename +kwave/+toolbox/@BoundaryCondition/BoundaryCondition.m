@@ -84,8 +84,8 @@ classdef BoundaryCondition < kwave.toolbox.GridInput
                         gridPoint=obj.kgrid.x(j1)/obj.kgrid.gridSpacing(1);
                     case 2
                         gridPoint=[obj.kgrid.x(j1)/obj.kgrid.gridSpacing(1),obj.kgrid.y(j1)/obj.kgrid.gridSpacing(2)];
-                    % case 3
-                    %     gridPoint=[obj.kgrid.x(j1)/obj.kgrid.gridSpacing(1),obj.kgrid.y(j1)/obj.kgrid.gridSpacing(2),obj.kgrid.z(j1)/obj.kgrid.gridSpacing(3)];
+                     case 3
+                        gridPoint=[obj.kgrid.x(j1)/obj.kgrid.gridSpacing(1),obj.kgrid.y(j1)/obj.kgrid.gridSpacing(2),obj.kgrid.z(j1)/obj.kgrid.gridSpacing(3)];
                 end
                 gridLocations(j1,:)=gridPoint;
             end
@@ -125,8 +125,8 @@ classdef BoundaryCondition < kwave.toolbox.GridInput
                      Mat=kwave.toolbox.expandMatrix(   Matrix, obj.kgrid.gridPadding(1),0);
                 case 2
                     Mat=kwave.toolbox.expandMatrix(   Matrix, [obj.kgrid.gridPadding(1),obj.kgrid.gridPadding(1),obj.kgrid.gridPadding(2),obj.kgrid.gridPadding(2)],0);
-                % case 3
-                %     Mat=kwave.toolbox.expandMatrix(   Matrix, [obj.kgrid.gridPadding(1),obj.kgrid.gridPadding(1),obj.kgrid.gridPadding(2),obj.kgrid.gridPadding(2),obj.kgrid.gridPadding(3),obj.kgrid.gridPadding(3)],0);
+                case 3
+                    Mat=kwave.toolbox.expandMatrix(   Matrix, [obj.kgrid.gridPadding(1),obj.kgrid.gridPadding(1),obj.kgrid.gridPadding(2),obj.kgrid.gridPadding(2),obj.kgrid.gridPadding(3),obj.kgrid.gridPadding(3)],0);
             end
         end
 

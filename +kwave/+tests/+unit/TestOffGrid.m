@@ -111,12 +111,12 @@ classdef TestOffGrid  < matlab.unittest.TestCase
             disk.centre=[0,0,dx];
             disk.focusPoint=[0,dx,dx/2];
             OffGrid3DDisk=OffGrid(kgrid3Dx,'disk',disk);
-            disk2.centre=[0,0,dx];
-            disk2.focusPoint=[0,0,-dx/2];
-            OffGrid3DDisk2=OffGrid(kgrid3Dx,'disk',disk2);
-            disk3.centre=[0,0,dx];
-            disk3.focusPoint=[0,0,dx/2];
-            OffGrid3DDisk3=OffGrid(kgrid3Dx,'disk',disk3);
+            disk.centre=[0,0,dx];
+            disk.focusPoint=[0,0,-dx/2];
+            OffGrid3DDisk2=OffGrid(kgrid3Dx,'disk',disk);
+            disk.centre=[0,0,dx];
+            disk.focusPoint=[0,0,dx/2];
+            OffGrid3DDisk3=OffGrid(kgrid3Dx,'disk',disk);
 
             bowl.midPoint=[0,0,dx];
             bowl.focusPoint=[0,0,dx/2];
@@ -152,6 +152,12 @@ classdef TestOffGrid  < matlab.unittest.TestCase
             holebowl.focusPoint=[dx/20,dx/20,dx/2];
             holebowl.points=750;
             OffGrid3DSphericalSegment3=OffGrid(kgrid3Dx,'sphericalSegment',holebowl);
+
+            plane.corner1=[-4*dx,-4*dx,dx];
+            plane.corner2=[-4*dx,4*dx,dx];
+            plane.corner3=[4*dx,-4*dx,-dx];
+            plane.points=400;
+            OgridPlane=OffGrid(kgrid3Dx,'plane',plane);
 
           end
       end

@@ -170,11 +170,44 @@ classdef OffGrid < handle
                     kgridLocations(:,1)=options.centre(1)+options.radius .* cos(phi) .* r;
                     kgridLocations(:,2)=options.centre(2)+options.radius*y;
                     kgridLocations(:,3)=options.centre(3)+options.radius .* sin(phi) .* r;
-                    
+
                     obj.kgridLocations=kgridLocations;
                     assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
                     assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2,'NOT ON GRID','Off grid points are not contained within the grid')
                     assert(max(abs(obj.zLoc))<obj.kgrid.zSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
+                elseif strcmp(kgridLocations,'plane')
+                    assert( ~isempty(options.corner1), ~isempty(options.corner2), ~isempty(options.corner3), ~isempty(options.points),'MISSING INPUTS','prebuild requires; corner1, corner2, corner3 AND points')
+                    assert( obj.kgrid.dimensions==3,'INCORRECT GRID',' This prebuild requires a 2D grid')
+                    assert(all(size(options.corner1)==[1,3]),'BAD INPUTS','the corner1 has the wrong dimensions, size [1,3] req');
+                    assert(all(size(options.corner2)==[1,3]),'BAD INPUTS','the corner2 has the wrong dimensions, size [1,3] req');
+                    assert(all(size(options.corner3)==[1,3]),'BAD INPUTS','the corner3 has the wrong dimensions, size [1,3] req');
+                    assert( any(options.corner1~=options.corner2) && any(options.corner1~=options.corner3) && any(options.corner2~=options.corner3),'BAD INPUTS','The corners must be distinct.');
+                    
+                    VectorA=(options.corner2-options.corner1);
+                    disA=norm(VectorA);
+                    VectorB=(options.corner3-options.corner1);
+                    disB=norm(VectorB);
+                    pointsA=ceil(sqrt(options.points * disA / disB));
+                    pointsB=ceil(sqrt(options.points * disB / disA));
+                    if options.points~=pointsA*pointsB
+                        disp({'number of points adjusted to ' num2str(pointsA*pointsB)})
+                    end
+                    v1=(0:pointsA-1).'.* VectorA/(pointsA-1);
+                    v2=(0:pointsB-1).'.* VectorB/(pointsB-1);
+                    kgridLocations=zeros(pointsA*pointsB,3);
+                    for j1=1:pointsA
+                        for j2=1:pointsB
+                            kgridLocations((j1-1)*pointsB + j2, : ) = options.corner1+ v1(j1,:) + v2(j2,:); 
+                        end
+                    end
+                    obj.kgridLocations=kgridLocations;
+                    % write normal
+
+                    obj.normal=zeros(pointsA*pointsB,3)+cross(VectorA,VectorB)/(disA*disB);
+
+                    assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2)
+                    assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2)
+                    assert(max(abs(obj.zLoc))<obj.kgrid.zSize/2)
 
                 elseif strcmp(kgridLocations,'disk')
                     % Disk requires a centre point, a radius and a tangent
@@ -449,10 +482,10 @@ classdef OffGrid < handle
                       linspace(corner4(1),options.corner3(1),Nxy+1).',linspace(corner4(2),options.corner3(2),Nxy+1).' ;  ...
                       linspace(options.corner3(1),options.corner1(1),Nxz+1).',linspace(options.corner3(2),options.corner1(2),Nxz+1).'];
                     
-                    normal12= [options.corner2(2)-options.corner1(2) , -options.corner2(1)+options.corner1(1)];
-                    normal24= [corner4(2)-options.corner2(2) , -corner4(1)+options.corner2(1)];
-                    normal43= [options.corner3(2)-corner4(2) , -options.corner3(1)+corner4(1)];
-                    normal31= [options.corner1(2)-options.corner3(2) , -options.corner1(1)+options.corner3(1)];
+                    normal12= [options.corner2(2)-options.corner1(2) , -options.corner2(1)+options.corner1(1)]/norm(options.corner2-options.corner1);
+                    normal24= [corner4(2)-options.corner2(2) , -corner4(1)+options.corner2(1)]/norm(options.corner2-corner4);
+                    normal43= [options.corner3(2)-corner4(2) , -options.corner3(1)+corner4(1)]/norm(options.corner3-corner4);
+                    normal31= [options.corner1(2)-options.corner3(2) , -options.corner1(1)+options.corner3(1)]/norm(options.corner1-options.corner3);
                     normal= [zeros(Nxy+1,2)+normal12 ; zeros(Nxyz+1,2)+normal24 ; zeros(Nxy+1,2)+normal43 ; zeros(Nxz+1,2)+normal31 ];
 
                     [obj.kgridLocations,ia,~]=unique(locs,"rows");
@@ -472,10 +505,12 @@ classdef OffGrid < handle
 
                     Nxi=options.points;
                     kgridLocations=zeros(Nxi,2);
-
+                    obj.normal=zeros(Nxi,2);
                     kgridLocations(:,1)=((0.5:1:Nxi-0.5))*options.startPoint(1)/Nxi + ( 1- ((0.5:1:Nxi-0.5)/Nxi))*options.endPoint(1);
                     kgridLocations(:,2)=((0.5:1:Nxi-0.5))*options.startPoint(2)/Nxi + ( 1- ((0.5:1:Nxi-0.5)/Nxi))*options.endPoint(2);
-
+                    obj.normal(:,1)=obj.normal(:,1)+ (options.endPoint(2)-options.startPoint(2));
+                    obj.normal(:,2)=obj.normal(:,2)- (options.endPoint(1)-options.startPoint(1));
+                    obj.normal=obj.normal/norm(options.endPoint-options.startPoint);
                     obj.kgridLocations=kgridLocations;
                     assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
                     assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2,'NOT ON GRID','Off grid points are not contained within the grid')
@@ -489,9 +524,12 @@ classdef OffGrid < handle
                         N=options.points;
                         angles= ((N-1)*options.startAngle + options.endAngle )/ N: (options.endAngle-options.startAngle)/(N+2) :((N-1)*options.endAngle + options.startAngle )/ N;
                         kgridLocations=zeros(N,2);
+                        obj.normal=zeros(N,2);
 
                         kgridLocations(:,1)=options.centre(1)+options.radius.*cos(angles ).';
                         kgridLocations(:,2)=options.centre(2)+options.radius.*sin(angles ).';
+                        obj.normal(:,1)=cos(angles.');
+                        obj.normal(:,2)=sin(angles.');
                         obj.kgridLocations=kgridLocations;
                         assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
                         assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2,'NOT ON GRID','Off grid points are not contained within the grid')
@@ -510,8 +548,11 @@ classdef OffGrid < handle
                         circlesegy= options.radius.*sin(t).';
                         
                         kgridLocations=zeros(options.points,2);
+                        obj.normal=zeros(options.points,2);
                         kgridLocations(:,1)=options.midPoint(1)+n(1)*circlesegx-n(2)*circlesegy;
                         kgridLocations(:,2)=options.midPoint(2)+n(2)*circlesegx+n(1)*circlesegy;
+                        obj.normal(:,1)=n(1)*cos(t.')-n(2)*sin(t).';
+                        obj.normal(:,2)=n(2)*cos(t.')+n(1)*sin(t).';
                         obj.kgridLocations=kgridLocations;
                         assert(max(abs(obj.xLoc))<obj.kgrid.xSize/2,'NOT ON GRID','Off grid points are not contained within the grid')
                         assert(max(abs(obj.yLoc))<obj.kgrid.ySize/2,'NOT ON GRID','Off grid points are not contained within the grid')
@@ -527,8 +568,8 @@ classdef OffGrid < handle
                     % % Asser that the grid has the correct dimensions
                     % %
                     % % Define the points
-                    %    Nxi=gridSize;
-                    %    kgridLocations=zeros(Nxi,obj.kgrid.dimensions);
+                    %     Nxi=gridSize;
+                    %     kgridLocations=zeros(Nxi,obj.kgrid.dimensions);
                     % %
                     % %
                     % %

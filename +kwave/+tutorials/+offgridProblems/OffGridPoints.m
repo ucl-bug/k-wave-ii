@@ -192,6 +192,12 @@ bowl2.focusPoint=[-0.04,0.06,-0.02];
 bowl2.points=Nxi*10;
 OgridsphericalSegment=OffGrid(kgrid3D,'sphericalSegment',bowl2);
 
+plane.corner1=[0.4,0.4,0.4];
+plane.corner2=[-0.4,0.4,0.4];
+plane.corner3=[0.4,-0.4,0.4];
+plane.points=Nxi*10;
+OgridPlane=OffGrid(kgrid3D,'plane',plane);
+
 % The below plots demonstrate each of the off-grid point sets, plotted
 % seperately for 1D, 2D and 3D.
 
@@ -225,3 +231,4 @@ scatter3(OgridBall.kgridLocations(:,1),OgridBall.kgridLocations(:,2),OgridBall.k
 scatter3(OgridDisk.kgridLocations(:,1),OgridDisk.kgridLocations(:,2),OgridDisk.kgridLocations(:,3),'m')
 scatter3(OgridBowl.kgridLocations(:,1),OgridBowl.kgridLocations(:,2),OgridBowl.kgridLocations(:,3),'k')
 scatter3(OgridsphericalSegment.kgridLocations(:,1),OgridsphericalSegment.kgridLocations(:,2),OgridsphericalSegment.kgridLocations(:,3),'c')
+scatter3(OgridPlane.kgridLocations(:,1),OgridPlane.kgridLocations(:,2),OgridPlane.kgridLocations(:,3),'y')

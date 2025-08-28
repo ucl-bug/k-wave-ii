@@ -246,6 +246,70 @@ classdef TestAcousticBoundaryCondition  < matlab.unittest.TestCase
                % Velocity Neumann implementable too, will return exact initial
                % condition needs normals implemented and execute time step.
            end
+
+
+           function testSquareReflection3D(testCase)
+               %%
+
+               import kwave.toolbox.*
+               import matlab.unittest.constraints.IsEqualTo
+
+               tol = matlab.unittest.constraints.AbsoluteTolerance(single(15e-4));
+
+               dx = 4e-3;
+               c0 = 1500;
+               rho0 = 1000;
+               pmlSize = 20;
+               Nax = 256;
+               Nlat= 15;
+               PointDist=100/3;
+               CFL = 0.5;
+               %Nt = 150;
+               dt = CFL * dx / c0;
+
+               settings = Settings;
+               settings.plotSimulation = 'off';
+
+               kgrid3D = Grid([Nlat,Nlat,Nax], dx, [0,0,pmlSize]);
+               medium3D = AcousticMedium(kgrid3D);
+               medium3D.soundSpeed  = c0;
+               medium3D.density  = rho0;
+               source3D = AcousticSource(kgrid3D);
+               source3D.initialPressure=0;
+               initialPressure = @(x,y,z) exp( -(( x).^2 + (y.^2) + (z.^2)) ./ (10* kgrid3D.dx).^2 );
+
+               Nt = round(((Nax-2*PointDist) )/CFL);
+
+               source3D.initialPressure=0;
+               source3D.initialPressure =  initialPressure(0,0,kgrid3D.z);
+               plane1.corner1=[-floor(Nlat/2)*dx,-floor(Nlat/2)*dx,-(floor(Nax/2)-PointDist)*dx];
+               plane1.corner2=[-floor(Nlat/2)*dx,floor(Nlat/2)*dx,-(floor(Nax/2)-PointDist)*dx];
+               plane1.corner3=[floor(Nlat/2)*dx,-floor(Nlat/2)*dx,-(floor(Nax/2)-PointDist)*dx];
+
+               plane2.corner1=[-floor(Nlat/2)*dx,-floor(Nlat/2)*dx,(floor(Nax/2)-PointDist)*dx];
+               plane2.corner2=[-floor(Nlat/2)*dx,floor(Nlat/2)*dx,(floor(Nax/2)-PointDist)*dx];
+               plane2.corner3=[floor(Nlat/2)*dx,-floor(Nlat/2)*dx,(floor(Nax/2)-PointDist)*dx];
+
+               plane1.points=floor(Nlat.^2);
+               plane2.points=floor(Nlat.^2);
+               OffPoints1=OffGrid(kgrid3D,'plane',plane1);
+               OffPoints2=OffGrid(kgrid3D,'plane',plane2);
+               OffPoints=OffGrid(kgrid3D,OffPoints1,OffPoints2);
+               AcousticBoundary3DOff=AcousticBndryCond(kgrid3D);
+               AcousticBoundary3DOff.pressureBndry = 'on';
+               AcousticBoundary3DOff.setOffGrid(OffPoints,0.00125);
+               AcousticBoundary3DOff.mask=AcousticBoundary3DOff.maskBuilder;
+               solver3DOG = AcousticSolver(kgrid3D, medium3D, source3D, [], settings);
+               solver3DOG.applyBoundaryCondition(AcousticBoundary3DOff)
+               solver3DOG.run(Nt=Nt, dt=dt);
+               results = solver3DOG.pressure;
+               expectedResults=-single(solver3DOG.source.initialPressure);
+               testCase.verifyThat(results, IsEqualTo(expectedResults, "Within", tol)); %
+
+           end
+
+
+
       end
 
 end
