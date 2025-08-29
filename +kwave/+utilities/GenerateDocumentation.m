@@ -56,12 +56,12 @@ classdef GenerateDocumentation
             obj.createHelpDir;
 
             % Generate HTML files.
-            obj.generateHTML('/+kwave/+docfiles/+general');
-            initialValueProblemsFilenames = obj.generateHTML('/+kwave/+tutorials/+initialvalueproblems', evalCode=true, showCode=true);
-            toolboxFilenames = obj.generateHTML('/+kwave/+toolbox');
-            testFilenames = obj.generateHTML('/+kwave/+tests');
-            utilityFilenames = obj.generateHTML('/+kwave/+utilities');
-            developerFilenames = obj.generateHTML('/+kwave/+docfiles/+developer', showCode=true);
+            obj.generateHTML('/+kwave/+docfiles/+general', '.');
+            initialValueProblemsFilenames = obj.generateHTML('/+kwave/+tutorials/+initialvalueproblems', 'Initial_Value_Problems', evalCode=true, showCode=true);
+            toolboxFilenames = obj.generateHTML('/+kwave/+toolbox', 'Toolbox_Functions');
+            testFilenames = obj.generateHTML('/+kwave/+tests', 'Test_Functions');
+            utilityFilenames = obj.generateHTML('/+kwave/+utilities', 'Utility_Functions');
+            developerFilenames = obj.generateHTML('/+kwave/+docfiles/+developer', 'Developer_Documentation', showCode=true);
 
             % Build helptoc.
             obj.helpTocStart;
@@ -71,6 +71,13 @@ classdef GenerateDocumentation
             obj.helpTocAddSection(utilityFilenames, 'Utility Functions');
             obj.helpTocAddSection(developerFilenames, 'Developer Documentation');
             obj.helpTocFinish;
+
+            % Build SUMMARY.md for each subfolder/subsection
+            obj.tocMd(initialValueProblemsFilenames, 'Initial_Value_Problems');
+            obj.tocMd(toolboxFilenames, 'Toolbox_Functions');
+            obj.tocMd(testFilenames, 'Test_Functions', excludeClassMethods=false);
+            obj.tocMd(utilityFilenames, 'Utility_Functions');
+            obj.tocMd(developerFilenames, 'Developer_Documentation');
 
             % Build searchable docs.
             disp('Generating search database...');
@@ -94,10 +101,11 @@ classdef GenerateDocumentation
         end
 
         % Convert m-files in specified directory to HTML using publish.
-        function mFilenames = generateHTML(obj, relativeFolder, options)
+        function mFilenames = generateHTML(obj, relativeFolder, mdSubFolder, options)
             arguments
                 obj
                 relativeFolder
+                mdSubFolder
                 options.showCode = false;
                 options.evalCode = false;
             end
@@ -168,9 +176,11 @@ classdef GenerateDocumentation
 
                 % Publish to md.
                 inputFunctionFullFileName = fullfile(mFilenames(ind).folder, mFilenames(ind).name);
+                outputFullFolderName = fullfile(obj.helpDirMd,mdSubFolder);
+                mkdir(outputFullFolderName);
                 % Create full paths for .mlx (matlab live script) and .md (markdown) files.
-                fullFileNameMLX  = fullfile(obj.helpDirMd, [bareFilename '.mlx']);
-                fullFileNameMD   = fullfile(obj.helpDirMd, [bareFilename '.md']);
+                fullFileNameMLX  = fullfile(outputFullFolderName, [bareFilename '.mlx']);
+                fullFileNameMD   = fullfile(outputFullFolderName, [bareFilename '.md']);
                 % Print details of conversion from .m to .md
                 disp(['Converting ', filename, ' to ' [bareFilename '.md']]);
                 % Converts the .m file into a .mlx file and saves it.
@@ -189,7 +199,7 @@ classdef GenerateDocumentation
                     filename = [className '-' filename];
                     newHtmlFile = fullfile(obj.helpDirHtml, [filename '.html']);
                     movefile(htmlFile, newHtmlFile);
-                    newMdFile = fullfile(obj.helpDirMd, [filename '.md']);
+                    newMdFile = fullfile(outputFullFolderName, [filename '.md']);
                     movefile(fullFileNameMD, newMdFile);
                 end
                 mFilenames(ind).htmlFileName = [filename, ext];
@@ -230,7 +240,7 @@ classdef GenerateDocumentation
 
                         disp(['Replacing md links to method ', mFilenames(ind2).name, ' from class ', mFilenames(ind1).name]);
                         mdFileName = mFilenames(ind1).mdFileName;
-                        mdFile = fullfile(obj.helpDirMd, mdFileName);
+                        mdFile = fullfile(outputFullFolderName, mdFileName);
 
                         % Read in md file.
                         fid = fopen(mdFile, 'r');
@@ -312,6 +322,25 @@ classdef GenerateDocumentation
         function addToXML(obj, line)
             filename = fullfile(obj.helpDirHtml, 'helptoc.xml');
             writelines(line, filename, 'WriteMode','append');
+        end
+
+        % Create SUMMARY.md toc for the markdown versions of the files, 
+        % excluding class methods by default.
+        function tocMd(obj, mFilenames, mdSubFolder, options)
+            arguments
+                obj 
+                mFilenames 
+                mdSubFolder 
+                options.excludeClassMethods = true; 
+            end
+            outputFullFolderName = fullfile(obj.helpDirMd,mdSubFolder);
+            filename = fullfile(outputFullFolderName, 'SUMMARY.md');
+            disp(filename);
+            for ind = 1:length(mFilenames)
+                if (options.excludeClassMethods && ~mFilenames(ind).isClassMethod) || ~options.excludeClassMethods
+                    writelines(['* [' mFilenames(ind).title '](' mFilenames(ind).mdFileName ')'], filename, 'WriteMode','append');
+                end
+            end
         end
 
         % Convenience function to generate HTML link to file.
