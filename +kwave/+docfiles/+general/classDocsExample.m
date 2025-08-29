@@ -1,4 +1,4 @@
-%% templateClass
+%% Template Class
 % *Package:* kwave.toolbox
 % *Superclasses:* kwave.toolbox.GridInput (delete if not applicable)
 %

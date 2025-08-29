@@ -1,4 +1,4 @@
-%% expandMatrix
+%% Expand Matrix
 % *Package:* kwave.toolbox
 %
 % Enlarge a matrix by extending the edge values.
