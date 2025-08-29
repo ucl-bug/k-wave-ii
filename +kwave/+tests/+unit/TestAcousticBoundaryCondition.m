@@ -297,7 +297,8 @@ classdef TestAcousticBoundaryCondition  < matlab.unittest.TestCase
                OffPoints=OffGrid(kgrid3D,OffPoints1,OffPoints2);
                AcousticBoundary3DOff=AcousticBndryCond(kgrid3D);
                AcousticBoundary3DOff.pressureBndry = 'on';
-               AcousticBoundary3DOff.setOffGrid(OffPoints,0.00125);
+               AcousticBoundary3DOff.setOffGrid(O+ ...
+                   ffPoints,0.00125);
                AcousticBoundary3DOff.mask=AcousticBoundary3DOff.maskBuilder;
                solver3DOG = AcousticSolver(kgrid3D, medium3D, source3D, [], settings);
                solver3DOG.applyBoundaryCondition(AcousticBoundary3DOff)
@@ -305,8 +306,71 @@ classdef TestAcousticBoundaryCondition  < matlab.unittest.TestCase
                results = solver3DOG.pressure;
                expectedResults=-single(solver3DOG.source.initialPressure);
                testCase.verifyThat(results, IsEqualTo(expectedResults, "Within", tol)); %
+               % Due to length of time only the third dimension is tested
 
            end
+
+           % function testCircle2D(testCase)
+           %      import kwave.toolbox.*
+           %      % Test case idea is to observe that the reflection is in
+           %      % all directions including off axis. 
+           %      % Idea was to propagate a bell from the centre to the edges
+           %      % and back.
+           %      % TODO: Implement initial pressure and velocity such that
+           %      % the refletion is correctly observed. Consider wave modes.
+           % 
+           %      Nax = 256;
+           %      WallDist=200/3;
+           % 
+           %      dx = 4e-3;
+           %      c0 = 1500;
+           %      rho0 = 1000;
+           %      pmlSize = 20;
+           %      CFL = 0.5;
+           %      dt = CFL * dx / c0;
+           %      settings = Settings;
+           %      settings.plotSimulation = 'on';
+           % 
+           %      kgrid2D = Grid([Nax,Nax], dx, [pmlSize,pmlSize]);
+           %      medium2D = AcousticMedium(kgrid2D);
+           %      medium2D.soundSpeed  = c0;
+           %      medium2D.density  = rho0;
+           % 
+           %      initialPressure  = @(x,y) % % Needed
+           %      initialVelocityX = @(x,y) % % Needed
+           %      initialVelocityY = @(x,y) % % Needed
+           % 
+           %      radius=(Nax/2-WallDist)*dx;
+           %      Nt = 2*round((Nax/2-WallDist )/CFL);
+           % 
+           % 
+           %      source2D = AcousticSource(kgrid2D);
+           %      source2D.initialPressure=0;
+           %      source2D.initialVelocity=zeros([Nax,Nax,1,2]);
+           %      source2D.initialPressure =  initialPressure(kgrid2D.x,kgrid2D.y);
+           %      source2D.initialVelocity(:,:,1) =  initialVelocityX(kgrid2D.x,kgrid2D.y);
+           %      source2D.initialVelocity(:,:,2) =  initialVelocityY(kgrid2D.x,kgrid2D.y);
+           % 
+           %      circle.radius=radius;
+           %      circle.centre=[0,0];
+           %      circle.points=floor(2*radius/dx*pi);
+           %      OffCircle=OffGrid(kgrid2D,'circle',circle);
+           %      AcousticBoundary2D=AcousticBndryCond(kgrid2D);
+           %      AcousticBoundary2D.setOffGrid(OffCircle,0.00125);
+           %      AcousticBoundary2D.mask=AcousticBoundary2D.maskBuilder;
+           %      AcousticBoundary2D.pressureBndry='on';
+           %      solver2D = AcousticSolver(kgrid2D, medium2D, source2D, [], settings);
+           %      solver2D.applyBoundaryCondition(AcousticBoundary2D)
+           %      offCentre=60;
+           %      r0=source2D.initialPressure;
+           %      solver2D.run(Nt=Nt/2-offCentre, dt=dt);
+           %      r1=solver2D.pressure;
+           %      solver2D.run(Nt=2*offCentre, dt=dt);
+           %      r2=solver2D.pressure;
+           %      solver2D.run(Nt=Nt/2-offCentre, dt=dt);
+           %      r3=solver2D.pressure;
+           % 
+           % end
 
 
 
