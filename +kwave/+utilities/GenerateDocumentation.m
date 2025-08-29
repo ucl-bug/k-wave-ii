@@ -186,7 +186,7 @@ classdef GenerateDocumentation
                 % Converts the .m file into a .mlx file and saves it.
                 matlab.internal.liveeditor.openAndSave(inputFunctionFullFileName, fullFileNameMLX);
                 % Exports the .mlx file into a .md file.
-                export(fullFileNameMLX, fullFileNameMD, Format="markdown", HideCode=true);
+                export(fullFileNameMLX, fullFileNameMD, Format="markdown", Run=options.evalCode, HideCode=~options.showCode);
                 % Deletes the intermediate .mlx file
                 delete(fullFileNameMLX);
 
