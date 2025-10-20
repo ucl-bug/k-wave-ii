@@ -1,16 +1,15 @@
-%% takeTimeStep
+%% executeTimeStep
 % *Class:* kwave.toolbox.ThermalSolver
 % *Package:* kwave.toolbox
 %
 % Iteratively update solution for given number of time steps.
 %
 %% Syntax
-%   takeTimeStep(obj, Nt, dt)
+%   executeTimeStep(obj, Nt, dt)
 %
 %% Description
 % Iteratively updates the solution for the temperature field for the given
-% number of time steps and time step size. This function implements the
-% pseudospectral time domain solution to the governing PDE.
+% number of time steps and time step size.
 %
 %% Input Arguments
 % * |Nt| - (integer) Number of time steps.
@@ -32,11 +31,11 @@
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
-function takeTimeStep(obj, Nt, dt)
+function executeTimeStep(obj, Nt, dt)
 
 arguments
     obj
-    Nt(1,1) {mustBeInteger, mustBePositive, mustBeFinite}
+    Nt(1,1) {mustBeInteger, mustBeNonnegative, mustBeFinite}
     dt(1,1) {mustBeNumeric, mustBePositive, mustBeFinite}
 end
 
@@ -48,31 +47,21 @@ obj.kappa = ifftshift(sqrt(kappa));
 
 % Do nothing for the first time-step so the solution at t = 0 is equal
 % to the initial condition.
-if (obj.timeStepsTaken == 0)
-    tStartIndex = 2;
-else
-    tStartIndex = 1;
-end
+if Nt ~= 0
+    % Iteratively update solution.
+    for tIndex = 1:Nt
 
-% Iteratively update solution.
-for tIndex = tStartIndex:Nt
+        % Calculate temperature field.
+        obj.temperaturePadded = obj.temperaturePadded + ...
+            dt ./ (obj.medium.densityPadded .* obj.medium.specificHeatPadded) .* ...
+            obj.divergence(obj.medium.thermalConductivityPadded .* obj.gradient(obj.temperaturePadded));
 
-    % Calculate temperature field. 
-    obj.temperaturePadded = obj.temperaturePadded + ...
-        dt ./ (obj.medium.densityPadded .* obj.medium.specificHeatPadded) .* ...
-        obj.divergence(obj.medium.thermalConductivityPadded .* obj.gradient(obj.temperaturePadded));
+        % Plot field.
+        if obj.settings.plotSimulation && (rem(tIndex, obj.settings.plotFrequency) == 0 || tIndex == 1 || tIndex == Nt)
+            obj.plotField(obj.temperature);
+        end
 
-    % Plot field.
-    if obj.settings.plotSimulation && (rem(tIndex, obj.settings.plotFrequency) == 0 || tIndex == tStartIndex || tIndex == Nt)
-        obj.plotField(obj.temperature);
     end
-
 end
 
-% Update time axes.
-obj.timeStepsTaken = obj.timeStepsTaken + Nt;
-if isempty(obj.timeArray)
-    obj.timeArray = (0:(Nt - 1)) * dt;
-else
-    obj.timeArray = [obj.timeArray, obj.timeArray(end) + (1:Nt) * dt];
 end

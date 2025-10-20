@@ -70,7 +70,7 @@ arguments
 end
 
 if ndims(matrix) > 3
-    error('expandMatrix:incorrectInputSize', 'Input matrix must be 1, 2 or 3 dimensional.');
+    kwave.toolbox.Logger.error('expandMatrix:incorrectInputSize', 'Input matrix must be 1, 2 or 3 dimensional.');
 end
 
 % Check to see if a value for expansionValue has been given, if not, extend
@@ -91,11 +91,11 @@ if isvector(matrix) % 1D vector
     if length(expansionSize) == 2
         x1Expansion = expansionSize(1);
         x2Expansion = expansionSize(2);
-    elseif length(expansionSize) == 1
+    elseif isscalar(expansionSize) 
         x1Expansion = expansionSize(1);
         x2Expansion = expansionSize(1);
     else
-        error('expandMatrix:incorrectInputSize', 'For 1D matrices, expansionSize must be given as [exp] or [xStartExp, xEndExp].');
+        kwave.toolbox.Logger.error('expandMatrix:incorrectInputSize', 'For 1D matrices, expansionSize must be given as [exp] or [xStartExp, xEndExp].');
     end
            
     % Create expanded matrix.
@@ -136,13 +136,13 @@ elseif ismatrix(matrix) % 2D matrix
         x2Expansion = expansionSize(1);
         y1Expansion = expansionSize(2);
         y2Expansion = expansionSize(2);    
-    elseif length(expansionSize) == 1
+    elseif isscalar(expansionSize)
         x1Expansion = expansionSize;
         x2Expansion = expansionSize;
         y1Expansion = expansionSize;
         y2Expansion = expansionSize;
     else
-        error('expandMatrix:incorrectInputSize', 'For 2D matrices, expansionSize must be given as [exp], [xExp, yExp] or [xStartExp, xEndExp, yStartExp, yEndExp].');
+        kwave.toolbox.Logger.error('expandMatrix:incorrectInputSize', 'For 2D matrices, expansionSize must be given as [exp], [xExp, yExp] or [xStartExp, xEndExp, yStartExp, yEndExp].');
     end
 
     % Create expanded matrix.
@@ -196,8 +196,8 @@ else % 3D matrix
         y1Expansion = expansionSize(2);
         y2Expansion = expansionSize(2);              
         z1Expansion = expansionSize(3);
-        z2Expansion = expansionSize(3);    
-    elseif length(expansionSize) == 1
+        z2Expansion = expansionSize(3);
+    elseif isscalar(expansionSize)
         x1Expansion = expansionSize;
         x2Expansion = expansionSize;
         y1Expansion = expansionSize;
@@ -205,7 +205,7 @@ else % 3D matrix
         z1Expansion = expansionSize;
         z2Expansion = expansionSize;
     else
-        error('expandMatrix:incorrectInputSize', 'For 3D matrices, expansionSize must be given as [exp], [xExp, yExp, zExp] or [xStartExp, xEndExp, yStartExp, yEndExp, zStartExp, zEndExp].');
+        kwave.toolbox.Logger.error('expandMatrix:incorrectInputSize', 'For 3D matrices, expansionSize must be given as [exp], [xExp, yExp, zExp] or [xStartExp, xEndExp, yStartExp, yEndExp, zStartExp, zEndExp].');
     end
 
     % Create expanded matrix.

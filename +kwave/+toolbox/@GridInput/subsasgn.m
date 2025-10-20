@@ -30,16 +30,29 @@
 %
 %% Output Arguments
 % * |obj| - (kwave.toolbox.GridInput) The GridInput class instance,
-%   updated with the new assignment, whether it was to a virtual or a standard property.
+%   updated with the new assignment, whether it was to a virtual or a
+%   standard property.
 
 function obj = subsasgn(obj, S, value)
 
 if (S(1).type == '.') && (obj.gridFields.isKey(S(1).subs))
+
+    % If there's more than a single assignment, it means that something is
+    % being done to the referenced variable. So we first do it and then
+    % assign the value.
+    if length(S) > 1 
+        unpaddedArray = obj.subsref(S(1));
+        S2 = S(2:end);
+        value = builtin('subsasgn', unpaddedArray, S2, value);
+    end
+
+    % Assign the value.
     propertyDetails = obj.gridFields(S(1).subs);
     propertyPaddedName = strcat(S(1).subs, 'Padded');
     validateattributes(value, propertyDetails.classes, propertyDetails.attributes, '', S(1).subs);
-    obj.kgrid.validateSize(value, VariableName=S(1).subs);
+    obj.kgrid.validateSize(value, VariableName=S(1).subs, Type=propertyDetails.type);
     obj.(propertyPaddedName) = obj.kgrid.assignWithGridPadding(value);
+
 else
     obj = builtin('subsasgn', obj, S, value);
 end

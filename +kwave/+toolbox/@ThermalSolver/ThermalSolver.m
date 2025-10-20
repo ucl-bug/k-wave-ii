@@ -25,12 +25,11 @@
 % The simulation is defined by five input objects which define the
 % computational grid, medium properties, sources, sensors, and settings.
 %
-% After an object of the |ThermalSolver| class is created, the
-% simulation is run by calling |solver.takeTimeStep(Nt, dt)|, where solver
-% is the object name, |Nt| is the number of time steps to take, and |dt| is
-% the size of the time step. During the simulation, a visualisation of the
-% temperature field is displayed. The current temperature can be queried
-% (or modified) at any point using the property |solver.temperature|.
+% After an object of the |ThermalSolver| class is created, the simulation
+% is run by calling |solver.run|. During the simulation, a visualisation of
+% the temperature field is displayed. The current temperature can be
+% queried (or modified) at any point using the property
+% |solver.temperature|.
 %
 %% Examples
 % A simple of example of solving a initial value problem in 1D is shown
@@ -54,7 +53,7 @@
 %     
 %   % Solve.
 %   solver = ThermalSolver(kgrid, medium, source, []);
-%   solver.takeTimeStep(500, 0.5);
+%   solver.run(Nt=500, dt=0.5);
 %     
 %   % Plot.
 %   figure;
@@ -80,9 +79,6 @@
 %
 %% Properties
 % * |temperature| - (numeric) Temperature field [degC].
-%
-%% Methods
-% * |takeTimeStep|
 
 % Copyright (C) 2022- University College London.
 %
@@ -117,10 +113,15 @@ classdef ThermalSolver < kwave.toolbox.TimeDomainSolver
         function obj = ThermalSolver(kgrid, medium, source, sensor, settings)
             arguments
                 kgrid(1,1) kwave.toolbox.Grid
-                medium(1,1) kwave.toolbox.ThermalMedium
+                medium(1,1) kwave.toolbox.GridInput
                 source(1,1) kwave.toolbox.ThermalSource
                 sensor
                 settings(1,1) kwave.toolbox.Settings = kwave.toolbox.Settings
+            end
+
+            if ~(isa(medium, 'kwave.toolbox.Medium') || isa(medium, 'kwave.toolbox.ThermalMedium'))
+                error('ThermalSolver:InvalidMediumType',...
+                        'medium must be an object of Medium OR ThermalMedium.');
             end
 
             % Pass input arguments to superclass constructor.
@@ -129,6 +130,7 @@ classdef ThermalSolver < kwave.toolbox.TimeDomainSolver
         end
     end
 
+    
     % Get methods for PDE variables on non-padded grid.
     methods
         function temperature = get.temperature(obj)
@@ -136,14 +138,11 @@ classdef ThermalSolver < kwave.toolbox.TimeDomainSolver
         end
     end
 
-    % Override inherited setInitialConditions method.
+    % Override inherited methods.
     methods(Access=protected)
         setInitialConditions(obj)
-    end
-
-    % Concrete implementation of takeTimeStep method.
-    methods
-        takeTimeStep(obj, Nt, dt)
+        executeTimeStep(obj, Nt, dt)
+        [Nt, dt] = autoComputeTimeStep(obj, CFL, endTime)
     end
 
 end

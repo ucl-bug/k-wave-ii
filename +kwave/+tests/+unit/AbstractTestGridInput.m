@@ -26,6 +26,9 @@
 % * |inputPropertiesScalar| - Cell array of property names for values that
 %   must be scalar values. For example, |inputPropertiesScalar =
 %   {'soundSpeedReference'}|.
+% * |inputPropertiesVectorField| - Cell array of property names for values that
+%   must be vector fields. For example, |inputPropertiesScalar =
+%   {'initialElectricField'}|.
 %
 % Derived classes must also contain a test methods block (which can be
 % empty) so that the tests run:
@@ -45,6 +48,7 @@ classdef(Abstract) AbstractTestGridInput < matlab.unittest.TestCase
         inputPropertiesPadded
         inputPropertiesScalar
         inputPropertiesComplex
+        inputPropertiesVectorField
     end
 
     properties
@@ -75,12 +79,17 @@ classdef(Abstract) AbstractTestGridInput < matlab.unittest.TestCase
     methods
 
         % Checks if a property must be complex, to e.g. help setting test 
-        % values
-        function isComplex =  mustBeComplex(testCase, propertyName)
+        % values.
+        function isComplex = mustBeComplex(testCase, propertyName)
             isComplex = ismember(propertyName, testCase.inputPropertiesComplex);
         end
 
-        % Returns a random initialization value for a property
+        % Checks if a property is a vector field.
+        function vectorField = isVectorField(testCase, propertyName)
+            vectorField = ismember(propertyName, testCase.inputPropertiesVectorField);
+        end
+
+        % Returns a random initialization value for a property.
         function val = randomPropertyValue(testCase, propertyName, gridSize)
             arguments
                 testCase
@@ -92,6 +101,9 @@ classdef(Abstract) AbstractTestGridInput < matlab.unittest.TestCase
             if gridSize == 1
                 val = rand + 1i .* rand .* isComplex; 
             else
+                if testCase.isVectorField(propertyName)
+                    gridSize(4) = testCase.kgrid.dimensions;
+                end
                 val = rand(gridSize) + 1i .* isComplex;
             end
          end
@@ -147,8 +159,23 @@ classdef(Abstract) AbstractTestGridInput < matlab.unittest.TestCase
                 val = testCase.randomPropertyValue(testCase.inputProperties{ind}, testCase.input.gridSize);
                 testCase.input.(testCase.inputProperties{ind}) = val;
 
-                testCase.verifyEqual(size(testCase.input.(testCase.inputProperties{ind})), gridSize);
-                testCase.verifyEqual(size(testCase.input.(testCase.inputPropertiesPadded{ind})), paddedSize);
+                % Account for vector fields which have vector components
+                % stored in fourth dimension.
+                expectedGridSize = gridSize;
+                expectedPaddedSize = paddedSize;
+                if (testCase.kgrid.dimensions > 1)
+                    if testCase.isVectorField(testCase.inputProperties{ind})
+                        expectedGridSize(4) = testCase.kgrid.dimensions;
+                        expectedGridSize(expectedGridSize == 0) = 1;
+                    end
+                    if testCase.isVectorField(testCase.inputPropertiesPadded{ind})
+                        expectedPaddedSize(4) = testCase.kgrid.dimensions;
+                        expectedPaddedSize(expectedPaddedSize == 0) = 1;
+                    end
+                end
+
+                testCase.verifyEqual(size(testCase.input.(testCase.inputProperties{ind})), expectedGridSize);
+                testCase.verifyEqual(size(testCase.input.(testCase.inputPropertiesPadded{ind})), expectedPaddedSize);
             end
 
             % Test required properties are set.
