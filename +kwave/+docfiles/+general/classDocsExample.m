@@ -1,6 +1,6 @@
 %% Template Class
 % *Package:* kwave.toolbox
-% *Superclasses:* kwave.toolbox.GridInput (delete if not applicable)
+% *Superclasses:* kwave.toolbox.SuperClass (delete if not applicable)
 %
 % Short description of class or function.
 %
@@ -51,4 +51,4 @@
 %
 %% See Also
 % * |kwave.namespace.relatedkWaveFunction|
-% * <matlab:doc('plot') plot>
+% * <https://uk.mathworks.com/help/matlab/ref/plot.html plot>

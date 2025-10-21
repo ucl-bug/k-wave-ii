@@ -61,7 +61,6 @@ classdef GenerateDocumentation
             toolboxFilenames = obj.generateHTML('/+kwave/+toolbox', 'Toolbox_Functions');
             testFilenames = obj.generateHTML('/+kwave/+tests', 'Test_Functions');
             utilityFilenames = obj.generateHTML('/+kwave/+utilities', 'Utility_Functions');
-            developerFilenames = obj.generateHTML('/+kwave/+docfiles/+developer', 'Developer_Documentation', showCode=true);
 
             % Build helptoc.
             obj.helpTocStart;
@@ -69,7 +68,6 @@ classdef GenerateDocumentation
             obj.helpTocAddSection(toolboxFilenames, 'Toolbox Functions');
             obj.helpTocAddSection(testFilenames, 'Test Functions');
             obj.helpTocAddSection(utilityFilenames, 'Utility Functions');
-            obj.helpTocAddSection(developerFilenames, 'Developer Documentation');
             obj.helpTocFinish;
 
             % Build SUMMARY.md for each subfolder/subsection
@@ -77,7 +75,6 @@ classdef GenerateDocumentation
             obj.tocMd(toolboxFilenames, 'Toolbox_Functions');
             obj.tocMd(testFilenames, 'Test_Functions', excludeClassMethods=false);
             obj.tocMd(utilityFilenames, 'Utility_Functions');
-            obj.tocMd(developerFilenames, 'Developer_Documentation');
 
             % Build searchable docs.
             disp('Generating search database...');
