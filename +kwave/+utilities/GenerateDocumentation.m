@@ -57,21 +57,21 @@ classdef GenerateDocumentation
 
             % Generate HTML files.
             obj.generateHTML('/+kwave/+docfiles/+general', '.');
-            initialValueProblemsFilenames = obj.generateHTML('/+kwave/+tutorials/+initialvalueproblems', 'Initial_Value_Problems', evalCode=true, showCode=true);
+            tutorialsFilenames = obj.generateHTML('/+kwave/+tutorials/+initialvalueproblems', 'Tutorials', evalCode=true, showCode=false);
             toolboxFilenames = obj.generateHTML('/+kwave/+toolbox', 'Toolbox_Functions');
             testFilenames = obj.generateHTML('/+kwave/+tests', 'Test_Functions');
             utilityFilenames = obj.generateHTML('/+kwave/+utilities', 'Utility_Functions');
 
             % Build helptoc.
             obj.helpTocStart;
-            obj.helpTocAddSection(initialValueProblemsFilenames, 'Initial Value Problems');
+            obj.helpTocAddSection(tutorialsFilenames, 'Tutorials');
             obj.helpTocAddSection(toolboxFilenames, 'Toolbox Functions');
             obj.helpTocAddSection(testFilenames, 'Test Functions');
             obj.helpTocAddSection(utilityFilenames, 'Utility Functions');
             obj.helpTocFinish;
 
             % Build SUMMARY.md for each subfolder/subsection
-            obj.tocMd(initialValueProblemsFilenames, 'Initial_Value_Problems');
+            obj.tocMd(tutorialsFilenames, 'Tutorials');
             obj.tocMd(toolboxFilenames, 'Toolbox_Functions');
             obj.tocMd(testFilenames, 'Test_Functions', excludeClassMethods=false);
             obj.tocMd(utilityFilenames, 'Utility_Functions');
