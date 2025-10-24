@@ -5,7 +5,7 @@
 % Code quality tests for the k-wave II code base.
 %
 %% Description
-% The following tests are performed for all .m files in +kwave/+toolbox:
+% The following tests are performed for all .m files in |+kwave/+toolbox|:
 %
 % # |codeIssues| is called to make sure there are no code quality
 % errors in the files.

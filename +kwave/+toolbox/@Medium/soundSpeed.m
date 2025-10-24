@@ -1,4 +1,4 @@
-%% soundSpeed
+%% Sound Speed
 % *Class:* kwave.toolbox.Medium
 % *Package:* kwave.toolbox
 %
@@ -8,8 +8,8 @@
 %   soundSpeed(obj)
 %
 %% Description
-% recalls the sound speed spatial distribution according to the materialIDGrid,
-% and the MaterialTable given as part of the medium. this is performed by
+% Recalls the sound speed spatial distribution according to the |materialIDGrid|,
+% and the |MaterialTable| given as part of the medium. This is performed by
 % generating the padded Density and removing the PML.
 %
 %% See Also

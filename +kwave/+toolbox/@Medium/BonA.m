@@ -1,4 +1,4 @@
-%% BonA
+%% B on A
 % *Class:* kwave.toolbox.Medium
 % *Package:* kwave.toolbox
 %
@@ -8,8 +8,8 @@
 %   BonA(obj)
 %
 %% Description
-% recalls the BonA spatial distribution according to the materialIDGrid,
-% and the MaterialTable given as part of the medium. this is performed by
+% Recalls the |BonA| spatial distribution according to the |materialIDGrid|,
+% and the |MaterialTable| given as part of the medium. this is performed by
 % generating the padded Density and removing the PML.
 %
 %% See Also

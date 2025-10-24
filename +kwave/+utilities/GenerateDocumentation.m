@@ -8,22 +8,25 @@
 %
 %% Description
 % |GenerateDocumentation| is a static class that is called to generate the
-% help files that appear in the MATLAB help browser. The documentation is
-% generated in several stages:
+% help files that appear in the MATLAB help browser and the documentation website.
+% The documentation is generated in several stages:
 %
-% # The .m files in specified directories are converted directly to .html
-%   using the MATLAB <matlab:doc('publish') publish> function. Text should
-%   be written using MATLAB publishing markup, which is parsed as headings,
+% # The |.m| files in specified directories are converted directly to |.html|
+%   using the MATLAB <https://uk.mathworks.com/help/matlab/ref/publish.html publish> 
+%   function and to |.md| using the <https://uk.mathworks.com/help/matlab/ref/export.html export> 
+%   function. Text should be written using MATLAB publishing markup, which is parsed as headings,
 %   code, etc.
-% # The generated .html files are modified to add html links between
+% # The generated |.html| and |.md| files are modified to add links between
 %   related functions and classes.
-% # A helptoc.xml file is automatically created, adding links to the
-%   generated .html files.
+% # A |helptoc.xml| file is automatically created, adding links to the
+%   generated |.html| files. Similarly, the appropriate |SUMMARY.md| files
+%   are generated in the appropriate file tree structure that contains the 
+%   markdown files (ready to be turned into GitHub pages with <https://www.mkdocs.org/ mkdocs>)
 % # The documentation search database is created using
-%   <matlab:doc('builddocsearchdb') builddocsearchdb>.
+%   <https://uk.mathworks.com/help/matlab/ref/builddocsearchdb.html builddocsearchdb>.
 %
 % This class is provided for generating documentation during development,
-% and for preparing the documentation packaged with a release. If you have
+% and for preparing the documentation published on GitHub pages and packaged with a release. If you have
 % downloaded a packaged release, there should be no need to call this
 % class. However, if you have directly cloned the repository and are
 % working with bleeding-edge changes, you can call |GenerateDocumentation|
@@ -183,7 +186,7 @@ classdef GenerateDocumentation
                 % Converts the .m file into a .mlx file and saves it.
                 matlab.internal.liveeditor.openAndSave(inputFunctionFullFileName, fullFileNameMLX);
                 % Exports the .mlx file into a .md file.
-                export(fullFileNameMLX, fullFileNameMD, Format="markdown", Run=options.evalCode, HideCode=~options.showCode);
+                export(fullFileNameMLX, fullFileNameMD, Format="markdown", Run=options.evalCode, HideCode=~options.showCode, RenderLaTeXOnline="png");
                 % Deletes the intermediate .mlx file
                 delete(fullFileNameMLX);
 
@@ -201,7 +204,6 @@ classdef GenerateDocumentation
                 end
                 mFilenames(ind).htmlFileName = [filename, ext];
                 mFilenames(ind).mdFileName = [filename, '.md'];
-                %disp([mFilenames(ind).htmlFileName, ' ', mFilenames(ind).mdFileName]); % file only name
 
                 % Change back to root directory.
                 cd(obj.rootPath);
@@ -332,7 +334,6 @@ classdef GenerateDocumentation
             end
             outputFullFolderName = fullfile(obj.helpDirMd,mdSubFolder);
             filename = fullfile(outputFullFolderName, 'SUMMARY.md');
-            disp(filename);
             for ind = 1:length(mFilenames)
                 if (options.excludeClassMethods && ~mFilenames(ind).isClassMethod) || ~options.excludeClassMethods
                     writelines(['* [' mFilenames(ind).title '](' mFilenames(ind).mdFileName ')'], filename, 'WriteMode','append');

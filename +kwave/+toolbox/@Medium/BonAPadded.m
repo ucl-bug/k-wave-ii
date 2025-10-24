@@ -1,4 +1,4 @@
-%% BonAPadded
+%% B on A Padded
 % *Class:* kwave.toolbox.Medium
 % *Package:* kwave.toolbox
 %
@@ -8,12 +8,12 @@
 %   BonAPadded(obj)
 %
 %% Description
-% recalls the BonA spatial distribution according to the materialIDGrid,
-% using the generated materialIDGridPadded, and the given MaterialTable 
+% Recalls the |BonA| spatial distribution according to the |materialIDGrid|,
+% using the generated |materialIDGridPadded|, and the given |MaterialTable| 
 % from the medium.
 %
 % This method has been generated to allow interactions with the acoustic
-% solver class, and the acousticMedium grid field property BonA (BonAPadded)
+% solver class, and the |acousticMedium| grid field property |BonA| (|BonAPadded|)
 
 % Copyright (C) 2025- The k-Wave Authors.
 %

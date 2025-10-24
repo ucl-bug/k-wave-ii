@@ -1,4 +1,4 @@
-%% divergence
+%% The Divergence
 % *Class:* kwave.toolbox.FourierCollocation
 % *Package:* kwave.toolbox
 %
@@ -18,7 +18,7 @@
 % have size (Nx, Ny). This is to allow codes to implement multi-dimensional
 % support by always looping over the fourth dimension.
 %
-% If obj.kappa is defined, a k-space correction is applied as part of the
+% If |obj.kappa| is defined, a k-space correction is applied as part of the
 % divergence calulation. If kappa is a scalar (single frequency correction)
 % or empty, the contributions to the divergence for each of the Cartesian
 % coordinates are calculated using 1D FFTs. If kappa is a matrix, they are

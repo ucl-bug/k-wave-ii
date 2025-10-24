@@ -1,4 +1,4 @@
-%% createGridFieldsMap
+%% Create Grid Fields Map
 % *Class:* kwave.toolbox.GridField
 % *Package:* kwave.toolbox
 %
@@ -10,7 +10,7 @@
 %
 %% Description
 % The |createGridFieldsMap| method is designed to create a
-% |<matlab:doc('containers.Map') containers.Map>| that provides handling
+% |<https://uk.mathworks.com/help/matlab/ref/containers.map.html containers.Map>| that provides handling
 % and validation details for grid field properties. Each key of the map
 % corresponds to a grid field property's name, and the associated value is
 % a |kwave.toolbox.GridField| object. This utility is used to generate the

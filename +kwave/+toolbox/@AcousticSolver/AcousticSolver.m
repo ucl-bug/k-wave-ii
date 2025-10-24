@@ -100,10 +100,14 @@
 % exclude each of the absorption terms within the equation of state.
 %
 %% Methods
-% * |setkSpaceCorrection|
-% * |setAbsorptionCoefficients|
+% * |autoComputeTimeStep|
+% * |executeTimeStep|
 % * |kappaSplitCorrection|
-%
+% * |setAbsorptionCoefficients|
+% * |setInitialConditions|
+% * |setkSpaceCorrection|
+
+
 % Copyright (C) 2024- The k-Wave Authors.
 %
 % This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free

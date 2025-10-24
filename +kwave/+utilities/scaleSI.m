@@ -1,4 +1,4 @@
-%% scaleSI
+%% Scale SI
 % *Package:* kwave.utilities
 %
 % Scale a number to the nearest SI unit prefix.

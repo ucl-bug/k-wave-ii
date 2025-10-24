@@ -17,17 +17,19 @@
 %
 % When using staggered grids, the components of |initialElectricField| and
 % |electricCurrentDensitySource| must be defined on the staggered grid
-% given by   
-% x-component initialElectricField(:,:,:,1) on (0, +1/2, +1/2)
-% y-component initialElectricField(:,:,:,2) on (+1/2, 0, +1/2)
-% z-component initialElectricField(:,:,:,3) on (+1/2, +1/2, 0)
+% given by
+%
+% * x-component initialElectricField(:,:,:,1) on (0, +1/2, +1/2)
+% * y-component initialElectricField(:,:,:,2) on (+1/2, 0, +1/2)
+% * z-component initialElectricField(:,:,:,3) on (+1/2, +1/2, 0)
 % 
 % When using staggered grids, the components of |initialMagneticField| and
 % |magneticCurrentDensitySource| must be defined on the staggered grid
-% given by   
-% x-component initialMagneticField(:,:,:,1) on (+1/2, 0, 0)
-% y-component initialMagneticField(:,:,:,2) on (0, +1/2, 0)
-% z-component initialMagneticField(:,:,:,3) on (0, 0, +1/2)
+% given by
+%
+% * x-component initialMagneticField(:,:,:,1) on (+1/2, 0, 0)
+% * y-component initialMagneticField(:,:,:,2) on (0, +1/2, 0)
+% * z-component initialMagneticField(:,:,:,3) on (0, 0, +1/2)
 % 
 %% Examples
 % Define the grid and source objects, and assign an initial electric field.

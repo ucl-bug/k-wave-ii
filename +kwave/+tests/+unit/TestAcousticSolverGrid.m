@@ -7,6 +7,7 @@
 %
 %% Description
 % Runs the following tests for the AcousticSolver:
+%
 % * Verifies that initial value problems in a homogeneous and lossless
 %   medium match k-Wave-I.
 % * Verifies that if the initial velocity is specified as 0 the result is
