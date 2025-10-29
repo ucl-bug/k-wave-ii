@@ -111,7 +111,7 @@ if Nt~=0
             % Conservation of Momentum,
             if ((tIndex==2) && (obj.timeStepsTaken == 0)) || ((tIndex==1) && (obj.timeStepsTaken ~= 0))
                 % Variable time stepping term is 0 for constant time stepping
-            obj.velocityPadded = pmlSG(pmlSG(obj.velocityPadded) - (dt ./ densityPaddedStg) .* g\radient(obj.pressurePadded) + dt .* obj.kappaSplitCorrection( pmlSG(obj.velocityPadded)) );
+            obj.velocityPadded = pmlSG(pmlSG(obj.velocityPadded) - (dt ./ densityPaddedStg) .* gradient(obj.pressurePadded) + dt .* obj.kappaSplitCorrection( pmlSG(obj.velocityPadded)) );
                 % Update time step sizes and k-space corrections
                 dt = currentTimeStep;
                 obj.prevTimeStep = currentTimeStep;
