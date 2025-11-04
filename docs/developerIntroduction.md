@@ -23,11 +23,11 @@ The code is grouped into [package folders](https://uk.mathworks.com/help/matlab/
 
 ```
    ├── .github
-   │   ├── ISSUE_TEMPLATE  (GitHub issue templates)
+   │   ├── ISSUE_TEMPLATE                    (GitHub issue templates)
+   │   ├── PULL_REQUEST_TEMPLATE  (GitHub pull request template)
    │   └── workflows       (GitHub actions)
    ├── +kwave
    │   ├── +docfiles       (Documentation files)
-   │   │   ├── +developer  (Developer Documentation)
    │   │   └── +general    (Additional Documentation Pages)
    │   ├── +legacy         (Copy of k-Wave I)
    │   ├── +tests          (Tests)
@@ -38,6 +38,8 @@ The code is grouped into [package folders](https://uk.mathworks.com/help/matlab/
    │   ├── +tutorials      (Examples and tutorials)
    │   └── +utilities      (Developer tools)
    └── helpfiles           (Compiled documentation)
+   ├── helpfilesweb    (Documentation for mkdocs)
+   ├── docs                (Contributor guidelines)
 ```
 
 ## Development Workflow
