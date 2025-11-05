@@ -58,12 +58,12 @@ classdef GenerateDocumentation
             obj.helpDirMd = fullfile(obj.rootPath, 'helpfilesweb');
             obj.createHelpDir;
 
-            % Generate HTML files.
-            obj.generateHTML('/+kwave/+docfiles/+general', '.');
-            tutorialsFilenames = obj.generateHTML('/+kwave/+tutorials/+initialvalueproblems', 'Tutorials', evalCode=true, showCode=false);
-            toolboxFilenames = obj.generateHTML('/+kwave/+toolbox', 'Toolbox_Functions');
-            testFilenames = obj.generateHTML('/+kwave/+tests', 'Test_Functions');
-            utilityFilenames = obj.generateHTML('/+kwave/+utilities', 'Utility_Functions');
+            % Generate HTML and md documentation files.
+            obj.generateDocFiles('/+kwave/+docfiles/+general', '.');
+            tutorialsFilenames = obj.generateDocFiles('/+kwave/+tutorials/+initialvalueproblems', 'Tutorials', evalCode=true, showCode=false);
+            toolboxFilenames = obj.generateDocFiles('/+kwave/+toolbox', 'Toolbox_Functions');
+            testFilenames = obj.generateDocFiles('/+kwave/+tests', 'Test_Functions');
+            utilityFilenames = obj.generateDocFiles('/+kwave/+utilities', 'Utility_Functions');
 
             % Build helptoc.
             obj.helpTocStart;
@@ -100,8 +100,8 @@ classdef GenerateDocumentation
             mkdir(obj.helpDirMd);
         end
 
-        % Convert m-files in specified directory to HTML using publish.
-        function mFilenames = generateHTML(obj, relativeFolder, mdSubFolder, options)
+        % Convert m-files in specified directory to HTML using publish and to md using export.
+        function mFilenames = generateDocFiles(obj, relativeFolder, mdSubFolder, options)
             arguments
                 obj
                 relativeFolder
@@ -214,50 +214,60 @@ classdef GenerateDocumentation
             for ind1 = 1:numFiles
                 for ind2 = 1:numFiles
                     if mFilenames(ind1).isClass && mFilenames(ind2).isClassMethod && strcmp(mFilenames(ind2).className, mFilenames(ind1).name)
-
-                        disp(['Replacing html links to method ', mFilenames(ind2).name, ' from class ', mFilenames(ind1).name]);
-                        [~, methodName, ~] = fileparts(mFilenames(ind2).name);
-                        htmlFileName = mFilenames(ind1).htmlFileName;
-                        htmlFile = fullfile(obj.helpDirHtml, htmlFileName);
-
-                        % Read in HTML file.
-                        fid = fopen(htmlFile, 'r');
-                        fileContents = fread(fid, '*char');
-                        fclose(fid);
-
-                        % Replace links, and save to HTML file replacing
-                        % contents. The |methodName| syntax is published as
-                        % <tt>methodName</tt>. The html flags are included
-                        % in the search to avoid adding links to code
-                        % snippets.
-                        fileContents = strrep(fileContents.', ...
-                            ['<tt>' methodName '</tt>'], ...
-                            ['<tt>' obj.generateLink(mFilenames(ind2).htmlFileName, methodName) '</tt>']);
-                        fid = fopen(htmlFile, 'w');
-                        fprintf(fid, '%s', fileContents.');
-                        fclose(fid);
-
-                        disp(['Replacing md links to method ', mFilenames(ind2).name, ' from class ', mFilenames(ind1).name]);
-                        mdFileName = mFilenames(ind1).mdFileName;
-                        mdFile = fullfile(outputFullFolderName, mdFileName);
-
-                        % Read in md file.
-                        fid = fopen(mdFile, 'r');
-                        fileContents = fread(fid, '*char');
-                        fclose(fid);
-
-                        % Add links, and save to md file. The |methodName| 
-                        % syntax is published as `methodName`. The quotes are included
-                        % in the search to avoid adding links to code snippets.
-                        fileContents = strrep(fileContents.', ...
-                            ['`' methodName '`'], ...
-                            ['[' methodName '](' mFilenames(ind2).mdFileName ')']);
-                        fid = fopen(mdFile, 'w');
-                        fprintf(fid, '%s', fileContents.');
-                        fclose(fid);
+                        obj.fixLinks(mFilenames(ind1), mFilenames(ind2), outputFullFolderName);
                     end
                 end
             end
+        end
+
+        % Given a filename object that contains a class and a filename object 
+        % that contains a method of this class, add a relative link to the 
+        % class method from the class documentation in both html and md.
+        % The md output folder path has to be given as well, because it
+        % contains a subfolder.
+        function fixLinks(obj, classObj, methodObj, outputFullFolderName)
+
+            disp(['Replacing html links to method ', methodObj.name, ' from class ', classObj.name]);
+            [~, methodName, ~] = fileparts(methodObj.name);
+            htmlFileName = classObj.htmlFileName;
+            htmlFile = fullfile(obj.helpDirHtml, htmlFileName);
+
+            % Read in HTML file.
+            fid = fopen(htmlFile, 'r');
+            fileContents = fread(fid, '*char');
+            fclose(fid);
+
+            % Replace links, and save to HTML file replacing
+            % contents. The |methodName| syntax is published as
+            % <tt>methodName</tt>. The html flags are included
+            % in the search to avoid adding links to code
+            % snippets.
+            fileContents = strrep(fileContents.', ...
+                ['<tt>' methodName '</tt>'], ...
+                ['<tt>' obj.generateLink(methodObj.htmlFileName, methodName) '</tt>']);
+            fid = fopen(htmlFile, 'w');
+            fprintf(fid, '%s', fileContents.');
+            fclose(fid);
+
+            disp(['Replacing md links to method ', methodObj.name, ' from class ', classObj.name]);
+            mdFileName = classObj.mdFileName;
+            mdFile = fullfile(outputFullFolderName, mdFileName);
+
+            % Read in md file.
+            fid = fopen(mdFile, 'r');
+            fileContents = fread(fid, '*char');
+            fclose(fid);
+
+            % Add links, and save to md file. The |methodName|
+            % syntax is published as `methodName`. The quotes are included
+            % in the search to avoid adding links to code snippets.
+            fileContents = strrep(fileContents.', ...
+                ['`' methodName '`'], ...
+                ['[' methodName '](' methodObj.mdFileName ')']);
+            fid = fopen(mdFile, 'w');
+            fprintf(fid, '%s', fileContents.');
+            fclose(fid);
+
         end
 
         % Given a directory (e.g. '/+kwave/+utils'), convert to the
