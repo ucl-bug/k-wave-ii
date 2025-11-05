@@ -2,8 +2,16 @@ site_name: k-Wave-II
 plugins:
   - search
   - literate-nav
+#markdown_extensions:
+#  - 
 nav:
   - Home: index.md
-  - About: about.md
-  - Help: k-wave-ii-helpfiles/
+  - About:
+    - Licence: LICENSE.md
+  - Help: helpfilesweb/
+  - Developer docs:
+    - Intro: developerIntroduction.md
+    - Standard: codingStandard.md
+    - Class example: helpfilesweb/classDocsExample.md
+  
 theme: readthedocs
