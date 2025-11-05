@@ -59,7 +59,7 @@ classdef GenerateDocumentation
             obj.createHelpDir;
 
             % Generate HTML and md documentation files.
-            obj.generateDocFiles('/+kwave/+docfiles/+general', '.');
+            generalDocsFilenames = obj.generateDocFiles('/+kwave/+docfiles/+general', '.');
             tutorialsFilenames = obj.generateDocFiles('/+kwave/+tutorials/+initialvalueproblems', 'Tutorials', evalCode=true, showCode=false);
             toolboxFilenames = obj.generateDocFiles('/+kwave/+toolbox', 'Toolbox_Functions');
             testFilenames = obj.generateDocFiles('/+kwave/+tests', 'Test_Functions');
@@ -67,6 +67,7 @@ classdef GenerateDocumentation
 
             % Build helptoc.
             obj.helpTocStart;
+            obj.helpTocAddSection(generalDocsFilenames, '', addHeader=false);
             obj.helpTocAddSection(tutorialsFilenames, 'Tutorials');
             obj.helpTocAddSection(toolboxFilenames, 'Toolbox Functions');
             obj.helpTocAddSection(testFilenames, 'Test Functions');
@@ -74,6 +75,8 @@ classdef GenerateDocumentation
             obj.helpTocFinish;
 
             % Build SUMMARY.md for each subfolder/subsection
+            % We don't need a SUMMARY.md for the generalDocs, as it's only
+            % the Class Example file and we don't want it in a subheading.
             obj.tocMd(tutorialsFilenames, 'Tutorials');
             obj.tocMd(toolboxFilenames, 'Toolbox_Functions');
             obj.tocMd(testFilenames, 'Test_Functions', excludeClassMethods=false);
@@ -311,14 +314,25 @@ classdef GenerateDocumentation
         end
 
         % Add links to html for all functions, excluding class methods.
-        function helpTocAddSection(obj, mFilenames, heading)
-            obj.addToXML(['<tocitem>' heading]);
+        function helpTocAddSection(obj, mFilenames, heading, options)
+            arguments
+                obj
+                mFilenames
+                heading
+                options.addHeader = true;
+            end
+            
+            if options.addHeader
+                obj.addToXML(['<tocitem>' heading]);
+            end
             for ind = 1:length(mFilenames)
                 if ~mFilenames(ind).isClassMethod
                     obj.addToXML(['<tocitem target="' mFilenames(ind).htmlFileName '">' mFilenames(ind).title '</tocitem>']);
                 end
             end
-            obj.addToXML('</tocitem>');
+            if options.addHeader
+               obj.addToXML('</tocitem>');
+            end
         end
 
         % Finish generation of helptoc.xml.
