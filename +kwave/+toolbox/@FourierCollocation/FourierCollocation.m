@@ -27,7 +27,7 @@
 %
 %% Examples
 % Calculate the gradient of a scalar field in 2D, and compare with the
-% MATLAB |<matlab:doc('gradient') gradient>| function.
+% MATLAB |<https://uk.mathworks.com/help/matlab/ref/gradient.html Gradient>| function.
 %
 %   % Define input field.
 %   [x, y] = meshgrid(-2:.2:2, -2:.2:2);
@@ -98,11 +98,11 @@
 %% Methods
 % * |divergence|
 % * |divergenceSplit|
+% * |fracLaplacian|
 % * |gradient|
-% * |fractionalLaplacian|
-% * |stagger|
 % * |plotField|
 % * |sinc|
+% * |stagger|
 
 % Copyright (C) 2022- University College London.
 %

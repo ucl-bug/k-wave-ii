@@ -1,4 +1,4 @@
-%% stagger
+%% The Stagger Operation
 % *Class:* kwave.toolbox.FourierCollocation
 % *Package:* kwave.toolbox
 %

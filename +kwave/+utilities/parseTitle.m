@@ -1,4 +1,4 @@
-%% parseTitle
+%% Parse Title
 % *Package:* kwave.utilities
 %
 % Convenience function to extract the text appearing on the first line of

@@ -1,4 +1,4 @@
-%% ThermalConductivityPadded
+%% Thermal Conductivity Padded
 % *Class:* kwave.toolbox.Medium
 % *Package:* kwave.toolbox
 %
@@ -8,12 +8,13 @@
 %   ThermalConductivityPadded(obj)
 %
 %% Description
-% recalls the ThermalConductivity spatial distribution according to the materialIDGrid,
-% using the generated materialIDGridPadded, and the given MaterialTable 
+% Recalls the |ThermalConductivity| spatial distribution according to the |materialIDGrid|,
+% using the generated |materialIDGridPadded|, and the given |MaterialTable| 
 % from the medium.
 %
-% This method has been generated to allow interactions with the thermalSolver
-% class, and the thermalMedium gridfield property ThermalConductivity (ThermalConductivityPadded)
+% This method has been generated to allow interactions with the
+% |thermalSolver|
+% class, and the |thermalMedium| gridfield property |ThermalConductivity| (|ThermalConductivityPadded|)
 
 % Copyright (C) 2025- The k-Wave Authors.
 %

@@ -8,6 +8,7 @@
 %
 %% Description
 % Runs the following tests for the ThermalSolver:
+%
 % * Verifies that simulations using input parameters with a different grid
 %   throw errors.
 

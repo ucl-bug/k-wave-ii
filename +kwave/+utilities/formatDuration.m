@@ -1,4 +1,4 @@
-%% formatDuration
+%% Format Duration
 % Package: kwave.utilities
 %
 % Format calendarDuration object into string containing hours, minutes, and
@@ -8,8 +8,8 @@
 % formattedDuration = formatDuration(elapsedTime);
 %
 %% Description
-% The formatDuration function takes a <matlab:doc('duration') duration> or
-% <matlab:doc('calendarDuration') calendarDuration> object as input and
+% The formatDuration function takes a <https://uk.mathworks.com/help/matlab/ref/duration.html duration> or
+% <https://uk.mathworks.com/help/matlab/ref/calendarduration.html calendarDuration> object as input and
 % outputs a formatted string representing the duration. The output string
 % is composed of hours (if non-zero), minutes (if non-zero), and seconds,
 % each followed by the respective unit label (h, m, s). This function is
@@ -33,11 +33,11 @@
 %   (h, m, s).
 %
 %% See Also
-% * <matlab:doc('duration') duration>
-% * <matlab:doc('duration') calendarDuration>
-% * <matlab:doc('hours') hours>
-% * <matlab:doc('minutes') minutes>
-% * <matlab:doc('seconds') seconds>
+% * <https://uk.mathworks.com/help/matlab/ref/duration.html duration>
+% * <https://uk.mathworks.com/help/matlab/ref/calendarduration.html calendarDuration>
+% * <https://uk.mathworks.com/help/matlab/ref/hours.html hours>
+% * <https://uk.mathworks.com/help/matlab/ref/minutes.html minutes>
+% * <https://uk.mathworks.com/help/matlab/ref/seconds.html seconds>
 
 function formattedDuration = formatDuration(elapsedTime)
 

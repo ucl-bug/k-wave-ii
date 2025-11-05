@@ -1,4 +1,4 @@
-%% expandMatrix
+%% Expand Matrix
 % *Package:* kwave.toolbox
 %
 % Enlarge a matrix by extending the edge values.
@@ -18,17 +18,13 @@
 %% Examples
 %
 %   matrix = magic(3)
-%
 %   matrix =
-%     
 %        8     1     6
 %        3     5     7
 %        4     9     2
 %
 %   kwave.toolbox.expandMatrix(matrix, 1)
-%
 %   ans =
-%     
 %        8     8     1     6     6
 %        8     8     1     6     6
 %        3     3     5     7     7
@@ -36,9 +32,7 @@
 %        4     4     9     2     2
 %
 %   kwave.toolbox.expandMatrix(matrix, [2 0 1 0], 0)
-%
 %   ans =
-%     
 %        0     0     0     0
 %        0     0     0     0
 %        0     8     1     6
@@ -46,6 +40,7 @@
 %        0     4     9     2
 %
 %% Input Arguments
+%
 % * |matrix| - (numeric) A 1D, 2D, or 3D matrix to expand.
 % * |expansionSize| - (integer) The expansion size. There are several ways
 %   to specify the size. If a scalar value is given, this expansion is
@@ -59,6 +54,7 @@
 %   expansion.
 %
 %% Output Arguments
+%
 % * |matrixExpanded| - (numeric) Expanded matrix.
 
 function matrixExpanded = expandMatrix(matrix, expansionSize, expansionValue)

@@ -1,4 +1,4 @@
-%% absorptionCoeff
+%% Absorption Coeff
 % *Class:* kwave.toolbox.Medium
 % *Package:* kwave.toolbox
 %
@@ -8,8 +8,8 @@
 %   absorptionCoeff(obj)
 %
 %% Description
-% recalls the absorption coefficient alpha_0 spatial distribution according to the materialIDGrid,
-% and the MaterialTable given as part of the medium. this is performed by
+% Recalls the absorption coefficient |alpha_0| spatial distribution according to the |materialIDGrid|,
+% and the |MaterialTable| given as part of the medium. This is performed by
 % generating the padded Density and removing the PML.
 %
 %% See Also

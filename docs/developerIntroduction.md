@@ -19,15 +19,15 @@ The software is written with the following four guiding principles, in decreasin
 
 ## Repository Structure
 
-The code is grouped into [package folders](https://uk.mathworks.com/help/matlab/matlab_oop/namespaces.html) (namespaces). The basic folder structure is as follows:
+The code is grouped into [package folders](https://uk.mathworks.com/help/matlab/matlab_oop/scoping-classes-with-packages.html) (namespaces). The basic folder structure is as follows:
 
 ```
    ├── .github
-   │   ├── ISSUE_TEMPLATE  (GitHub issue templates)
+   │   ├── ISSUE_TEMPLATE         (GitHub issue templates)
+   │   ├── PULL_REQUEST_TEMPLATE  (GitHub pull request template)
    │   └── workflows       (GitHub actions)
    ├── +kwave
    │   ├── +docfiles       (Documentation files)
-   │   │   ├── +developer  (Developer Documentation)
    │   │   └── +general    (Additional Documentation Pages)
    │   ├── +legacy         (Copy of k-Wave I)
    │   ├── +tests          (Tests)
@@ -37,7 +37,9 @@ The code is grouped into [package folders](https://uk.mathworks.com/help/matlab/
    │   ├── +toolbox        (Main classes and functions)
    │   ├── +tutorials      (Examples and tutorials)
    │   └── +utilities      (Developer tools)
-   └── helpfiles           (Compiled documentation)
+   └── helpfiles           (Generated html documentation)
+   ├── helpfilesweb        (Generated md documentation for mkdocs)
+   ├── docs                (Contributor guidelines and other static docs)
 ```
 
 ## Development Workflow
@@ -56,7 +58,6 @@ For experienced git users, `git rebase` should be avoided if multiple people mig
 ## Writing And Compiling Documentation
 
 Part of the success of k\-Wave can be attributed to the good documentation, both of the individual functions and classes, and the examples. All code should be documented as outlined in the [Coding Standard](codingStandard.md). It can often be easiest to start with the [documentation template](helpfilesweb/classDocsExample.md).
-
 
 When adding a new class or function, examples should be added. If the code usage is relatively straightforward, examples can be included directly in the help documentation for that class or function. For more complex classes (e.g., the solver classes), longer tutorials or examples should be provided.
 
@@ -78,11 +79,11 @@ If considering using other external code or libraries (e.g., from the file excha
 
 ## Testing Framework
 
-k\-Wave uses the [class\-based unit testing framework](https://uk.mathworks.com/help/matlab/matlab_prog/class-based-unit-tests.html). There are several test levels (defined in `kwave.tests.TestType`), each of which lives in its own namespace:
+k\-Wave uses the [class\-based unit testing framework](https://uk.mathworks.com/help/matlab/class-based-unit-tests.html). There are several test levels (defined in `kwave.tests.TestType`), each of which lives in its own namespace:
 
--  **`+unit`****:** Unit tests validate individual components of a function or class in isolation. 
--  **`+linting`****:** Linting checks assess code for stylistic and syntactical correctness. 
--  **`+legacy`****:** Legacy tests are regression tests against k\-Wave I to ensure existing functionality remains unaffected by changes. 
+-  **`+unit`:** Unit tests validate individual components of a function or class in isolation. 
+-  **`+linting`:** Linting checks assess code for stylistic and syntactical correctness. 
+-  **`+legacy`:** Legacy tests are regression tests against k\-Wave I to ensure existing functionality remains unaffected by changes. 
 
 Each top level class or function should have at least one corresponding unit test. Unit tests should have 100% line coverage. Tests should inheret from one of the following:
 

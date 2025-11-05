@@ -91,6 +91,7 @@
 %% Methods
 % * |assignWithGridPadding|
 % * |displayGridSize|
+% * |getWavenumbers|
 % * |highestPrimeFactors|
 % * |returnWithoutGridPadding|
 % * |validateSize|

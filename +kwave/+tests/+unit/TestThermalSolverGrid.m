@@ -7,6 +7,7 @@
 %
 %% Description
 % Runs the following tests for the ThermalSolver:
+%
 % * Verifies simulations in homogeneous media match exact solution
 
 classdef TestThermalSolverGrid < kwave.tests.unit.AbstractTestGrid
@@ -66,7 +67,7 @@ classdef TestThermalSolverGrid < kwave.tests.unit.AbstractTestGrid
 
             % Compute exact Green's function solution.
             D = medium.thermalConductivityPadded / (medium.densityPadded * medium.specificHeatPadded);
-            testCase.referenceSolution = kwave.legacy.bioheatExact(source.initialTemperaturePadded, 0, [D, 0, 0], testCase.kgrid.dx, (Nt - 1) * dt);
+            testCase.referenceSolution = kwave.legacy.bioheatExact(source.initialTemperaturePadded, 0, [D, 0, 0], testCase.kgrid.dx, (Nt) * dt);
 
             % Compare with tolerance.
             testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));

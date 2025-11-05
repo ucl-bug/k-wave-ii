@@ -4,9 +4,11 @@
 % This example demonstrates how to run a simple initial value problem using
 % k-Wave II.
 %
-% * <matlab:edit('kwave.tutorials.initialvalueproblems.homogeneousMedium2D') Open the file in the MATLAB Editor>
-% * <matlab:run('kwave.tutorials.initialvalueproblems.homogeneousMedium2D.m') Run the file in MATLAB>
-%
+% * To open the file in the MATLAB Editor:
+% |edit('kwave.tutorials.initialvalueproblems.homogeneousMedium2D')|
+% * To run the file in MATLAB:
+% |run('kwave.tutorials.initialvalueproblems.homogeneousMedium2D.m')|
+% 
 %% Setup
 % k-Wave uses package folders to separate the toolbox, examples, tests, and
 % utilities into different namespaces. To use the classes and functions
@@ -14,6 +16,9 @@
 % included before the class or function name, for example,
 % |kwave.toolbox.Grid|. To avoid needing to use the package prefix
 % within a given m-file, the toolbox can be imported as shown below.
+%
+%   clearvars;
+%   import kwave.toolbox.*
 
 clearvars;
 import kwave.toolbox.*
@@ -38,5 +43,8 @@ import kwave.toolbox.*
 % of grid points in each direction is given by a power of two or has small
 % prime factors. The prime factors for a particular grid can be computed
 % using |kgrid.highestPrimeFactors|.
+%
+%   kgrid = Grid([128, 128], 0.1e-3);
+%
 
 kgrid = Grid([128, 128], 0.1e-3);

@@ -1,4 +1,4 @@
-%% setkSpaceCorrection
+%% set kSpace Correction
 % *Class:* kwave.toolbox.AcousticSolver
 % *Package:* kwave.toolbox
 %
@@ -53,5 +53,5 @@ if (dt ~= obj.prevTimeStep)
     
 else
     obj.kappa = ifftshift(kwave.toolbox.FourierCollocation.sinc(ck * dt/2));
-    obj.kappaSplit=1;
+    obj.kappaSplit=0;
 end

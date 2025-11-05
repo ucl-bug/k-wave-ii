@@ -1,4 +1,4 @@
-%% setInitialConditions
+%% Set Initial Conditions
 % *Class:* kwave.toolbox.ThermalSolver
 % *Package:* kwave.toolbox
 %
