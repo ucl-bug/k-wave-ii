@@ -37,9 +37,9 @@ The code is grouped into [package folders](https://uk.mathworks.com/help/matlab/
    │   ├── +toolbox        (Main classes and functions)
    │   ├── +tutorials      (Examples and tutorials)
    │   └── +utilities      (Developer tools)
-   └── helpfiles           (Generated html documentation)
-   ├── helpfilesweb        (Generated md documentation for mkdocs)
+   └── helpfiles           (Created at html documentation generation time)
    ├── docs                (Contributor guidelines and other static docs)
+       ├── helpfilesweb    (Populated at md documentation generation time)
 ```
 
 ## Development Workflow
@@ -65,6 +65,12 @@ When adding a new class or function, examples should be added. If the code usage
 2. **Examples:** These are illustrative examples stored as `.m` files in the  `kwave.examples` name space. Examples have a wider scope than tutorials, and may demonstrate a real\-world simulation using realistic grid sizes for example (so do not necessarily need to run fast). Examples should contain a comprehensive description of what the example does in the description of the file, but does not need to have long step\-by\-step.
 
 The in-code documentation can be automatically compiled by calling `kwave.utilities.GenerateDocumentation`. This parses the individual `.m` files into `.html` and `.md` files using [`publish`](https://uk.mathworks.com/help/matlab/ref/publish.html) and [`export`](https://uk.mathworks.com/help/matlab/ref/export.html) respectively. Additional documentation files that are static and do not have to be automatically generated should be stored in the `docs` folder.
+
+To generate the standalone website with `mkdocs` after the `.md` files have been generated, you need to have `mkdocs` and `literate-nav` in your python environment. Then the website can be served locally with
+```
+mkdocs serve --livereload
+```
+and viewed in a browser in `http://127.0.0.1:8000/` (watch the output of the above command for this address) for debugging purposes.
 
 ## Logging And Errors
 
