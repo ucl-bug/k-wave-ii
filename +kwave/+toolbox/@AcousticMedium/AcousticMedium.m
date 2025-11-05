@@ -27,6 +27,7 @@
 %    medium.absorptionPower = rand();
 %
 %% Properties
+% 
 % * |soundSpeed| - (single) Compressional sound speed [m/s].
 % * |soundSpeedReference| - (single) Reference compressional sound speed
 %   used in the k-space correction [m/s]. Automatically defined in
@@ -40,7 +41,9 @@
 % In order to model absorption both absorptionCoeff, and absorptionPower
 % must be defiened, and solver.absorptionType must be set for the acoustic
 % solver
+%
 %% See Also
+% 
 % * |GridInput|
 % * |AcousticSolver|
 

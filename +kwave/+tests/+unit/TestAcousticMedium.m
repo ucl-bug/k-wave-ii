@@ -4,8 +4,9 @@
 %
 % Unit tests for the AcousticMedium class using the TestMedium class.
 %
-% *Verifies the Acoustic solver will not run with a medium not of the
-%  medium or acoustic medium type.
+%% Description
+% Verifies the Acoustic solver will not run with a medium not of the
+% medium or acoustic medium type.
 
 classdef TestAcousticMedium < kwave.tests.unit.AbstractTestGridInput
 

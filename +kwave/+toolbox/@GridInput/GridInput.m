@@ -23,6 +23,7 @@
 % simpler and more intuitive interface to the user.
 %
 % Features of the class include:
+%
 % * Dynamic property management: This class uses dynamic properties
 %   to efficiently handle grid field properties, automatically taking care
 %   of grid padding.
@@ -44,7 +45,7 @@
 %
 %   obj.(propertyName)
 %
-% where propertyName is a char holding the property name. This ensures
+% where |propertyName| is a char holding the property name. This ensures
 % consistent access to the properties, considering the custom behaviors
 % introduced by the overloaded subsref method.
 %
@@ -86,13 +87,11 @@
 %    size(medium.myProperty)
 %    
 %    ans =
-%    
 %       128   128
 %    
 %    size(medium.myPropertyPadded)
 %    
 %    ans =
-%    
 %       148   148
 %
 %% Input Arguments

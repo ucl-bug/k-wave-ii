@@ -1,4 +1,4 @@
-%% subsref
+%% The subsref method
 % *Class:* kwave.toolbox.GridInput
 % *Package:* kwave.toolbox
 %

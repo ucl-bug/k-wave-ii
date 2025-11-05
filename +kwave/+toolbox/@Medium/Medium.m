@@ -27,21 +27,22 @@
 %    medium.thermalConductivity = rand(medium.gridSize);
 %
 %% Properties
-% * |soundSpeed| - (single) Compressional sound speed [m/s].
+% * |soundSpeed| and |soundSpeedPadded|- (single) Compressional sound speed [m/s].
 % * |soundSpeedReference| - (single) Reference compressional sound speed
 %   used in the k-space correction [m/s]. Automatically defined in
-%   kWaveAcoustic if not defined by the user.
-% * |density| - (single) Mass density [kg/m^2].
-% * |absorptionCoeff| - (single) Power law attenuation coefficient
+%   |kWaveAcoustic| if not defined by the user.
+% * |density| and |densityPadded|- (single) Mass density [kg/m^2].
+% * |absorptionCoeff| and |absorptionCoeffPadded|- (single) Power law attenuation coefficient
 %   [dB/(MHz^y cm)].
 % * |absorptionPower| - (single) Power law attenuation power.
-% * |BonA| - (single) Parameter of nonlinearity.
+% * |BonA| and |BonAPadded|- (single) Parameter of nonlinearity.
 % * |diffusionReference| - (numeric) Reference diffusion coefficient used
 %   in the k-space correction term [m^2/s]. Automatically defined in
-%   ThermalSolver if not defined by the user.
-% * |specificHeat| - (numeric) Specific heat capacity at constant pressure
+%   |ThermalSolver| if not defined by the user.
+% * |specificHeat| and |specificHeatPadded|- (numeric) Specific heat capacity at constant pressure
 %   [J/kg/K].
-% * |thermalConductivity| - (numeric) Thermal conductivity [W/m/K].
+% * |thermalConductivity| and |thermalConductivityPadded|- (numeric) Thermal conductivity [W/m/K].
+%
 %% See Also
 % * |GridInput|
 

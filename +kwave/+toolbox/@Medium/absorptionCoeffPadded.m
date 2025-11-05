@@ -1,4 +1,4 @@
-%% absorptionCoeffPadded
+%% Absorption Coeff Padded
 % *Class:* kwave.toolbox.Medium
 % *Package:* kwave.toolbox
 %
@@ -8,12 +8,12 @@
 %   absorptionCoeffPadded(obj)
 %
 %% Description
-% recalls the absorptionCoeff spatial distribution according to the materialIDGrid,
-% using the generated materialIDGridPadded, and the given MaterialTable 
+% Recalls the |absorptionCoeff| spatial distribution according to the |materialIDGrid|,
+% using the generated |materialIDGridPadded|, and the given |MaterialTable| 
 % from the medium.
 %
 % This method has been generated to allow interactions with the acoustic
-% solver class, and the acousticMedium grid field property absorptionCoeff (absorptionCoeffPadded)
+% solver class, and the |acousticMedium| grid field property |absorptionCoeff| (|absorptionCoeffPadded|)
 
 % Copyright (C) 2025- The k-Wave Authors.
 %

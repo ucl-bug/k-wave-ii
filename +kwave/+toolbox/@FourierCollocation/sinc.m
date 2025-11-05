@@ -1,4 +1,4 @@
-%% sinc
+%% The Sinc Function
 % *Class:* kwave.toolbox.FourierCollocation
 % *Package:* kwave.toolbox
 %
@@ -9,7 +9,7 @@
 %
 %% Description
 % Computes y = sin(x)/x. Differs from MATLAB's internal
-% |<matlab:doc('sinc') sinc>| function which computes y = sin(pi*x)/(pi*x).
+% |<https://uk.mathworks.com/help/signal/ref/sinc.html sinc>| function which computes y = sin(pi*x)/(pi*x).
 %
 %% Input Arguments
 % * |x| - (numeric) Input.

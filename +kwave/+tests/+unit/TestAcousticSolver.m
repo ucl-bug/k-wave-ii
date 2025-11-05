@@ -8,6 +8,7 @@
 %
 %% Description
 % Runs the following tests for the AcousticSolver:
+%
 % * Verifies that plane wave simulations in 2D and 3D match simulations in
 %   1D. Performed both with constant and nonconstant gridfield variables.
 % * Tests that the simulations produce the same results as the legacy code.

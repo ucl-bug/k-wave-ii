@@ -1,4 +1,4 @@
-%% mustBeEmptyOrComplex
+%% Must Be Empty Or Complex
 % *Package:* kwave.utilities
 %
 % Validate that an input is an empty array or a complex array / scalar.
