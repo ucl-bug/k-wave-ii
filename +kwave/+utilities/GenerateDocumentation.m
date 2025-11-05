@@ -55,7 +55,7 @@ classdef GenerateDocumentation
             end
             addpath(obj.rootPath);
             obj.helpDirHtml = fullfile(obj.rootPath, 'helpfiles');
-            obj.helpDirMd = fullfile(obj.rootPath, 'helpfilesweb');
+            obj.helpDirMd = fullfile(obj.rootPath, 'docs/helpfilesweb');
             obj.createHelpDir;
 
             % Generate HTML and md documentation files.

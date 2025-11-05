@@ -6,6 +6,7 @@
 helpfiles/*
 helpfilesweb/*
 docs/helpfilesweb/*
+!docs/helpfilesweb/helpfiles.md
 
 ######################
 # OS generated files #
