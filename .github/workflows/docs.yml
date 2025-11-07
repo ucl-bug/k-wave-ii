@@ -20,4 +20,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: all-helpfiles
-          path: docs/helpfiles*
+          path: |
+            docs/helpfiles
+            docs/helpfilesweb
