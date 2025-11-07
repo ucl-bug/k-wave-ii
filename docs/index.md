@@ -30,8 +30,8 @@ practice and advance long-term sustainability
 - MATLAB R2023b or later is required to build the documentation.
 - General and developer documentation is written in markdown (`.md`) files inside the `/docs` folder.
 - Code-related documentation is written in `.m` files and can be automatically compiled by calling `kwave.utilities.GenerateDocumentation` in the root folder. This utility compiles the documentation into two formats:
-    - `.html` viewable in the MATLAB help browser. After compiling, the documentation can be viewed by opening the MATLAB help browser and selecting **k-Wave II** from the list of supplemental software.
-    - `.md` that can be further processed with `mkdocs` to produce a standalone webpage in `readthedocs` style.
+    - `.html` viewable in the MATLAB help browser. After compiling, the `html` documentation can be found in `docs/helpfiles` and be viewed by opening the MATLAB help browser and selecting **k-Wave II** from the list of supplemental software.
+    - `.md` that can be further processed with `mkdocs` to produce a standalone webpage in `readthedocs` style. After compiling, the `md` documentation can be found in `docs/helpfilesweb`.
 - Either way, new developers should read the [`Developer Introduction`](developerIntroduction.md).
 
 ### Running the tests

@@ -7,6 +7,6 @@
 	<name>k-Wave II</name>
 	<type>toolbox</type>
 	<icon></icon>
-	<help_location>helpfiles</help_location>
+	<help_location>docs/helpfiles</help_location>
 
 </productinfo>

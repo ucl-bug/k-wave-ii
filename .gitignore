@@ -3,10 +3,8 @@
 ###########
 
 +kwave/+tests/unit-test-artifacts
-helpfiles/*
-helpfilesweb/*
+docs/helpfiles/*
 docs/helpfilesweb/*
-!docs/helpfilesweb/helpfiles.md
 
 ######################
 # OS generated files #

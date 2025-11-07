@@ -37,9 +37,9 @@ The code is grouped into [package folders](https://uk.mathworks.com/help/matlab/
    │   ├── +toolbox        (Main classes and functions)
    │   ├── +tutorials      (Examples and tutorials)
    │   └── +utilities      (Developer tools)
-   └── helpfiles           (Created at html documentation generation time)
-   ├── docs                (Contributor guidelines and other static docs)
-       ├── helpfilesweb    (Populated at md documentation generation time)
+   └── docs                (Contributor guidelines and other static docs)
+       ├── helpfiles       (Created and populated at html documentation generation time)
+       └── helpfilesweb    (Created and populated at md documentation generation time)
 ```
 
 ## Development Workflow
