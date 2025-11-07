@@ -14,13 +14,13 @@ jobs:
         uses: actions/checkout@v3
 
       - run: |
-          "dir C:\Program Files\MATLAB\"
-          "dir C:\Program Files\MATLAB\R2025b"
-          "dir C:\Program Files\MATLAB\R2025b\bin"
+          dir "C:\Program Files\MATLAB\"
+          dir "C:\Program Files\MATLAB\R2025b"
+          dir "C:\Program Files\MATLAB\R2025b\bin"
 
       - name: Build docs
         run: |
-          start "C:\Program Files\MATLAB\R2025b\bin\matlab.exe -batch kwave.utilities.GenerateDocumentation"
+          '& "C:\Program Files\MATLAB\R2025b\bin\matlab.exe" "-batch" "kwave.utilities.GenerateDocumentation"'
 
       - uses: actions/upload-artifact@v4
         with:
