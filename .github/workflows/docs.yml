@@ -19,11 +19,10 @@ jobs:
 
       - run: |
           Get-Location
-          dir
+          ls
 
       - uses: actions/upload-artifact@v4
         with:
           name: all-helpfiles
           path: |
-            docs\helpfiles
-            docs\helpfilesweb
+            docs
