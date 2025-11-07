@@ -66,7 +66,7 @@ When adding a new class or function, examples should be added. If the code usage
 
 The in-code documentation can be automatically compiled by calling `kwave.utilities.GenerateDocumentation`. This parses the individual `.m` files into `.html` and `.md` files using [`publish`](https://uk.mathworks.com/help/matlab/ref/publish.html) and [`export`](https://uk.mathworks.com/help/matlab/ref/export.html) respectively. Additional documentation files that are static and do not have to be automatically generated should be stored in the `docs` folder.
 
-To generate the standalone website with `mkdocs` after the `.md` files have been generated, you need to have `mkdocs` and `literate-nav` in your python environment. Then the website can be served locally with
+To generate the standalone website with `mkdocs` after the `.md` files have been generated, you need to have `mkdocs`, `literate-nav`, and `pymdown-extensions` in your python environment. Then the website can be served locally with
 ```
 mkdocs serve --livereload
 ```
