@@ -116,7 +116,7 @@ kwave.toolbox.Logger.error('Grid:incorrectInputSize', 'gridSpacing must be a sca
 
 ## Class and Function Documentation
 
-Classes should be written using [methods in separate files](https://uk.mathworks.com/help/matlab/matlab_oop/methods-in-separate-files.html). Class and function documentation should be written using [publishing markup](https://uk.mathworks.com/help/matlab/matlab_prog/marking-up-matlab-comments-for-publishing.html) following [the template](helpfilesweb/classDocsExample.md). The following structure and headings should be used (to open the template in the MATLAB Editor, `edit('kwave.docfiles.general.classDocsExample')`).
+Classes should be written using [methods in separate files](https://uk.mathworks.com/help/matlab/matlab_oop/methods-in-separate-files.html). Class and function documentation should be written using [publishing markup](https://uk.mathworks.com/help/matlab/matlab_prog/marking-up-matlab-comments-for-publishing.html) following [the template](helpfilesweb/classDocsExample.md) (to open the template in the MATLAB Editor, `edit('kwave.docfiles.general.classDocsExample')`). The following structure and headings should be used
 
 -  functionName or className 
 -  Syntax 

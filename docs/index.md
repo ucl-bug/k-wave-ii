@@ -25,17 +25,12 @@ practice and advance long-term sustainability
 - No MATLAB toolboxes are required to use k-Wave-II. However, running the unit tests requires the signal processing toolbox for the reference `sinc` function.
 - If importing the k-Wave-II namespace (using `import kwave.toolbox.*`) it is recommended that k-Wave-I is NOT on the MATLAB path to avoid naming conflicts.
 
-### Building the documentation
-
-- MATLAB R2023b or later is required to build the documentation.
-- General and developer documentation is written in markdown (`.md`) files inside the `/docs` folder.
-- Code-related documentation is written in `.m` files and can be automatically compiled by calling `kwave.utilities.GenerateDocumentation` in the root folder. This utility compiles the documentation into two formats:
-    - `.html` viewable in the MATLAB help browser. After compiling, the `html` documentation can be found in `docs/helpfiles` and be viewed by opening the MATLAB help browser and selecting **k-Wave II** from the list of supplemental software.
-    - `.md` that can be further processed with `mkdocs` to produce a standalone webpage in `readthedocs` style. After compiling, the `md` documentation can be found in `docs/helpfilesweb`.
-- Either way, new developers should read the [`Developer Introduction`](developerIntroduction.md).
-
 ### Running the tests
 
 - Tests are written using the MATLAB unit testing framework. To run the tests locally, call:
    - `kwave.tests.runTests(TestType=kwave.tests.TestType.unit)`
    - `kwave.tests.runTests(TestType=kwave.tests.TestType.linting)`
+
+## Contributing
+
+New developers should read the developer docs inside the `docs` folder.
