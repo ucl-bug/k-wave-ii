@@ -73,7 +73,7 @@ General and developer documentation that is static and does not have to be autom
 - `.html`, using [`publish`](https://uk.mathworks.com/help/matlab/ref/publish.html). After compiling, the `html` documentation can be found in `docs/helpfiles` and can be viewed by opening the MATLAB help browser and selecting **k-Wave II** from the list of supplemental software.
 - `.md`, using [`export`](https://uk.mathworks.com/help/matlab/ref/export.html). After compiling, the `md` documentation can be found in `docs/helpfilesweb` and can be further processed with `mkdocs` to produce a standalone webpage in `readthedocs` style.
 
-To generate the standalone website with `mkdocs` after the `.md` files have been generated, you need to have `mkdocs`, `literate-nav`, and `pymdown-extensions` in your python environment. Then the website can be served locally with
+To generate the standalone website with `mkdocs` after the `.md` files have been generated, you need to have a few packages in your python environment, so run `pip install -r requirements.txt` first. Then the website can be served locally with
 ```
 mkdocs serve --livereload
 ```

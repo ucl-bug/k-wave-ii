@@ -1,0 +1,3 @@
+mkdocs
+mkdocs-literate-nav
+pymdown-extensions
