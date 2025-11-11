@@ -17,8 +17,10 @@ jobs:
         run: |
           & "C:\Program Files\MATLAB\R2025b\bin\matlab.exe" "-batch" "kwave.utilities.GenerateDocumentation"
 
-      - run: |
+      - name: Test docs
+        run: |
           & "docs\test_doc_generation.ps1"
+          & "py" "docs\test_doc_generation.py"
 
       - uses: actions/upload-artifact@v4
         with:
