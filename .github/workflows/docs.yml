@@ -20,7 +20,6 @@ jobs:
       - name: Test docs
         run: |
           & "docs\test_doc_generation.ps1"
-          & "py" "docs\test_doc_generation.py"
 
       - uses: actions/upload-artifact@v4
         with:

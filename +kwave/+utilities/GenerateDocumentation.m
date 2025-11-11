@@ -61,26 +61,26 @@ classdef GenerateDocumentation
             % Generate HTML and md documentation files.
             generalDocsFilenames = obj.generateDocFiles('/+kwave/+docfiles/+general', '.');
             tutorialsFilenames = obj.generateDocFiles('/+kwave/+tutorials/+initialvalueproblems', 'Tutorials', evalCode=true, showCode=false);
-            %toolboxFilenames = obj.generateDocFiles('/+kwave/+toolbox', 'Toolbox_Functions');
-            %testFilenames = obj.generateDocFiles('/+kwave/+tests', 'Test_Functions');
-            %utilityFilenames = obj.generateDocFiles('/+kwave/+utilities', 'Utility_Functions');
+            toolboxFilenames = obj.generateDocFiles('/+kwave/+toolbox', 'Toolbox_Functions');
+            testFilenames = obj.generateDocFiles('/+kwave/+tests', 'Test_Functions');
+            utilityFilenames = obj.generateDocFiles('/+kwave/+utilities', 'Utility_Functions');
 
             % Build helptoc.
             obj.helpTocStart;
             obj.helpTocAddSection(generalDocsFilenames, '', addHeader=false);
             obj.helpTocAddSection(tutorialsFilenames, 'Tutorials');
-            %obj.helpTocAddSection(toolboxFilenames, 'Toolbox Functions');
-            %obj.helpTocAddSection(testFilenames, 'Test Functions');
-            %obj.helpTocAddSection(utilityFilenames, 'Utility Functions');
+            obj.helpTocAddSection(toolboxFilenames, 'Toolbox Functions');
+            obj.helpTocAddSection(testFilenames, 'Test Functions');
+            obj.helpTocAddSection(utilityFilenames, 'Utility Functions');
             obj.helpTocFinish;
 
             % Build SUMMARY.md for each subfolder/subsection
             % We don't need a SUMMARY.md for the generalDocs, as it's only
             % the Class Example file and we don't want it in a subheading.
             obj.tocMd(tutorialsFilenames, 'Tutorials');
-            %obj.tocMd(toolboxFilenames, 'Toolbox_Functions');
-            %obj.tocMd(testFilenames, 'Test_Functions', excludeClassMethods=false);
-            %obj.tocMd(utilityFilenames, 'Utility_Functions');
+            obj.tocMd(toolboxFilenames, 'Toolbox_Functions');
+            obj.tocMd(testFilenames, 'Test_Functions', excludeClassMethods=false);
+            obj.tocMd(utilityFilenames, 'Utility_Functions');
 
             % Build searchable docs.
             disp('Generating search database...');
