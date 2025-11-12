@@ -9,18 +9,21 @@ markdown_extensions:
       generic: true
 
 extra_javascript:
-  - javascripts/config.js
-  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
   
 nav:
   - Home: index.md
   - About:
     - Licence: LICENSE.md
-  - Help: helpfilesweb/
+  - Help:
+    - Template Class: helpfilesweb/classDocsExample.md
+    - Tutorials: helpfilesweb/Tutorials/
+    - Toolbox Functions: helpfilesweb/Toolbox_Functions/
+    - Test Functions: helpfilesweb/Test_Functions/
+    - Utility Functions: helpfilesweb/Utility_Functions/
   - Developer docs:
     - Intro: developerIntroduction.md
     - Standard: codingStandard.md
-    - Class example: helpfilesweb/classDocsExample.md
   
 theme: readthedocs
