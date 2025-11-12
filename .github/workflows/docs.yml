@@ -20,9 +20,7 @@ jobs:
       - name: Test docs
         shell: bash
         run: |
-          python --version
-          python3 --version
-          python docs/test_doc_generation.py
+          source docs/test_doc_generation.sh
 
       - uses: actions/upload-artifact@v4
         with:
