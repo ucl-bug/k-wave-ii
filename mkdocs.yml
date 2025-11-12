@@ -17,13 +17,14 @@ nav:
   - About:
     - Licence: LICENSE.md
   - Help:
-    - Template Class: helpfilesweb/classDocsExample.md
     - Tutorials: helpfilesweb/Tutorials/
     - Toolbox Functions: helpfilesweb/Toolbox_Functions/
-    - Test Functions: helpfilesweb/Test_Functions/
     - Utility Functions: helpfilesweb/Utility_Functions/
   - Developer docs:
     - Intro: developerIntroduction.md
-    - Standard: codingStandard.md
+    - Coding Standard: codingStandard.md
+    - Template Class: helpfilesweb/classDocsExample.md
+    - Test Functions: helpfilesweb/Test_Functions/
+    - Developer Tools : helpfilesweb/Developer_Tools/
   
 theme: readthedocs

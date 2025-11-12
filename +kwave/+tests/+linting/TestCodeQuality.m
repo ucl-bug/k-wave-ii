@@ -73,7 +73,7 @@ classdef TestCodeQuality < matlab.unittest.TestCase
         function testCyclomaticComplexity(~)
 
             % Get list of changed files.
-            changedFiles = kwave.utilities.gitChangedFiles(true);
+            changedFiles = kwave.devtools.gitChangedFiles(true);
 
             % Exclude any files not in the toolbox folder.
             changedFiles(~contains(changedFiles, '+toolbox')) = [];

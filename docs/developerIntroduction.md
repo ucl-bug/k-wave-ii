@@ -27,7 +27,8 @@ The code is grouped into [package folders](https://uk.mathworks.com/help/matlab/
    │   ├── PULL_REQUEST_TEMPLATE  (GitHub pull request template)
    │   └── workflows       (GitHub actions)
    ├── +kwave
-   │   ├── +docfiles       (Documentation files)
+   │   ├── +devtools       (Developer tools)
+   |   ├── +docfiles       (Documentation files)
    │   │   └── +general    (Additional Documentation Pages)
    │   ├── +legacy         (Copy of k-Wave I)
    │   ├── +tests          (Tests)
@@ -36,7 +37,7 @@ The code is grouped into [package folders](https://uk.mathworks.com/help/matlab/
    │   │   └── +unit       (Unit tests)
    │   ├── +toolbox        (Main classes and functions)
    │   ├── +tutorials      (Examples and tutorials)
-   │   └── +utilities      (Developer tools)
+   │   └── +utilities      (Other tools)
    └── docs                (Contributor guidelines and other static docs)
        ├── helpfiles       (Created and populated at html documentation generation time)
        └── helpfilesweb    (Created and populated at md documentation generation time)
@@ -68,7 +69,7 @@ When adding a new class or function, examples should be added. If the code usage
 
 _MATLAB R2023b or later is required to build the documentation._
 
-General and developer documentation that is static and does not have to be automatically generated from the code, should be written in markdown (`.md`) files inside the `/docs` folder. The in-code documentation is written in the `.m` files and can be automatically compiled by calling `kwave.utilities.GenerateDocumentation` in the root folder. This utility compiles the documentation into two formats:
+General and developer documentation that is static and does not have to be automatically generated from the code, should be written in markdown (`.md`) files inside the `/docs` folder. The in-code documentation is written in the `.m` files and can be automatically compiled by calling `kwave.devtools.GenerateDocumentation` in the root folder. This utility compiles the documentation into two formats:
 
 - `.html`, using [`publish`](https://uk.mathworks.com/help/matlab/ref/publish.html). After compiling, the `html` documentation can be found in `docs/helpfiles` and can be viewed by opening the MATLAB help browser and selecting **k-Wave II** from the list of supplemental software.
 - `.md`, using [`export`](https://uk.mathworks.com/help/matlab/ref/export.html). After compiling, the `md` documentation can be found in `docs/helpfilesweb` and can be further processed with `mkdocs` to produce a standalone webpage in `readthedocs` style.
