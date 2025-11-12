@@ -17,11 +17,6 @@ jobs:
         run: |
           & "C:\Program Files\MATLAB\R2025b\bin\matlab.exe" "-batch" "kwave.utilities.GenerateDocumentation"
 
-      - name: Setup Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.9"
-
       - name: Test docs
         shell: bash
         run: |
