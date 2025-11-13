@@ -1,5 +1,5 @@
 %% Parse Title
-% *Package:* kwave.utilities
+% *Package:* kwave.devtools
 %
 % Convenience function to extract the text appearing on the first line of
 % an m-file after the characters "%% ".

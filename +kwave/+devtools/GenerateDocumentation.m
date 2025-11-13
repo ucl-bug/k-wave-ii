@@ -1,10 +1,10 @@
 %% GenerateDocumentation
-% *Package:* kwave.utilities
+% *Package:* kwave.devtools
 %
 % Generate help documentation.
 %
 %% Syntax
-%   kwave.utilities.GenerateDocumentation
+%   kwave.devtools.GenerateDocumentation
 %
 %% Description
 % |GenerateDocumentation| is a static class that is called to generate the
@@ -54,8 +54,8 @@ classdef GenerateDocumentation
                 obj.rootPath = [filesep obj.rootPath];
             end
             addpath(obj.rootPath);
-            obj.helpDirHtml = fullfile(obj.rootPath, 'helpfiles');
-            obj.helpDirMd = fullfile(obj.rootPath, 'helpfilesweb');
+            obj.helpDirHtml = fullfile(obj.rootPath, 'docs/helpfiles');
+            obj.helpDirMd = fullfile(obj.rootPath, 'docs/helpfilesweb');
             obj.createHelpDir;
 
             % Generate HTML and md documentation files.
@@ -64,13 +64,14 @@ classdef GenerateDocumentation
             toolboxFilenames = obj.generateDocFiles('/+kwave/+toolbox', 'Toolbox_Functions');
             testFilenames = obj.generateDocFiles('/+kwave/+tests', 'Test_Functions');
             utilityFilenames = obj.generateDocFiles('/+kwave/+utilities', 'Utility_Functions');
+            devtoolsFilenames = obj.generateDocFiles('/+kwave/+devtools', 'Developer_Tools');
 
             % Build helptoc.
             obj.helpTocStart;
-            obj.helpTocAddSection(generalDocsFilenames, '', addHeader=false);
+            %obj.helpTocAddSection(generalDocsFilenames, '', addHeader=false);
             obj.helpTocAddSection(tutorialsFilenames, 'Tutorials');
             obj.helpTocAddSection(toolboxFilenames, 'Toolbox Functions');
-            obj.helpTocAddSection(testFilenames, 'Test Functions');
+            %obj.helpTocAddSection(testFilenames, 'Test Functions');
             obj.helpTocAddSection(utilityFilenames, 'Utility Functions');
             obj.helpTocFinish;
 
@@ -81,6 +82,7 @@ classdef GenerateDocumentation
             obj.tocMd(toolboxFilenames, 'Toolbox_Functions');
             obj.tocMd(testFilenames, 'Test_Functions', excludeClassMethods=false);
             obj.tocMd(utilityFilenames, 'Utility_Functions');
+            obj.tocMd(devtoolsFilenames, 'Developer_Tools');
 
             % Build searchable docs.
             disp('Generating search database...');
@@ -168,7 +170,7 @@ classdef GenerateDocumentation
 
                 % Extract title used for entry in helptoc.xml from first
                 % line of code documentation.
-                mFilenames(ind).title = kwave.utilities.parseTitle(fullfile(mFilenames(ind).folder, mFilenames(ind).name));
+                mFilenames(ind).title = kwave.devtools.parseTitle(fullfile(mFilenames(ind).folder, mFilenames(ind).name));
 
                 % Publish to html.
                 htmlFile = publish(filename, ...
@@ -189,7 +191,7 @@ classdef GenerateDocumentation
                 % Converts the .m file into a .mlx file and saves it.
                 matlab.internal.liveeditor.openAndSave(inputFunctionFullFileName, fullFileNameMLX);
                 % Exports the .mlx file into a .md file.
-                export(fullFileNameMLX, fullFileNameMD, Format="markdown", Run=options.evalCode, HideCode=~options.showCode, RenderLaTeXOnline="png");
+                export(fullFileNameMLX, fullFileNameMD, Format="markdown", Run=options.evalCode, HideCode=~options.showCode);
                 % Deletes the intermediate .mlx file
                 delete(fullFileNameMLX);
 
