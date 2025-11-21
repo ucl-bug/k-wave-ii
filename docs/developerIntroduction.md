@@ -98,3 +98,8 @@ The filenames for all tests should start with `Test`. Unit tests should be named
 
 The linting tests check for code complexity using [cylomatic complexity](https://uk.mathworks.com/help/matlab/matlab_prog/measure-code-complexity-using-cyclomatic-complexity.html), which is a measure of the decision structure complexity of the code. The complexity of all files changed in a pull request is automatically added to pull requests as part of the code checks action. While a particular number isn't enforced, both developers and reviewers should consider whether a re\-factoring is appropriate if the cylomatic complexity is above 10.
 
+To run the tests locally, call:
+
+- `kwave.tests.runTests(TestType=kwave.tests.TestType.unit)`
+- `kwave.tests.runTests(TestType=kwave.tests.TestType.linting)`
+

@@ -47,4 +47,6 @@ If you have a question or you need some help, please use the [discussions featur
 
 ## Contributing
 
-You are also very welcome to contribute to the code and open pull requests for new features and bug fixes. New developers should read the developer docs first, starting with the [contributor guidelines](CONTRIBUTING.md).
+The user community is very welcome to contribute to the code and open pull requests for new features and bug fixes. New developers should read the developer docs first, starting with the [contributor guidelines](CONTRIBUTING.md).
+
+We also welcome further involvement by people wishing to review developers' code contributions and help the community of developers grow. Please contact the maintainers if you are interested to be a code reviewer.
