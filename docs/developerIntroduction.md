@@ -43,19 +43,6 @@ The code is grouped into [package folders](https://uk.mathworks.com/help/matlab/
        └── helpfilesweb    (Created and populated at md documentation generation time)
 ```
 
-## Development Workflow
-
-The k\-Wave development workflow broadly follows [GitHub flow](http://scottchacon.com/2011/08/31/github-flow):
-
-1.  Anything in the main branch is deployable.
-2. To work on something new, create a descriptively named branch off of main, starting with the issue number, e.g., `62-implement-pml-class`.
-3. Commit to that branch locally and regularly push your work to the same named branch on the server.
-4. Label commit messages with the issue number, e.g., `commit -m "#62: Basic class structure"`
-5. When you need feedback or help, or you think the branch is ready for merging, open a pull request.
-6. After someone else has reviewed and signed off on the feature, you can merge it into main.
-
-For experienced git users, `git rebase` should be avoided if multiple people might be contributing to a branch (use `git merge` instead). If merging to main locally, to maintain the history of the feature branches, `git merge --no-ff` (the default if merging via GitHub).
-
 ## Writing And Building The Documentation
 
 Part of the success of k\-Wave can be attributed to the good documentation, both of the individual functions and classes, and the examples. All code should be documented as outlined in the [Coding Standard](codingStandard.md). It can often be easiest to start with the [documentation template](helpfilesweb/classDocsExample.md).
