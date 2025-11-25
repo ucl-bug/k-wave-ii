@@ -28,6 +28,7 @@ For experienced git users, `git rebase` should be avoided if multiple people mig
 
 ## Conditions for merging a PR
 
+Only the k-wave-ii maintainers can merge PRs into any of the branches of the upstream repo.
 The pull request template will guide you through the requirements to get your changes approved and merged by the maintainers. For reference, those are
 
 - If adding a new function or class, add appropriate tests. See the [developer docs](../developerIntroduction#testing-framework) for more details.
