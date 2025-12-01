@@ -12,10 +12,15 @@ The k\-Wave development workflow follows [git-flow](https://nvie.com/posts/a-suc
 git clone https://github.com/YOUR-USER-NAME/k-wave-ii
 ```
 - Any code development you would like to contribute to k-wave-ii, has to relate to an already reported issue in the upstream repo. For existing issues under active development, an appropriate feature branch would already exist. Those are descriptively named, starting with the issue number, e.g., `62-implement-pml-class`. If an appropriate feature branch does not exist, [open an issue](../#getting-help) in the upstream repo to request one. You will then need to re-synch your fork and `git pull` to get that branch locally.
-- Create a branch off the feature branch you want to contribute to, and switch to it.
+- Create a branch off the feature branch you want to contribute to, and switch to it, e.g.
 ```
 git checkout 62-implement-pml-class
-git switch -c 62-implement-pml-class-getters
+git switch -c 75-implement-pml-class-getters
+```
+Note that, in this case, your development refers to a different issue (`75` in this fictional example), that should ideally be a [sub-issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/adding-sub-issues) of the larger feature issue (`62` in this example).  
+If you want to work on the parent issue directly, use its number instead, together with something that identifies you in the name of the branch, e.g.
+```
+git switch -c 62-implement-pml-class-YOUR_USER_NAME
 ```
 
 **Now that you are ready to code, please read the [developers intro](developerIntroduction.md) and [coding standard](codingStandard.md)!**

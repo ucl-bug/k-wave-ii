@@ -19,7 +19,7 @@ practice and advance long-term sustainability
 
 The current release is _XX.YY.ZZ (link to the Changelog/Release notes here)_.
 
-We aim to release a new version of the toolbox every _MonthX_ and _MonthY_, with patches issued in-between as needed. If you want to use the latest features between releases, you can clone the [github repo](https://github.com/ucl-bug/k-wave-ii/tree/main) and use the `develop` branch. If you choose to do that, please keep in mind that those features might not be complete yet, and therefore we would appreciate your feedback and your patience.
+We aim to release a new version of the toolbox every May and November, with patches issued in-between as needed. If you want to use the latest features between releases, you can clone the [github repo](https://github.com/ucl-bug/k-wave-ii/tree/main) and use the `develop` branch. If you choose to do that, please keep in mind that those features might not be complete yet, and therefore we would appreciate your feedback and your patience.
 
 Every k-wave-ii release is guaranteed to work with all releases of MATLAB after the minimum (see [Minimum requirements](#minimum-requirements)), until the latest one before the release was made.
 
@@ -41,7 +41,7 @@ We are a very small team maintaining this toolbox, and we would like it to be co
 
 If you would like to report a bug or request a new feature, first check the [existing issues](https://github.com/ucl-bug/k-wave-ii/issues) in the github repo and contribute to the discussion if it is already reported. If it is not, please open a new issue, using the appropriate template. And then, why not contribute to the fix or improvement! Check the section on [contributing](#contributing).
 
-_We endeavour to review and triage new issues every week._
+We endeavour to review and triage new issues every week.
 
 If you have a question or you need some help, please use the [discussions feature](https://github.com/ucl-bug/k-wave-ii/discussions) in the github repo. Hopefully someone from the community, either a maintainer, developer, or user will be able to assist you.
 
