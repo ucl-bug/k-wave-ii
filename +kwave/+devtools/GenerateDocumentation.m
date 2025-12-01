@@ -68,10 +68,8 @@ classdef GenerateDocumentation
 
             % Build helptoc.
             obj.helpTocStart;
-            %obj.helpTocAddSection(generalDocsFilenames, '', addHeader=false);
             obj.helpTocAddSection(tutorialsFilenames, 'Tutorials');
             obj.helpTocAddSection(toolboxFilenames, 'Toolbox Functions');
-            %obj.helpTocAddSection(testFilenames, 'Test Functions');
             obj.helpTocAddSection(utilityFilenames, 'Utility Functions');
             obj.helpTocFinish;
 
@@ -325,10 +323,10 @@ classdef GenerateDocumentation
             end
             
             if options.addHeader
-                obj.addToXML(['<tocitem>' heading]);
+                obj.addToXML(['<tocitem target="' strrep(heading,' ','_') '.html">' heading]);
             end
             for ind = 1:length(mFilenames)
-                if ~mFilenames(ind).isClassMethod
+                if ~mFilenames(ind).isClassMethod &&  ~strcmp(mFilenames(ind).htmlFileName, [strrep(heading,' ','_') '.html'])
                     obj.addToXML(['<tocitem target="' mFilenames(ind).htmlFileName '">' mFilenames(ind).title '</tocitem>']);
                 end
             end
@@ -361,7 +359,7 @@ classdef GenerateDocumentation
             outputFullFolderName = fullfile(obj.helpDirMd,mdSubFolder);
             filename = fullfile(outputFullFolderName, 'SUMMARY.md');
             for ind = 1:length(mFilenames)
-                if (options.excludeClassMethods && ~mFilenames(ind).isClassMethod) || ~options.excludeClassMethods
+                if ((options.excludeClassMethods && ~mFilenames(ind).isClassMethod) || ~options.excludeClassMethods) &&  ~strcmp(mFilenames(ind).mdFileName, [strrep(mdSubFolder,' ','_') '.md'])
                     writelines(['* [' mFilenames(ind).title '](' mFilenames(ind).mdFileName ')'], filename, 'WriteMode','append');
                 end
             end
