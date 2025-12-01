@@ -1,3 +1,3 @@
 %% Tutorials
 % * |t01_homogeneousMedium2D|
-% * |t02_AcousticSolverExample|
+% * |t02_AcousticSolverExamples|

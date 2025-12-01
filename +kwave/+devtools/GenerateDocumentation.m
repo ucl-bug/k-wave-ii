@@ -216,6 +216,12 @@ classdef GenerateDocumentation
             % Add relative links to class methods from class documentation.
             for ind1 = 1:numFiles
                 for ind2 = 1:numFiles
+                    % Add links to the contents of the toc headers while we
+                    % are here
+                    [~, bareFilename, ~] = fileparts(mFilenames(ind1).name);
+                    if strcmp(bareFilename, mdSubFolder) && ~mFilenames(ind2).isClassMethod && ~strcmp(mFilenames(ind2).htmlFileName, [mdSubFolder '.html'])
+                        obj.fixLinks(mFilenames(ind1), mFilenames(ind2), outputFullFolderName);
+                    end
                     if mFilenames(ind1).isClass && mFilenames(ind2).isClassMethod && strcmp(mFilenames(ind2).className, mFilenames(ind1).name)
                         obj.fixLinks(mFilenames(ind1), mFilenames(ind2), outputFullFolderName);
                     end
