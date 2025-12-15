@@ -14,16 +14,17 @@ extra_javascript:
   
 nav:
   - Home: index.md
-  - About:
-    - Licence: LICENSE.md
+  - Contributor guidelines: CONTRIBUTING.md
+  - Licence: LICENSE.md
   - Help:
     - Tutorials: helpfilesweb/Tutorials/
     - Toolbox Functions: helpfilesweb/Toolbox_Functions/
     - Utility Functions: helpfilesweb/Utility_Functions/
   - Developer docs:
-    - Intro: developerIntroduction.md
+    - Developer intro: developerIntroduction.md
     - Coding Standard: codingStandard.md
     - Template Class: helpfilesweb/classDocsExample.md
+    - Maintainer guidelines: maintainerDocs.md
     - Test Functions: helpfilesweb/Test_Functions/
     - Developer Tools : helpfilesweb/Developer_Tools/
   

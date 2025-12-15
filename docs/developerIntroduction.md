@@ -43,19 +43,6 @@ The code is grouped into [package folders](https://uk.mathworks.com/help/matlab/
        └── helpfilesweb    (Created and populated at md documentation generation time)
 ```
 
-## Development Workflow
-
-The k\-Wave development workflow broadly follows [GitHub flow](http://scottchacon.com/2011/08/31/github-flow):
-
-1.  Anything in the main branch is deployable.
-2. To work on something new, create a descriptively named branch off of main, starting with the issue number, e.g., `62-implement-pml-class`.
-3. Commit to that branch locally and regularly push your work to the same named branch on the server.
-4. Label commit messages with the issue number, e.g., `commit -m "#62: Basic class structure"`
-5. When you need feedback or help, or you think the branch is ready for merging, open a pull request.
-6. After someone else has reviewed and signed off on the feature, you can merge it into main.
-
-For experienced git users, `git rebase` should be avoided if multiple people might be contributing to a branch (use `git merge` instead). If merging to main locally, to maintain the history of the feature branches, `git merge --no-ff` (the default if merging via GitHub).
-
 ## Writing And Building The Documentation
 
 Part of the success of k\-Wave can be attributed to the good documentation, both of the individual functions and classes, and the examples. All code should be documented as outlined in the [Coding Standard](codingStandard.md). It can often be easiest to start with the [documentation template](helpfilesweb/classDocsExample.md).
@@ -64,6 +51,8 @@ When adding a new class or function, examples should be added. If the code usage
 
 1.  **Tutorials:** These are worked examples stored as `.m` files in the  `kwave.tutorials` name space. For tutorials, each block of code should be surrounded by a discussion guiding the user through the example. The discussion should be written using  [publishing markup](https://uk.mathworks.com/help/matlab/matlab_prog/marking-up-matlab-comments-for-publishing.html). Similar to k\-Wave I, concepts introduced in other tutorials do not need to be re\-introduced. Try and focus on a relatively small number of new concepts in each tutorial. The tutorial code should generally run fast on basic hardware (< 1 min).
 2. **Examples:** These are illustrative examples stored as `.m` files in the  `kwave.examples` name space. Examples have a wider scope than tutorials, and may demonstrate a real\-world simulation using realistic grid sizes for example (so do not necessarily need to run fast). Examples should contain a comprehensive description of what the example does in the description of the file, but does not need to have long step\-by\-step.
+
+Please remember to also add the new class, function or tutorial/example file in the appropriate section header file (`Toolbox_Functions.m`, `Tutorials.m` or `Utility_Functions.m`).
 
 ### Building The Documentation
 
@@ -110,4 +99,9 @@ The filenames for all tests should start with `Test`. Unit tests should be named
 
 
 The linting tests check for code complexity using [cylomatic complexity](https://uk.mathworks.com/help/matlab/matlab_prog/measure-code-complexity-using-cyclomatic-complexity.html), which is a measure of the decision structure complexity of the code. The complexity of all files changed in a pull request is automatically added to pull requests as part of the code checks action. While a particular number isn't enforced, both developers and reviewers should consider whether a re\-factoring is appropriate if the cylomatic complexity is above 10.
+
+To run the tests locally, call:
+
+- `kwave.tests.runTests(TestType=kwave.tests.TestType.unit)`
+- `kwave.tests.runTests(TestType=kwave.tests.TestType.linting)`
 
