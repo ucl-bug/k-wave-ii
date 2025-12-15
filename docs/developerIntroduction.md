@@ -52,6 +52,8 @@ When adding a new class or function, examples should be added. If the code usage
 1.  **Tutorials:** These are worked examples stored as `.m` files in the  `kwave.tutorials` name space. For tutorials, each block of code should be surrounded by a discussion guiding the user through the example. The discussion should be written using  [publishing markup](https://uk.mathworks.com/help/matlab/matlab_prog/marking-up-matlab-comments-for-publishing.html). Similar to k\-Wave I, concepts introduced in other tutorials do not need to be re\-introduced. Try and focus on a relatively small number of new concepts in each tutorial. The tutorial code should generally run fast on basic hardware (< 1 min).
 2. **Examples:** These are illustrative examples stored as `.m` files in the  `kwave.examples` name space. Examples have a wider scope than tutorials, and may demonstrate a real\-world simulation using realistic grid sizes for example (so do not necessarily need to run fast). Examples should contain a comprehensive description of what the example does in the description of the file, but does not need to have long step\-by\-step.
 
+Please remember to also add the new class, function or tutorial/example file in the appropriate section header file (`Toolbox_Functions.m`, `Tutorials.m` or `Utility_Functions.m`).
+
 ### Building The Documentation
 
 _MATLAB R2023b or later is required to build the documentation._

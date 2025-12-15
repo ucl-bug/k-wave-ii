@@ -26,7 +26,7 @@ git switch -c 62-implement-pml-class-YOUR_USER_NAME
 **Now that you are ready to code, please read the [developers intro](developerIntroduction.md) and [coding standard](codingStandard.md)!**
 
 - Commit to that branch locally and regularly push your work to the same named branch on the fork.
-- Label commit messages with the issue number, e.g., `commit -m "#62: Basic class structure"`
+- Label commit messages with the issue number, e.g., `git commit -m "#62: Basic class structure"`
 - If you need feedback or help but your branch is not ready to merge, open a draft pull request (PR) from your branch in your fork, to the feature branch in the upstream repo. Likewise, when you think the branch is ready for merging, open a (normal) PR, or convert your draft one to a normal PR, and request a code review.
 
 For experienced git users, `git rebase` should be avoided if multiple people might be contributing to a branch (use `git merge` instead).

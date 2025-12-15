@@ -9,7 +9,7 @@ Toolbox releases distributed via Matlab are built from the `main` branch (`maste
 
 ## Before coding
 
-Maintainers should review issues regularly and place them appropriately in the repo project board, to be worked on immediately or in the future. Any issues to be worked on should have corresponding feature or bugfix branches opened. 
+Maintainers should review issues regularly and place them appropriately in the repo [project board](https://github.com/orgs/ucl-bug/projects/3/views/1), to be worked on immediately or in the future. Any issues to be worked on should have corresponding feature or bugfix branches opened. 
 
 Feature branches should branch off `develop` and bugfix branches off whichever is the most stable branch the bug is found in.
 
@@ -30,9 +30,7 @@ You should also review the code changes themselves. Please be constructive and r
 
 *If you think you need to take over development on someone else's PR, always ask them first.*
 
-Only maintainers can merge PRs into the feature branch. Merges need at least one approving review and all the automated tests to pass. You should also make sure that you have ticked all the checkboxes on the template. Once all this is done, you can merge.
-
-***Need to decide here if we do squash merges***
+Only maintainers can merge PRs into the feature branch. Merges need at least one approving review and all the automated tests to pass. You should also make sure that you have ticked all the checkboxes on the template. Once all this is done you can merge, using a normal merge, not squash (those are used for releases only).
 
 <Maintainers can override that protection, but they are strongly advised not to. This measure is there only for emergencies, not to be abused.>
 
