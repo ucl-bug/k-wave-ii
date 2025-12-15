@@ -68,10 +68,8 @@ classdef GenerateDocumentation
 
             % Build helptoc.
             obj.helpTocStart;
-            %obj.helpTocAddSection(generalDocsFilenames, '', addHeader=false);
             obj.helpTocAddSection(tutorialsFilenames, 'Tutorials');
             obj.helpTocAddSection(toolboxFilenames, 'Toolbox Functions');
-            %obj.helpTocAddSection(testFilenames, 'Test Functions');
             obj.helpTocAddSection(utilityFilenames, 'Utility Functions');
             obj.helpTocFinish;
 
@@ -218,6 +216,17 @@ classdef GenerateDocumentation
             % Add relative links to class methods from class documentation.
             for ind1 = 1:numFiles
                 for ind2 = 1:numFiles
+                    % Add links to the contents of the toc headers while we
+                    % are here. Those toc html files have the same name as
+                    % the mdSubFolder of the documentation section
+                    % (strcmp(bareFilename, mdSubFolder)). We do not want to
+                    % link in the toc the class method files (~mFilenames(ind2).isClassMethod),
+                    % or the toc file itself
+                    % (~strcmp(mFilenames(ind2).htmlFileName, [mdSubFolder '.html'])
+                    [~, bareFilename, ~] = fileparts(mFilenames(ind1).name);
+                    if strcmp(bareFilename, mdSubFolder) && ~mFilenames(ind2).isClassMethod && ~strcmp(mFilenames(ind2).htmlFileName, [mdSubFolder '.html'])
+                        obj.fixLinks(mFilenames(ind1), mFilenames(ind2), outputFullFolderName);
+                    end
                     if mFilenames(ind1).isClass && mFilenames(ind2).isClassMethod && strcmp(mFilenames(ind2).className, mFilenames(ind1).name)
                         obj.fixLinks(mFilenames(ind1), mFilenames(ind2), outputFullFolderName);
                     end
@@ -225,16 +234,19 @@ classdef GenerateDocumentation
             end
         end
 
-        % Given a filename object that contains a class and a filename object 
-        % that contains a method of this class, add a relative link to the 
-        % class method from the class documentation in both html and md.
+        % Given a source filename object "fromObj" that contains references
+        % to other files, and a filename destination object "toObj" that
+        % contains the file that is referred to, add a relative link to the 
+        % destination file from the source file in both html and md.
+        % This function is used to fix links in documentation between
+        % classes and their methods, among other things.
         % The md output folder path has to be given as well, because it
         % contains a subfolder.
-        function fixLinks(obj, classObj, methodObj, outputFullFolderName)
+        function fixLinks(obj, fromObj, toObj, outputFullFolderName)
 
-            disp(['Replacing html links to method ', methodObj.name, ' from class ', classObj.name]);
-            [~, methodName, ~] = fileparts(methodObj.name);
-            htmlFileName = classObj.htmlFileName;
+            disp(['Replacing html links to file ', toObj.name, ' from file ', fromObj.name]);
+            [~, methodName, ~] = fileparts(toObj.name);
+            htmlFileName = fromObj.htmlFileName;
             htmlFile = fullfile(obj.helpDirHtml, htmlFileName);
 
             % Read in HTML file.
@@ -249,13 +261,13 @@ classdef GenerateDocumentation
             % snippets.
             fileContents = strrep(fileContents.', ...
                 ['<tt>' methodName '</tt>'], ...
-                ['<tt>' obj.generateLink(methodObj.htmlFileName, methodName) '</tt>']);
+                ['<tt>' obj.generateLink(toObj.htmlFileName, methodName) '</tt>']);
             fid = fopen(htmlFile, 'w');
             fprintf(fid, '%s', fileContents.');
             fclose(fid);
 
-            disp(['Replacing md links to method ', methodObj.name, ' from class ', classObj.name]);
-            mdFileName = classObj.mdFileName;
+            disp(['Replacing md links to file ', toObj.name, ' from file ', fromObj.name]);
+            mdFileName = fromObj.mdFileName;
             mdFile = fullfile(outputFullFolderName, mdFileName);
 
             % Read in md file.
@@ -268,7 +280,7 @@ classdef GenerateDocumentation
             % in the search to avoid adding links to code snippets.
             fileContents = strrep(fileContents.', ...
                 ['`' methodName '`'], ...
-                ['[' methodName '](' methodObj.mdFileName ')']);
+                ['[' methodName '](' toObj.mdFileName ')']);
             fid = fopen(mdFile, 'w');
             fprintf(fid, '%s', fileContents.');
             fclose(fid);
@@ -325,10 +337,10 @@ classdef GenerateDocumentation
             end
             
             if options.addHeader
-                obj.addToXML(['<tocitem>' heading]);
+                obj.addToXML(['<tocitem target="' strrep(heading,' ','_') '.html">' heading]);
             end
             for ind = 1:length(mFilenames)
-                if ~mFilenames(ind).isClassMethod
+                if ~mFilenames(ind).isClassMethod &&  ~strcmp(mFilenames(ind).htmlFileName, [strrep(heading,' ','_') '.html'])
                     obj.addToXML(['<tocitem target="' mFilenames(ind).htmlFileName '">' mFilenames(ind).title '</tocitem>']);
                 end
             end
@@ -361,7 +373,9 @@ classdef GenerateDocumentation
             outputFullFolderName = fullfile(obj.helpDirMd,mdSubFolder);
             filename = fullfile(outputFullFolderName, 'SUMMARY.md');
             for ind = 1:length(mFilenames)
-                if (options.excludeClassMethods && ~mFilenames(ind).isClassMethod) || ~options.excludeClassMethods
+                % Exclude the header toc files from SUMMARY.md as well,
+                % those are only needed for the html (~strcmp(mFilenames(ind).mdFileName, [strrep(mdSubFolder,' ','_') '.md'])
+                if ((options.excludeClassMethods && ~mFilenames(ind).isClassMethod) || ~options.excludeClassMethods) &&  ~strcmp(mFilenames(ind).mdFileName, [strrep(mdSubFolder,' ','_') '.md'])
                     writelines(['* [' mFilenames(ind).title '](' mFilenames(ind).mdFileName ')'], filename, 'WriteMode','append');
                 end
             end
