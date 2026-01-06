@@ -5,8 +5,6 @@
 % * |AcousticSolver|
 % * |AcousticSource|
 % * |ComplexSource|
-% * |ElectromagneticMedium|
-% * |ElectromagneticSource|
 % * |FourierCollocation|
 % * |Grid|
 % * |GridField|
