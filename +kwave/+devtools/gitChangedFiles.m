@@ -1,5 +1,5 @@
-%% gitChangedFiles
-% *Package:* kwave.utilities
+%% git Changed Files
+% *Package:* kwave.devtools
 %
 % Return a list of files changed on current git branch.
 %

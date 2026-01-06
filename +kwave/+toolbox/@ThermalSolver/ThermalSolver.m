@@ -79,6 +79,11 @@
 %
 %% Properties
 % * |temperature| - (numeric) Temperature field [degC].
+%
+%% Methods
+% * |autoComputeTimeStep|
+% * |executeTimeStep|
+% * |setInitialConditions|
 
 % Copyright (C) 2022- University College London.
 %

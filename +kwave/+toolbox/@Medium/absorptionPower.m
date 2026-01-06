@@ -1,4 +1,4 @@
-%% absorptionPower
+%% Absorption Power
 % *Class:* kwave.toolbox.Medium
 % *Package:* kwave.toolbox
 %
@@ -8,8 +8,8 @@
 %   absorptionPower(obj)
 %
 %% Description
-% sets and recalls the absorption Power y spatial distribution according to the materialIDGrid,
-% and the MaterialTable given as part of the medium. 
+% Sets and recalls the absorption Power y spatial distribution according to the |materialIDGrid|,
+% and the |MaterialTable| given as part of the medium. 
 % 
 % This is performed by generating the padded Density and removing the PML.
 % The resulting values are then averaged across the grid to produce a

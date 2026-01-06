@@ -1,4 +1,4 @@
-%% runTests
+%% Run Tests
 % Run tests.
 %
 %% Syntax

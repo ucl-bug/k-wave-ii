@@ -1,4 +1,4 @@
-%% specificHeat
+%% Specific Heat
 % *Class:* kwave.toolbox.Medium
 % *Package:* kwave.toolbox
 %
@@ -8,8 +8,8 @@
 %   specificHeat(obj)
 %
 %% Description
-% recalls the specific heat spatial distribution according to the materialIDGrid,
-% and the MaterialTable given as part of the medium. this is performed by
+% Recalls the specific heat spatial distribution according to the |materialIDGrid|,
+% and the |MaterialTable| given as part of the medium. this is performed by
 % generating the padded Density and removing the PML.
 %
 %% See Also

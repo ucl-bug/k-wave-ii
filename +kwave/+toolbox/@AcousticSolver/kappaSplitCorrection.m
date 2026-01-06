@@ -1,4 +1,4 @@
-%% kappaSplitCorrection
+%% kappa Split Correction
 % *Class:* kwave.toolbox.AcousticSolver
 % *Package:* kwave.toolbox
 %

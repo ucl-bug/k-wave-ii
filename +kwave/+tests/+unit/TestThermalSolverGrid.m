@@ -7,6 +7,7 @@
 %
 %% Description
 % Runs the following tests for the ThermalSolver:
+%
 % * Verifies simulations in homogeneous media match exact solution
 
 classdef TestThermalSolverGrid < kwave.tests.unit.AbstractTestGrid

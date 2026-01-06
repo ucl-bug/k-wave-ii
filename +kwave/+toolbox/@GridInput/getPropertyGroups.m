@@ -1,8 +1,8 @@
-%% getPropertyGroups
+%% Get Property Groups
 % *Class:* kwave.toolbox.GridInput
 % *Package:* kwave.toolbox
 %
-% Overloads the matlab.mixin.CustomDisplay method to return a property
+% Overloads the |matlab.mixin.CustomDisplay| method to return a property
 % group for enhanced display in the MATLAB command window.
 %
 %% Syntax

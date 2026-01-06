@@ -1,4 +1,4 @@
-%% displayGridSize
+%% Display Grid Size
 % *Class:* kwave.toolbox.Grid
 % *Package:* kwave.toolbox
 %
@@ -9,7 +9,7 @@
 %
 %% Description
 % Displays the input and computational grid sizes using
-% kwave.toolbox.Logger.info.
+% |kwave.toolbox.Logger.info|.
 
 function displayGridSize(obj)
 

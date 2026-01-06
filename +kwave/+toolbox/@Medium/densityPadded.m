@@ -1,4 +1,4 @@
-%% densityPadded
+%% The Density Padded
 % *Class:* kwave.toolbox.Medium
 % *Package:* kwave.toolbox
 %
@@ -8,14 +8,14 @@
 %   densityPadded(obj)
 %
 %% Description
-% recalls the density spatial distribution according to the materialIDGrid,
-% using the generated materialIDGridPadded, and the given MaterialTable 
+% Recalls the density spatial distribution according to the |materialIDGrid|,
+% using the generated |materialIDGridPadded|, and the given |MaterialTable| 
 % from the medium.
 %
 % This method has been generated to allow interactions with the acoustic
-% solver class, and the acousticMedium grid field property density (densityPadded)
-% as well as with the thermalSolver class and the thermalMedium gridfield
-% property density (densityPadded)
+% solver class, and the |acousticMedium| grid field property density (|densityPadded|)
+% as well as with the |thermalSolver| class and the |thermalMedium| gridfield
+% property density (|densityPadded|)
 
 % Copyright (C) 2025- The k-Wave Authors.
 %

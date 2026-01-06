@@ -1,4 +1,4 @@
-%% specificHeatPadded
+%% Specific Heat Padded
 % *Class:* kwave.toolbox.Medium
 % *Package:* kwave.toolbox
 %
@@ -8,12 +8,13 @@
 %   specificHeatPadded(obj)
 %
 %% Description
-% recalls the specificHeat spatial distribution according to the materialIDGrid,
-% using the generated materialIDGridPadded, and the given MaterialTable 
+% Recalls the specificHeat spatial distribution according to the |materialIDGrid|,
+% using the generated |materialIDGridPadded|, and the given |MaterialTable| 
 % from the medium.
 %
-% This method has been generated to allow interactions with the thermalSolver
-% class, and the thermalMedium gridfield property specificHeat (specificHeatPadded)
+% This method has been generated to allow interactions with the
+% |thermalSolver|
+% class, and the |thermalMedium| gridfield property |specificHeat| (|specificHeatPadded|)
 
 % Copyright (C) 2025- The k-Wave Authors.
 %

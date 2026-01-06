@@ -1,4 +1,4 @@
-%% soundSpeedPadded
+%% Sound Speed Padded
 % *Class:* kwave.toolbox.Medium
 % *Package:* kwave.toolbox
 %
@@ -8,12 +8,12 @@
 %   soundSpeedPadded(obj)
 %
 %% Description
-% recalls the sound Speed spatial distribution according to the materialIDGrid,
-% using the generated materialIDGridPadded, and the given MaterialTable 
+% Recalls the sound Speed spatial distribution according to the |materialIDGrid|,
+% using the generated |materialIDGridPadded|, and the given |MaterialTable| 
 % from the medium.
 %
 % This method has been generated to allow interactions with the acoustic
-% solver class, and the acousticMedium grid field property soundSpeed (soundSpeedPadded)
+% solver class, and the acousticMedium grid field property soundSpeed (|soundSpeedPadded|)
 
 % Copyright (C) 2025- The k-Wave Authors.
 %

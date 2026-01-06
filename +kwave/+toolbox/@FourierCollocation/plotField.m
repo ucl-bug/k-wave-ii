@@ -1,4 +1,4 @@
-%% plotField
+%% Plot Field
 % *Class:* kwave.toolbox.FourierCollocation
 % *Package:* kwave.toolbox
 %
@@ -10,8 +10,9 @@
 %% Description
 % Plots the provided field using the plot settings defined in the
 % |kwave.toolbox.Settings| object. For 1D and 2D inputs, the complete field
-% is plotted using |<matlab:doc('plot') plot>| and |<matlab:doc('imagesc')
-% imagesc>|, respectively. For 3D inputs, the three orthogonal planes
+% is plotted using |<https://uk.mathworks.com/help/matlab/ref/plot.html plot>| 
+% and |<https://uk.mathworks.com/help/matlab/ref/imagesc.html imagesc>|, 
+% respectively. For 3D inputs, the three orthogonal planes
 % through the origin are plotted.
 %
 %% Input Arguments

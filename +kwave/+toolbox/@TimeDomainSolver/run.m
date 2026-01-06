@@ -1,4 +1,4 @@
-%% run
+%% The Run Method
 % *Class:* kwave.toolbox.TimeDomainSolver
 % *Package:* kwave.toolbox
 %
