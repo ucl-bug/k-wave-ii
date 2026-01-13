@@ -32,7 +32,7 @@ classdef TestAcousticMedium < kwave.tests.unit.AbstractTestGridInput
             source = AcousticSource(kgrid);
             testCase.verifyError(@() AcousticSolver(kgrid, medium, source, []), 'AcousticSolver:InvalidMediumType');
         end
+        
     end
-
 
 end

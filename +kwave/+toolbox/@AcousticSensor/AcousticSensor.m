@@ -20,10 +20,10 @@ classdef AcousticSensor < kwave.toolbox.Sensor
         velocitySensor char {mustBeMember( velocitySensor, {'on','off','ongrid'})} = 'off'
         densitySensor char {mustBeMember( densitySensor, {'on','off'})} = 'off'
 
-        pressure=[];
-        velocity=[];
-        density=[];
-        times=[];
+        pressure = [];
+        velocity = [];
+        density  = [];
+        times    = [];
     end
 
     methods(Access=public)
