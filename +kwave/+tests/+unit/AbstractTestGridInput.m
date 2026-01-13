@@ -2,11 +2,11 @@
 % *Package:* kwave.tests.unit
 % *Superclasses:* matlab.unittest.TestCase
 %
-% Superclass for medium unit tests.
+% Superclass for GridInput unit tests.
 %
 %% Description
-% Abstract test class for testing medium property classes derived from
-% |GridInput|. Derived classes must define four abstract properties. The
+% Abstract test class for testing property classes derived from
+% |GridInput|. Derived classes must define six abstract properties. The  
 % first defines the medium class name, and the others define cell arrays of
 % the medium properties names for the class under test:
 %
@@ -28,7 +28,7 @@
 %   {'soundSpeedReference'}|.
 % * |inputPropertiesVectorField| - Cell array of property names for values that
 %   must be vector fields. For example, |inputPropertiesScalar =
-%   {'initialElectricField'}|.
+%   {'initialVelocity'}|.
 %
 % Derived classes must also contain a test methods block (which can be
 % empty) so that the tests run:

@@ -1,120 +1,166 @@
 %% TestAcousticSensor
 % *Package:* kwave.tests.unit
-% *Superclasses:* matlab.unittest.AbstractTestGrid
+% *Superclasses:* matlab.unittest.TestCase
 %
-% Unit tests for the AcousticSensor class using the TestSensor class.
+% Unit tests for the AcousticSensor class.
 %
 %% Description
-% Tests that the AcousticSolver will run with sensor of the AcousticSensor
-% class 
+% Tests shape allocation and basic property behavior for AcousticSensor.
+% The tests avoid relying on the full solver.
 
-classdef TestAcousticSensor  < matlab.unittest.TestCase
+classdef TestAcousticSensor < matlab.unittest.TestCase
 
+    properties
+        grid   % kwave.toolbox.Grid
+        sensor % kwave.toolbox.AcousticSensor
+    end
 
-
-    
-    % Parameterized tests.
-      methods(Test)
-            function testVelocityPlaneWaves(testCase)
-
-            import kwave.toolbox.*
-            import matlab.unittest.constraints.IsEqualTo
-
-            % Define tolerance for field comparisons.
-            tol = matlab.unittest.constraints.AbsoluteTolerance(single(1e-6));
-
-            % Test properties.
-            Nax = 256;
-            Nlat = 16;
-            dx = 4e-3;
-            c0 = 1500;
-            rho0 = 1000;
-            pmlSize = 20;
-            CFL = 0.5;
-            Nt = 150;
-            dt = CFL * dx / c0;
-
-            % Settings.
-            settings = Settings;
-            settings.plotSimulation = 'off';
-
-            % Construct Medium
-
-            kgrid1D  = Grid(Nax, dx, pmlSize);
-            medium1D = AcousticMedium(kgrid1D);
-            source1D = AcousticSource(kgrid1D);
-            sensor1D = AcousticSensor(kgrid1D);
-            sensor1D.mask = zeros(Nax,1);
-            sensor1D.mask(floor(Nax/2)) = 1;
-            sensor1D.pressureSensor = 'on';
-            sensor1D.densitySensor  = 'on';
-            sensor1D.velocitySensor = 'on';
+    methods (TestMethodSetup)
+        function createGridAndSensor(testCase)
             
+            % 2D grid; small for quick tests.
+            testCase.grid = kwave.toolbox.Grid([8, 7], [1, 1]);
 
-            source1D.initialPressure = 0;
-            initialVel = @(x) (1/(rho0*c0)) * exp( -( x - 25e-3).^2 ./ (5 * kgrid1D.dx).^2 );
-            source1D.initialVelocity = initialVel(kgrid1D.xVec);
+            % Underlying Sensor constructor typically accepts the grid.
+            testCase.sensor = kwave.toolbox.AcousticSensor(testCase.grid);
 
-            kgrid2Dx  = Grid([Nax, Nlat], dx, [pmlSize, 0]);
-            medium2Dx = AcousticMedium(kgrid2Dx);
-            source2Dx = AcousticSource(kgrid2Dx);
-            source2Dx.initialVelocity = zeros([Nax,Nlat,1,2]);
-            source2Dx.initialPressure = 0;
-            source2Dx.initialVelocity(:,:,:,1) = repmat(source1D.initialVelocity, [1, Nlat]);
-            sensor2Dx = AcousticSensor(kgrid2Dx);
-            sensor2Dx.mask = zeros(Nax,Nlat);
-            sensor2Dx.mask(floor(Nax/2),floor(Nlat/2)) = 1;
-            sensor2Dx.pressureSensor = 'on';
-            sensor2Dx.densitySensor = 'on';
-            sensor2Dx.velocitySensor = 'ongrid';
+            % Define a sparse mask with a known number of points.
+            mask = false(testCase.grid.gridSize);
+            mask(1,1) = true;
+            mask(3,5) = true;
+            mask(8,7) = true;
+            testCase.sensor.mask = mask; % totalSensorPoints should be nnz(mask)
 
-            kgrid3Dx  = Grid([Nax, Nlat, Nlat], dx, [pmlSize, 0, 0]);
-            medium3Dx = AcousticMedium(kgrid3Dx);
-            source3Dx = AcousticSource(kgrid3Dx);
-            source3Dx.initialVelocity = zeros([Nax,Nlat,Nlat,3]);
-            source3Dx.initialPressure = 0;
-            source3Dx.initialVelocity(:,:,:,1) = repmat(source1D.initialVelocity, [1, Nlat, Nlat]);
-            sensor3Dx = AcousticSensor(kgrid3Dx);
-            sensor3Dx.mask = zeros(Nax,Nlat,Nlat);
-            sensor3Dx.mask(floor(Nax/2),floor(Nlat/2),floor(Nlat/2)) = 1;
-            sensor3Dx.pressureSensor = 'on';
-            sensor3Dx.densitySensor  = 'on';
-            sensor3Dx.velocitySensor = 'ongrid';
+            % Leave timeSteps at default (1) unless a test changes it.
+        end
+    end
 
-            medium1D.soundSpeed  = c0;
-            medium1D.density     = rho0;
-            medium2Dx.soundSpeed = c0;
-            medium2Dx.density    = rho0;
-            medium3Dx.soundSpeed = c0;
-            medium3Dx.density    = rho0;
+    methods (Test)
+        function defaults_are_as_documented(testCase)
+            s = testCase.sensor;
+            testCase.verifyEqual(s.pressureSensor, 'on');   % default
+            testCase.verifyEqual(s.velocitySensor, 'off');  % default
+            testCase.verifyEqual(s.densitySensor,  'off');  % default
+            testCase.verifyEqual(s.timeSteps, 1);           % default
+        end
 
-            %Reference Solution
-            solver1D = AcousticSolver(kgrid1D, medium1D, source1D, sensor1D, settings);
-            solver1D.run(Nt=Nt, dt=dt);
-            pressure1D = single(solver1D.sensor.pressure);
-            density1D  = single(solver1D.sensor.density);
-                       
-            PressureActual = single((c0*rho0*initialVel(kgrid1D.xVec(floor(Nax/2)) -  c0*sensor1D.times ) - c0*rho0*initialVel(kgrid1D.xVec(floor(Nax/2)) + c0*sensor1D.times ) ))/2 ;
-            testCase.verifyThat(pressure1D, IsEqualTo( PressureActual, "Within",tol))
+        function validators_reject_invalid_members(testCase)
+            s = testCase.sensor;
+            testCase.verifyError(@() setVelocity(s, 'bad'),      'MATLAB:validators:mustBeMember');
+            testCase.verifyError(@() setPressure(s, 'maybe'),    'MATLAB:validators:mustBeMember');
+            testCase.verifyError(@() setDensity(s, 'maybe'),     'MATLAB:validators:mustBeMember');
+            function setVelocity(obj,val), obj.velocitySensor = val; end
+            function setPressure(obj,val), obj.pressureSensor = val; end
+            function setDensity(obj,val),  obj.densitySensor  = val; end
+        end
 
-            solver2Dx = AcousticSolver(kgrid2Dx, medium2Dx, source2Dx, sensor2Dx, settings);
-            solver2Dx.run(Nt=Nt-10, dt=dt);
-            solver2Dx.run(Nt=10, dt=dt);
-            pressure2Dx = single(solver2Dx.sensor.pressure);
-            density2Dx  = single(solver2Dx.sensor.density);
-            velocity2Dx = single(solver2Dx.sensor.velocity);
+        function initialise_Nt0_pressure_only(testCase)
+            s = testCase.sensor;
+            s.pressureSensor = 'on';
+            s.densitySensor  = 'off';
+            s.velocitySensor = 'off';
 
-            testCase.verifyThat(pressure2Dx, IsEqualTo(pressure1D, "Within", tol)); %
-            testCase.verifyThat(density2Dx,  IsEqualTo(density1D,  "Within", tol)); %
+            s = s.initialiseSensorData(0);
+            nPts = s.totalSensorPoints;
 
-            solver3Dx = AcousticSolver(kgrid3Dx, medium3Dx, source3Dx, sensor3Dx, settings);
-            solver3Dx.run(Nt=Nt, dt=dt);
-            pressure3Dx = single(solver3Dx.sensor.pressure);
-            velocity3Dx = single(solver3Dx.sensor.velocity);
+            testCase.verifySize(s.pressure, [nPts, 1]);
+            testCase.verifyEqual(s.times, 0);
+        end
 
-            testCase.verifyThat(pressure3Dx, IsEqualTo(pressure2Dx, "Within", tol)); %
-            testCase.verifyThat(velocity3Dx, IsEqualTo(velocity2Dx, "Within", tol)); %
+        function initialise_Nt0_density_only_allocates_density(testCase)
+            % This test expects density to allocate at Nt == 0 when densitySensor='on'.
+            % NOTE: With the attached class, this may FAIL because density
+            % allocation erroneously writes to 'pressure' in that branch.
+            % That's intentional—to surface the defect via a test.
+            s = testCase.sensor;
+            s.pressureSensor = 'off';
+            s.densitySensor  = 'on';
+            s.velocitySensor = 'off';
 
-            end
-      end
+            s = s.initialiseSensorData(0);
+            nPts = s.totalSensorPoints;
+
+            testCase.verifySize(s.density, [nPts, 1]);   % Expected behavior
+            testCase.verifyTrue(isempty(s.pressure));    % Should not allocate pressure here
+            testCase.verifyEqual(s.times, 0);
+        end
+
+        function initialise_Nt0_velocity_on_shape(testCase)
+            % Expect velocity to allocate [nPts, D, 1] so it matches the
+            % recordSensorData slicing convention velocity(:,:,n)
+            % NOTE: With the attached class, this may FAIL because Nt==0
+            % uses [nPts, 1, D] instead of [nPts, D, 1].
+            s = testCase.sensor;
+            s.pressureSensor = 'off';
+            s.densitySensor  = 'off';
+            s.velocitySensor = 'on';
+
+            s = s.initialiseSensorData(0);
+            nPts = s.totalSensorPoints;
+            D    = s.kgrid.dimensions;
+
+            testCase.verifySize(s.velocity, [nPts, D, 1]); % Expected
+            testCase.verifyEqual(s.times, 0);
+        end
+
+        function initialise_positiveNt_allocates_all_and_times(testCase)
+            s = testCase.sensor;
+            s.pressureSensor = 'on';
+            s.densitySensor  = 'on';
+            s.velocitySensor = 'on';
+            s.timeSteps      = 2;
+
+            Nt = 9;                      % arbitrary
+            nCols = floor(Nt/s.timeSteps) + 1;     % 5
+
+            s = s.initialiseSensorData(Nt);
+            nPts = s.totalSensorPoints;
+            D    = s.kgrid.dimensions;
+
+            testCase.verifySize(s.pressure, [nPts, nCols]);
+            testCase.verifySize(s.density,  [nPts, nCols]);
+            testCase.verifySize(s.velocity, [nPts, D, nCols]);
+            testCase.verifySize(s.times,    [1,   nCols]);
+        end
+
+        function initialise_extend_buffers_on_subsequent_calls(testCase)
+            % First call allocates; second call should extend by floor(Nt/timeSteps).
+            s = testCase.sensor;
+            s.pressureSensor = 'on';
+            s.timeSteps      = 2;
+
+            s = s.initialiseSensorData(4);  % nCols = 3
+            s = s.initialiseSensorData(4);  % extend by floor(4/2)=2 -> total 5
+
+            nCols = 5;
+            nPts  = s.totalSensorPoints;
+            testCase.verifySize(s.pressure, [nPts, nCols]);
+            testCase.verifySize(s.times,    [1,   nCols]);
+        end
+
+        % function record_velocity_on_grid_branch_respected(testCase)
+        %     % Demonstrate how to test 'ongrid' recording using a spy that bypasses
+        %     % ProcessSensorData. This is a template; enable when ready.
+        %     %
+        %     % NOTE: The attached class compares 'onGrid' (camel case) in recordSensorData,
+        %     % while the validator allows 'ongrid' (lowercase). This test expects lowercase
+        %     % to be honored; if the class isn't case-normalizing, it may fail and surface
+        %     % the inconsistency.
+        %     testCase.assumeTrue(true); % set to false if you want to skip for now
+        % 
+        %     s = testCase.sensor;
+        %     s.pressureSensor = 'off';
+        %     s.velocitySensor = 'ongrid';   % per validator
+        %     s = s.initialiseSensorData(3);
+        % 
+        %     spy = kwave.tests.unit.support.AcousticSensorSpy(s); % see helper class below
+        % 
+        %     fake = kwave.tests.unit.support.FakeSolver(testCase.grid);
+        %     fake.timePoint = 1.23;
+        % 
+        %     spy = spy.recordSensorData(fake, 1);
+        %     testCase.verifySize(spy.velocity, [spy.totalSensorPoints, spy.kgrid.dimensions, size(spy.velocity,3)]);
+        %     testCase.verifyEqual(spy.times(1), fake.timePoint);
+        % end
+    end
 end

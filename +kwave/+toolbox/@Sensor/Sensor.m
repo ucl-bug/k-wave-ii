@@ -20,12 +20,12 @@ classdef Sensor < kwave.toolbox.GridInput
     properties(Constant, Hidden=true)
         requiredProperties = {'mask'};
         gridFields = kwave.toolbox.GridField.createGridFieldsMap([
-            kwave.toolbox.GridField('mask', Attributes={'real', 'finite'})
-            ]);
+            kwave.toolbox.GridField('mask', Classes={'logical','numeric'},... 
+            Attributes={'binary'})]);
     end
 
     properties
-        timeSteps(1,1) single {mustBeInteger, mustBeFinite, mustBePositive} = 1;
+        timeSteps(1,1) {mustBeInteger, mustBeFinite, mustBePositive} = 1;
     end
 
     properties(Hidden)
@@ -40,7 +40,7 @@ classdef Sensor < kwave.toolbox.GridInput
         end
         function obj=multiDimMask(obj)
             obj.multiDimMask=zeros(obj.kgrid.gridSize,obj.kgrid.dimensions);
-            for dim=1;obj.kgrid.dimensions
+            for dim=1:obj.kgrid.dimensions
                 obj.multiDimMask(:,:,:,dim)=obj.kgrid.returnWithoutGridPadding(obj.maskPadded);
             end
         end
@@ -49,8 +49,8 @@ classdef Sensor < kwave.toolbox.GridInput
             if ~strcmp(string,'sum')
                 SensorOutput=zeros(obj.totalSensorPoints,dim);
                 for dimension=1:dim
-                    Var=Variable(:,:,:,dim);
-                    SensorOutput(:,dim)=Var(mask==1);
+                    Var=Variable(:,:,:,dimension);
+                    SensorOutput(:,dimension)=Var(mask==1);
                 end
             else
                 SensorOutput=zeros(obj.totalSensorPoints,1);
