@@ -25,20 +25,22 @@
 % get methods that add and remove the grid padding.
 %
 %% Input Arguments
-% * |kgrid| - (kwave.toolbox.Grid) Object which defines the simulation grid
-%   size. 
-% * |medium| - (kwave.toolbox.GridInput) Object which defines the medium
-%   properties. 
-% * |source| - (kwave.toolbox.GridInput) Object which defines the source
-%   properties. 
-% * |sensor| - ...Not yet implemented...
+% * |kgrid|    - (kwave.toolbox.Grid) Object which defines the simulation
+%                grid size. 
+% * |medium|   - (kwave.toolbox.GridInput) Object which defines the medium
+%                properties. 
+% * |source|   - (kwave.toolbox.GridInput) Object which defines the source
+%                properties. 
+% * |sensor|   - (kwave.toolbox.sensor) Object which defines the sensor
+%                properties. 
 % * |settings| - (kwave.toolbox.Settings) Object which defines the
-%   simulation settings.
+%                simulation settings. 
 %
 %% Properties
-% * |prevTimeStep| - (single) Size of the time step used in the last call
-%   to |run|. Set to an empty array if |run| hasn't been called.
-% * |timeArray| - (single) Time points at which update steps were taken.
+% * |prevTimeStep|   - (single) Size of the time step used in the last call
+%                      to |run|. Set to an empty array if |run| hasn't been
+%                      called. 
+% * |timeArray|      - (single) Time points at which update steps were taken.
 % * |timeStepsTaken| - (integer) Number of time steps taken.
 %
 %% Methods
@@ -50,7 +52,7 @@
 % * |kwave.toolbox.GridInput|
 % * |kwave.toolbox.Settings|
 
-% Copyright (C) 2022- University College London.
+% Copyright (C) 2024- University College London.
 %
 % This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
 % software: you can redistribute it and/or modify it under the terms of the
