@@ -101,6 +101,11 @@ classdef(Abstract) Solver < kwave.toolbox.FourierCollocation
             if (source.kgrid ~= kgrid)
                 kwave.toolbox.Logger.error('Solver:gridMismatch', 'The source input references a different Grid object to the kgrid input.');
             end
+            if isprop(sensor,'kgrid')
+                if (sensor.kgrid ~= kgrid)
+                    kwave.toolbox.Logger.error('Solver:gridMismatch', 'The source input references a different Grid object to the kgrid input.');
+                end
+            end
 
             % Check the required input properties have been defined.
             medium.checkRequiredProperties;
