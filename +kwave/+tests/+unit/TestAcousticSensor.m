@@ -67,9 +67,6 @@ classdef TestAcousticSensor < matlab.unittest.TestCase
 
         function initialise_Nt0_density_only_allocates_density(testCase)
             % This test expects density to allocate at Nt == 0 when densitySensor='on'.
-            % NOTE: With the attached class, this may FAIL because density
-            % allocation erroneously writes to 'pressure' in that branch.
-            % That's intentional—to surface the defect via a test.
             s = testCase.sensor;
             s.pressureSensor = 'off';
             s.densitySensor  = 'on';
@@ -84,8 +81,6 @@ classdef TestAcousticSensor < matlab.unittest.TestCase
         function initialise_Nt0_velocity_on_shape(testCase)
             % Expect velocity to allocate [nPts, D, 1] so it matches the
             % recordSensorData slicing convention velocity(:,:,n)
-            % NOTE: With the attached class, this may FAIL because Nt==0
-            % uses [nPts, 1, D] instead of [nPts, D, 1].
             s = testCase.sensor;
             s.pressureSensor = 'off';
             s.densitySensor  = 'off';
@@ -99,12 +94,12 @@ classdef TestAcousticSensor < matlab.unittest.TestCase
 
         function initialise_positiveNt_allocates_all_and_times(testCase)
             s = testCase.sensor;
-            s.pressureSensor = 'on';
-            s.densitySensor  = 'on';
-            s.velocitySensor = 'on';
-            s.timeSteps      = 2;
+            s.pressureSensor  = 'on';
+            s.densitySensor   = 'on';
+            s.velocitySensor  = 'on';
+            s.timeStepSpacing = 2;
             Nt = 9;                      % arbitrary
-            nCols = floor(Nt/s.timeSteps) + 1;     % 5
+            nCols = floor(Nt/s.timeStepSpacing) + 1;     % 5
             s = s.initialiseSensorData(Nt);
             nPts = s.totalSensorPoints;
             D    = s.kgrid.dimensions;
@@ -117,8 +112,8 @@ classdef TestAcousticSensor < matlab.unittest.TestCase
         function initialise_extend_buffers_on_subsequent_calls(testCase)
             % First call allocates; second call should extend by floor(Nt/timeSteps).
             s = testCase.sensor;
-            s.pressureSensor = 'on';
-            s.timeSteps      = 2;
+            s.pressureSensor  = 'on';
+            s.timeStepSpacing = 2;
             s = s.initialiseSensorData(4);  % nCols = 3
             s = s.initialiseSensorData(4);  % extend by floor(4/2)=2 -> total 5
             nCols = 5;
