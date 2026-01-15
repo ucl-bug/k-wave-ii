@@ -27,20 +27,22 @@ classdef AcousticSensor < kwave.toolbox.Sensor
     end
 
     methods(Access=public)
+
+
         function obj=initialiseSensorData(obj,Nt)
             id=0;
             if Nt==0
                  if strcmp(obj.pressureSensor,'on') && isempty(obj.pressure)
                     id=1;
-                    obj.pressure=zeros(obj.totalSensorPoints,1);
+                    obj.pressure = single(zeros(obj.totalSensorPoints,1));
                  end
                  if strcmp(obj.densitySensor,'on') && isempty(obj.density)
                     id=1;
-                    obj.density=zeros(obj.totalSensorPoints,1);
+                    obj.density = single(zeros(obj.totalSensorPoints,1));
                  end
                  if (strcmp(obj.velocitySensor,'on') || strcmp(obj.velocitySensor,'ongrid')) && isempty(obj.velocity)
                     id=1;
-                    obj.velocity=zeros(obj.totalSensorPoints,obj.kgrid.dimensions,1);
+                    obj.velocity = single(zeros(obj.totalSensorPoints,obj.kgrid.dimensions,1));
                  end
                  if id==1
                     obj.times=0;
@@ -81,25 +83,28 @@ classdef AcousticSensor < kwave.toolbox.Sensor
 
             end
         end
+    
+        % Assign the acoustic variables to the sensors
+        function obj = recordSensorData(obj,solver,n)
 
-        function obj =recordSensorData(obj,Solver,n)
+            import kwave.toolbox.FourierCollocation
 
             if strcmp(obj.pressureSensor,'on')
-                obj.pressure(:,n)=obj.ProcessSensorData(Solver.pressure,1,'none');
+                obj.pressure(:,n) = obj.ProcessSensorData(solver.pressure,1,'none');
             end
             if strcmp(obj.densitySensor,'on')
-                obj.density(:,n)=obj.ProcessSensorData(Solver.densitySplit,obj.kgrid.dimensions,'sum');
+                obj.density(:,n) = obj.ProcessSensorData(solver.densitySplit,obj.kgrid.dimensions,'sum');
             end
             if strcmp(obj.velocitySensor,'on')
-                obj.velocity(:,:,n)=obj.ProcessSensorData(Solver.velocity,obj.kgrid.dimensions,'none');
+                obj.velocity(:,:,n) = obj.ProcessSensorData(solver.velocity,obj.kgrid.dimensions,'none');
             elseif strcmp(obj.velocitySensor,'ongrid')
-                GridVelocityPadded=zeros(size(Solver.velocityPadded));
-                for dim=1:Solver.kgrid.dimensions
-                    GridVelocityPadded(:,:,:,dim)=stagger(Solver.velocityPadded(:,:,:,dim),Staggering='backward');
+                GridVelocityPadded = zeros(size(solver.velocityPadded));
+                for dim=1:solver.kgrid.dimensions
+                    GridVelocityPadded(:,:,:,dim) = stagger(solver,solver.velocityPadded(:,:,:,dim),Staggering='backward');
                 end
-                obj.velocity(:,:,n)=obj.ProcessSensorData(Solver.kgrid.returnWithoutGridPadding(GridVelocityPadded),obj.kgrid.dimensions,'none');
+                obj.velocity(:,:,n) = obj.ProcessSensorData(solver.kgrid.returnWithoutGridPadding(GridVelocityPadded),obj.kgrid.dimensions,'none');
             end
-            obj.times(n)=Solver.timePoint;
+            obj.times(n) = solver.timePoint;
         end
 
     end

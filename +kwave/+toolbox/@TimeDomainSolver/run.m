@@ -56,45 +56,45 @@
 
 function run(obj, options)
 
-arguments
-    obj
-    options.Nt {mustBeScalarOrEmpty, mustBeInteger, mustBeNonnegative, mustBeFinite} = []
-    options.dt {mustBeScalarOrEmpty, mustBeNumeric, mustBePositive, mustBeFinite} = []
-    options.CFL {mustBeScalarOrEmpty, mustBeNumeric, mustBePositive, mustBeFinite} = []
-    options.EndTime {mustBeScalarOrEmpty, mustBeNumeric, mustBePositive, mustBeFinite} = []
-end
-
-kwave.utilities.mustBeAllOrNoneEmpty(options.Nt, options.dt)
-if isempty(options.Nt)
-    [options.Nt, options.dt] = obj.autoComputeTimeStep(options.CFL, options.EndTime);
-end
-
-startTime = datetime('now');
-
-kwave.toolbox.Logger.info(['Calling ' class(obj) '.run...']);
-obj.kgrid.displayGridSize();
-kwave.toolbox.Logger.info(['  dt: ' kwave.utilities.scaleSI(options.dt) 's, end time: ' kwave.utilities.scaleSI(options.dt * options.Nt) 's, time steps: ' num2str(options.Nt)]);
-
-if (obj.timeStepsTaken==0)
-    % Set initial conditions.
-    obj.setInitialConditions;
-    if ~isempty(obj.sensor)
-        obj.sensor.initialiseSensorData(options.Nt);
+    arguments
+        obj
+        options.Nt {mustBeScalarOrEmpty, mustBeInteger, mustBeNonnegative, mustBeFinite} = []
+        options.dt {mustBeScalarOrEmpty, mustBeNumeric, mustBePositive, mustBeFinite} = []
+        options.CFL {mustBeScalarOrEmpty, mustBeNumeric, mustBePositive, mustBeFinite} = []
+        options.EndTime {mustBeScalarOrEmpty, mustBeNumeric, mustBePositive, mustBeFinite} = []
     end
-end
-
-
-obj.executeTimeStep(options.Nt, options.dt);
-
-elapsedTime = between(startTime, datetime('now'));
-kwave.toolbox.Logger.info(['  run completed in ' kwave.utilities.formatDuration(elapsedTime)]);
-
-% Update time variables.
-obj.prevTimeStep = options.dt;
-obj.timeStepsTaken = obj.timeStepsTaken + options.Nt;
-if isempty(obj.timeArray)
-    obj.timeArray = (0:(options.Nt)) * options.dt;
-else
-    obj.timeArray = [obj.timeArray, obj.timeArray(end) + (1:options.Nt) * options.dt];
-end
+    
+    kwave.utilities.mustBeAllOrNoneEmpty(options.Nt, options.dt)
+    if isempty(options.Nt)
+        [options.Nt, options.dt] = obj.autoComputeTimeStep(options.CFL, options.EndTime);
+    end
+    
+    startTime = datetime('now');
+    
+    kwave.toolbox.Logger.info(['Calling ' class(obj) '.run...']);
+    obj.kgrid.displayGridSize();
+    kwave.toolbox.Logger.info(['  dt: ' kwave.utilities.scaleSI(options.dt) 's, end time: ' kwave.utilities.scaleSI(options.dt * options.Nt) 's, time steps: ' num2str(options.Nt)]);
+    
+    if (obj.timeStepsTaken==0)
+        % Set initial conditions.
+        obj.setInitialConditions;
+        if ~isempty(obj.sensor)
+            obj.sensor.initialiseSensorData(options.Nt);
+        end
+    end
+    
+    % Take time steps
+    obj.executeTimeStep(options.Nt, options.dt);
+    
+    elapsedTime = between(startTime, datetime('now'));
+    kwave.toolbox.Logger.info(['  run completed in ' kwave.utilities.formatDuration(elapsedTime)]);
+    
+    % Update time variables.
+    obj.prevTimeStep = options.dt;
+    obj.timeStepsTaken = obj.timeStepsTaken + options.Nt;
+    if isempty(obj.timeArray)
+        obj.timeArray = (0:(options.Nt)) * options.dt;
+    else
+        obj.timeArray = [obj.timeArray, obj.timeArray(end) + (1:options.Nt) * options.dt];
+    end
 end

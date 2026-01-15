@@ -157,30 +157,30 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
     % Constructor.
     methods
         function obj = AcousticSolver(kgrid, medium, source, sensor, settings)
+
             arguments
-                kgrid(1,1) kwave.toolbox.Grid
-                medium(1,1) kwave.toolbox.GridInput
-                source(1,1) kwave.toolbox.AcousticSource
-                sensor
+                kgrid(1,1)    kwave.toolbox.Grid
+                medium(1,1)   kwave.toolbox.GridInput
+                source(1,1)   kwave.toolbox.AcousticSource
+                sensor        
                 settings(1,1) kwave.toolbox.Settings = kwave.toolbox.Settings
             end
             
-                if ~(isa(medium, 'kwave.toolbox.Medium') || isa(medium, 'kwave.toolbox.AcousticMedium'))
-                    error('AcousticSolver:InvalidMediumType',...
-                        'medium must be an object of Medium OR AcousticMedium.');
-                end
-
-                if ~(isempty(sensor) || isa(sensor, 'kwave.toolbox.AcousticSensor'))
-                    error('AcousticSolver:InvalidSensorType',...
-                        'sensor must be an AcousticSensor or be left empty [].');
-                end
-
+            %  Check medium and sensor inputs are of the right class
+            if ~(isa(medium, 'kwave.toolbox.Medium') || isa(medium, 'kwave.toolbox.AcousticMedium'))
+                error('AcousticSolver:InvalidMediumType',...
+                    'medium must be an object of Medium or AcousticMedium class.');
+            end
+            if ~(isempty(sensor) || isa(sensor, 'kwave.toolbox.AcousticSensor'))
+                error('AcousticSolver:InvalidSensorType',...
+                    'sensor must be an AcousticSensor object or be left empty [].');
+            end
 
             % Pass input arguments to superclass constructor. This calls
-                % setInitialConditions.
-                obj@kwave.toolbox.TimeDomainSolver(kgrid, medium, source, sensor, settings);
-                % Initialise PML object.
-                obj.pml = kwave.toolbox.SplitFieldPML(obj.kgrid);
+            % setInitialConditions.
+            obj@kwave.toolbox.TimeDomainSolver(kgrid, medium, source, sensor, settings);
+            % Initialise PML object.
+            obj.pml = kwave.toolbox.SplitFieldPML(obj.kgrid);
         end
     end
 

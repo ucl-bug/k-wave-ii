@@ -62,6 +62,7 @@ pmlSG = @(x) obj.pml.applyPML(x, Staggered=true);
 gradient = @(x) obj.gradient(x, Staggering='forward');
 divergence = @(x) obj.divergenceSplit(x, Staggering='backward');
 
+% Stagger the density, if required
 if length(obj.medium.densityPadded)~= 1
     densityPaddedStg=obj.stagger(obj.medium.densityPadded,Stagger='forward', Type='linInterpolate');
 else
@@ -72,12 +73,13 @@ if (obj.settings.plotSimulation)
     fig = figure;
 end
 
-adj=0;
+% 
+adj = 0;
 
 if (obj.timeStepsTaken == 0)
     % Adds a time step if initial conditions need applying.
-    Nt=Nt+1;
-    adj=1;
+    Nt  = Nt+1;
+    adj = 1;
 end
 
 if Nt~=0
@@ -91,24 +93,24 @@ if Nt~=0
                 if isempty(obj.source.initialVelocity)
                     % Sets initial conditions with velocity(t=0)=0 through
                     % assuming V(-t)=v(t).
-                    obj.pressurePadded = obj.pressurePadded + obj.source.initialPressurePadded;
+                    obj.pressurePadded     = obj.pressurePadded + obj.source.initialPressurePadded;
                     obj.densitySplitPadded = obj.densitySplitPadded + obj.source.initialPressurePadded ./ (obj.dimensions * obj.medium.soundSpeedPadded.^2);
-                    obj.velocityPadded = (dt ./ densityPaddedStg) .* gradient(obj.pressurePadded) / 2;
+                    obj.velocityPadded     = (dt ./ densityPaddedStg) .* gradient(obj.pressurePadded) / 2;
 
                 else
-                    % If Velocity Initial condition is given the initial
+                    % If velocity initial condition is given the initial
                     % conditions account for staggering and the offset time
                     % stepping
-                    obj.pressurePadded = obj.pressurePadded + obj.source.initialPressurePadded;
+                    obj.pressurePadded     = obj.pressurePadded + obj.source.initialPressurePadded;
                     obj.densitySplitPadded = obj.densitySplitPadded + obj.source.initialPressurePadded ./ (obj.dimensions * obj.medium.soundSpeedPadded.^2);
                     
-                    initialVelocityDimensional=zeros([obj.kgridPadded.gridSize,obj.kgrid.dimensions])+obj.source.initialVelocityPadded;
+                    initialVelocityDimensional = zeros([obj.kgridPadded.gridSize,obj.kgrid.dimensions]) + obj.source.initialVelocityPadded;
                     for dim=1:obj.kgrid.dimensions
-                        initialVelcoityStaggered=obj.stagger(initialVelocityDimensional(:,:,:,dim), Type='fourier');
+                        initialVelcoityStaggered = obj.stagger(initialVelocityDimensional(:,:,:,dim), Type='fourier');
                         obj.velocityPadded(:,:,:,dim) = obj.velocityPadded(:,:,:,dim) + initialVelcoityStaggered(:,:,:,dim);
                     end
                     clear('initialVelcoityStaggered','initialVelocityDimensional')
-                    obj.prevTimeStep=0;
+                    obj.prevTimeStep = 0;
                     dt = (currentTimeStep)/2;
                     obj.pml.setupQuarticPML(dt, obj.medium.soundSpeedReference);
                     obj.setkSpaceCorrection(currentTimeStep);
@@ -131,7 +133,7 @@ if Nt~=0
 
                 % If absorptionPower declaired then add absorption terms
                 if ~strcmp(obj.absorptionType,'off')
-                    obj.pressurePadded =  obj.pressurePadded  +  obj.medium.soundSpeedPadded.^2 .* ( ...
+                    obj.pressurePadded = obj.pressurePadded  +  obj.medium.soundSpeedPadded.^2 .* ( ...
                         obj.absorbTauPadded .* fracLaplacian(obj, obj.medium.densityPadded .* sum(divergence(obj.velocityPadded),4), obj.medium.absorptionPower/2 -1 ) + ...
                         obj.absorbEtaPadded .* fracLaplacian(obj, sum(obj.densitySplitPadded,4), obj.medium.absorptionPower/2 -0.5 ) ) ;
                 end
@@ -153,9 +155,9 @@ if Nt~=0
             % Pressure density relation.
             obj.pressurePadded = obj.medium.soundSpeedPadded.^2 .* ( sum(obj.densitySplitPadded, 4));
 
-            % If absorptionPower declaired then add absorption terms
+            % If absorptionPower declared then add absorption terms
             if ~strcmp(obj.absorptionType,'off')
-                obj.pressurePadded =  obj.pressurePadded  +  obj.medium.soundSpeedPadded.^2 .* ( ...
+                obj.pressurePadded = obj.pressurePadded  +  obj.medium.soundSpeedPadded.^2 .* ( ...
                     obj.absorbTauPadded .* fracLaplacian(obj, obj.medium.densityPadded .* sum(divergence(obj.velocityPadded),4), obj.medium.absorptionPower/2 -1 ) + ...
                     obj.absorbEtaPadded .* fracLaplacian(obj, sum(obj.densitySplitPadded,4), obj.medium.absorptionPower/2 -0.5 ) ) ;
             end
@@ -172,19 +174,20 @@ if Nt~=0
             % Pressure density relation.
             obj.pressurePadded = obj.medium.soundSpeedPadded.^2 .* ( sum(obj.densitySplitPadded, 4));
 
-            % If absorptionPower declaired then add absorption terms
+            % If absorptionPower declared then add absorption terms
             if ~strcmp(obj.absorptionType,'off')
-                obj.pressurePadded =  obj.pressurePadded  +  obj.medium.soundSpeedPadded.^2 .* ( ...
+                obj.pressurePadded = obj.pressurePadded  +  obj.medium.soundSpeedPadded.^2 .* ( ...
                     obj.absorbTauPadded .* fracLaplacian(obj, obj.medium.densityPadded .* sum(divergence(obj.velocityPadded),4), obj.medium.absorptionPower/2 -1 ) + ...
                     obj.absorbEtaPadded .* fracLaplacian(obj, sum(obj.densitySplitPadded,4), obj.medium.absorptionPower/2 -0.5 ) ) ;
             end
         end
 
+        % 
         if ~isempty(obj.sensor) && rem(tIndex-adj, obj.sensor.timeSteps) == 0
             if ~isempty(obj.timeArray)
-                obj.timePoint=obj.timeArray(end)+(tIndex-adj)*dt;
+                obj.timePoint = obj.timeArray(end)+(tIndex-adj)*dt;
             else
-                obj.timePoint=(tIndex-adj)*dt;
+                obj.timePoint = (tIndex-adj)*dt;
             end
             obj.sensor.sensorIndex=obj.sensor.sensorIndex+1;
             obj.sensor.recordSensorData(obj,obj.sensor.sensorIndex);

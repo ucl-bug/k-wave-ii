@@ -38,25 +38,25 @@ classdef Sensor < kwave.toolbox.GridInput
             obj.totalSensorPoints= sum(obj.kgrid.returnWithoutGridPadding(obj.maskPadded),'all');
             totalSensorPoints=obj.totalSensorPoints;
         end
-        function obj=multiDimMask(obj)
-            obj.multiDimMask=zeros(obj.kgrid.gridSize,obj.kgrid.dimensions);
-            for dim=1:obj.kgrid.dimensions
-                obj.multiDimMask(:,:,:,dim)=obj.kgrid.returnWithoutGridPadding(obj.maskPadded);
-            end
-        end
-        function SensorOutput=ProcessSensorData(obj,Variable,dim,string)
-            mask=obj.kgrid.returnWithoutGridPadding(obj.maskPadded);
+        % function obj=multiDimMask(obj)
+        %     obj.multiDimMask=zeros(obj.kgrid.gridSize,obj.kgrid.dimensions);
+        %     for dim=1:obj.kgrid.dimensions
+        %         obj.multiDimMask(:,:,:,dim)=obj.kgrid.returnWithoutGridPadding(obj.maskPadded);
+        %     end
+        % end
+        function SensorOutput = ProcessSensorData(obj,Variable,dim,string)
+            mask = obj.kgrid.returnWithoutGridPadding(obj.maskPadded);
             if ~strcmp(string,'sum')
-                SensorOutput=zeros(obj.totalSensorPoints,dim);
-                for dimension=1:dim
-                    Var=Variable(:,:,:,dimension);
-                    SensorOutput(:,dimension)=Var(mask==1);
+                SensorOutput = single(zeros(obj.totalSensorPoints,dim));
+                for dimension = 1:dim
+                    Var = Variable(:,:,:,dimension);
+                    SensorOutput(:,dimension) = Var(mask==1);
                 end
             else
-                SensorOutput=zeros(obj.totalSensorPoints,1);
-                for dimension=1:dim
-                    Var=Variable(:,:,:,dim);
-                    SensorOutput=SensorOutput+Var(mask==1);
+                SensorOutput = single(zeros(obj.totalSensorPoints,1));
+                for dimension = 1:dim
+                    Var = Variable(:,:,:,dimension);
+                    SensorOutput = SensorOutput + Var(mask==1);
                 end
             end
         end

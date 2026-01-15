@@ -23,19 +23,19 @@ classdef TestAcousticSensor < matlab.unittest.TestCase
 
             % Underlying Sensor constructor typically accepts the grid.
             testCase.sensor = kwave.toolbox.AcousticSensor(testCase.grid);
-
+            
             % Define a sparse mask with a known number of points.
             mask = false(testCase.grid.gridSize);
             mask(1,1) = true;
             mask(3,5) = true;
             mask(8,7) = true;
             testCase.sensor.mask = mask; % totalSensorPoints should be nnz(mask)
-
             % Leave timeSteps at default (1) unless a test changes it.
         end
     end
 
     methods (Test)
+        
         function defaults_are_as_documented(testCase)
             s = testCase.sensor;
             testCase.verifyEqual(s.pressureSensor, 'on');   % default
@@ -59,10 +59,8 @@ classdef TestAcousticSensor < matlab.unittest.TestCase
             s.pressureSensor = 'on';
             s.densitySensor  = 'off';
             s.velocitySensor = 'off';
-
             s = s.initialiseSensorData(0);
             nPts = s.totalSensorPoints;
-
             testCase.verifySize(s.pressure, [nPts, 1]);
             testCase.verifyEqual(s.times, 0);
         end
@@ -76,10 +74,8 @@ classdef TestAcousticSensor < matlab.unittest.TestCase
             s.pressureSensor = 'off';
             s.densitySensor  = 'on';
             s.velocitySensor = 'off';
-
             s = s.initialiseSensorData(0);
             nPts = s.totalSensorPoints;
-
             testCase.verifySize(s.density, [nPts, 1]);   % Expected behavior
             testCase.verifyTrue(isempty(s.pressure));    % Should not allocate pressure here
             testCase.verifyEqual(s.times, 0);
@@ -94,11 +90,9 @@ classdef TestAcousticSensor < matlab.unittest.TestCase
             s.pressureSensor = 'off';
             s.densitySensor  = 'off';
             s.velocitySensor = 'on';
-
             s = s.initialiseSensorData(0);
             nPts = s.totalSensorPoints;
             D    = s.kgrid.dimensions;
-
             testCase.verifySize(s.velocity, [nPts, D, 1]); % Expected
             testCase.verifyEqual(s.times, 0);
         end
@@ -109,14 +103,11 @@ classdef TestAcousticSensor < matlab.unittest.TestCase
             s.densitySensor  = 'on';
             s.velocitySensor = 'on';
             s.timeSteps      = 2;
-
             Nt = 9;                      % arbitrary
             nCols = floor(Nt/s.timeSteps) + 1;     % 5
-
             s = s.initialiseSensorData(Nt);
             nPts = s.totalSensorPoints;
             D    = s.kgrid.dimensions;
-
             testCase.verifySize(s.pressure, [nPts, nCols]);
             testCase.verifySize(s.density,  [nPts, nCols]);
             testCase.verifySize(s.velocity, [nPts, D, nCols]);
@@ -128,10 +119,8 @@ classdef TestAcousticSensor < matlab.unittest.TestCase
             s = testCase.sensor;
             s.pressureSensor = 'on';
             s.timeSteps      = 2;
-
             s = s.initialiseSensorData(4);  % nCols = 3
             s = s.initialiseSensorData(4);  % extend by floor(4/2)=2 -> total 5
-
             nCols = 5;
             nPts  = s.totalSensorPoints;
             testCase.verifySize(s.pressure, [nPts, nCols]);
