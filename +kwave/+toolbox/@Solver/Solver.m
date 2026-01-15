@@ -27,22 +27,23 @@
 % get methods that add and remove the grid padding.
 %
 %% Input Arguments
-% * |kgrid| - (kwave.toolbox.Grid) Object which defines the simulation grid
-%   size. 
-% * |medium| - (kwave.toolbox.GridInput) Object which defines the medium
-%   properties. 
-% * |source| - (kwave.toolbox.GridInput) Object which defines the source
-%   properties. 
-% * |sensor| - ...Not yet implemented...
+% * |kgrid|    - (kwave.toolbox.Grid) Object which defines the simulation
+%                grid size. 
+% * |medium|   - (kwave.toolbox.GridInput) Object which defines the medium
+%                properties. 
+% * |source|   - (kwave.toolbox.GridInput) Object which defines the source
+%                properties. 
+% * |sensor|   - (kwave.toolbox.sensor) Object which defines the sensor
+%                properties. 
 % * |settings| - (kwave.toolbox.Settings) Object which defines the
-%   simulation settings.
+%                simulation settings. 
 %
 %% Properties
 % Input objects:
 %
-% * |medium| - (kwave.toolbox.GridInput) Handle for medium object.
-% * |source| - (kwave.toolbox.GridInput) Handle for source object.
-% * |sensor| - ...Not yet implemented...
+% * |medium|   - (kwave.toolbox.GridInput) Handle for medium object.
+% * |source|   - (kwave.toolbox.GridInput) Handle for source object.
+% * |sensor|   - (kwave.toolbox.sensor) Handle for sensor object.
 % * |settings| - (kwave.toolbox.Settings) Handle for settings object.
 %
 %% Template Methods
@@ -52,6 +53,7 @@
 % * |kwave.toolbox.FourierCollocation|
 % * |kwave.toolbox.Grid|
 % * |kwave.toolbox.GridInput|
+% * |kwave.toolbox.Sensor|
 % * |kwave.toolbox.Settings|
 
 % Copyright (C) 2024- The k-Wave Authors.
