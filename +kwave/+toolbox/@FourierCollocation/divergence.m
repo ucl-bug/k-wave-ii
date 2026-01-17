@@ -1,4 +1,4 @@
-%% The Divergence
+%% Divergence
 % *Class:* kwave.toolbox.FourierCollocation
 % *Package:* kwave.toolbox
 %
