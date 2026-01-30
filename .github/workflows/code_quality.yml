@@ -10,7 +10,7 @@ jobs:
   matlab-tests:
     name: Run MATLAB Code Quality check
     runs-on: Windows
-    if: github.event.pull_request.draft == false
+    if: github.event_name == 'push' || github.event.pull_request.draft == false
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
