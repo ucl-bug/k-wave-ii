@@ -1,6 +1,7 @@
 name: Run MATLAB tests
 on:
-  workflow_call:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
   push:
     branches:
       - main
@@ -9,6 +10,7 @@ jobs:
   matlab-tests:
     name: Run unit tests
     runs-on: Windows
+    if: github.event_name == 'push' || github.event.pull_request.draft == false
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
