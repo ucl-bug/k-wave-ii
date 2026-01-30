@@ -1,7 +1,6 @@
 name: Checks code quality
 on:
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_call:
   push:
     branches:
       - main
@@ -10,7 +9,6 @@ jobs:
   matlab-tests:
     name: Run MATLAB Code Quality check
     runs-on: Windows
-    if: github.event_name == 'push' || github.event.pull_request.draft == false
     steps:
       - name: Check out repository
         uses: actions/checkout@v3

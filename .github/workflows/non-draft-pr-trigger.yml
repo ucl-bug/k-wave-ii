@@ -1,0 +1,25 @@
+name: Non-draft PR
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+jobs:
+  trigger:
+    if: github.event.pull_request.draft != true
+    runs-on: Windows
+    steps:
+      - run: echo "Triggering workflows for non-draft PR"
+    outputs:
+      should_run: ${{ job.status == 'success' }}
+
+  tests:
+    needs: trigger
+    uses: ./.github/workflows/tests.yml
+
+  code-quality:
+    needs: trigger
+    uses: ./.github/workflows/code_quality.yml
+
+  docs:
+    needs: trigger
+    uses: ./.github/workflows/docs.yml
