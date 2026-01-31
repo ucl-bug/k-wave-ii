@@ -8,7 +8,7 @@ on:
 
 jobs:
   matlab-tests:
-    name: Run unit tests
+    name: Run unit tests (skipped on draft PRs)
     runs-on: Windows
     if: github.event_name == 'push' || github.event.pull_request.draft == false
     steps:
