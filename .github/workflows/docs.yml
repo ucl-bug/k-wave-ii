@@ -6,16 +6,22 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   docs:
     name: Build docs (skipped on draft PRs)
-    runs-on: Windows
+    runs-on: windows-latest
     if: github.event_name == 'push' || github.event.pull_request.draft == false
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Build docs
+      - name: Build docs with MATLAB
         run: |
           & "C:\Program Files\MATLAB\R2025b\bin\matlab.exe" "-batch" "kwave.devtools.GenerateDocumentation"
 
@@ -24,8 +30,26 @@ jobs:
         run: |
           source docs/test_doc_generation.sh
 
-      - name: Deploy to GitHub Pages 
-        run: | 
-          pip install -r requirements.txt 
-          mkdocs build
-          mkdocs gh-deploy --force
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install MkDocs dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build MkDocs site
+        run: mkdocs build --strict
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: all-helpfiles
+          path: docs
+
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
