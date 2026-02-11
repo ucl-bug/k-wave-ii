@@ -26,5 +26,6 @@ jobs:
 
       - name: Deploy to GitHub Pages 
         run: | 
-          pip install -r requirements.txt mkdocs
-          gh-deploy --force
+          pip install -r requirements.txt 
+          mkdocs build
+          mkdocs gh-deploy --force
