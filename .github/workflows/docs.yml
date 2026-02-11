@@ -31,8 +31,7 @@ jobs:
             docs
 
       - name: Deploy to GitHub Pages
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs
+        shell: bash
+        run: |
+          pip install -r requirements.txt
+          mkdocs gh-deploy --force
