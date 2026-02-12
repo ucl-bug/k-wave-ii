@@ -14,7 +14,7 @@ permissions:
 jobs:
   docs:
     name: Build docs (skipped on draft PRs)
-    runs-on: Windows
+    runs-on: ubuntu-latest
     if: github.event_name == 'push' || github.event.pull_request.draft == false
     steps:
       - name: Check out repository
@@ -22,7 +22,7 @@ jobs:
 
       - name: Build docs
         run: |
-          & "C:\Program Files\MATLAB\R2025b\bin\matlab.exe" "-batch" "kwave.devtools.GenerateDocumentation"
+          matlab -batch "kwave.devtools.GenerateDocumentation"
 
       - name: Test docs
         shell: bash
