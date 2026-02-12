@@ -23,13 +23,48 @@ If you want to work on the parent issue directly, use its number instead, togeth
 git switch -c 62-implement-pml-class-YOUR_USER_NAME
 ```
 
-**Now that you are ready to code, please read the [developers intro](developerIntroduction.md) and [coding standard](codingStandard.md)!**
-
 - Commit to that branch locally and regularly push your work to the same named branch on the fork.
 - Label commit messages with the issue number, e.g., `git commit -m "#62: Basic class structure"`
 - If you need feedback or help but your branch is not ready to merge, open a draft pull request (PR) from your branch in your fork, to the feature branch in the upstream repo. Likewise, when you think the branch is ready for merging, open a (normal) PR, or convert your draft one to a normal PR, and request a code review.
 
 For experienced git users, `git rebase` should be avoided if multiple people might be contributing to a branch (use `git merge` instead).
+
+## Setting up a Development Environment
+
+**1. Create and activate an environment**
+Use an environment manager to create and activate a python environment.
+
+For example, with [conda](https://docs.conda.io/projects/conda/en/latest/index.html):
+
+```bash
+conda create -n kwave
+conda activate kwave
+```
+
+**2. Install dependencies**
+Install packages defined in `requirements.txt`:
+
+```
+pip install -r requirements.txt
+```
+
+This installs [`mkdocs`](https://www.mkdocs.org/) used to build the documentation (see [Writing and Building the Documentation](developerIntroduction.md#writing-and-building-the-documentation)).
+
+**3. Install pre-commit**
+We use [pre-commit](https://pre-commit.com/) which runs automated checks (formatting, spelling, line endings, etc.) on every `git commit` to keep the codebase consistent.
+
+Install and enable it with:
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
+To run pre-commit manually:
+
+```bash
+pre-commit run
+```
 
 ## Conditions for merging a PR
 
@@ -44,3 +79,4 @@ The pull request template will guide you through the requirements to get your ch
 
 The code review step is a crucial one, to guarantee the quality of code contributions from the community. It is an iterative process, and you will have to address the reviewer's comments and any concerns. Keep in mind that those comments are given in good faith and not as judgement on anyone's coding ability, and are meant to support our community of developers in creating the best software we can, for all of us to use. Seasoned developers would testify to how much they have learned and improved in their work by receiving reviews on their codes.
 
+**Now that you are ready to code, please read the [developers intro](developerIntroduction.md) and [coding standard](codingStandard.md)!**
