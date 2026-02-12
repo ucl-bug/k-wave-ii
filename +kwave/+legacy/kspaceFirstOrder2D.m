@@ -711,7 +711,7 @@ tic;
 % start time loop
 for t_index = index_start:index_step:index_end
 
-    % enforce time reversal bounday condition
+    % enforce time reversal boundary condition
     if flags.time_rev
       
         % load pressure value and enforce as a Dirichlet boundary condition

@@ -242,7 +242,7 @@ classdef kWaveTransducer < handle
         % indicates the transducer element that each grid point belongs to.
         indexed_elements_mask;
         
-        % pseudonym for the active_elements_mask to maintain compatability
+        % pseudonym for the active_elements_mask to maintain compatibility
         % when the transducer is used in place of sensor or source.
         mask;
         
@@ -629,7 +629,7 @@ classdef kWaveTransducer < handle
             
         end
         
-        % allow mask query to allow compatability with regular sensor
+        % allow mask query to allow compatibility with regular sensor
         % structure - return the active sensor mask
         function mask = get.mask(obj)
             mask = obj.active_elements_mask;
@@ -897,7 +897,7 @@ classdef kWaveTransducer < handle
 
             % check the data is the correct size
             if size(sensor_data, 1) ~= (obj.number_active_elements * obj.element_width * obj.element_length)
-                error('The number of time series in the input sensor_data must match the number of grid points in the active tranducer elements.');
+                error('The number of time series in the input sensor_data must match the number of grid points in the active transducer elements.');
             end
             
             % get index of which element each time series belongs to  

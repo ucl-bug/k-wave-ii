@@ -544,12 +544,12 @@ end
 % (2002). 3D heterogeneous staggered-grid finite-difference modeling of
 % seismic motion with volume harmonic and arithmetic averaging of elastic
 % moduli and densities. Bulletin of the Seismological Society of America,
-% 92(8), 3042–3066.    
+% 92(8), 3042ï¿½3066.    
 
 % [2] Toyoda, M., Takahashi, D., & Kawai, Y. (2012). Averaged material
 % parameters and boundary conditions for the vibroacoustic
 % finite-difference time-domain method with a nonuniform mesh. Acoustical
-% Science and Technology, 33(4), 273–276.  
+% Science and Technology, 33(4), 273ï¿½276.  
 
 % =========================================================================
 % PREPARE DERIVATIVE AND PML OPERATORS
@@ -688,7 +688,7 @@ if flags.kelvin_voigt_model
     dduzdzdt       = castZeros([kgrid.Nx, kgrid.Ny, kgrid.Nz]);  % **
 end
 
-% to save memory, the variables noted with a ** do not neccesarily need to
+% to save memory, the variables noted with a ** do not necessarily need to
 % be explicitly stored (they are not needed for update steps). Instead they
 % could be replaced with a small number of temporary variables that are
 % reused several times during the time loop.
@@ -755,7 +755,7 @@ tic;
 for t_index = index_start:index_step:index_end
 
     % compute the gradients of the stress tensor (these variables do not
-    % necessaily need to be stored, they could be computed as needed)
+    % necessarily need to be stored, they could be computed as needed)
     dsxxdx = real( ifft( bsxfun(@times, ddx_k_shift_pos, fft(sxx_split_x + sxx_split_y + sxx_split_z, [], 1)), [], 1) );
     dsyydy = real( ifft( bsxfun(@times, ddy_k_shift_pos, fft(syy_split_x + syy_split_y + syy_split_z, [], 2)), [], 2) );
     dszzdz = real( ifft( bsxfun(@times, ddz_k_shift_pos, fft(szz_split_x + szz_split_y + szz_split_z, [], 3)), [], 3) );

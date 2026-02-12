@@ -15,7 +15,7 @@
 %
 %     No information about the actual simulation grid is stored within
 %     objects of the kWaveArray class. The idea is that an array can be
-%     defined using physical characteristics, and then re-used for many
+%     defined using physical characteristics, and then reused for many
 %     different simulations. Note, some methods do use the grid information
 %     for calculations, and therefore take an object of the kWaveGrid class
 %     as an input. The implementation assumes that the grid sampling is
@@ -51,7 +51,7 @@
 %     default computational settings. See [1] for more details.
 %
 %     'BLITolerance'    - Scalar value controlling where the spatial extent
-%                         of the BLI at each point is trunctated as a
+%                         of the BLI at each point is truncated as a
 %                         portion of the maximum value (default = 0.05).
 %     'BLIType'         - String controlling the BLI expression that is
 %                         used for each point source, either 'sinc' or

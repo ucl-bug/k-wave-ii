@@ -19,7 +19,7 @@
 % fourth dimension.
 %
 % If |obj.kappa| is defined, a k-space correction is applied as part of the
-% gradient calulation. If kappa is a scalar (single frequency correction)
+% gradient calculation. If kappa is a scalar (single frequency correction)
 % or empty, the gradient components are calculated using 1D FFTs. If kappa
 % is a matrix, the gradient components are calculated using ND FFTs, and
 % kappa is applied in the Fourier domain.
@@ -40,7 +40,7 @@
 %
 % * |Staggering| - ('none', 'forward', 'backward') Option to return the
 %   output staggered by half a grid point in the specified direction.
-%   Defatult = 'none'.
+%   Default = 'none'.
 %
 %% Output Arguments
 % * |df| - (numeric) Gradient of f.

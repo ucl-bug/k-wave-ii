@@ -52,7 +52,7 @@ function mask = offGridPoints(kgrid, points, scale, varargin)
 %     'MaskOnly'        - Boolean controlling whether a logical mask is
 %                         returned instead of the non-binary source mask,
 %                         where the mask contains the extent of the
-%                         off-grid source (defaul = false).
+%                         off-grid source (default = false).
 %     'SinglePrecision' - Boolean controlling whether the mask is returned
 %                         in single precision. If 'BLITolerance' > 0, then
 %                         calculations are also performed in single

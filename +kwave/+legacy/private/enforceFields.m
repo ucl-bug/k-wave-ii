@@ -1,8 +1,8 @@
 function enforceFields(structure, field_names)
-%ENFORCEFIELDS Check structure field names for existance.
+%ENFORCEFIELDS Check structure field names for existence.
 %
 % DESCRIPTION:
-%     enforceFields checks a MATLAB structure for the existance of a set of
+%     enforceFields checks a MATLAB structure for the existence of a set of
 %     required field name defined by a cell array. If a field name within
 %     the cell array is not found within the structure, an error is thrown
 %     with the name of the missing field given in the error message. The
