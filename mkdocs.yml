@@ -15,6 +15,7 @@ extra_javascript:
 nav:
   - Home: index.md
   - Contributor guidelines: CONTRIBUTING.md
+  - Code of Conduct: codeOfConduct.md
   - Licence: LICENSE.md
   - Help:
     - Tutorials: helpfilesweb/Tutorials/
