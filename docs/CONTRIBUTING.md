@@ -54,3 +54,16 @@ The pull request template will guide you through the requirements to get your ch
 
 The code review step is a crucial one, to guarantee the quality of code contributions from the community. It is an iterative process, and you will have to address the reviewer's comments and any concerns. Keep in mind that those comments are given in good faith and not as judgement on anyone's coding ability, and are meant to support our community of developers in creating the best software we can, for all of us to use. Seasoned developers would testify to how much they have learned and improved in their work by receiving reviews on their codes.
 
+
+## Legal and Licensing
+To protect the interests of the k-Wave-II community and ensure the long-term sustainability of the project, we require all contributors to adhere to our [licensing terms](LICENSE.md).
+
+### Contributor Agreement
+By contributing to k-Wave-II, you agree that we may redistribute your work under the project's current open-source license. You represent that you are legally entitled to grant this permission and that your contribution does not infringe on the intellectual property rights of others.
+
+For more information on why this is necessary and how ownership works in open source, please refer to the following resources from OSS Watch:
+
+* [Open source development - An introduction to ownership and licensing issues](http://oss-watch.ac.uk/resources/iprguide)
+* [Contributor Licence Agreements (CLAs)](http://oss-watch.ac.uk/resources/cla)
+
+
