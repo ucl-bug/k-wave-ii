@@ -42,12 +42,4 @@ jobs:
         with:
           name: all-helpfiles
           path: |
-            docs
-
-    
-      # - name: Deploy to GitHub Pages
-      #   if: github.event_name == 'push'
-      #   uses: peaceiris/actions-gh-pages@v4
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     publish_dir: ./docs
+            site
