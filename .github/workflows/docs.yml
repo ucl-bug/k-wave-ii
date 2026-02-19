@@ -9,7 +9,7 @@ on:
 jobs:
   docs:
     name: Build docs (skipped on draft PRs)
-    runs-on: Windows
+    runs-on: windows-latest
     if: github.event_name == 'push' || github.event.pull_request.draft == false
     steps:
       - name: Check out repository
