@@ -19,6 +19,11 @@ jobs:
         run: |
           & "C:\Program Files\MATLAB\R2025b\bin\matlab.exe" "-batch" "kwave.devtools.GenerateDocumentation"
 
+      - name: Build mkdocs
+        run: |
+          pip install -r requirements.txt 
+          mkdocs build
+
       - name: Test docs
         shell: bash
         run: |
@@ -30,9 +35,9 @@ jobs:
           path: |
             docs
 
-      - name: Deploy to GitHub Pages
-        if: github.event_name == 'push'
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs
+      # - name: Deploy to GitHub Pages
+      #   if: github.event_name == 'push'
+      #   uses: peaceiris/actions-gh-pages@v4
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     publish_dir: ./docs
