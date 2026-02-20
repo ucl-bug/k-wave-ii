@@ -27,7 +27,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.x"
 
       - name: Install dependencies
         run: |
@@ -39,7 +39,20 @@ jobs:
           mkdocs build
 
       - uses: actions/upload-artifact@v4
+        name: Upload docs artifact
         with:
           name: all-helpfiles
           path: |
             site
+
+  deploy:
+      needs: docs
+      name: Deploy docs to GitHub Pages
+      runs-on: ubuntu-latest
+      environment:
+        name: github-pages
+        url: ${{ steps.deployment.outputs.page_url }}
+      steps:
+        - name: Deploy to GitHub Pages
+          id: deployment
+          uses: actions/deploy-pages@v4 
