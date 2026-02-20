@@ -64,7 +64,8 @@ jobs:
 
       - name: Rename docs-matlab to docs
         run: |
-          mv docs-matlab docs
+          mv docs-matlab/helpfiles docs
+          mv docs-matlab/helpfilesweb docs
 
       - name: Build mkdocs
         run: |
