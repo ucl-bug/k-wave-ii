@@ -70,10 +70,6 @@ jobs:
         run: |
           mkdocs build
 
-      - name: Move helpfiles to site
-        run: |
-          mv helpfilesweb site/helpfilesweb
-
       - uses: actions/upload-pages-artifact@v4
         with:
           path: site
