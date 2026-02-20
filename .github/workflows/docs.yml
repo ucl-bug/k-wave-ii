@@ -4,7 +4,7 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
   push:
     branches:
-      - sp/49-deploy_gh_pages
+      - develop
 
 permissions:
   contents: read
@@ -15,7 +15,7 @@ jobs:
 
   matlab-docs:
     name: Build MATLAB docs (skipped on draft PRs)
-    runs-on: custom-windows-with-matlab
+    runs-on: custom-windows-with-matlab # TODO: once repository is public, use gh hosted runner (issue #161)
     if: github.event_name == 'push' || github.event.pull_request.draft == false
     steps:
       - name: Check out repository
@@ -31,6 +31,7 @@ jobs:
           source docs/test_doc_generation.sh
 
       - name: Upload helpfiles
+      # uploading the generated helpfiles so that they are available for next job
         uses: actions/upload-artifact@v6
         with:
           name: docs-matlab
@@ -40,7 +41,7 @@ jobs:
   docs:
     needs: matlab-docs
     name: Build Mkdocs docs (skipped on draft PRs)
-    # skipped because the 'needs' condition (matlab-docs) will not be met on draft PRs
+    # skipped on draft PRs because the 'needs' condition (matlab-docs) will not be met
     runs-on: windows-latest
     steps:
       - name: Check out repository
@@ -78,7 +79,7 @@ jobs:
   deploy:
       needs: docs
       name: Deploy docs to GitHub Pages (skipped on draft PRs)
-      # skipped because the 'needs' condition (docs) will not be met on draft PRs
+      # skipped on draft PRs because the 'needs' condition (docs) will not be met
       runs-on: ubuntu-latest
       environment:
         name: github-pages
