@@ -14,7 +14,7 @@ permissions:
 jobs:
 
   matlab-docs:
-    name: Build MATLAB docs
+    name: Build MATLAB docs (skipped on draft PRs)
     runs-on: Windows
     if: github.event_name == 'push' || github.event.pull_request.draft == false
     steps:
@@ -39,9 +39,9 @@ jobs:
 
   docs:
     needs: matlab-docs
-    name: Build Mkdocs docs
+    name: Build Mkdocs docs (skipped on draft PRs)
+    # skipped because the 'needs' condition (matlab-docs) will not be met on draft PRs
     runs-on: windows-latest
-    if: github.event_name == 'push' || github.event.pull_request.draft == false
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -77,7 +77,8 @@ jobs:
 
   deploy:
       needs: docs
-      name: Deploy docs to GitHub Pages
+      name: Deploy docs to GitHub Pages (skipped on draft PRs)
+      # skipped because the 'needs' condition (docs) will not be met on draft PRs
       runs-on: ubuntu-latest
       environment:
         name: github-pages
