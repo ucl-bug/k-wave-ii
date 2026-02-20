@@ -79,7 +79,7 @@ jobs:
   deploy:
       needs: docs
       name: Deploy docs to GitHub Pages (skipped on draft PRs)
-      # skipped on draft PRs because the 'needs' condition (docs) will not be met
+      if: github.event_name == 'push' 
       runs-on: ubuntu-latest
       environment:
         name: github-pages
