@@ -15,7 +15,7 @@ jobs:
 
   matlab-docs:
     name: Build MATLAB docs (skipped on draft PRs)
-    runs-on: Windows
+    runs-on: custom-windows-with-matlab
     if: github.event_name == 'push' || github.event.pull_request.draft == false
     steps:
       - name: Check out repository
