@@ -20,14 +20,14 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      # - name: Build docs
-      #   run: |
-      #     & "C:\Program Files\MATLAB\R2025b\bin\matlab.exe" "-batch" "kwave.devtools.GenerateDocumentation"
+      - name: Build docs
+        run: |
+          & "C:\Program Files\MATLAB\R2025b\bin\matlab.exe" "-batch" "kwave.devtools.GenerateDocumentation"
           
-      # - name: Test docs
-      #   shell: bash
-      #   run: |
-      #     source docs/test_doc_generation.sh
+      - name: Test docs
+        shell: bash
+        run: |
+          source docs/test_doc_generation.sh
 
       - name: Set up Python
         uses: actions/setup-python@v5
