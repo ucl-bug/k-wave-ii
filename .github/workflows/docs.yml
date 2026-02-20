@@ -6,6 +6,11 @@ on:
     branches:
       - sp/49-deploy_gh_pages
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   docs:
     name: Build docs (skipped on draft PRs)
