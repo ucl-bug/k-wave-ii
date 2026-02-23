@@ -544,12 +544,12 @@ end
 % (2002). 3D heterogeneous staggered-grid finite-difference modeling of
 % seismic motion with volume harmonic and arithmetic averaging of elastic
 % moduli and densities. Bulletin of the Seismological Society of America,
-% 92(8), 3042�3066.    
+% 92(8), 3042-3066.    
 
 % [2] Toyoda, M., Takahashi, D., & Kawai, Y. (2012). Averaged material
 % parameters and boundary conditions for the vibroacoustic
 % finite-difference time-domain method with a nonuniform mesh. Acoustical
-% Science and Technology, 33(4), 273�276.  
+% Science and Technology, 33(4), 273-276.  
 
 % =========================================================================
 % PREPARE DERIVATIVE AND PML OPERATORS

@@ -203,7 +203,7 @@ function sensor_data = pstdElastic2D(kgrid, medium, source, sensor, varargin)
 %                            - time varying pressure enforced as a
 %                              Dirichlet boundary condition over sensor.mask 
 %
-% Note:�For a heterogeneous medium, medium.sound_speed_compression,
+% Note: For a heterogeneous medium, medium.sound_speed_compression,
 % medium.sound_speed_shear, and medium.density must be given in matrix form
 % with the same dimensions as kgrid. For a homogeneous medium, these can be
 % given as scalar values.   
@@ -468,12 +468,12 @@ end
 % (2002). 3D heterogeneous staggered-grid finite-difference modeling of
 % seismic motion with volume harmonic and arithmetic averaging of elastic
 % moduli and densities. Bulletin of the Seismological Society of America,
-% 92(8), 3042�3066.    
+% 92(8), 3042-3066.    
 
 % [2] Toyoda, M., Takahashi, D., & Kawai, Y. (2012). Averaged material
 % parameters and boundary conditions for the vibroacoustic
 % finite-difference time-domain method with a nonuniform mesh. Acoustical
-% Science and Technology, 33(4), 273�276.   
+% Science and Technology, 33(4), 273-276.   
 
 % =========================================================================
 % PREPARE DERIVATIVE AND PML OPERATORS
