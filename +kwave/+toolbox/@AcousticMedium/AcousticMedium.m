@@ -39,7 +39,7 @@
 % * |BonA| - (single) Parameter of nonlinearity.
 %
 % In order to model absorption both absorptionCoeff, and absorptionPower
-% must be defiened, and solver.absorptionType must be set for the acoustic
+% must be defined, and solver.absorptionType must be set for the acoustic
 % solver
 %
 %% See Also

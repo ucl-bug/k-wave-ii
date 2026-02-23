@@ -35,11 +35,11 @@
 %
 % * |Staggering| - ('forward', 'backward') Option to return the
 %   output staggered by half a grid point in the specified direction.
-%   Defatult = 'forward'.
+%   Default = 'forward'.
 % * |Type| - ('fourier', 'linInterpolate')
 %
 %% Output Arguments
-% * |f| - (numeric) f but staggered in each co-ordinate direction.
+% * |f| - (numeric) f but staggered in each coordinate direction.
 
 % Copyright (C) 2024- University College London.
 %

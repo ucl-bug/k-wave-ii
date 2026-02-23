@@ -145,7 +145,7 @@ end
 % compute the sampling frequency
 Fs = 1 / kgrid.dt;
 
-% extract the minium sound speed
+% extract the minimum sound speed
 if isfield(medium, 'sound_speed')
     
     % for the fluid code, use medium.sound_speed

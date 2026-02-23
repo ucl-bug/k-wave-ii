@@ -46,7 +46,7 @@ import kwave.legacy.*
 % get literals
 getH5Literals;
 
-% get computer infor
+% get computer info
 comp_info = getComputerInfo;
 
 % set file description if not provided by user

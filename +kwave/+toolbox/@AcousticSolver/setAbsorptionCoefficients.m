@@ -2,13 +2,13 @@
 % *Class:* kwave.toolbox.AcousticSolver
 % *Package:* kwave.toolbox
 %
-% Compute and assign the coefficents tau and eta in the fractional laplacian loss.
+% Compute and assign the coefficients tau and eta in the fractional laplacian loss.
 %
 %% Syntax
 %   setAbsorptionCoefficients(obj)
 %
 %% Description
-% Compute and assign the coefficents tau and eta in the fractional,
+% Compute and assign the coefficients tau and eta in the fractional,
 % assigns values as given by the formula in: 
 %
 %  Treeby, Bradley E., and Ben T. Cox. 

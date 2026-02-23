@@ -9,7 +9,7 @@
 %   fC = kappaSplitCorrection(obj, f)
 %
 %% Description
-% Calculates the correction to the usual kspace corrected tempral
+% Calculates the correction to the usual kspace corrected temporal
 % derivative for using an varied time stepping by considering a first
 % order interpolation.
 % 
