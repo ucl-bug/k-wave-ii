@@ -4,7 +4,7 @@ Introduction to k\-Wave II for developers.
 
 ## Overview
 
-k\-Wave II is an open\-source MATLAB toolbox used to solve differential equations, with a particular focus on wave problems in acoustics. The unifying thread for the solvers is that spatial gradients are computed using a Fourier collocation spectral method. This has many advantages, including spectral convergence for smooth functions, and a known analytical form for the band\-limited interpolant, which is useful for implementing stair\-case free sources, for example.
+k\-Wave II is an open\-source MATLAB toolbox used to solve differential equations, with a particular focus on wave problems in acoustics. The unifying thread for the solvers is that spatial gradients are computed using a Fourier collocation spectral method. This has many advantages, including spectral convergence for smooth functions and a known analytical form for the band-limited interpolant. The latter is useful for tasks such as implementing staircase-free sources.
 
 
 The main components of the toolbox are written using an object\-orientated programming design approach, primarily using `handle` classes. Sets of functionality (such as medium inputs for a particular solver) are grouped into classes. Base classes are used for common functionality that needs to be re\-used multiple times. This adheres to the don't repeat yourself (DRY) software development principle. Some additional helper functions with limited scope are written as standalone functions.
@@ -45,7 +45,7 @@ The code is grouped into [package folders](https://uk.mathworks.com/help/matlab/
 
 ## Writing And Building The Documentation
 
-Part of the success of k\-Wave can be attributed to the good documentation, both of the individual functions and classes, and the examples. All code should be documented as outlined in the [Coding Standard](codingStandard.md). It can often be easiest to start with the [documentation template](helpfilesweb/classDocsExample.md).
+Part of k-Wave’s success stems from its robust documentation, which includes detailed class and function references alongside clear, practical examples. All code should be documented as outlined in the [Coding Standard](codingStandard.md). It can often be easiest to start with the [documentation template](helpfilesweb/classDocsExample.md).
 
 When adding a new class or function, examples should be added. If the code usage is relatively straightforward, examples can be included directly in the help documentation for that class or function. For more complex classes (e.g., the solver classes), longer tutorials or examples should be provided.
 
