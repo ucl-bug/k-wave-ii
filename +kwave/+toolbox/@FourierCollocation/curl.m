@@ -34,7 +34,7 @@
 %
 % * |Staggering| - ('none', 'forward', 'backward') Option to return the
 %   output staggered by half a grid point in the specified direction.
-%   Defatult = 'none'.
+%   Default = 'none'.
 %
 %% Output Arguments
 % * |df| - (numeric) Components of divergence of f.

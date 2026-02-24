@@ -96,9 +96,9 @@ solver.run(Nt=50, dt=dt1);
 % These are, respectively: 
 % * The acoustic pressure field on the grid points at the end time Nt*dt.
 % * The acoustic density field on the grid points at the final time, split
-%   into directional co-ordinates (for the sake of the PML). The true
+%   into directional coordinates (for the sake of the PML). The true
 %   density field can be found by summing across the 4th dimension.
-% * The acoustic particle velocity in each of the co-ordinate directions,
+% * The acoustic particle velocity in each of the coordinate directions,
 %   evaluated on the staggered grid at time (Nt+0.5)*dt (because of the
 %   use of both space and time staggering).
 % * The time points used in the simulation from time 0 to Nt*dt

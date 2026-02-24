@@ -112,7 +112,7 @@ hp2 = patch('Faces', M_faces, 'Vertices', M_vertices, 'EdgeColor', ...
     'black', 'CData', IMAGE_3D_DATA.voxel_patch_CData(voxel_face_num,:), ...
     'FaceColor', 'flat');  
 
-% set the tranparency
+% set the transparency
 set(hp2, 'FaceAlpha', transparency);
 
 % set the axes properties and colormap

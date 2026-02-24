@@ -30,7 +30,7 @@ You should also review the code changes themselves. Please be constructive and r
 
 *If you think you need to take over development on someone else's PR, always ask them first.*
 
-Only maintainers can merge PRs into the feature branch. Merges need at least one approving review and all the automated tests to pass. You should also make sure that you have ticked all the checkboxes on the template. Once all this is done you can merge, using a normal merge, not squash (those are used for releases only).
+Only maintainers can merge PRs into the feature branch. Merges need at least one approving review and all the automated tests to pass. You should also make sure that you have ticked all the checkboxes on the template. Once all this is done you can merge, using [squash merge](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/about-pull-request-merges#squash-and-merge-your-commits). Individual commits will still be accessible on GitHub in the (now closed) PR. 
 
 <Maintainers can override that protection, but they are strongly advised not to. This measure is there only for emergencies, not to be abused.>
 

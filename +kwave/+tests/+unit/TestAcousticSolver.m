@@ -12,7 +12,7 @@
 % * Verifies that plane wave simulations in 2D and 3D match simulations in
 %   1D. Performed both with constant and nonconstant gridfield variables.
 % * Tests that the simulations produce the same results as the legacy code.
-% * Verfifies than the simulations produce the same result when using the
+% * Verifies than the simulations produce the same result when using the
 %   medium class or acoustic medium class
 % * Verifies the numerical solution for the pressure when given both an
 %   initial velocity and initial pressure in 1D.
