@@ -2,7 +2,7 @@
 % *Package:* kwave.tests.unit
 % *Superclasses:* kwave.tests.unit.AbstractTestGridInput
 %
-% Unit tests for the Medium class using the TestMedium class.
+% Unit tests for the Medium class.
 
 classdef TestMedium < kwave.tests.unit.AbstractTestGridInput
 

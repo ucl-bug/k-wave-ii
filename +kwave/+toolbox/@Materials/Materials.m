@@ -1,61 +1,50 @@
-%% Materials
-% *Package:* kwave.toolbox
-%
-% Class for holding material property structures.
-%
-%% Syntax
-%   materials = Materials();
-%
-%% Description
-% Class for holding material property structures so that materials can be
-% referenced using a single index. Used by Medium class. Initialised with
-% some default materials, but additional materials can be added. Each
-% material structure within the Materials object must have at least the
-% fields: 
-% * soundSpeed [m/s]
-% * density    [kg/m^3]
-% but may also have:
-% * absorption coefficient prefactor (alpha0) [dB/cm/MHz^y]
-% * absorption power law exponent (y)
-% * nonlinearity parameter B/A (BonA)
-% * specific heat capacity (C) [J/kg/K]
-% * thermal conductivity (k_cond) [W/m/K]
-% 
-% For example, one of the default structures is water
-% * materials.water.soundSpeed
-% * materials.water.density
-% * materials.water.absorptionCoeff
-% * materials.water.absorptionPower
-% * materials.water.BonA
-% * materials.water.specificHeatCapacity
-% * materials.water.thermalConductivity
-
-%% Examples
-%
-%   materials = Materials();
-%   T = materials.listMaterials()
-%   I = materials.listMaterialIndices()
-%   materials.addMaterial('softTissue', Materials.makeMaterial(3, 1540, 1000));
-%
-%% Properties
-% 
-% * Structures, named for the material, containing the values of the
-%   material properties. 
-%
-%% See Also
-% 
-% * |Medium|
-
 classdef Materials < dynamicprops
+    % Materials
+    % *Package:* kwave.toolbox
+    %
+    % Class for holding material property structures so that materials can be
+    % referenced using a single index. Used by the Medium class. Initialised with
+    % some default materials, but additional materials can be added. Each
+    % material structure within the Materials object must have at least the
+    % fields:
+    %
+    % * soundSpeed [m/s]
+    % * density    [kg/m^3]
+    %
+    % Optionally, a material may also have:
+    %
+    % * absorption coefficient prefactor (alpha0) [dB/cm/MHz^y]
+    % * absorption power law exponent (y)
+    % * nonlinearity parameter B/A (BonA)
+    % * specific heat capacity (C) [J/kg/K]
+    % * thermal conductivity (k_cond) [W/m/K]
+    %
+    % Index handling:
+    %
+    % * The 'index' field is optional when adding a material.
+    % * If omitted, addMaterial auto-assigns the lowest free uint8 index in [0..255].
+    % * If provided, it must be a unique uint8-compatible integer in [0..255].
+    %
+    % Examples
+    %   materials = Materials();
+    %   T = materials.listMaterials()
+    %   I = materials.listMaterialIndices()
+    %   [materials, idx] = materials.addMaterial('softTissue', struct('soundSpeed',1540,'density',1000));
+    %   materials.addMaterial('softTissue', struct('index',10,'soundSpeed',1540,'density',1000));
+    %
+    % See Also
+    %
+    % * |Medium|
 
     properties (Constant, Access = private)
         % Required and optional field sets
-        REQUIRED_FIELDS = {'index','soundSpeed','density'};
+        % 'index' is optional now (auto-assigned if missing)
+        REQUIRED_FIELDS = {'soundSpeed','density'};
         OPTIONAL_FIELDS = {'absorptionCoeff',...
-                           'absorptionPower',...
-                           'BonA', ...
-                           'specificHeat',...
-                           'thermalConductivity'};
+            'absorptionPower',...
+            'BonA', ...
+            'specificHeat',...
+            'thermalConductivity'};
 
         % For filtering non-material properties
         RESERVED_PROPS = {'REQUIRED_FIELDS','OPTIONAL_FIELDS','RESERVED_PROPS'};
@@ -65,18 +54,18 @@ classdef Materials < dynamicprops
         function obj = Materials()
             % Pre-populate with two examples (types are enforced on add).
             water = struct( ...
-                'index',               uint8(1), ...
-                'soundSpeed',          1480, ...   % m/s @ ~20°C
-                'density',             1000, ...   % kg/m^3
-                'absorptionCoeff',     0.5, ...    % dB/cm/MHz^y
-                'absorptionPower',     2, ...      % (y) dimensionless
-                'BonA',                5, ...      % dimensionless
-                'specificHeat',        4181, ...   % J/(kg·K)
-                'thermalConductivity', 0.58 );     % W/(m·K)
+                'index',               uint8(0), ... % uint8 limits the number of materials to 256
+                'soundSpeed',          1480, ...     % m/s @ ~20°C
+                'density',             1000, ...     % kg/m^3
+                'absorptionCoeff',     0.5, ...      % dB/cm/MHz^y
+                'absorptionPower',     2, ...        % (y) dimensionless
+                'BonA',                5, ...        % dimensionless
+                'specificHeat',        4181, ...     % J/(kg·K)
+                'thermalConductivity', 0.58 );       % W/(m·K)
             obj.addMaterial('water', water);
 
             air = struct( ...
-                'index',               uint8(2), ...
+                'index',               uint8(1), ...
                 'soundSpeed',          343, ...
                 'density',             1.225, ...
                 'absorptionCoeff',     NaN, ...    % leave optional as NaN if unknown
@@ -87,16 +76,19 @@ classdef Materials < dynamicprops
             obj.addMaterial('air', air);
         end
 
-        function obj = addMaterial(obj, name, s)
-            %ADDMATERIAL Add a new material as a dynamic property with validation.
+        function [obj, assignedIdx] = addMaterial(obj, name, s)
+            % ADDMATERIAL Add a new material as a dynamic property with validation.
             %
-            %   obj.addMaterial('tissue', struct(...))
+            %   [obj, idx] = obj.addMaterial('tissue', struct(...))
             %
-            % Validates:
-            %   - name is a valid MATLAB identifier and not already used
-            %   - required fields exist (index, soundSpeed, density)
-            %   - types/sizes/sign constraints per spec; optional fields may be NaN or absent
-            %   - index is uint8, positive, and unique across materials
+            % Behavior:
+            %   - 'index' is optional; if omitted/empty, the next free uint8 index
+            %     in [0,255] is assigned automatically (lowest available).
+            %   - If 'index' is provided, it must be uint8-compatible in [0,255]
+            %     and unique across materials.
+            %
+            % Returns:
+            %   assignedIdx : the uint8 index assigned to this material.
 
             % Check material name validity
             if ~kwave.toolbox.Materials.isValidMaterialName(name)
@@ -105,17 +97,30 @@ classdef Materials < dynamicprops
             end
             if isprop(obj, name)
                 error('Materials:DuplicateName', ...
-                      'A material named "%s" already exists.', name);
+                    'A material named "%s" already exists.', name);
             end
 
-            % Validate & canonicalize (coerce classes, add missing optionals as NaN)
+            % Validate & canonicalize provided fields (index is optional now)
             s = kwave.toolbox.Materials.canonicalizeAndValidateStruct(s);
 
-            % Enforce unique index
+            % Determine/validate index
             existingIdx = double(obj.getAllIndices()); % compare in double space
-            if any(existingIdx == double(s.index))
-                error('Materials:DuplicateIndex', ...
-                      'Index %d is already used by another material.', s.index);
+            if isfield(s,'index') && ~isempty(s.index)
+                % User supplied an index: validate & enforce uniqueness
+                s.index = kwave.toolbox.Materials.ensureUint8Index(s.index, 'index');
+                if any(existingIdx == double(s.index))
+                    error('Materials:DuplicateIndex', ...
+                        'Index %d is already used by another material.', s.index);
+                end
+                assignedIdx = s.index;
+            else
+                % Auto-assign next available index in [0..255]
+                assignedIdx = obj.nextAvailableIndex();
+                if isempty(assignedIdx)
+                    error('Materials:NoFreeIndex', ...
+                        'No free indices available: the 0..255 range is exhausted.');
+                end
+                s.index = assignedIdx;
             end
 
             % Create dynamic property and assign struct
@@ -126,57 +131,54 @@ classdef Materials < dynamicprops
         end
 
         function T = listMaterials(obj)
-            %LISTMATERIALS Return a table of all materials and their standard properties.
-            names = obj.getMaterialNames();
-            cols = [obj.REQUIRED_FIELDS, obj.OPTIONAL_FIELDS];
-            n = numel(names);
+            % LISTMATERIALS Return a table of all materials and their standard properties,
+            % sorted by ascending index.
+            [names, idxCol] = obj.getMaterialNamesAndIndicesSorted();
 
-            % Pre-allocate as single/double appropriately
-            idxCol = NaN(n,1,'double');  % display as double for readability
-            data   = NaN(n, numel(cols)-1, 'single');
+            % Fixed order for display (index is shown as a separate column)
+            orderedFields = {'soundSpeed','density', ...
+                'absorptionCoeff','absorptionPower','BonA', ...
+                'specificHeat','thermalConductivity'};
+
+            n = numel(names);
+            data = NaN(n, numel(orderedFields), 'single');
 
             for i = 1:n
                 s = obj.(names{i});
-                % index (cast to double for the table)
-                idxCol(i) = double(s.index);
 
-                % remaining fields in declared order
-                for j = 2:numel(cols)
-                    f = cols{j};
+                % Other fields
+                for j = 1:numel(orderedFields)
+                    f = orderedFields{j};
                     if isfield(s, f)
                         v = s.(f);
                         if isnumeric(v) && isscalar(v)
-                            data(i, j-1) = single(v);
+                            data(i, j) = single(v);
                         else
-                            data(i, j-1) = single(NaN);
+                            data(i, j) = single(NaN);
                         end
                     else
-                        data(i, j-1) = single(NaN);
+                        data(i, j) = single(NaN);
                     end
                 end
             end
 
-            % Build table
-            varNames = [{'Name'}, cols];
-            T = table( string(names(:)), idxCol, data(:,1), data(:,2), data(:,3), ...
-                       data(:,4), data(:,5), data(:,6), data(:,7), ...
-                       'VariableNames', varNames);
+            varNames = [{'Name','Index'}, orderedFields];
+            T = table( string(names(:)), double(idxCol(:)), ...
+                data(:,1), data(:,2), data(:,3), data(:,4), data(:,5), data(:,6), data(:,7), ...
+                'VariableNames', varNames);
         end
 
         function I = listMaterialIndices(obj)
-            %LISTMATERIALINDICES Return Name-Index mapping as a table.
-            names = obj.getMaterialNames();
-            idx = zeros(numel(names),1,'double');
-            for i = 1:numel(names)
-                idx(i) = double(obj.(names{i}).index);
-            end
-            I = table( string(names(:)), idx, 'VariableNames', {'Name','Index'} );
+            % LISTMATERIALINDICES Return Name-Index mapping as a table,
+            % sorted by ascending index.
+            [names, idx] = obj.getMaterialNamesAndIndicesSorted();
+            I = table( string(names(:)), double(idx(:)), 'VariableNames', {'Name','Index'} );
         end
     end
 
     methods (Access = private)
         function names = getMaterialNames(obj)
-            %GETMATERIALNAMES Return only dynamic material property names.
+            % GETMATERIALNAMES Return only dynamic material property names.
             allProps = properties(obj);
             names = setdiff(allProps, obj.RESERVED_PROPS, 'stable');
 
@@ -194,19 +196,42 @@ classdef Materials < dynamicprops
         end
 
         function idx = getAllIndices(obj)
-            %GETALLINDICES Collect indices from all materials as double vector.
+            % GETALLINDICES Collect indices from all materials as double vector.
             names = obj.getMaterialNames();
             idx = zeros(numel(names),1,'double');
             for i = 1:numel(names)
                 idx(i) = double(obj.(names{i}).index);
             end
         end
+
+        function idx = nextAvailableIndex(obj)
+            % NEXTAVAILABLEINDEX Return lowest free uint8 index in [0..255], or [] if none.
+            used = double(obj.getAllIndices());
+            all  = 0:double(intmax('uint8'));   % 0..255
+            free = setdiff(all, used, 'stable'); % keep ascending order
+            if isempty(free)
+                idx = [];
+            else
+                idx = uint8(free(1));
+            end
+        end
+
+        function [namesSorted, idxSorted] = getMaterialNamesAndIndicesSorted(obj)
+            %GETMATERIALNAMESANDINDICESSORTED Return material names and indices sorted by index asc.
+            names = obj.getMaterialNames();
+            idx   = zeros(numel(names),1,'uint8');
+            for i = 1:numel(names)
+                idx(i) = obj.(names{i}).index;
+            end
+            [idxSorted, order] = sort(idx, 'ascend');
+            namesSorted = names(order);
+        end
     end
 
     methods (Static, Access = private)
         function s = canonicalizeAndValidateStruct(s)
-            % Ensure required fields exist
-            req = kwave.toolbox.Materials.REQUIRED_FIELDS;
+            % Ensure required fields exist (index is optional now)
+            req = kwave.toolbox.Materials.REQUIRED_FIELDS;  % {'soundSpeed','density'}
             missing = setdiff(req, fieldnames(s));
             if ~isempty(missing)
                 error('Materials:MissingFields', ...
@@ -224,47 +249,45 @@ classdef Materials < dynamicprops
 
             % ---- Validate & coerce each field ----
 
-            % index: (1,1) uint8, positive, finite, unique handled elsewhere
-            s.index = kwave.toolbox.Materials.ensureUint8PositiveScalar(s.index, 'index');
+            % index: optional; if present, validate here (uniqueness handled in addMaterial)
+            if isfield(s, 'index') && ~isempty(s.index)
+                s.index = kwave.toolbox.Materials.ensureUint8Index(s.index, 'index');
+            end
 
-            % soundSpeed: (1,1) single, positive, finite
-            s.soundSpeed = kwave.toolbox.Materials.ensureNumericScalar(s.soundSpeed, 'soundSpeed', ...
-                                                        'positive', true);
+            % soundSpeed: (1,1) numeric scalar, positive, finite
+            s.soundSpeed = kwave.toolbox.Materials.ensureNumericScalar( ...
+                s.soundSpeed, 'soundSpeed', 'positive', true);
 
-            % density: (1,1) single, positive, finite
-            s.density    = kwave.toolbox.Materials.ensureNumericScalar(s.density, 'density', ...
-                                                        'positive', true);
+            % density: (1,1) numeric scalar, positive, finite
+            s.density = kwave.toolbox.Materials.ensureNumericScalar( ...
+                s.density, 'density', 'positive', true);
 
             % Optional numeric fields:
-            % absorptionCoeff: (1,1) single, nonneg, finite if provided (NaN allowed)
-            s.absorptionCoeff = kwave.toolbox.Materials.ensureNumericOptional(s.absorptionCoeff, ...
-                                        'absorptionCoeff', 'nonnegative');
+            s.absorptionCoeff = kwave.toolbox.Materials.ensureNumericOptional( ...
+                s.absorptionCoeff, 'absorptionCoeff', 'nonnegative');
 
-            % absorptionPower: (1,1) single, nonneg, finite if provided (NaN allowed)
-            s.absorptionPower = kwave.toolbox.Materials.ensureNumericOptional(s.absorptionPower, ...
-                                        'absorptionPower', 'nonnegative');
+            s.absorptionPower = kwave.toolbox.Materials.ensureNumericOptional( ...
+                s.absorptionPower, 'absorptionPower', 'nonnegative');
 
-            % BonA: (1,1) single, nonneg, finite if provided (NaN allowed)
-            s.BonA = kwave.toolbox.Materials.ensureNumericOptional(s.BonA, 'BonA', 'nonnegative');
+            s.BonA = kwave.toolbox.Materials.ensureNumericOptional( ...
+                s.BonA, 'BonA', 'nonnegative');
 
-            % specificHeat: (1,1) single, positive, finite if provided (NaN allowed)
-            s.specificHeat = kwave.toolbox.Materials.ensureNumericOptional(s.specificHeat, ...
-                                        'specificHeat', 'positive');
+            s.specificHeat = kwave.toolbox.Materials.ensureNumericOptional( ...
+                s.specificHeat, 'specificHeat', 'positive');
 
-            % thermalConductivity: (1,1) single, positive, finite if provided (NaN allowed)
-            s.thermalConductivity = kwave.toolbox.Materials.ensureNumericOptional(s.thermalConductivity, ...
-                                        'thermalConductivity', 'positive');
+            s.thermalConductivity = kwave.toolbox.Materials.ensureNumericOptional( ...
+                s.thermalConductivity, 'thermalConductivity', 'positive');
         end
 
-        function v = ensureUint8PositiveScalar(v, fname)
-            % Accept numeric scalar that can be safely cast to uint8 and is >=1
+        function v = ensureUint8Index(v, fname)
+            % Accept numeric scalar that can be safely cast to uint8 and is in [0, 255]
             if ~(isnumeric(v) && isscalar(v) && isfinite(v))
                 error('Materials:InvalidField', ...
                     '"%s" must be a finite numeric scalar.', fname);
             end
-            if v <= 0 || v ~= floor(v)
+            if v < 0 || v ~= floor(v)
                 error('Materials:InvalidIndex', ...
-                    '"%s" must be a positive integer value >= 1.', fname);
+                    '"%s" must be an integer value in the range [0, 255].', fname);
             end
             if v > double(intmax('uint8'))
                 error('Materials:IndexRange', ...
@@ -274,44 +297,52 @@ classdef Materials < dynamicprops
         end
 
         function v = ensureNumericScalar(v, fname, signConstraint, mustBeFiniteFlag)
-            % Coerce to single and enforce sign + finiteness
             if ~(isnumeric(v) && isscalar(v))
-                error('Materials:InvalidField', ...
-                    '"%s" must be a numeric scalar.', fname);
+                error('Materials:InvalidField', '"%s" must be a numeric scalar.', fname);
             end
+
+            % NEW: enforce real values
+            if ~isreal(v)
+                error('Materials:InvalidField', '"%s" must be a real value.', fname);
+            end
+
             if mustBeFiniteFlag && ~isfinite(v)
-                error('Materials:InvalidField', ...
-                    '"%s" must be finite.', fname);
+                error('Materials:InvalidField', '"%s" must be finite.', fname);
             end
+
             switch signConstraint
                 case 'positive'
                     if ~(v > 0)
-                        error('Materials:InvalidField', ...
-                            '"%s" must be > 0.', fname);
+                        error('Materials:InvalidField', '"%s" must be > 0.', fname);
                     end
                 case 'nonnegative'
                     if ~(v >= 0)
-                        error('Materials:InvalidField', ...
-                            '"%s" must be >= 0.', fname);
+                        error('Materials:InvalidField', '"%s" must be >= 0.', fname);
                     end
                 otherwise
                     % no-op
             end
         end
 
+
         function v = ensureNumericOptional(v, fname, signConstraint)
-            % Optional fields: allow NaN (default/missing), otherwise enforce finite + sign.
             if ~(isnumeric(v) && isscalar(v))
-                error('Materials:InvalidField', ...
-                    '"%s" must be a numeric scalar (or NaN).', fname);
+                error('Materials:InvalidField', '"%s" must be a numeric scalar (or NaN).', fname);
             end
+
             if isnan(v)
-                return;   % accept NaN as-is (no finiteness or sign checks)
+                return; % leave NaN as-is
+            end
+
+            % NEW: enforce real values
+            if ~isreal(v)
+                error('Materials:InvalidField', '"%s" must be a real value (or NaN).', fname);
             end
 
             if ~isfinite(v)
                 error('Materials:InvalidField', '"%s" must be finite (or NaN).', fname);
             end
+
             switch signConstraint
                 case 'positive'
                     if ~(v > 0)
@@ -324,45 +355,10 @@ classdef Materials < dynamicprops
             end
         end
 
+
         function tf = isValidMaterialName(name)
             tf = (ischar(name) || (isstring(name) && isscalar(name)));
             if tf, tf = isvarname(char(name)); end
-        end
-    end
-
-    methods (Static)
-        function s = makeMaterial(index, soundSpeed, density, ...
-                                  absorptionCoeff, absorptionPower, BonA, ...
-                                  specificHeat, thermalConductivity)
-            %MAKEMATERIAL Convenience constructor for a material struct.
-            %
-            % Positional parameters:
-            %   index, soundSpeed, density    -> required
-            %   absorptionCoeff, absorptionPower, BonA, specificHeat, thermalConductivity -> optional
-            %
-            % Missing optionals default to single(NaN).
-
-            if nargin < 3
-                error('Materials:makeMaterial', ...
-                    'Provide at least index, soundSpeed, and density.');
-            end
-
-            % Default optional arguments to NaN
-            if nargin < 4, absorptionCoeff = single(NaN); end
-            if nargin < 5, absorptionPower = single(NaN); end
-            if nargin < 6, BonA            = single(NaN); end
-            if nargin < 7, specificHeat    = single(NaN); end
-            if nargin < 8, thermalConductivity = single(NaN); end
-
-            s = struct( ...
-                'index',               index, ...
-                'soundSpeed',          soundSpeed, ...
-                'density',             density, ...
-                'absorptionCoeff',     absorptionCoeff, ...
-                'absorptionPower',     absorptionPower, ...
-                'BonA',                BonA, ...
-                'specificHeat',        specificHeat, ...
-                'thermalConductivity', thermalConductivity );
         end
     end
 end
