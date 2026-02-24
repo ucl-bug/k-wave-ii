@@ -88,7 +88,7 @@ k\-Wave uses the [class\-based unit testing framework](https://uk.mathworks.com/
 -  **`+linting`:** Linting checks assess code for stylistic and syntactical correctness. 
 -  **`+legacy`:** Legacy tests are regression tests against k\-Wave I to ensure existing functionality remains unaffected by changes. 
 
-Each top level class or function should have at least one corresponding unit test. Unit tests should have 100% line coverage. Tests should inheret from one of the following:
+Each top level class or function should have at least one corresponding unit test. Unit tests should have 100% line coverage. Tests should inherit from one of the following:
 
 -  `kwave.tests.unit.AbstractTestGridInput` for testing classes that derive from `kwave.toolbox.GridInput`. 
 -  `kwave.tests.unit.AbstractTestGrid` for tests that need to iterate over different sized grids. 

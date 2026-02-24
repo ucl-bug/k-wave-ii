@@ -13,7 +13,7 @@
 % 
 % This is performed by generating the padded Density and removing the PML.
 % The resulting values are then averaged across the grid to produce a
-% scalar value, this is by the arithmatic mean. The absorption coefficients
+% scalar value, this is by the arithmetic mean. The absorption coefficients
 % are not homogonised like this.
 %
 % Alternative averaging including averaging omega^y for a fixed central

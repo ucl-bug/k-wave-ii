@@ -253,7 +253,7 @@ end
 % =========================================================================
 
 % undocumented option to calculate the field pattern using 
-% kspaceFirstOrderND for comparision
+% kspaceFirstOrderND for comparison
 if use_first_order
     
     % create grid
