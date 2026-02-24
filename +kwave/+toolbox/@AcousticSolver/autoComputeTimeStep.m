@@ -39,7 +39,7 @@ function [Nt, dt] = autoComputeTimeStep(obj, CFL, endTime)
 
 arguments
     obj
-    CFL {mustBeScalarOrEmpty, mustBePositive, mustBeFinite}
+    CFL     {mustBeScalarOrEmpty, mustBePositive, mustBeFinite}
     endTime {mustBeScalarOrEmpty, mustBePositive, mustBeFinite}
 end
 
@@ -63,7 +63,7 @@ dx = min(obj.kgrid.gridSpacing(1:obj.kgrid.dimensions));
 dt = CFL .* dx ./ soundSpeedMax;
 
 % Compute Nt based on EndTime.
-Nt = ceil(endTime / dt);
+Nt = uint64(ceil(endTime / dt));
 
 % Recompute dt to ensure that EndTime is exactly reached.
-dt = endTime / Nt;
+dt = endTime / single(Nt);

@@ -80,7 +80,7 @@ classdef TestMedium < matlab.unittest.TestCase
 
             test.verifyEqual(test.medium.soundSpeed,          w.soundSpeed *  ones(test.kgrid.gridSize));
             test.verifyEqual(test.medium.density,             w.density    *  ones(test.kgrid.gridSize));
-            test.verifyEqual(test.medium.absorptionPower,     w.absorptionPower * ones(test.kgrid.gridSize));
+            test.verifyEqual(test.medium.absorptionPower,     w.absorptionPower);
         end
 
         function testDerivedMapsForMixedMaterials(test)

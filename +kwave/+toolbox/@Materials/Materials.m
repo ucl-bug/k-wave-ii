@@ -51,28 +51,29 @@ classdef Materials < dynamicprops
     end
 
     methods
+
         function obj = Materials()
             % Pre-populate with two examples (types are enforced on add).
             water = struct( ...
                 'index',               uint8(0), ... % uint8 limits the number of materials to 256
-                'soundSpeed',          1480, ...     % m/s @ ~20°C
-                'density',             1000, ...     % kg/m^3
-                'absorptionCoeff',     0.5, ...      % dB/cm/MHz^y
-                'absorptionPower',     2, ...        % (y) dimensionless
-                'BonA',                5, ...        % dimensionless
-                'specificHeat',        4181, ...     % J/(kg·K)
-                'thermalConductivity', 0.58 );       % W/(m·K)
+                'soundSpeed',          single(1480), ...     % m/s @ ~20°C
+                'density',             single(1000), ...     % kg/m^3
+                'absorptionCoeff',     single(0.5), ...      % dB/cm/MHz^y
+                'absorptionPower',     single(2), ...        % (y) dimensionless
+                'BonA',                single(5), ...        % dimensionless
+                'specificHeat',        single(4181), ...     % J/(kg·K)
+                'thermalConductivity', single(0.58) );       % W/(m·K)
             obj.addMaterial('water', water);
 
             air = struct( ...
                 'index',               uint8(1), ...
-                'soundSpeed',          343, ...
-                'density',             1.225, ...
-                'absorptionCoeff',     NaN, ...    % leave optional as NaN if unknown
-                'absorptionPower',     NaN, ...
-                'BonA',                0.7, ...
-                'specificHeat',        1005, ...
-                'thermalConductivity', 0.026 );
+                'soundSpeed',          single(343), ...
+                'density',             single(1.225), ...
+                'absorptionCoeff',     single(NaN), ...    % leave optional as NaN if unknown
+                'absorptionPower',     single(NaN), ...
+                'BonA',                single(0.7), ...
+                'specificHeat',        single(1005), ...
+                'thermalConductivity', single(0.026) );
             obj.addMaterial('air', air);
         end
 
@@ -122,6 +123,9 @@ classdef Materials < dynamicprops
                 end
                 s.index = assignedIdx;
             end
+
+            % Ensure all numeric scalar properties are 'single'; keep 'index' as uint8
+            s = kwave.toolbox.Materials.castMaterialFieldsToSingle(s);
 
             % Create dynamic property and assign struct
             p = addprop(obj, name);
@@ -230,7 +234,7 @@ classdef Materials < dynamicprops
 
     methods (Static, Access = private)
         function s = canonicalizeAndValidateStruct(s)
-            
+
             % Ensure required fields exist (index is optional now)
             req = kwave.toolbox.Materials.REQUIRED_FIELDS;  % {'soundSpeed','density'}
             missing = setdiff(req, fieldnames(s));
@@ -360,6 +364,27 @@ classdef Materials < dynamicprops
         function tf = isValidMaterialName(name)
             tf = (ischar(name) || (isstring(name) && isscalar(name)));
             if tf, tf = isvarname(char(name)); end
+        end
+
+
+        function s = castMaterialFieldsToSingle(s)
+            % Convert all numeric scalar fields (except 'index') to single.
+            % Keep 'index' as uint8. Leave non-scalar or non-numeric fields as-is.
+
+            fields = fieldnames(s);
+            for i = 1:numel(fields)
+                f = fields{i};
+                if strcmp(f, 'index')
+                    % ensure remains uint8
+                    s.index = kwave.toolbox.Materials.ensureUint8Index(s.index, 'index');
+                    continue;
+                end
+                v = s.(f);
+                if isnumeric(v) && isscalar(v)
+                    % Preserve NaN but cast to single
+                    s.(f) = single(v);
+                end
+            end
         end
     end
 end
