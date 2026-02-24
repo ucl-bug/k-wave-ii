@@ -6,7 +6,6 @@ on:
 
 jobs:
   update-list:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     permissions:
       contents: write  # Allows the action to push changes back to the repo
