@@ -9,7 +9,7 @@ from github import Github
 # ------------------------------------------------------------------------------
 # A] Config
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-FILE_PATH = os.path.join(SCRIPT_DIR, "docs/CONTRIBUTORS.md")
+FILE_PATH = os.path.join(SCRIPT_DIR, "CONTRIBUTORS.md")
 
 ACCESS_TOKEN = os.getenv("GITHUB_TOKEN")
 REPO_NAME = os.getenv("GITHUB_REPOSITORY", "ucl-bug/k-wave")
