@@ -230,6 +230,7 @@ classdef Materials < dynamicprops
 
     methods (Static, Access = private)
         function s = canonicalizeAndValidateStruct(s)
+            
             % Ensure required fields exist (index is optional now)
             req = kwave.toolbox.Materials.REQUIRED_FIELDS;  % {'soundSpeed','density'}
             missing = setdiff(req, fieldnames(s));
@@ -301,7 +302,7 @@ classdef Materials < dynamicprops
                 error('Materials:InvalidField', '"%s" must be a numeric scalar.', fname);
             end
 
-            % NEW: enforce real values
+            % enforce real values
             if ~isreal(v)
                 error('Materials:InvalidField', '"%s" must be a real value.', fname);
             end
@@ -334,7 +335,7 @@ classdef Materials < dynamicprops
                 return; % leave NaN as-is
             end
 
-            % NEW: enforce real values
+            % enforce real values
             if ~isreal(v)
                 error('Materials:InvalidField', '"%s" must be a real value (or NaN).', fname);
             end
