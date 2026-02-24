@@ -3,9 +3,6 @@ name: Update Contributors List
 # TODO: Change this to the action needed I use this for testing based on the access that AS and myself have 
 on:
   pull_request:
-    types: [closed, opened]
-    branches:
-      - main
 
 jobs:
   update-list:
