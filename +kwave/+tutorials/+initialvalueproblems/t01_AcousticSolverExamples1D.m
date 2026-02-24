@@ -10,33 +10,31 @@
 % |run('kwave.tutorials.initialvalueproblems.t01_AcousticSolverExamples1D.m')|
 %
 % See Also:
+%
 % * kwave.tutorials.initialvalueproblems.*
 
+
+%% Preliminaries
 
 % This clears the workspace of any old variables
 clearvars;
 
-% Import the k-Wave-II toolbox
-import kwave.toolbox.*
 
-%% =========================================================================
-% Define a grid
+%% Define a grid
 
 Nx    = 128;          % Number of grid points
 dx    = 1e-3;         % Grid spacing [m]
 kgrid = Grid(Nx, dx); % Create a Grid object
 
 
-%% =========================================================================
-% Define the acoustic properties of the medium
+%% Define the acoustic properties of the medium
 
 medium = AcousticMedium(kgrid); % Create an AcousticMedium object
 medium.soundSpeed = 1500;       % Set a constant sound speed [m/s]
 medium.density    = 1000;       % Set a constant density [kg/m^3]
 
 
-%% =========================================================================
-% Define an acoustic source 
+%% Define an acoustic source 
 
 % Create an AcousticSource object
 source = AcousticSource(kgrid); 
@@ -49,8 +47,7 @@ source = AcousticSource(kgrid);
 source.initialPressure = exp( -kgrid.x.^2 / (10*kgrid.dx^2) );
 
 
-%% =========================================================================
-% Run the simulation
+%% Run the simulation
 
 % To create an AcousticSolver object requires the other objects defined
 % above: kgrid, medium and source. (An AcousticSensor object can be used as
@@ -83,8 +80,8 @@ solver.run(Nt=50, dt=dt1);
 %
 % solver.run(Nt=0, dt=dt1);
 
-%% =========================================================================
-% The simulation output
+
+%% The simulation output
 
 % Following execution of run, the solver object will contain the following
 % output properties:

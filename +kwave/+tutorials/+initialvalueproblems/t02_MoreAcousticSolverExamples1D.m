@@ -10,23 +10,25 @@
 % |run('kwave.tutorials.initialvalueproblems.t02_MoreAcousticSolverExamples1D.m')|
 %
 % See Also:
+% 
 % * kwave.tutorials.initialvalueproblems.t01_AcousticSolverExamples1D.m
-%
 
+
+%% Preliminaries
 
 clearvars;             % Clear the workspace of old variables
 import kwave.toolbox.* % Import the k-Wave-II toolbox
 
-%% =========================================================================
-% Define a grid
+
+%% Define a grid
 
 Nx = 128;     % Number of grid points
 dx = 1e-3;    % Grid spacing [m]
 pmlSize = 20; % Thickness of the PML (Perfectly Matched Layer absorbing boundary)
 kgrid = Grid(Nx, dx, pmlSize); % Create a Grid object
 
-%% =========================================================================
-% Define heterogeneous acoustic properties, and include acoustic absorption
+
+%% Define heterogeneous acoustic properties, and include acoustic absorption
 
 % Create an AcousticMedium object
 medium = AcousticMedium(kgrid); 
@@ -53,8 +55,8 @@ medium.absorptionPower = 1.9;
 % solver = AcousticSolver(kgrid,medium,source,sensor);
 % solver.absorptionType='on';
 
-%% =========================================================================
-% Define an acoustic source 
+
+%% Define an acoustic source 
 
 % Create an AcousticSource object
 source = AcousticSource(kgrid); 
@@ -63,8 +65,8 @@ source = AcousticSource(kgrid);
 offset = floor(kgrid.Nx/4);
 source.initialPressure = exp( -(kgrid.x - offset*kgrid.dx).^2 / (10*kgrid.dx^2) );
 
-%% =========================================================================
-% Define an acoustic sensor
+
+%% Define an acoustic sensor
 
 % Create an AcousticSensor object
 sensor = AcousticSensor(kgrid);
@@ -78,8 +80,8 @@ sensor.mask(end - floor(Nx/8)) = 1;
 % Record at every other timestep
 sensor.timeStepSpacing = 2;
 
-%% =========================================================================
-% Run the simulation
+
+%% Run the simulation
 
 % Create an AcousticSolver object
 solver = AcousticSolver(kgrid,medium,source,sensor); 
@@ -95,8 +97,8 @@ endTime = 0.65 * kgrid.dx*kgrid.Nx / min(medium.soundSpeed(:));
 % Run the solver
 solver.run(CFL=cfl, EndTime=endTime);
 
-%% =========================================================================
-% The simulation output
+
+%% The simulation output
 
 % Plot the initial and final acoustic pressure fields
 figure

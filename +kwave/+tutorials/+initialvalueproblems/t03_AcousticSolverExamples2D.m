@@ -9,15 +9,18 @@
 % |run('kwave.tutorials.initialvalueproblems.t03_AcousticSolverExamples2D.m')|
 %
 % See Also:
+%
 % * kwave.tutorials.initialvalueproblems.t01_AcousticSolverExamples1D
 % * kwave.tutorials.initialvalueproblems.t02_MoreAcousticSolverExamples1D
 
 
+%% Preliminaries
+
 clearvars;             % Clear the workspace of old variables
 import kwave.toolbox.* % Import the k-Wave-II toolbox
 
-%% =========================================================================
-% Define a grid
+
+%% Define a grid
 
 Nx = 128;      % Number of grid points in x-direction
 Ny = 128;      % Number of grid points in y-direction
@@ -29,8 +32,8 @@ pmlSizey = 20; % Thickness of the PML (Perfectly Matched Layer absorbing boundar
 % Create a Grid object
 kgrid = Grid([Nx Ny], [dx dy], [pmlSizex pmlSizey]); 
 
-%% =========================================================================
-% Define acoustic properties, and include acoustic absorption
+
+%% Define acoustic properties, and include acoustic absorption
 
 % Create an AcousticMedium object
 medium = AcousticMedium(kgrid); 
@@ -52,8 +55,8 @@ medium.density = rho0;  % [kg/m^3]
 medium.absorptionCoeff = 0.5;   % [dB/cm/MHz^y]
 medium.absorptionPower = 1.9;
 
-%% =========================================================================
-% Define an acoustic source
+
+%% Define an acoustic source
 
 % Create an AcousticSource object
 source = AcousticSource(kgrid); 
@@ -63,8 +66,8 @@ offset = 0.25*kgrid.dx*Nx;
 r = hypot(kgrid.x - offset,kgrid.y);  % radial coordinate
 source.initialPressure = exp( -r.^2 / (10*kgrid.dx^2) );
 
-%% =========================================================================
-% Define an acoustic sensor
+
+%% Define an acoustic sensor
 
 % Create an AcousticSensor object
 sensor = AcousticSensor(kgrid);
@@ -74,8 +77,8 @@ sensor = AcousticSensor(kgrid);
 sensor.mask = zeros(kgrid.gridSize);
 sensor.mask(end - floor(Nx/8),:) = 1;
 
-%% =========================================================================
-% Run the simulation
+
+%% Run the simulation
 
 % Create an AcousticSolver object
 solver = AcousticSolver(kgrid,medium,source,sensor); 
@@ -91,8 +94,8 @@ endTime = 0.5 * kgrid.dx*kgrid.Nx / min(medium.soundSpeed(:));
 % Run the solver
 solver.run(CFL=cfl, EndTime=endTime);
 
-%% =========================================================================
-% Visualisations
+
+%% Visualisations
 
 figure
 subplot(2,2,1)
