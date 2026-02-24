@@ -59,7 +59,7 @@ if flags.source_p
             
         else
             
-            % compute the scale parameter seperately for each source
+            % compute the scale parameter separately for each source
             % position based on the sound speed at that position
             for p_index = 1:length(source.p(:, 1))        
                 source.p(p_index, :) = source.p(p_index, :) ./ (N .* c0(p_source_pos_index(p_index)).^2);
@@ -72,7 +72,7 @@ if flags.source_p
             % create empty matrix
             grid_point_sep = zeros(size(kgrid.x));
             
-            % compute averaged grid point seperation map, the interior
+            % compute averaged grid point separation map, the interior
             % points are calculated using the average distance to all
             % connected grid points (the edge values are not calculated
             % assuming there are no source points in the PML)
@@ -118,7 +118,7 @@ if flags.source_p
                 
             else
                 
-                % compute the scale parameter seperately for each source
+                % compute the scale parameter separately for each source
                 % position based on the sound speed at that position
                 for p_index = 1:length(source.p(:, 1))        
                     source.p(p_index, :) = source.p(p_index, :) .* (2 .* dt ./ (N .* c0(p_source_pos_index(p_index)) .* kgrid.dx));
@@ -133,7 +133,7 @@ end
 % STRESS SOURCES
 % =========================================================================
 
-% scale the stress source by 1/N to divide amoungst the split field
+% scale the stress source by 1/N to divide amongst the split field
 % components, and if source.s_mode is not set to 'dirichlet', also scale by 
 % 2*dt*c0/dx to account for the time step and convert to units of 
 % [kg/(m^3 s)] (note dx is used in all dimensions)
@@ -149,7 +149,7 @@ if flags.source_sxx
             
         else
             
-            % compute the scale parameter seperately for each source
+            % compute the scale parameter separately for each source
             % position based on the sound speed at that position
             for s_index = 1:length(source.sxx(:, 1))        
                 source.sxx(s_index, :) = source.sxx(s_index, :) .* (2 .* dt .* c0(s_source_pos_index(s_index)) ./ (N .* kgrid.dx));
@@ -170,7 +170,7 @@ if flags.source_syy
             
         else
             
-            % compute the scale parameter seperately for each source
+            % compute the scale parameter separately for each source
             % position based on the sound speed at that position
             for s_index = 1:length(source.syy(:, 1))        
                 source.syy(s_index, :) = source.syy(s_index, :) .* (2 .* dt .* c0(s_source_pos_index(s_index)) ./ (N .* kgrid.dx));
@@ -191,7 +191,7 @@ if flags.source_szz
             
         else
             
-            % compute the scale parameter seperately for each source
+            % compute the scale parameter separately for each source
             % position based on the sound speed at that position
             for s_index = 1:length(source.szz(:, 1))        
                 source.szz(s_index, :) = source.szz(s_index, :) .* (2 .* dt .* c0(s_source_pos_index(s_index)) ./ (N .* kgrid.dx));
@@ -212,7 +212,7 @@ if flags.source_sxy
             
         else
             
-            % compute the scale parameter seperately for each source
+            % compute the scale parameter separately for each source
             % position based on the sound speed at that position
             for s_index = 1:length(source.sxy(:, 1))        
                 source.sxy(s_index, :) = source.sxy(s_index, :) .* (2 .* dt .* c0(s_source_pos_index(s_index)) ./ (N .* kgrid.dx));
@@ -233,7 +233,7 @@ if flags.source_sxz
             
         else
             
-            % compute the scale parameter seperately for each source
+            % compute the scale parameter separately for each source
             % position based on the sound speed at that position
             for s_index = 1:length(source.sxz(:, 1))        
                 source.sxz(s_index, :) = source.sxz(s_index, :) .* (2 .* dt .* c0(s_source_pos_index(s_index)) ./ (N .* kgrid.dx));
@@ -254,7 +254,7 @@ if flags.source_syz
             
         else
             
-            % compute the scale parameter seperately for each source
+            % compute the scale parameter separately for each source
             % position based on the sound speed at that position
             for s_index = 1:length(source.syz(:, 1))        
                 source.syz(s_index, :) = source.syz(s_index, :) .* (2 .* dt .* c0(s_source_pos_index(s_index)) ./ (N .* kgrid.dx));
@@ -291,7 +291,7 @@ if flags.source_ux && ~strcmp(source.u_mode, 'dirichlet')
         % create empty matrix
         grid_point_sep = zeros(size(kgrid.x));
         
-        % compute averaged grid point seperation map, the interior
+        % compute averaged grid point separation map, the interior
         % points are calculated using the average distance to all
         % connected grid points (the edge values are not calculated
         % assuming there are no source points in the PML)
@@ -320,7 +320,7 @@ if flags.source_ux && ~strcmp(source.u_mode, 'dirichlet')
             
         else
             
-            % compute the scale parameter seperately for each source position
+            % compute the scale parameter separately for each source position
             % based on the sound speed at that position
             for u_index = 1:length(source.ux(:, 1))
                 source.ux(u_index, :) = source.ux(u_index, :) .* (2 .* c0(u_source_pos_index(u_index)) .* dt ./ kgrid.dx);
@@ -341,7 +341,7 @@ if flags.source_uy && ~strcmp(source.u_mode, 'dirichlet')
         
     else
         
-        % compute the scale parameter seperately for each source position
+        % compute the scale parameter separately for each source position
         % based on the sound speed at that position
         for u_index = 1:length(source.uy(:, 1))
             source.uy(u_index, :) = source.uy(u_index, :) .* (2 .* c0(u_source_pos_index(u_index)) .* dt ./ kgrid.dy);
@@ -361,7 +361,7 @@ if flags.source_uz && ~strcmp(source.u_mode, 'dirichlet')
         
     else
         
-        % compute the scale parameter seperately for each source position
+        % compute the scale parameter separately for each source position
         % based on the sound speed at that position
         for u_index = 1:length(source.uz(:, 1))        
             source.uz(u_index, :) = source.uz(u_index, :) .* (2 .* c0(u_source_pos_index(u_index)) .* dt ./ kgrid.dz);

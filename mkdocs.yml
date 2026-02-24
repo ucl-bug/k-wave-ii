@@ -17,8 +17,9 @@ nav:
   - Contributor guidelines: CONTRIBUTING.md
   - Code of Conduct: codeOfConduct.md
   - Licence: LICENSE.md
-  - Help:
+  - How to:
     - Tutorials: helpfilesweb/Tutorials/
+  - Code reference:
     - Toolbox Functions: helpfilesweb/Toolbox_Functions/
     - Utility Functions: helpfilesweb/Utility_Functions/
   - Developer docs:

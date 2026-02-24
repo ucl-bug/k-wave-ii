@@ -17,7 +17,7 @@
 % The |Solver| class is derived from |kwave.toolbox.FourierCollocation|.
 % This superclass implements common methods to calculate differential
 % operators using the Fourier collocation spectral method. See class
-% documentation for futher details.
+% documentation for further details.
 %
 % The constructor calls the |checkRequiredProperties| method for the input
 % medium, source, and sensor objects. 
