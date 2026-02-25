@@ -15,9 +15,13 @@
 
 Review summary (complete before merge):
 
-* [ ] Implementation is sensible
-* [ ] All code is documented
-* [ ] Code meets coding standard
-* [ ] New unit test/s implemented and cover scope (if applicable)
-* [ ] All unit tests pass
-* [ ] Issue description is complete
+- [ ] New (unit) test/s implemented
+- [ ] All (unit) test/s pass
+- [ ] New code is documented
+- [ ] Documentation builds and looks right
+- [ ] Examples/Tutorials added (if applicable)
+- [ ] Linting tests pass
+- Code review:
+  - [ ] Implementation is sensible
+  - [ ] Code meets coding standard
+  - [ ] Issue description is complete
