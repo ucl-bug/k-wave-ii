@@ -263,53 +263,27 @@ classdef Medium < kwave.toolbox.GridInput
 
 
         function vals = mapProperty(obj, fieldName)
+
             % Build an unpadded grid-sized map (single) for the given field.
             idx = obj.subsref(struct('type','.', 'subs','materialIndexGrid'));  % uint8, unpadded
-            if isempty(idx)
-                vals = single([]);
-                return
-            end
 
             % ensure idx is grid-sized (expand homogeneous scalar)
             if isscalar(idx)
                 idx = repmat(idx, obj.gridSize);
             end
 
+            % Look-up table
             lut = NaN(256,1,'single');  % index 0..255
 
             % Name/Index table (preferred)
-            try
-                T = obj.materials.listMaterialIndices();  % table: Name, Index
-                names   = string(T.Name);
-                indices = double(T.Index);
-            catch
-                % Fallback: inspect dynamic properties
-                props = properties(obj.materials);
-                names = strings(0,1); indices = [];
-                for i = 1:numel(props)
-                    try
-                        s = obj.materials.(props{i});
-                        if isstruct(s) && isfield(s,'index')
-                            names(end+1,1)   = string(props{i}); %#ok<AGROW>
-                            indices(end+1,1) = double(s.index);  %#ok<AGROW>
-                        end
-                    catch
-                    end
-                end
-            end
+            T = obj.materials.listMaterialIndices();  % table: Name, Index
+            names   = string(T.Name);
+            indices = double(T.Index);
 
             for k = 1:numel(indices)
                 s = obj.materials.(char(names(k)));
-                if isfield(s, fieldName)
-                    v = s.(fieldName);
-                    if isnumeric(v) && isscalar(v)
-                        lut(indices(k)+1) = single(v);
-                    else
-                        lut(indices(k)+1) = single(NaN);
-                    end
-                else
-                    lut(indices(k)+1) = single(NaN);
-                end
+                v = s.(fieldName);
+                lut(indices(k)+1) = single(v);
             end
 
             vals = lut(double(idx) + 1);
@@ -320,23 +294,23 @@ classdef Medium < kwave.toolbox.GridInput
     % Scalar dependent getters
     % =========================
     methods
-        function v = get.absorptionPower(obj)
-            % Scalar = mode(absorptionPowerMap) ignoring NaNs.
-            apm = obj.subsref(struct('type','.', 'subs','absorptionPowerMap'));  % unpadded
-            if isempty(apm)
-                v = NaN;
-                return
+            function v = get.absorptionPower(obj)
+                % Scalar = mode(absorptionPowerMap) ignoring NaNs.
+                apm = obj.subsref(struct('type','.', 'subs','absorptionPowerMap'));  % unpadded
+                if isempty(apm)
+                    v = NaN;
+                    return
+                end
+                vals = apm(~isnan(apm));
+                if isempty(vals)
+                    v = NaN;
+                    return
+                end
+                [u, ~, idx] = unique(vals);      % 'u' is single
+                counts = accumarray(idx, 1);
+                [~, imax] = max(counts);         % smallest mode on ties
+                v = u(imax);                     % single
             end
-            vals = apm(~isnan(apm));
-            if isempty(vals)
-                v = NaN;
-                return
-            end
-            [u, ~, idx] = unique(vals);      % 'u' is single
-            counts = accumarray(idx, 1);
-            [~, imax] = max(counts);         % smallest mode on ties
-            v = u(imax);                     % single
-        end
 
     end
 end
