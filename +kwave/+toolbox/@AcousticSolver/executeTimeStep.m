@@ -75,12 +75,6 @@ divergence = @(x) obj.divergenceSplit(x, Staggering='backward');
         % Current design uses a scalar exponent
         yScalar = obj.medium.absorptionPower;         % scalar, may be NaN
 
-        % If exponent is not finite, disable absorption entirely
-        if ~isfinite(yScalar)
-            hasAbsorption = false; tauEff = []; etaEff = []; yEff = [];
-            return;
-        end
-
         % Start from the padded operators (as built by setAbsorptionCoefficients)
         tauEff = obj.absorbTauPadded;                 % may contain NaN where material missing
         etaEff = obj.absorbEtaPadded;                 % may contain NaN where material missing
@@ -245,7 +239,7 @@ if Nt~=0
         %
         if ~isempty(obj.sensor) && rem(tIndex-adj, obj.sensor.timeSteps) == 0
             if ~isempty(obj.timeArray)
-                obj.timePoint = obj.timeArray(end)+(tIndex-adj)*dt;
+                obj.timePoint = obj.timeArray(end) + dt*single(tIndex-adj);
             else
                 obj.timePoint = dt * single(tIndex-adj);
             end

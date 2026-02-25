@@ -110,7 +110,7 @@ classdef TestMedium < matlab.unittest.TestCase
             ids = idx * ones(test.kgrid.gridSize,'uint8');
             test.medium.materialIndexGrid = ids;
 
-            ap = test.medium.absorptionPower;
+            ap = test.medium.absorptionPowerMap;
             test.verifyTrue(all(isnan(ap(:))));
         end
     end

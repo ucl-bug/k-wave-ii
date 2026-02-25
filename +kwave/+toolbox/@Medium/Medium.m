@@ -46,12 +46,16 @@
 % * |specificHeat|            — specific heat capacity [J/(kg·K)]
 % * |thermalConductivity|     — thermal conductivity [W/(m·K)]
 %
-% Scalar derived properties (read‑only):
+% Scalar properties (user-settable; default computed on first map build):
 %
-% * |absorptionPower|     — scalar = the most common value (mode) in
-%                           |absorptionPowerMap|, ignoring NaNs (NaN if empty).
-% * |soundSpeedReference| — scalar (default = max(soundSpeed(:)))
-% * |diffusionReference|  — scalar (default = 0)
+% * |referenceSoundSpeed| — scalar. Default = max(soundSpeed(:))
+% * |referenceDiffusion|  — scalar. Default = max(thermalConductivity ./ ...
+%                              (density .* specificHeat))
+%
+% These are set automatically the first time the derived maps are built
+% (e.g., when |materialIndexGrid| is first assigned). If the user later
+% assigns a value to either scalar, that value is preserved on subsequent
+% updates to the maps (i.e., not auto-overwritten).
 %
 % Note: The acoustic solver uses the single scalar value |absorptionPower|
 % at all voxels (algorithmic constraint).
@@ -75,36 +79,40 @@ classdef Medium < kwave.toolbox.GridInput
         % All virtual grid fields (user-assignable + derived read-only)
         gridFields = kwave.toolbox.GridField.createGridFieldsMap([ ...
             kwave.toolbox.GridField('materialIndexGrid', ...
-                Classes={'uint8'}, ...
-                Attributes={'nonnegative'}, ...
-                Type=kwave.toolbox.GridFieldType.ScalarField), ...
+            Classes={'uint8'}, ...
+            Attributes={'nonnegative'}, ...
+            Type=kwave.toolbox.GridFieldType.ScalarField), ...
             kwave.toolbox.GridField('soundSpeed', ...
-                Classes={'single'}, Attributes={'real'}, ...
-                Type=kwave.toolbox.GridFieldType.ScalarField), ...
+            Classes={'single'}, Attributes={'real'}, ...
+            Type=kwave.toolbox.GridFieldType.ScalarField), ...
             kwave.toolbox.GridField('density', ...
-                Classes={'single'}, Attributes={'real'}, ...
-                Type=kwave.toolbox.GridFieldType.ScalarField), ...
+            Classes={'single'}, Attributes={'real'}, ...
+            Type=kwave.toolbox.GridFieldType.ScalarField), ...
             kwave.toolbox.GridField('absorptionCoeff', ...
-                Classes={'single'}, Attributes={'real'}, ...
-                Type=kwave.toolbox.GridFieldType.ScalarField), ...
+            Classes={'single'}, Attributes={'real'}, ...
+            Type=kwave.toolbox.GridFieldType.ScalarField), ...
             kwave.toolbox.GridField('absorptionPowerMap', ...
-                Classes={'single'}, Attributes={'real'}, ...
-                Type=kwave.toolbox.GridFieldType.ScalarField), ...
+            Classes={'single'}, Attributes={'real'}, ...
+            Type=kwave.toolbox.GridFieldType.ScalarField), ...
             kwave.toolbox.GridField('BonA', ...
-                Classes={'single'}, Attributes={'real'}, ...
-                Type=kwave.toolbox.GridFieldType.ScalarField), ...
+            Classes={'single'}, Attributes={'real'}, ...
+            Type=kwave.toolbox.GridFieldType.ScalarField), ...
             kwave.toolbox.GridField('specificHeat', ...
-                Classes={'single'}, Attributes={'real'}, ...
-                Type=kwave.toolbox.GridFieldType.ScalarField), ...
+            Classes={'single'}, Attributes={'real'}, ...
+            Type=kwave.toolbox.GridFieldType.ScalarField), ...
             kwave.toolbox.GridField('thermalConductivity', ...
-                Classes={'single'}, Attributes={'real'}, ...
-                Type=kwave.toolbox.GridFieldType.ScalarField) ...
-        ]);
+            Classes={'single'}, Attributes={'real'}, ...
+            Type=kwave.toolbox.GridFieldType.ScalarField) ...
+            ]);
 
         DERIVED_GRID_KEYS = { ...
             'soundSpeed','density','absorptionCoeff','absorptionPowerMap', ...
             'BonA','specificHeat','thermalConductivity' ...
-        };
+            };
+    end
+
+    properties(Dependent=true, SetAccess=private)
+        absorptionPower    % mode(absorptionPowerMap), ignoring NaNs
     end
 
     % -------------------------
@@ -115,12 +123,11 @@ classdef Medium < kwave.toolbox.GridInput
     end
 
     % -------------------------
-    % Scalars (read-only)
+    % Scalars (user-settable)
     % -------------------------
-    properties(Dependent=true, SetAccess=private)
-        absorptionPower         % mode(absorptionPowerMap), ignoring NaNs
-        soundSpeedReference     % max(soundSpeed(:))
-        diffusionReference      % 0
+    properties
+        soundSpeedReference (1,1) double {mustBeNonnegative, mustBeFinite}
+        diffusionReference  (1,1) double {mustBeNonnegative, mustBeFinite}
     end
 
     % =========================
@@ -136,6 +143,7 @@ classdef Medium < kwave.toolbox.GridInput
             obj.materials = materials;
         end
     end
+
 
     % =========================
     % Override assignment
@@ -180,6 +188,25 @@ classdef Medium < kwave.toolbox.GridInput
     end
 
     % =========================
+    % Setters
+    % =========================
+
+    methods
+        function set.soundSpeedReference(obj, v)
+            if ~isempty(v)
+                validateattributes(v, {'double'}, {'scalar','finite','nonnegative'});
+            end
+            obj.soundSpeedReference = v;
+        end
+        function set.diffusionReference(obj, v)
+            if ~isempty(v)
+                validateattributes(v, {'double'}, {'scalar','finite','nonnegative'});
+            end
+            obj.diffusionReference = v;
+        end
+    end
+
+    % =========================
     % Private helpers
     % =========================
     methods (Access = private)
@@ -203,7 +230,7 @@ classdef Medium < kwave.toolbox.GridInput
                 'BonA',                'BonA'
                 'specificHeat',        'specificHeat'
                 'thermalConductivity', 'thermalConductivity'
-            };
+                };
 
             % Recompute each derived map and write to its padded backing
             for k = 1:size(mapList,1)
@@ -213,7 +240,27 @@ classdef Medium < kwave.toolbox.GridInput
                 paddedName = [propName 'Padded'];
                 obj.(paddedName) = obj.kgrid.assignWithGridPadding(unpadded);
             end
+
+            % Only set defaults if the user hasn't assigned them (i.e., still empty)
+            if obj.soundSpeedReference == 0
+                ss = obj.subsref(struct('type','.', 'subs','soundSpeed'));
+                if ~isempty(ss)
+                    obj.soundSpeedReference = double(max(ss(~isnan(ss))));
+                end
+            end
+
+            if obj.diffusionReference == 0
+                tc = obj.subsref(struct('type','.', 'subs','thermalConductivity'));
+                rho = obj.subsref(struct('type','.', 'subs','density'));
+                cp = obj.subsref(struct('type','.', 'subs','specificHeat'));
+                if ~(any(isnan(tc(:))) || any(isnan(rho(:))) || any(isnan(cp(:))))
+                    denom = rho .* cp;
+                    D     = tc ./ denom;
+                    obj.diffusionReference = max(D(:));
+                end
+            end
         end
+
 
         function vals = mapProperty(obj, fieldName)
             % Build an unpadded grid-sized map (single) for the given field.
@@ -225,7 +272,7 @@ classdef Medium < kwave.toolbox.GridInput
 
             % ensure idx is grid-sized (expand homogeneous scalar)
             if isscalar(idx)
-                idx = repmat(idx, obj.gridSize); 
+                idx = repmat(idx, obj.gridSize);
             end
 
             lut = NaN(256,1,'single');  % index 0..255
@@ -291,17 +338,5 @@ classdef Medium < kwave.toolbox.GridInput
             v = u(imax);                     % single
         end
 
-        function v = get.soundSpeedReference(obj)
-            ss = obj.subsref(struct('type','.', 'subs','soundSpeed'));  % unpadded
-            if isempty(ss)
-                v = NaN;
-            else
-                v = max(ss(:));
-            end
-        end
-
-        function v = get.diffusionReference(~)
-            v = 0;
-        end
     end
 end
