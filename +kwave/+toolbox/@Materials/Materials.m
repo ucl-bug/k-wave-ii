@@ -176,7 +176,7 @@ classdef Materials < dynamicprops
             % LISTMATERIALINDICES Return Name-Index mapping as a table,
             % sorted by ascending index.
             [names, idx] = obj.getMaterialNamesAndIndicesSorted();
-            I = table( string(names(:)), double(idx(:)), 'VariableNames', {'Name','Index'} );
+            I = table( string(names(:)), idx(:), 'VariableNames', {'Name','Index'} );
         end
     end
 
