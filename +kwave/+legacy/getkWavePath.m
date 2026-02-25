@@ -14,7 +14,7 @@ function path = getkWavePath(folder_name)
 % OPTIONAL INPUTS:
 %     folder_name - folder name string to append to the pathname
 %
-%     Note: folder_name is not checked for existance, the string is
+%     Note: folder_name is not checked for existence, the string is
 %     simply appended to the pathname with a trailing slash.
 %
 % OUTPUTS:

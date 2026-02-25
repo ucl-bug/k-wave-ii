@@ -25,7 +25,7 @@
 
 import kwave.legacy.*
 
-% force getframe compatability with dual monitors
+% force getframe compatibility with dual monitors
 movegui(img);
 
 % create new VideoWriter object (this is supported from MATLAB 2010b)

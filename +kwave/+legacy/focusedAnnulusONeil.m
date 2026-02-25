@@ -77,7 +77,7 @@ p_axial = zeros(size(axial_position));
 % loop over elements and sum fields
 for ind = 1:num_elements
     
-    % get complex pressure for bowls with inner and outer aperature diam
+    % get complex pressure for bowls with inner and outer aperture diam
     if diameter(1, ind) == 0
         p_el_inner = 0;
     else

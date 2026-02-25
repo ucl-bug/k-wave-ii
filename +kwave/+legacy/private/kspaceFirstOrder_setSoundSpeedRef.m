@@ -73,7 +73,7 @@ elseif ~flags.kspace_elastic_code
 else
     
     % in the k-space elastic case, there are two reference sound speeds for
-    % the compressional and shear waves, so compute them seperately
+    % the compressional and shear waves, so compute them separately
     if isfield(medium, 'sound_speed_ref_compression')
         if isnumeric(medium.sound_speed_ref_compression)
             c_ref_compression = medium.sound_speed_ref_compression;

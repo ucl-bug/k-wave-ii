@@ -768,7 +768,7 @@ tic;
 % start time loop
 for t_index = index_start:index_step:index_end
 
-    % enforce time reversal bounday condition
+    % enforce time reversal boundary condition
     if flags.time_rev
 
         % load pressure value and enforce as a Dirichlet boundary condition
@@ -891,7 +891,7 @@ for t_index = index_start:index_step:index_end
     if flags.transducer_source >= t_index
         
         % as only flat transducers are currently supported, assume all the
-        % energy is transfered to x-direction velocity, multiply source
+        % energy is transferred to x-direction velocity, multiply source
         % terms by apodization weights
         ux_sgx(u_source_pos_index) = ux_sgx(u_source_pos_index) + transducer_transmit_apodization.*transducer_input_signal(delay_mask);
         
