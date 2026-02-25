@@ -1,40 +1,41 @@
+% Materials
+% *Package:* kwave.toolbox
+%
+% Class for holding material property structures so that materials can be
+% referenced using a single index. Used by the Medium class. Initialised with
+% some default materials, but additional materials can be added. Each
+% material structure within the Materials object must have at least the
+% fields:
+%
+% * soundSpeed [m/s]
+% * density    [kg/m^3]
+%
+% Optionally, a material may also have:
+%
+% * absorption coefficient prefactor (alpha0) [dB/cm/MHz^y]
+% * absorption power law exponent (y)
+% * nonlinearity parameter B/A (BonA)
+% * specific heat capacity (C) [J/kg/K]
+% * thermal conductivity (k_cond) [W/m/K]
+%
+% Index handling:
+%
+% * The 'index' field is optional when adding a material.
+% * If omitted, addMaterial auto-assigns the lowest free uint8 index in [0..255].
+% * If provided, it must be a unique uint8-compatible integer in [0..255].
+%
+% Examples
+%   materials = Materials();
+%   T = materials.listMaterials()
+%   I = materials.listMaterialIndices()
+%   [materials, idx] = materials.addMaterial('softTissue', struct('soundSpeed',1540,'density',1000));
+%   materials.addMaterial('softTissue', struct('index',10,'soundSpeed',1540,'density',1000));
+%
+% See Also
+%
+% * |Medium|
+
 classdef Materials < dynamicprops
-    % Materials
-    % *Package:* kwave.toolbox
-    %
-    % Class for holding material property structures so that materials can be
-    % referenced using a single index. Used by the Medium class. Initialised with
-    % some default materials, but additional materials can be added. Each
-    % material structure within the Materials object must have at least the
-    % fields:
-    %
-    % * soundSpeed [m/s]
-    % * density    [kg/m^3]
-    %
-    % Optionally, a material may also have:
-    %
-    % * absorption coefficient prefactor (alpha0) [dB/cm/MHz^y]
-    % * absorption power law exponent (y)
-    % * nonlinearity parameter B/A (BonA)
-    % * specific heat capacity (C) [J/kg/K]
-    % * thermal conductivity (k_cond) [W/m/K]
-    %
-    % Index handling:
-    %
-    % * The 'index' field is optional when adding a material.
-    % * If omitted, addMaterial auto-assigns the lowest free uint8 index in [0..255].
-    % * If provided, it must be a unique uint8-compatible integer in [0..255].
-    %
-    % Examples
-    %   materials = Materials();
-    %   T = materials.listMaterials()
-    %   I = materials.listMaterialIndices()
-    %   [materials, idx] = materials.addMaterial('softTissue', struct('soundSpeed',1540,'density',1000));
-    %   materials.addMaterial('softTissue', struct('index',10,'soundSpeed',1540,'density',1000));
-    %
-    % See Also
-    %
-    % * |Medium|
 
     properties (Constant, Access = private)
         % Required and optional field sets
