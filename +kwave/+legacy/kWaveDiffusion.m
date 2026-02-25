@@ -498,7 +498,7 @@ classdef kWaveDiffusion < handle
 
             elseif strcmp(medium.diffusion_coeff_ref, 'min')
 
-                % set to minium value
+                % set to minimum value
                 kdiff.diffusion_coeff_ref = min( kdiff.diffusion_p1(:) .* kdiff.diffusion_p2(:) );
 
             elseif strcmp(medium.diffusion_coeff_ref, 'mean')
@@ -750,7 +750,7 @@ classdef kWaveDiffusion < handle
             [deriv_x, deriv_y, deriv_z] = obj.getDerivMatrix(kappa);
 
             % compute source update term (this is not dependent on
-            % temperature, so can be computed once and re-used)
+            % temperature, so can be computed once and reused)
             if all(obj.Q == 0)
                 q_term = 0;
             else
@@ -815,7 +815,7 @@ classdef kWaveDiffusion < handle
             % initialise movie parameters
             if obj.record_movie
                 
-                % force getframe compatability with dual monitors
+                % force getframe compatibility with dual monitors
                 movegui(img);
 
                 % create new VideoWriter object (this is supported from

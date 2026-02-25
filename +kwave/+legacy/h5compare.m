@@ -15,7 +15,7 @@ function number_differences = h5compare(filename1, filename2)
 %
 % INPUTS:
 %     filename1             - filename of the first HDF5 file
-%     filename2             - filaname of the second HDF5 file
+%     filename2             - filename of the second HDF5 file
 %
 % OUTPUTS:
 %     number_differences    - number of differences between the files

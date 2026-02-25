@@ -16,8 +16,9 @@ nav:
   - Home: index.md
   - Contributor guidelines: CONTRIBUTING.md
   - Licence: LICENSE.md
-  - Help:
+  - How to:
     - Tutorials: helpfilesweb/Tutorials/
+  - Code reference:
     - Toolbox Functions: helpfilesweb/Toolbox_Functions/
     - Utility Functions: helpfilesweb/Utility_Functions/
   - Developer docs:

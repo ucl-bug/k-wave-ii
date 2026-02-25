@@ -36,7 +36,7 @@ x = 1/pi;
 ```
 
 -  Decimals should have a preceding zero. 
--  Always preceed the imaginary unit with a number, e.g., `1i`. 
+-  Always precede the imaginary unit with a number, e.g., `1i`. 
 ```matlab
 x = 0.5 + 1i;
 ```

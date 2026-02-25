@@ -68,9 +68,13 @@ classdef GenerateDocumentation
 
             % Build helptoc.
             obj.helpTocStart;
+            obj.addToXML(['<tocitem target="howTo.html">' 'How To']);
             obj.helpTocAddSection(tutorialsFilenames, 'Tutorials');
+            obj.addToXML('</tocitem>');
+            obj.addToXML(['<tocitem target="codeReference.html">' 'Code Reference']);
             obj.helpTocAddSection(toolboxFilenames, 'Toolbox Functions');
             obj.helpTocAddSection(utilityFilenames, 'Utility Functions');
+            obj.addToXML('</tocitem>');
             obj.helpTocFinish;
 
             % Build SUMMARY.md for each subfolder/subsection
