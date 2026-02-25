@@ -36,8 +36,3 @@ Thumbs.db
 ###################
 
 .vscode/
-
-################
-# Release docs #
-################
-node_modules/
