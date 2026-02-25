@@ -23,6 +23,8 @@ If you want to work on the parent issue directly, use its number instead, togeth
 git switch -c 62-implement-pml-class-YOUR_USER_NAME
 ```
 
+- [Set up a development environment](#setting-up-a-development-environment). This is not needed for the matlab code to run, but for the various tools you will need for development.
+- **Now that you are ready to code, please read the [developers intro](developerIntroduction.md) and [coding standard](codingStandard.md)!**
 - Commit to that branch locally and regularly push your work to the same named branch on the fork.
 - Label commit messages with the issue number, e.g., `git commit -m "#62: Basic class structure"`
 - If you need feedback or help but your branch is not ready to merge, open a draft pull request (PR) from your branch in your fork, to the feature branch in the upstream repo. Likewise, when you think the branch is ready for merging, open a (normal) PR, or convert your draft one to a normal PR, and request a code review.
@@ -80,4 +82,3 @@ The pull request template will guide you through the requirements to get your ch
 
 The code review step is a crucial one, to guarantee the quality of code contributions from the community. It is an iterative process, and you will have to address the reviewer's comments and any concerns. Keep in mind that those comments are given in good faith and not as judgement on anyone's coding ability, and are meant to support our community of developers in creating the best software we can, for all of us to use. Seasoned developers would testify to how much they have learned and improved in their work by receiving reviews on their codes.
 
-**Now that you are ready to code, please read the [developers intro](developerIntroduction.md) and [coding standard](codingStandard.md)!**
