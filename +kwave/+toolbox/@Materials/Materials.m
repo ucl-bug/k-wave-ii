@@ -1,4 +1,4 @@
-% Materials
+%% Materials
 % *Package:* kwave.toolbox
 %
 % Class for holding material property structures so that materials can be
