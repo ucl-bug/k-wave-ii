@@ -58,7 +58,6 @@ We use [pre-commit](https://pre-commit.com/) which runs automated checks (format
 Install and enable it with:
 
 ```bash
-pip install pre-commit
 pre-commit install
 ```
 
