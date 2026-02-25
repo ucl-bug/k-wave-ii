@@ -223,10 +223,10 @@ end
 % =========================================================================
 % SOURCE VARIABLES
 % =========================================================================
-% source modes and indicies
+% source modes and indices
 % - these are only defined if the source flags are > 0
 % - the source mode describes whether the source will be added or replaced
-% - the source indicies describe which grid points act as the source
+% - the source indices describe which grid points act as the source
 % - the u_source_index is reused for any of the u sources and the transducer source
 
 % velocity source
@@ -346,7 +346,7 @@ end
 
 % initial pressure source variable
 % - this is only defined if the p0 source flag is 1
-% - this defines the initial pressure everywhere (there is no indicies)
+% - this defines the initial pressure everywhere (there is no indices)
 if p0_source_flag
     p0_source_input = source.p0;
     variable_list = [variable_list, {'p0_source_input'}];

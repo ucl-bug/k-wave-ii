@@ -483,7 +483,7 @@ for z_index = 1:Nz
             pressure_time_step_exp = cat(3, pressure_time_step, flip(conj(pressure_time_step(:, :, 2:end - 1)), 3));
         end
 
-        % take inverse Fourier tranform to recover time domain data
+        % take inverse Fourier transform to recover time domain data
         pressure_time_step_exp = real(ifft(pressure_time_step_exp, [], 3));
 
         % store maximum pressure
