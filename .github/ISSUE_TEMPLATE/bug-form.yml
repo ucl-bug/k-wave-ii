@@ -40,16 +40,12 @@ body:
         - Mac
     validations:
       required: true      
-  - type: dropdown
+  - type: textarea
     id: kwave-version
     attributes:
       label: Release Version
-      description: What version of k-Wave are you using?
-      options:
-        - 1.4 (Default)
-        - 1.3
-        - 1.2.1
-        - Earlier
+      description: What version of k-Wave-II are you using?
+      placeholder: k-Wave-II version
     validations:
       required: true
   - type: textarea
