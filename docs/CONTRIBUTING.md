@@ -50,6 +50,8 @@ pip install -r requirements.txt
 
 This installs [`mkdocs`](https://www.mkdocs.org/) used to build the documentation (see [Writing and Building the Documentation](developerIntroduction.md#writing-and-building-the-documentation)).
 
+If you want to skip the pre-commit checks when you commit a change, you can use `git commit --no-verify`. However, the same tests will be run automatically on the CI when you push your changes to GitHub, and they will fail at that point if they identify any required fixes. We strongly suggest you fix any issues identified by pre-commit locally, before committing and pushing to the repository.
+
 **3. Install pre-commit**
 We use [pre-commit](https://pre-commit.com/) which runs automated checks (formatting, spelling, line endings, etc.) on every `git commit` to keep the codebase consistent.
 
