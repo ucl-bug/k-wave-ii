@@ -4,16 +4,22 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
   push:
     branches:
-      - main
+      - develop
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
-  docs:
-    name: Build docs (skipped on draft PRs)
-    runs-on: Windows
+
+  matlab-docs:
+    name: Build MATLAB docs (skipped on draft PRs)
+    runs-on: custom-windows-with-matlab # TODO: once repository is public, use gh hosted runner (issue #161)
     if: github.event_name == 'push' || github.event.pull_request.draft == false
     steps:
       - name: Check out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Build docs
         run: |
@@ -24,8 +30,61 @@ jobs:
         run: |
           source docs/test_doc_generation.sh
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload helpfiles
+      # uploading the generated helpfiles so that they are available for next job
+        uses: actions/upload-artifact@v6
         with:
-          name: all-helpfiles
-          path: |
-            docs
+          name: docs-matlab
+          path: docs
+
+
+  docs:
+    needs: matlab-docs
+    name: Build Mkdocs docs (skipped on draft PRs)
+    # skipped on draft PRs because the 'needs' condition (matlab-docs) will not be met
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          
+      - name: Download helpfiles artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: docs-matlab
+          path: docs-matlab          
+
+      - name: Rename docs-matlab to docs
+        run: |
+          mv docs-matlab/helpfiles docs
+          mv docs-matlab/helpfilesweb docs
+
+      - name: Build mkdocs
+        run: |
+          mkdocs build
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+
+  deploy:
+      needs: docs
+      name: Deploy docs to GitHub Pages (skipped on draft PRs)
+      if: github.event_name == 'push' 
+      runs-on: ubuntu-latest
+      environment:
+        name: github-pages
+        url: ${{ steps.deployment.outputs.page_url }}
+      steps:
+        - name: Deploy to GitHub Pages
+          id: deployment
+          uses: actions/deploy-pages@v4 
