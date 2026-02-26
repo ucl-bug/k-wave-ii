@@ -2,6 +2,10 @@
 
 This project is the result of a collaborative effort between researchers and developers at **University College London (UCL)** and the **Brno University of Technology**.
 
+## Theory
+The full list of papers on which this work is based on can be found here:
+http://www.k-wave.org/publications.php
+
 ## Project Leads
 * **Bradley E. Treeby** ([@ucl-bug](https://github.com/ucl-bug)) – Project Founder & Lead Architect
 * **Benjamin T. Cox** – Project Founder & Lead Theoretical Developer
