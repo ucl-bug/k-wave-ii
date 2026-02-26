@@ -36,10 +36,5 @@ The development of k-Wave and k-Wave II has been supported by:
 ## Community Contributors
 We are grateful to the following community members for their contributions to k-wave-ii:
 
-1. [@LocalTester](https://github.com/NG)
-2. [@SampleDev](https://github.com/FeatureBranch)
-
-3. [@LocalTesterAA](https://github.com/NGAA)
-
 ---
 *Generated automatically by the contribution-update script.*
