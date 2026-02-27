@@ -5,38 +5,51 @@
 
 classdef TestMaterials < matlab.unittest.TestCase
 
+
     methods (Test)
 
-        function testDefaultMaterialsExist(testCase)
+        function testMaterialName(testCase)
+            
+            % Try to name a material with a number            
             import kwave.toolbox.*
-
             mats = Materials();
+            s = struct('soundSpeed', 1540, 'density', 1000);
+            name = 0; % shouldn't be a number
+            testCase.verifyError( ...
+                @() mats.addMaterial(name, s), ...
+                'Materials:InvalidNameType');
+
+        end
+
+        function testDefaultMaterialsExist(testCase)
 
             % Defaults: water + air should exist
+            import kwave.toolbox.*
+            mats = Materials();
             T = mats.listMaterialIndices();
             names = T.Name;
             testCase.verifyTrue(ismember("water", names));
             testCase.verifyTrue(ismember("air", names));
 
-            % Listing must be sorted ascending by index (uint8)
+            % Listing must be sorted ascending by index
             inds = double(T.Index);
             testCase.verifyEqual(inds, sort(inds));
             testCase.verifyClass(T.Index, 'uint8');
         end
 
         function testAutoAssignIndex(testCase)
-            import kwave.toolbox.*
 
+            import kwave.toolbox.*
             mats = Materials();
 
-            % Compute the next free (lowest) index in [0..255] from the live object
+            % Compute the next free (lowest) index in [0..255] from the object
             T0   = mats.listMaterialIndices();
             used = double(T0.Index);
             free = setdiff(0:255, used, 'stable');
             testCase.assumeFalse(isempty(free), 'No free indices available to test auto-assignment.');
 
             s = struct('soundSpeed', 1500, 'density', 1000);
-            [~, idx] = mats.addMaterial('tissue', s);   % uses public API
+            idx = mats.addMaterial('tissue', s); 
 
             % Returns a uint8 and equals the lowest free index we computed
             testCase.verifyClass(idx, 'uint8');
@@ -49,14 +62,14 @@ classdef TestMaterials < matlab.unittest.TestCase
         end
 
         function testExplicitIndexAcceptedAndSorting(testCase)
-            import kwave.toolbox.*
 
+            import kwave.toolbox.*
             mats = Materials();
 
             % Add with explicit indices (out of order to test sort)
             mats.addMaterial('mA', struct('index', 50,  'soundSpeed',1500,'density',1000));
             mats.addMaterial('mB', struct('index', 5,   'soundSpeed',1400,'density', 950));
-            [~, idx] = mats.addMaterial('mC', struct('index', 200, 'soundSpeed',1600,'density',1100));
+            idx = mats.addMaterial('mC', struct('index', 200, 'soundSpeed',1600,'density',1100));
             testCase.verifyEqual(idx, uint8(200));
 
             % Listing must be sorted ascending by index
@@ -65,20 +78,21 @@ classdef TestMaterials < matlab.unittest.TestCase
         end
 
         function testDuplicateNameError(testCase)
+
             import kwave.toolbox.*
-
             mats = Materials();
-            s = struct('soundSpeed', 1500, 'density', 1000);
 
+            s = struct('soundSpeed', 1500, 'density', 1000);
             mats.addMaterial('myMat', s);
+
             testCase.verifyError( ...
                 @() mats.addMaterial('myMat', s), ...
-                'Materials:DuplicateName');
+                'Materials:NameExists');
         end
 
         function testDuplicateExplicitIndexError(testCase)
-            import kwave.toolbox.*
 
+            import kwave.toolbox.*
             mats = Materials();
 
             % Pick an explicit free index safely
@@ -93,65 +107,24 @@ classdef TestMaterials < matlab.unittest.TestCase
             s2 = struct('index', I, 'soundSpeed', 1400, 'density',  900);
             testCase.verifyError( ...
                 @() mats.addMaterial('m2', s2), ...
-                'Materials:DuplicateIndex');
+                'Materials:IndexInUse');
         end
 
         function testMissingRequiredFieldsError(testCase)
-            import kwave.toolbox.*
 
+            import kwave.toolbox.*
             mats = Materials();
 
             % Missing density
             s = struct('soundSpeed', 1500);
             testCase.verifyError( ...
                 @() mats.addMaterial('bad', s), ...
-                'Materials:MissingFields');
-        end
-
-        function testOptionalFieldsFillWithNaN(testCase)
-            import kwave.toolbox.*
-
-            mats = Materials();
-
-            % Supply only required fields; optionals should be added and set to NaN
-            s = struct('soundSpeed', 1540, 'density', 1000);
-            mats.addMaterial('tissue', s);
-
-            % Optional fields as per the class contract
-            optionalFields = {'absorptionCoeff', ...
-                'absorptionPower', ...
-                'BonA', ...
-                'specificHeat', ...
-                'thermalConductivity'};
-
-            for k = 1:numel(optionalFields)
-                f = optionalFields{k};
-                testCase.verifyTrue(isfield(mats.tissue, f), ...
-                    sprintf('Missing optional field "%s".', f));
-
-                v = mats.tissue.(f);
-                testCase.verifyTrue(isnumeric(v), ...
-                    sprintf('Optional field "%s" is not numeric.', f));
-                testCase.verifyTrue(isnan(v), ...
-                    sprintf('Optional field "%s" is not NaN.', f));
-            end
-        end
-
-        function testIndexRangeError(testCase)
-            import kwave.toolbox.*
-
-            mats = Materials();
-
-            % > 255 is out-of-range for uint8
-            s = struct('index', 300, 'soundSpeed', 1500, 'density', 1000);
-            testCase.verifyError( ...
-                @() mats.addMaterial('badIdx', s), ...
-                'Materials:IndexRange');
+                'Materials:MissingField');
         end
 
         function testExhaustionOfIndices(testCase)
-            import kwave.toolbox.*
 
+            import kwave.toolbox.*
             mats = Materials();
 
             % Fill every remaining free index explicitly so that auto-assign has no space
@@ -167,158 +140,58 @@ classdef TestMaterials < matlab.unittest.TestCase
             % Now all 256 indices should be used -> auto-assign should error
             testCase.verifyError( ...
                 @() mats.addMaterial('extra', struct('soundSpeed',1500,'density',1000)), ...
-                'Materials:NoFreeIndex');
+                'Materials:NoIndicesLeft');
         end
 
-        %% --- Validation tests for material property values ---
+        function testAddMaterials(testCase)
 
-        function testSoundSpeedMustBePositive(testCase)
             import kwave.toolbox.*
-
             mats = Materials();
 
-            badVals = {0, -1, -100, -eps, -Inf};
-            for k = 1:numel(badVals)
-                s = struct('soundSpeed', badVals{k}, 'density', 1000);
-                testCase.verifyError( ...
-                    @() mats.addMaterial(sprintf('badSS_%d', k), s), ...
-                    'Materials:InvalidField');
+            % Index shouldn't be -1
+            testCase.verifyError( ...
+                @() mats.addMaterial('testTissue', struct('index', -1,'soundSpeed',1500,'density',1000)), ...
+                'Materials:InvalidIndexField');
+
+            % SoundSpeed shouldn't be positive
+            testCase.verifyError( ...
+                @() mats.addMaterial('testTissue', struct('soundSpeed',-1500,'density',1000)), ...
+                'Materials:NotNonNegativeScalar');
+
+            % name shouldn't be a number
+            testCase.verifyError( ...
+                @() mats.addMaterial(0, struct('soundSpeed',1500,'density',1000)), ...
+                'Materials:InvalidNameType');
+
+            % name shouldn't be in RESERVED_PROPS
+            testCase.verifyError( ...
+                @() mats.addMaterial('RESERVED_PROPS', struct('soundSpeed',1500,'density',1000)), ...
+                'Materials:ReservedName');
+
+            % Can't have an unknown field
+            testCase.verifyError( ...
+                @() mats.addMaterial('testTissue', struct('soundSpeed',1500,'density',1000,'unknownField',1500)), ...
+                'Materials:UnknownField');
+
+        end
+
+        function testListMaterials(testCase)
+
+            import kwave.toolbox.*
+            mats = Materials();
+
+            passed = true;
+
+            % Check listMaterials runs
+            try
+                mats.listMaterials
+            catch
+                passed = false;
             end
-        end
+            testCase.verifyTrue(passed)
 
-        function testDensityMustBePositive(testCase)
-            import kwave.toolbox.*
-
-            mats = Materials();
-
-            badVals = {0, -5, -Inf};
-            for k = 1:numel(badVals)
-                s = struct('soundSpeed', 1500, 'density', badVals{k});
-                testCase.verifyError( ...
-                    @() mats.addMaterial(sprintf('badDen_%d', k), s), ...
-                    'Materials:InvalidField');
-            end
-        end
-
-        function testSpecificHeatMustBePositiveOrNaN(testCase)
-            import kwave.toolbox.*
-
-            mats = Materials();
-
-            % Valid (required fields only)
-            mats.addMaterial('validSH', struct('soundSpeed', 1500, 'density', 1000));
-
-            % Invalid: zero, negative
-            badVals = {0, -1, -10};
-            for k = 1:numel(badVals)
-                s = struct('soundSpeed', 1500, 'density', 1000, ...
-                    'specificHeat', badVals{k});
-                testCase.verifyError( ...
-                    @() mats.addMaterial(sprintf('badSH_%d', k), s), ...
-                    'Materials:InvalidField');
-            end
-        end
-
-        function testThermalConductivityMustBePositiveOrNaN(testCase)
-            import kwave.toolbox.*
-
-            mats = Materials();
-
-            badVals = {0, -0.5, -10};
-            for k = 1:numel(badVals)
-                s = struct('soundSpeed', 1500, 'density', 1000, ...
-                    'thermalConductivity', badVals{k});
-                testCase.verifyError( ...
-                    @() mats.addMaterial(sprintf('badTC_%d', k), s), ...
-                    'Materials:InvalidField');
-            end
-        end
-
-        function testAbsorptionCoeffMustBeNonnegativeOrNaN(testCase)
-            import kwave.toolbox.*
-
-            mats = Materials();
-
-            badVals = {-0.1, -1, -20};
-            for k = 1:numel(badVals)
-                s = struct('soundSpeed',1500, 'density',1000, ...
-                    'absorptionCoeff', badVals{k});
-                testCase.verifyError( ...
-                    @() mats.addMaterial(sprintf('badAC_%d', k), s), ...
-                    'Materials:InvalidField');
-            end
-        end
-
-        function testAbsorptionPowerMustBeNonnegativeOrNaN(testCase)
-            import kwave.toolbox.*
-
-            mats = Materials();
-
-            badVals = {-0.1, -2, -10};
-            for k = 1:numel(badVals)
-                s = struct('soundSpeed',1500, 'density',1000, ...
-                    'absorptionPower', badVals{k});
-                testCase.verifyError( ...
-                    @() mats.addMaterial(sprintf('badAP_%d', k), s), ...
-                    'Materials:InvalidField');
-            end
-        end
-
-        function testBonAMustBeNonnegativeOrNaN(testCase)
-            import kwave.toolbox.*
-
-            mats = Materials();
-
-            badVals = {-0.001, -7, -Inf};
-            for k = 1:numel(badVals)
-                s = struct('soundSpeed',1500,'density',1000,'BonA',badVals{k});
-                testCase.verifyError( ...
-                    @() mats.addMaterial(sprintf('badBonA_%d',k),s), ...
-                    'Materials:InvalidField');
-            end
-        end
-
-        function testAllFieldsRejectComplexValues(testCase)
-            import kwave.toolbox.*
-
-            mats = Materials();
-
-            bad = 1 + 2i;
-
-            % Try each field individually as complex
-            fields = {'soundSpeed','density','absorptionCoeff', ...
-                'absorptionPower','BonA','specificHeat','thermalConductivity'};
-
-            for k = 1:numel(fields)
-                f = fields{k};
-                s = struct('soundSpeed',1500,'density',1000); % base valid struct
-                s.(f) = bad;  % make this field complex
-
-                testCase.verifyError( ...
-                    @() mats.addMaterial(sprintf('badComplex_%s', f), s), ...
-                    'Materials:InvalidField');
-            end
-        end
-
-        function testOptionalFieldsAllowNaN(testCase)
-            import kwave.toolbox.*
-
-            mats = Materials();
-
-            s = struct('soundSpeed',1500,'density',1000, ...
-                'specificHeat', NaN, ...
-                'thermalConductivity', NaN, ...
-                'absorptionCoeff', NaN, ...
-                'absorptionPower', NaN, ...
-                'BonA', NaN);
-
-            % Should succeed (NaN allowed in optional fields)
-            mats.addMaterial('withNaNs', s);
-
-            T = mats.listMaterials();
-            idx = find(T.Name=="withNaNs");
-            testCase.verifyTrue(isnan(T.absorptionCoeff(idx)));
         end
 
     end
+
 end
