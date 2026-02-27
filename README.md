@@ -1,4 +1,7 @@
 # k-Wave-II: A MATLAB toolbox for the simulation of acoustic wave fields
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 !!! warning "Under Construction"
     K‑Wave ii is currently under active development and not public yet.  
@@ -60,3 +63,25 @@ The user community is very welcome to contribute to the code and open pull reque
 
 We also welcome further involvement by people wishing to review developers' code contributions and help the community of developers grow. Please contact the maintainers if you are interested in becoming a code reviewer.
 
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/stellaprins"><img src="https://avatars.githubusercontent.com/u/30465823?v=4?s=100" width="100px;" alt="Stella Prins"/><br /><sub><b>Stella Prins</b></sub></a><br /><a href="https://github.com/stellaprins/SP_k-wave-ii/commits?author=stellaprins" title="Tests">⚠️</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
