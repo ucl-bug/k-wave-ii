@@ -1,0 +1,27 @@
+name: Add Contributors Automatically
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  add-contributors:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - name: Install all-contributors CLI
+        run: npm install -g all-contributors-cli
+      - name: Add contributor
+        run: npx all-contributors add ${{ github.event.pull_request.user.login }} custom
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add CONTRIBUTORS.md
+          git commit -m "chore: add contributor ${{ github.event.pull_request.user.login }}"
+          git push origin HEAD:${{ github.head_ref }}
