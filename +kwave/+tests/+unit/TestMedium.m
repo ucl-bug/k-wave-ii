@@ -23,6 +23,7 @@ classdef TestMedium < matlab.unittest.TestCase
 
     methods (TestMethodSetup)
         function makeFixtures(t)
+
             import kwave.toolbox.*
 
             % --- Minimal 2D grid (6 x 4), metres ---
@@ -53,6 +54,7 @@ classdef TestMedium < matlab.unittest.TestCase
     methods (Test)
 
         function setGet_materialIndexGrid_RoundTrip(t)
+
             % Homogeneous water domain
             idx = repmat(t.waterIdx, t.kgrid.Nx, t.kgrid.Ny);
             t.medium.materialIndexGrid = idx;
@@ -99,26 +101,6 @@ classdef TestMedium < matlab.unittest.TestCase
 
         end
 
-        function absorptionPowerNaN(t)
-
-            import kwave.toolbox.*
-            
-            s = struct('soundSpeed',1500, ...
-                'density',1000, ...
-                'absorptionPower', NaN);
-            [~, idx] = t.mats.addMaterial('nanAP', s);
-
-            passed = true;
-            try
-                medium = Medium(t.kgrid, t.mats);
-                medium.materialIndexGrid = idx * uint8(ones(t.medium.gridSize));
-            catch
-                passed = false;
-            end
-            t.verifyTrue(passed, 'absorptionPower can be NaN');            
-
-        end
-
         function derivedMaps_Homogeneous(t)
             % Water everywhere
             idx = repmat(t.waterIdx, t.kgrid.Nx, t.kgrid.Ny);
@@ -147,27 +129,6 @@ classdef TestMedium < matlab.unittest.TestCase
             t.verifyTrue(all(c(end/2+1:end, :)  == t.waterC,'all'));
             t.verifyTrue(all(rho(1:end/2, :)    == t.airRho,'all'));
             t.verifyTrue(all(rho(end/2+1:end,:) == t.waterRho,'all'));
-        end
-
-        function missingOptionalField_YieldsNaNInDerivedMap(t)
-            % Add a material that *omits* an optional field (e.g., absorptionPower)
-            % and verify the derived map is NaN where that material is used.
-            name = "noAbsPow_" + matlab.lang.makeUniqueStrings("", 1);
-            s = struct('soundSpeed', 1200, 'density', 900); % no absorptionPower field
-            [~, idxNew] = t.mats.addMaterial(char(name), s);
-
-            idx = repmat(idxNew, t.kgrid.Nx, t.kgrid.Ny);
-            t.medium.materialIndexGrid = idx;
-
-            % Only assert this if the Medium exposes the property
-            if isprop(t.medium, 'absorptionPowerMap')
-                ap = t.medium.absorptionPowerMap;
-                t.verifySize(ap, [t.kgrid.Nx, t.kgrid.Ny]);
-                t.verifyTrue(all(isnan(ap(:))), 'Optional field "absorptionPowerMap" should map to NaN.');
-            else
-                % Make the test pass but record that the property is not exposed.
-                t.assertTrue(true, 'Medium.absorptionPower not implemented/exposed; test skipped.');
-            end
         end
 
         function subsasgn_SlicedAssignment_Path(t)
@@ -221,6 +182,30 @@ classdef TestMedium < matlab.unittest.TestCase
             t.verifyEqual(c(2,1),   t.waterC);
             t.verifyEqual(rho(3,2), t.airRho);
         end
+
+
+        function testGridIndexExpansion(t)
+
+            % assigned properties should be gridSize
+            t.medium.materialIndexGrid = uint8(1);
+            no_dims = size(size(t.medium.soundSpeed),2);
+            t.verifyEqual(size(t.medium.soundSpeed),t.medium.gridSize(1:no_dims))
+
+        end
+
+        function testAbsorptionPowerSetting(t)
+
+            idx = t.mats.addMaterial('testTissue',struct('soundSpeed',1500, 'density',1000));
+            t.medium.materialIndexGrid = idx;
+            t.verifyEqual(t.medium.absorptionPowerMap, single(NaN(t.kgrid.gridSize)))
+
+            t.medium.materialIndexGrid = uint8(0); % water
+            v = t.medium.absorptionPower;
+            t.verifyEqual(v, t.mats.water.absorptionPower)
+
+        end
+
+
     end
 
     methods (Access = private)

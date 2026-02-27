@@ -69,9 +69,7 @@ classdef Medium < kwave.toolbox.GridInput
     % and a set of read-only derived grid-valued virtual properties whose
     % padded counterparts (propPadded) are managed via GridInput.
 
-    % -------------------------
     % Configuration (constants)
-    % -------------------------
     properties(Constant, Hidden=true)
         % One user-assignable virtual property
         requiredProperties = {'materialIndexGrid'};
@@ -79,30 +77,30 @@ classdef Medium < kwave.toolbox.GridInput
         % All virtual grid fields (user-assignable + derived read-only)
         gridFields = kwave.toolbox.GridField.createGridFieldsMap([ ...
             kwave.toolbox.GridField('materialIndexGrid', ...
-            Classes={'uint8'}, ...
-            Attributes={'nonnegative'}, ...
-            Type=kwave.toolbox.GridFieldType.ScalarField), ...
+                Classes={'uint8'}, ...
+                Attributes={'nonnegative'}, ...
+                Type=kwave.toolbox.GridFieldType.ScalarField), ...
             kwave.toolbox.GridField('soundSpeed', ...
-            Classes={'single'}, Attributes={'real'}, ...
-            Type=kwave.toolbox.GridFieldType.ScalarField), ...
+                Classes={'single'}, Attributes={'real'}, ...
+                Type=kwave.toolbox.GridFieldType.ScalarField), ...
             kwave.toolbox.GridField('density', ...
-            Classes={'single'}, Attributes={'real'}, ...
-            Type=kwave.toolbox.GridFieldType.ScalarField), ...
+                Classes={'single'}, Attributes={'real'}, ...
+                Type=kwave.toolbox.GridFieldType.ScalarField), ...
             kwave.toolbox.GridField('absorptionCoeff', ...
-            Classes={'single'}, Attributes={'real'}, ...
-            Type=kwave.toolbox.GridFieldType.ScalarField), ...
+                Classes={'single'}, Attributes={'real'}, ...
+                Type=kwave.toolbox.GridFieldType.ScalarField), ...
             kwave.toolbox.GridField('absorptionPowerMap', ...
-            Classes={'single'}, Attributes={'real'}, ...
-            Type=kwave.toolbox.GridFieldType.ScalarField), ...
+                Classes={'single'}, Attributes={'real'}, ...
+                Type=kwave.toolbox.GridFieldType.ScalarField), ...
             kwave.toolbox.GridField('BonA', ...
-            Classes={'single'}, Attributes={'real'}, ...
-            Type=kwave.toolbox.GridFieldType.ScalarField), ...
+                Classes={'single'}, Attributes={'real'}, ...
+                Type=kwave.toolbox.GridFieldType.ScalarField), ...
             kwave.toolbox.GridField('specificHeat', ...
-            Classes={'single'}, Attributes={'real'}, ...
-            Type=kwave.toolbox.GridFieldType.ScalarField), ...
+                Classes={'single'}, Attributes={'real'}, ...
+                Type=kwave.toolbox.GridFieldType.ScalarField), ...
             kwave.toolbox.GridField('thermalConductivity', ...
-            Classes={'single'}, Attributes={'real'}, ...
-            Type=kwave.toolbox.GridFieldType.ScalarField) ...
+                Classes={'single'}, Attributes={'real'}, ...
+                Type=kwave.toolbox.GridFieldType.ScalarField) ...
             ]);
 
         DERIVED_GRID_KEYS = { ...
@@ -112,42 +110,33 @@ classdef Medium < kwave.toolbox.GridInput
     end
 
     properties(Dependent=true, SetAccess=private)
-        absorptionPower    % mode(absorptionPowerMap), ignoring NaNs
+        absorptionPower    
     end
 
-    % -------------------------
-    % External handles
-    % -------------------------
     properties(SetAccess=immutable, Hidden=true)
         materials(1,1) kwave.toolbox.Materials
     end
 
-    % -------------------------
     % Scalars (user-settable)
-    % -------------------------
     properties
         soundSpeedReference (1,1) double {mustBeNonnegative, mustBeFinite}
         diffusionReference  (1,1) double {mustBeNonnegative, mustBeFinite}
     end
 
-    % =========================
     % Constructor
-    % =========================
     methods
         function obj = Medium(kgrid, materials)
             arguments
                 kgrid(1,1)     kwave.toolbox.Grid
                 materials(1,1) kwave.toolbox.Materials
             end
-            obj@kwave.toolbox.GridInput(kgrid);   % installs ...Padded backing props
+            obj@kwave.toolbox.GridInput(kgrid);
             obj.materials = materials;
         end
     end
 
 
-    % =========================
     % Override assignment
-    % =========================
     methods
         function obj = subsasgn(obj, S, value)
             % Make derived grid properties read-only; only materialIndexGrid
@@ -177,9 +166,7 @@ classdef Medium < kwave.toolbox.GridInput
         end
     end
 
-    % =========================
     % Public refresh utility
-    % =========================
     methods
         function obj = refresh(obj)
             % Force a rebuild of all derived padded maps (e.g., after Materials changes).
@@ -187,10 +174,7 @@ classdef Medium < kwave.toolbox.GridInput
         end
     end
 
-    % =========================
     % Setters
-    % =========================
-
     methods
         function set.soundSpeedReference(obj, v)
             if ~isempty(v)
@@ -206,9 +190,7 @@ classdef Medium < kwave.toolbox.GridInput
         end
     end
 
-    % =========================
     % Private helpers
-    % =========================
     methods (Access = private)
 
         function obj = updateDerivedPaddedMaps(obj)
@@ -248,11 +230,11 @@ classdef Medium < kwave.toolbox.GridInput
                     obj.soundSpeedReference = double(max(ss(~isnan(ss))));
                 end
             end
-
+            
             if obj.diffusionReference == 0
-                tc = obj.subsref(struct('type','.', 'subs','thermalConductivity'));
+                tc  = obj.subsref(struct('type','.', 'subs','thermalConductivity'));
                 rho = obj.subsref(struct('type','.', 'subs','density'));
-                cp = obj.subsref(struct('type','.', 'subs','specificHeat'));
+                cp  = obj.subsref(struct('type','.', 'subs','specificHeat'));
                 if ~(any(isnan(tc(:))) || any(isnan(rho(:))) || any(isnan(cp(:))))
                     denom = rho .* cp;
                     D     = tc ./ denom;
@@ -261,56 +243,56 @@ classdef Medium < kwave.toolbox.GridInput
             end
         end
 
-
         function vals = mapProperty(obj, fieldName)
+            % MAPPROPERTY Build an unpadded grid-sized map (single) for the given field.
+            % Missing properties remain NaN in the result.
 
-            % Build an unpadded grid-sized map (single) for the given field.
+            % get the (unpadded) material index grid (uint8 expected)
             idx = obj.subsref(struct('type','.', 'subs','materialIndexGrid'));  % uint8, unpadded
 
-            % ensure idx is grid-sized (expand homogeneous scalar)
+            % Ensure idx is grid-sized (expand homogeneous scalar)
             if isscalar(idx)
                 idx = repmat(idx, obj.gridSize);
             end
 
-            % Look-up table
-            lut = NaN(256,1,'single');  % index 0..255
+            % Look-up table: index 0..255 (uint8) => position 1..256
+            lut = NaN(256, 1, 'single');
 
-            % Name/Index table (preferred)
-            T = obj.materials.listMaterialIndices();  % table: Name, Index
-            names   = string(T.Name);
-            indices = double(T.Index);
+            % Name/Index table
+            T = obj.materials.listMaterialIndices();  % table with variables: Name (string), Index (uint8)
+            names   = T.Name;
+            indices = T.Index;
 
+            % Populate LUT only for materials that have the requested field
             for k = 1:numel(indices)
-                s = obj.materials.(char(names(k)));
-                v = s.(fieldName);
-                lut(indices(k)+1) = single(v);
+                s = obj.materials.(char(names(k)));  % guaranteed: struct with 'index'
+                if isfield(s, fieldName)
+                    v = s.(fieldName);
+                    if isnumeric(v) && isscalar(v)
+                        lut(double(indices(k)) + 1) = single(v);
+                    end
+                end
             end
 
+            % Map indices to values
             vals = lut(double(idx) + 1);
         end
     end
 
-    % =========================
     % Scalar dependent getters
-    % =========================
     methods
-            function v = get.absorptionPower(obj)
-                % Scalar = mode(absorptionPowerMap) ignoring NaNs.
-                apm = obj.subsref(struct('type','.', 'subs','absorptionPowerMap'));  % unpadded
-                if isempty(apm)
-                    v = NaN;
-                    return
-                end
-                vals = apm(~isnan(apm));
-                if isempty(vals)
-                    v = NaN;
-                    return
-                end
-                [u, ~, idx] = unique(vals);      % 'u' is single
-                counts = accumarray(idx, 1);
-                [~, imax] = max(counts);         % smallest mode on ties
-                v = u(imax);                     % single
-            end
+        function v = get.absorptionPower(obj)
 
+            apm = obj.subsref(struct('type','.', 'subs','absorptionPowerMap'));
+            % Consider an all-zero map with no material-defined values as "unset"
+            if isempty(apm) || (~any(~isnan(apm(:))) && ~any(apm(:)~=0))
+                v = NaN; return
+            end
+            vals = apm(~isnan(apm));
+            [u,~,idx] = unique(vals);
+            counts = accumarray(idx,1);
+            [~,imax] = max(counts);
+            v = u(imax);
+        end
     end
 end

@@ -35,19 +35,19 @@ kgrid = Grid([Nx Ny], [dx dy], [pmlSizex pmlSizey]);
 materials = Materials();
 
 % Add new materials to the Materials object 
-[materials, idx1] = materials.addMaterial('softTissue1', struct('soundSpeed',1540,'density',1100));
-[materials, idx2] = materials.addMaterial('softTissue2', struct('soundSpeed',1440,'density',990));
+idx1 = materials.addMaterial('softTissue1', struct('soundSpeed',1540,'density',1100));
+idx2 = materials.addMaterial('softTissue2', struct('soundSpeed',1440,'density',990));
 
 % Show a table of all the materials currently stored
-materials.listMaterials();
+materials.listMaterials()
 
 % Create a Medium object
 medium = Medium(kgrid, materials); 
 
 % Define map of material type indices (uint8)
-medium.materialIndexGrid = zeros(medium.gridSize, 'uint8');
-medium.materialIndexGrid(end/4:end/2,:) = idx1; 
-medium.materialIndexGrid(end/2+1:end,:) = idx2;
+medium.materialIndexGrid = zeros(medium.gridSize, 'uint8'); % water
+medium.materialIndexGrid(end/4:end/2,:) = idx1;             % softTissue1
+medium.materialIndexGrid(end/2+1:end,:) = idx2;             % softTissue2
 
 % Extract the sound speed and density maps
 c_map   = medium.soundSpeed;          % [m/s]
