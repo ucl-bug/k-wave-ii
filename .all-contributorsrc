@@ -22,5 +22,12 @@
   "repoType": "github",
   "repoHost": "https://github.com",
   "projectName": "SP_k-wave-ii",
-  "projectOwner": "stellaprins"
+  "projectOwner": "stellaprins",
+  "types": {
+  "custom": {
+    "symbol": "",
+    "description": "",
+    "link": ""
+  }
+}
 }
