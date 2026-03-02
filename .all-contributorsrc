@@ -1,33 +1,25 @@
 {
+  "projectName": "SP_k-wave-ii",
+  "projectOwner": "Stella Prins",
+  "repoType": "github",
+  "repoHost": "https://github.com",
   "files": [
     "README.md"
   ],
   "imageSize": 100,
-  "commit": false,
-  "commitType": "docs",
+  "commit": true,
   "commitConvention": "angular",
   "contributors": [
     {
-      "login": "stellaprins",
-      "name": "Stella Prins",
-      "avatar_url": "https://avatars.githubusercontent.com/u/30465823?v=4",
-      "profile": "https://github.com/stellaprins",
+      "login": "jfmengels",
+      "name": "Jeroen Engels",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3869412?v=4",
+      "profile": "https://jfmengels.net/",
       "contributions": [
-        "test"
+        "doc"
       ]
     }
   ],
   "contributorsPerLine": 7,
-  "skipCi": true,
-  "repoType": "github",
-  "repoHost": "https://github.com",
-  "projectName": "SP_k-wave-ii",
-  "projectOwner": "stellaprins",
-  "types": {
-    "custom": {
-      "symbol": "🔭",
-      "description": "code",
-      "link": "[<%= symbol %>](<%= url %> \"<%= description %>\"),"
-    }
-}
+  "linkToUsage": true
 }
