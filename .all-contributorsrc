@@ -26,7 +26,7 @@
   "types": {
     "custom": {
       "symbol": "🔭",
-      "description": "A custom contribution type.",
+      "description": "code",
       "link": "[<%= symbol %>](<%= url %> \"<%= description %>\"),"
     }
 }
