@@ -1,6 +1,6 @@
 # k-Wave-II: A MATLAB toolbox for the simulation of acoustic wave fields
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 !!! warning "Under Construction"
@@ -78,6 +78,10 @@ We also welcome further involvement by people wishing to review developers' code
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/ilectra"><img src="https://avatars.githubusercontent.com/u/22891967?v=4?s=100" width="100px;" alt="Ilektra Christidi"/><br /><sub><b>Ilektra Christidi</b></sub></a><br /><a href="#custom-ilectra" title=""></a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://www.davidstansby.com/"><img src="https://avatars.githubusercontent.com/u/6197628?v=4?s=100" width="100px;" alt="David Stansby"/><br /><sub><b>David Stansby</b></sub></a><br /><a href="#custom-dstansby" title=""></a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/astanziola"><img src="https://avatars.githubusercontent.com/u/3237202?v=4?s=100" width="100px;" alt="Antonio Stanziola"/><br /><sub><b>Antonio Stanziola</b></sub></a><br /><a href="#custom-astanziola" title=""></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/arindamsaha1507"><img src="https://avatars.githubusercontent.com/u/25665512?v=4?s=100" width="100px;" alt="Arindam Saha"/><br /><sub><b>Arindam Saha</b></sub></a><br /><a href="#custom-arindamsaha1507" title=""></a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/stellaprins"><img src="https://avatars.githubusercontent.com/u/30465823?v=4?s=100" width="100px;" alt="Stella Prins"/><br /><sub><b>Stella Prins</b></sub></a><br /><a href="#custom-stellaprins" title=""></a></td>
     </tr>
   </tbody>
 </table>
