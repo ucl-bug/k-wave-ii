@@ -11,6 +11,10 @@
 * Closes #issueNum
 * See also #issueNum
 
+## Contributor Agreement
+
+* [ ] By submitting this pull request, I confirm I have read the Legal and Licensing section in `CONTRIBUTING.md`, and I agree that my contributions may be redistributed under the k-Wave-II open-source license.
+
 ## Peer Review
 
 Review summary (complete before merge):
