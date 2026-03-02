@@ -1,12 +1,9 @@
 name: Add Contributors Automatically
 on:
-  push:
-    branches:
-      - develop
+  pull_request:
 
 jobs:
   add-contributors:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

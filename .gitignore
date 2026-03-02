@@ -47,3 +47,6 @@ site/
 # Python env  #
 ###############
 .venv/
+
+
+node_modules/
