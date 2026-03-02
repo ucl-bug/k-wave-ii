@@ -25,9 +25,8 @@ jobs:
 
       - name: Install deps
         run: npm ci || npm install
-
         
-       - name: Collect unique PR commit authors (GitHub usernames)
+      - name: Collect unique PR commit authors (GitHub usernames)
         id: authors
         env:
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
