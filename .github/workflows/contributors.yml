@@ -29,38 +29,36 @@ jobs:
       - name: Collect unique PR authors + co-authors (GitHub usernames)
         id: authors
         env:
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-            PR_NUMBER="${{ github.event.pull_request.number }}"
+          set -euo pipefail
+          PR_NUMBER="${{ github.event.pull_request.number }}"
 
-            # Pull PR commits as JSON
-            gh api "repos/${{ github.repository }}/pulls/${PR_NUMBER}/commits" --paginate > pr_commits.json
+          gh api "repos/${{ github.repository }}/pulls/${PR_NUMBER}/commits" --paginate > pr_commits.json
 
-            # 1) Direct commit authors GitHub usernames (from GitHub metadata)
-            AUTHOR_LOGINS=$(jq -r '.[].author.login // empty' pr_commits.json)
+          # 1) Commit authors (GitHub metadata)
+          AUTHOR_LOGINS=$(jq -r '.[].author.login // empty' pr_commits.json)
 
-            # 2) Co-authors parsed from commit message trailers
-            # We try to extract usernames from GitHub noreply emails:
-            #   Co-authored-by: X <username@users.noreply.github.com>
-            #   Co-authored-by: X <123+username@users.noreply.github.com>
-            COAUTHOR_LOGINS=$(jq -r '.[].commit.message // ""' pr_commits.json \
-            | grep -iE '^co-authored-by:' || true \
-            | sed -E 's/^Co-authored-by:\s*.*<([^>]+)>.*/\1/I' \
+          # 2) Co-authors (parse commit message trailers)
+          COAUTHOR_LOGINS=$(
+            jq -r '.[].commit.message // ""' pr_commits.json \
+            | awk 'BEGIN{IGNORECASE=1} /^co-authored-by:/{print}' \
+            | sed -nE 's/.*<([^>]+)>.*/\1/p' \
             | sed -E 's/^([0-9]+\+)?([^@]+)@users\.noreply\.github\.com$/\2/I' \
-            | grep -vE '@' || true)
+            | grep -v '@' || true
+          )
 
-            # Combine + unique
-            ALL=$(printf "%s\n%s\n" "$AUTHOR_LOGINS" "$COAUTHOR_LOGINS" | sed '/^$/d' | sort -u)
+          ALL=$(printf "%s\n%s\n" "$AUTHOR_LOGINS" "$COAUTHOR_LOGINS" | sed '/^$/d' | sort -u)
 
-            echo "GitHub users found (authors + co-authors where resolvable):"
-            echo "$ALL"
+          echo "GitHub users found (authors + resolvable co-authors):"
+          echo "$ALL"
 
-            {
+          {
             echo "list<<EOF"
             echo "$ALL"
             echo "EOF"
-            } >> "$GITHUB_OUTPUT"
-
+          } >> "$GITHUB_OUTPUT"
+           
       - name: Add all commit authors as contributors
         run: |
           set -e
