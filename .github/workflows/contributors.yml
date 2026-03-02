@@ -25,51 +25,49 @@ jobs:
 
       - name: Install deps
         run: npm ci || npm install
-        
+
       - name: Collect unique PR commit authors (GitHub usernames)
         id: authors
         env:
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-            PR_NUMBER="${{ github.event.pull_request.number }}"
+          PR_NUMBER="${{ github.event.pull_request.number }}"
 
-            COMMITS=$(gh api "repos/${{ github.repository }}/pulls/${PR_NUMBER}/commits" --paginate)
+          COMMITS=$(gh api "repos/${{ github.repository }}/pulls/${PR_NUMBER}/commits" --paginate)
 
-            # Extract primary authors (skip bots)
-            PRIMARY_AUTHORS=$(echo "$COMMITS" | jq -r '
+          # Extract primary authors (skip bots)
+          PRIMARY_AUTHORS=$(echo "$COMMITS" | jq -r '
             .[].author
             | select(. != null and .type != "Bot" and .login != "github-actions[bot]")
             | .login
-            ')
+          ')
 
-            # Extract co-authors from commit messages
-            COAUTHORS=$(echo "$COMMITS" | jq -r '
+          # Extract co-authors using jq scan (jq 1.6 compatible)
+          COAUTHORS=$(echo "$COMMITS" | jq -r '
             .[].commit.message
-            | capture_all("Co-authored-by: (?<name>[^<]+) <(?<email>[^>]+)>")?
-            | .[]?
+            | scan("Co-authored-by: (?<name>[^<]+) <(?<email>[^>]+)>")
             | .email
-            ')
+          ')
 
-            # Convert co-author emails → GitHub usernames (if possible)
-            COAUTHOR_LOGINS=""
-            for email in $COAUTHORS; do
+          # Convert co-author emails → GitHub usernames
+          COAUTHOR_LOGINS=""
+          for email in $COAUTHORS; do
             login=$(gh api -H "Accept: application/vnd.github+json" \
-                "/search/users?q=${email}+in:email" --jq '.items[0].login' 2>/dev/null || true)
+              "/search/users?q=${email}+in:email" --jq '.items[0].login' 2>/dev/null || true)
             [ -n "$login" ] && COAUTHOR_LOGINS="$COAUTHOR_LOGINS"$'\n'"$login"
-            done
+          done
 
-            # Combine and dedupe
-            ALL_AUTHORS=$(printf "%s\n%s\n" "$PRIMARY_AUTHORS" "$COAUTHOR_LOGINS" | sort -u)
+          # Combine and dedupe
+          ALL_AUTHORS=$(printf "%s\n%s\n" "$PRIMARY_AUTHORS" "$COAUTHOR_LOGINS" | sort -u)
 
-            echo "Authors found:"
-            echo "$ALL_AUTHORS"
+          echo "Authors found:"
+          echo "$ALL_AUTHORS"
 
-            {
+          {
             echo "list<<EOF"
             echo "$ALL_AUTHORS"
             echo "EOF"
-            } >> "$GITHUB_OUTPUT"
-
+          } >> "$GITHUB_OUTPUT"
 
       - name: Add all commit authors as contributors
         run: |
@@ -89,4 +87,3 @@ jobs:
           git add README.md .all-contributorsrc
           git commit -m "docs: update contributors" || echo "No changes to commit"
           git push origin HEAD:${{ github.event.pull_request.head.ref }}
-
