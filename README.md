@@ -62,6 +62,7 @@ The user community is very welcome to contribute to the code and open pull reque
 
 We also welcome further involvement by people wishing to review developers' code contributions and help the community of developers grow. Please contact the maintainers if you are interested in becoming a code reviewer.
 
+## Contributors
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
