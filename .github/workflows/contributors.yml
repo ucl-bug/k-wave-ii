@@ -48,7 +48,10 @@ jobs:
             | grep -v '@' || true
           )
 
-          ALL=$(printf "%s\n%s\n" "$AUTHOR_LOGINS" "$COAUTHOR_LOGINS" | sed '/^$/d' | sort -u)
+          ALL=$(printf "%s\n%s\n" "$AUTHOR_LOGINS" "$COAUTHOR_LOGINS" \
+            | sed '/^$/d' \
+            | grep -viE '\[bot\]$' \
+            | sort -u)
 
           echo "GitHub users found (authors + resolvable co-authors):"
           echo "$ALL"
