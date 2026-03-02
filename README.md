@@ -78,3 +78,5 @@ We also welcome further involvement by people wishing to review developers' code
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
+
+Generated using [all-contributors](https://allcontributors.org/).
