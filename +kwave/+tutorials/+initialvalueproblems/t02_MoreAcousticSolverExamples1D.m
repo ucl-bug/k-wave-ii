@@ -11,7 +11,7 @@
 %
 % See Also:
 % 
-% * kwave.tutorials.initialvalueproblems.t01_AcousticSolverExamples1D.m
+% * |kwave.tutorials.initialvalueproblems.t01_AcousticSolverExamples1D.m|
 
 
 %% Preliminaries
