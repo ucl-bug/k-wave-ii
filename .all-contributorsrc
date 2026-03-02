@@ -1,6 +1,6 @@
 {
   "projectName": "k-wave-ii",
-  "projectOwner": "Ben Cox",
+  "projectOwner": "ucl-bug",
   "repoType": "github",
   "repoHost": "https://github.com",
   "files": [
@@ -11,19 +11,55 @@
   "commitConvention": "angular",
   "contributors": [
     {
-      "login": "stellaprins",
-      "name": "Stella Prins",
-      "avatar_url": "https://avatars.githubusercontent.com/u/30465823?v=4",
-      "profile": "https://github.com/stellaprins",
+      "login": "bencox",
+      "name": "Ben Cox",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5031946?v=4",
+      "profile": "https://github.com/bencox",
       "contributions": [
         "custom"
       ]
     },
     {
-      "login": "arindamsaha1507",
-      "name": "Arindam Saha",
-      "avatar_url": "https://avatars.githubusercontent.com/u/25665512?v=4",
-      "profile": "https://github.com/arindamsaha1507",
+      "login": "btreeby",
+      "name": "Bradley Treeby",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4980942?v=4",
+      "profile": "https://github.com/btreeby",
+      "contributions": [
+        "custom"
+      ]
+    },
+    {
+      "login": "MatthewJohnKing",
+      "name": "MatthewJohnKing",
+      "avatar_url": "https://avatars.githubusercontent.com/u/137497118?v=4",
+      "profile": "https://github.com/MatthewJohnKing",
+      "contributions": [
+        "custom"
+      ]
+    },
+    {
+      "login": "ilectra",
+      "name": "Ilektra Christidi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22891967?v=4",
+      "profile": "https://github.com/ilectra",
+      "contributions": [
+        "custom"
+      ]
+    },
+    {
+      "login": "dstansby",
+      "name": "David Stansby",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6197628?v=4",
+      "profile": "https://www.davidstansby.com/",
+      "contributions": [
+        "custom"
+      ]
+    },
+    {
+      "login": "astanziola",
+      "name": "Antonio Stanziola",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3237202?v=4",
+      "profile": "https://github.com/astanziola",
       "contributions": [
         "custom"
       ]

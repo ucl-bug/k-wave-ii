@@ -1,4 +1,7 @@
 # k-Wave-II: A MATLAB toolbox for the simulation of acoustic wave fields
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 !!! warning "Under Construction"
     K‑Wave ii is currently under active development and not public yet.  
@@ -65,6 +68,24 @@ We also welcome further involvement by people wishing to review developers' code
 ## Contributors
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/bencox"><img src="https://avatars.githubusercontent.com/u/5031946?v=4?s=100" width="100px;" alt="Ben Cox"/><br /><sub><b>Ben Cox</b></sub></a><br /><a href="#custom-bencox" title=""></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/btreeby"><img src="https://avatars.githubusercontent.com/u/4980942?v=4?s=100" width="100px;" alt="Bradley Treeby"/><br /><sub><b>Bradley Treeby</b></sub></a><br /><a href="#custom-btreeby" title=""></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/MatthewJohnKing"><img src="https://avatars.githubusercontent.com/u/137497118?v=4?s=100" width="100px;" alt="MatthewJohnKing"/><br /><sub><b>MatthewJohnKing</b></sub></a><br /><a href="#custom-MatthewJohnKing" title=""></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ilectra"><img src="https://avatars.githubusercontent.com/u/22891967?v=4?s=100" width="100px;" alt="Ilektra Christidi"/><br /><sub><b>Ilektra Christidi</b></sub></a><br /><a href="#custom-ilectra" title=""></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://www.davidstansby.com/"><img src="https://avatars.githubusercontent.com/u/6197628?v=4?s=100" width="100px;" alt="David Stansby"/><br /><sub><b>David Stansby</b></sub></a><br /><a href="#custom-dstansby" title=""></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/astanziola"><img src="https://avatars.githubusercontent.com/u/3237202?v=4?s=100" width="100px;" alt="Antonio Stanziola"/><br /><sub><b>Antonio Stanziola</b></sub></a><br /><a href="#custom-astanziola" title=""></a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 <!-- markdownlint-disable -->
 <table>
   <tbody>
