@@ -25,7 +25,7 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/25665512?v=4",
       "profile": "https://github.com/arindamsaha1507",
       "contributions": [
-        "code"
+        "custom"
       ]
     }
   ],
@@ -34,8 +34,8 @@
   "types": {
     "custom": {
       "symbol": "🔭",
-      "description": "A custom contribution type.",
-      "link": "[<%= symbol %>](<%= url %> \"<%= description %>\"),"
+      "description": "abc",
+      "link": "#conference-<%= contributor.login %>"
     }
   }
 }
