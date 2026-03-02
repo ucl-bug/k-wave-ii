@@ -1,0 +1,46 @@
+name: Update Contributors
+
+on:
+  pull_request:
+    types: [closed]
+  push:
+    branches:
+      - develop
+
+jobs:
+  add-contributor:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Add PR author as contributor
+        run: |
+          npx all-contributors add \
+            ${{ github.event.pull_request.user.login }} \
+            code
+          npx all-contributors generate
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "docs: add contributor" || echo "No changes to commit"
+          git push
