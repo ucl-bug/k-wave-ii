@@ -23,29 +23,28 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install deps
+      - name: Install dependencies
         run: npm ci || npm install
 
       - name: Collect unique PR commit authors (GitHub usernames)
         id: authors
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          PR_NUMBER="${{ github.event.pull_request.number }}"
+            PR_NUMBER="${{ github.event.pull_request.number }}"
 
-          # Get unique .author.login from PR commits; skip nulls
-          AUTHORS=$(gh api "repos/${{ github.repository }}/pulls/${PR_NUMBER}/commits" --paginate \
-            --jq '[.[].author.login | select(. != null)] | unique | .[]')
+            AUTHORS=$(gh api "repos/${{ github.repository }}/pulls/${PR_NUMBER}/commits" --paginate \
+            --jq '[.[].author.login | select(. != null and (endswith("[bot]") | not))] | unique | .[]')
 
-          echo "Authors found:"
-          echo "$AUTHORS"
+            echo "Authors found:"
+            echo "$AUTHORS"
 
-          # Save multi-line output for next step
-          {
+            {
             echo "list<<EOF"
             echo "$AUTHORS"
             echo "EOF"
-          } >> "$GITHUB_OUTPUT"
+            } >> "$GITHUB_OUTPUT"
+
 
       - name: Add all commit authors as contributors
         run: |
