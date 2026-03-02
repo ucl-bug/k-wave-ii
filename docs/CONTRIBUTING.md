@@ -31,6 +31,16 @@ git switch -c 62-implement-pml-class-YOUR_USER_NAME
 
 For experienced git users, `git rebase` should be avoided if multiple people might be contributing to a branch (use `git merge` instead).
 
+## AI and LLM Use
+
+AI tools can be valuable for learning, exploring ideas, and accelerating work. We welcome their thoughtful use. To ensure contributions remain meaningful and contributors continue to grow, we ask that you:
+
+* Understand what you submit. Be able to explain and defend any contribution you make. If you cannot, it is not ready to submit.
+* Stay in the driver's seat. Use AI to support your learning and work, not to replace the effort and critical thinking that make you a better developer.
+* Engage meaningfully. Low-effort, AI-generated submissions (issues, PRs, or proposals) without genuine personal engagement are not acceptable.
+
+Maintainers may ask contributors to explain their work. This is part of our commitment to learning and quality—not a test of whether you used AI, but whether you understood and own what you contributed.
+
 ## Conditions for merging a PR
 
 Only the k-Wave-II maintainers can merge PRs into any of the branches of the upstream repo.
