@@ -28,6 +28,8 @@
       "description": "Getting confused and unconfused",
       "link": "https://github.com/ucl-bug/k-wave-ii/tree/sp_as/contributors"
     },
-  "templates": { "contributorsFooter": "" }
+    "templates": {
+      "contributorsFooter": ""
+    }
   }
 }
