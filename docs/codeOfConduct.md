@@ -30,8 +30,7 @@ The following will not be tolerated:
 
 Community leaders are responsible for enforcing this Code of Conduct. They may remove or reject contributions that violate these standards and will act fairly and appropriately in response to incidents.
 
-Reports of unacceptable behavior can be made to:
-**[INSERT CONTACT METHOD]**
+Reports of unacceptable behavior can be made to [the maintainers](mailto:b.cox@ucl.ac.uk)
 
 All reports will be handled promptly and confidentially.
 
