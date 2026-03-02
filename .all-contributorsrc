@@ -24,10 +24,10 @@
   "projectName": "SP_k-wave-ii",
   "projectOwner": "stellaprins",
   "types": {
-  "custom": {
-    "symbol": "",
-    "description": "",
-    "link": ""
-  }
+    "custom": {
+      "symbol": "🔭",
+      "description": "A custom contribution type.",
+      "link": "[<%= symbol %>](<%= url %> \"<%= description %>\"),"
+    }
 }
 }
