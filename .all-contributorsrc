@@ -81,6 +81,59 @@
       "contributions": [
         "custom"
       ]
+    },
+    {
+      "login": "Devaraj-G",
+      "name": "Devaraj Gopinathan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36169767?v=4",
+      "profile": "https://profiles.ucl.ac.uk/61652",
+      "contributions": [
+        "custom"
+      ]
+    },
+    {
+      "login": "qiUip",
+      "name": "Mashy Green",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7360775?v=4",
+      "profile": "https://qiuip.github.io/",
+      "contributions": [
+        "custom"
+      ]
+    },
+    {
+      "login": "nicolin",
+      "name": "nicolin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6137757?v=4",
+      "profile": "https://github.com/nicolin",
+      "contributions": [
+        "custom"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "linkToUsage": false,
+  "types": {
+    "custom": {
+      "symbol": "",
+      "description": "",
+      "link": ""
+    }
+  }
+}
+      "avatar_url": "https://avatars.githubusercontent.com/u/30465823?v=4",
+      "profile": "https://github.com/stellaprins",
+      "contributions": [
+        "custom"
+      ]
+    },
+    {
+      "login": "arindamsaha1507",
+      "name": "Arindam Saha",
+      "avatar_url": "https://avatars.githubusercontent.com/u/25665512?v=4",
+      "profile": "https://github.com/arindamsaha1507",
+      "contributions": [
+        "custom"
+      ]
     }
   ],
   "contributorsPerLine": 7,
