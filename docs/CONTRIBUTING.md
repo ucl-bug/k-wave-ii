@@ -56,7 +56,11 @@ The code review step is a crucial one, to guarantee the quality of code contribu
 
 
 ## Legal and Licensing
+<<<<<<< HEAD
 To protect the interests of the k-Wave-II community and ensure the long-term sustainability of the project, we require all contributors to adhere to our [licensing terms](LICENSE.md).
+=======
+To protect the interests of the k-Wave-II community and ensure the long-term sustainability of the project, we require all contributors to adhere to our [licensing terms]().
+>>>>>>> 120e30f (Moved legal to the end after merge removed it)
 
 ### Contributor Agreement
 By contributing to k-Wave-II, you agree that we may redistribute your work under the project's current open-source license. You represent that you are legally entitled to grant this permission and that your contribution does not infringe on the intellectual property rights of others.
