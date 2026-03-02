@@ -9,26 +9,7 @@
   "imageSize": 100,
   "commit": false,
   "commitConvention": "angular",
-  "contributors": [
-    {
-      "login": "jfmengels",
-      "name": "Jeroen Engels",
-      "avatar_url": "https://avatars.githubusercontent.com/u/3869412?v=4",
-      "profile": "https://jfmengels.net/",
-      "contributions": [
-        "doc"
-      ]
-    },
-    {
-      "login": "arindamsaha1507",
-      "name": "Arindam Saha",
-      "avatar_url": "https://avatars.githubusercontent.com/u/25665512?v=4",
-      "profile": "https://github.com/arindamsaha1507",
-      "contributions": [
-        "custom"
-      ]
-    }
-  ],
+  "contributors":[],
   "contributorsPerLine": 7,
   "linkToUsage": true,
   "types": {
