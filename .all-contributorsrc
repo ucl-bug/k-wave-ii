@@ -21,15 +21,15 @@
     }
   ],
   "contributorsPerLine": 7,
-  "linkToUsage": true,
+  "linkToUsage": false,
   "types": {
     "custom": {
-      "symbol": "😵‍💫",
-      "description": "Getting confused and unconfused",
-      "link": "https://github.com/ucl-bug/k-wave-ii/tree/sp_as/contributors"
+      "symbol": "",
+      "description": "",
+      "link": ""
     },
     "templates": {
-      "contributorsFooter": ""
+      "contributorsFooter": "Generated using [all-contributors](https://allcontributors.org/)"
     }
   }
 }
