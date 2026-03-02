@@ -33,39 +33,17 @@ jobs:
         run: |
           PR_NUMBER="${{ github.event.pull_request.number }}"
 
-          COMMITS=$(gh api "repos/${{ github.repository }}/pulls/${PR_NUMBER}/commits" --paginate)
-
-          # Extract primary authors (skip bots)
-          PRIMARY_AUTHORS=$(echo "$COMMITS" | jq -r '
-            .[].author
-            | select(. != null and .type != "Bot" and .login != "github-actions[bot]")
-            | .login
-          ')
-
-          # Extract co-authors using jq scan (jq 1.6 compatible)
-          COAUTHORS=$(echo "$COMMITS" | jq -r '
-            .[].commit.message
-            | scan("Co-authored-by: (?<name>[^<]+) <(?<email>[^>]+)>")
-            | .email
-          ')
-
-          # Convert co-author emails → GitHub usernames
-          COAUTHOR_LOGINS=""
-          for email in $COAUTHORS; do
-            login=$(gh api -H "Accept: application/vnd.github+json" \
-              "/search/users?q=${email}+in:email" --jq '.items[0].login' 2>/dev/null || true)
-            [ -n "$login" ] && COAUTHOR_LOGINS="$COAUTHOR_LOGINS"$'\n'"$login"
-          done
-
-          # Combine and dedupe
-          ALL_AUTHORS=$(printf "%s\n%s\n" "$PRIMARY_AUTHORS" "$COAUTHOR_LOGINS" | sort -u)
+          # Get unique .author.login from PR commits; skip nulls
+          AUTHORS=$(gh api "repos/${{ github.repository }}/pulls/${PR_NUMBER}/commits" --paginate \
+            --jq '[.[].author.login | select(. != null)] | unique | .[]')
 
           echo "Authors found:"
-          echo "$ALL_AUTHORS"
+          echo "$AUTHORS"
 
+          # Save multi-line output for next step
           {
             echo "list<<EOF"
-            echo "$ALL_AUTHORS"
+            echo "$AUTHORS"
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
 
