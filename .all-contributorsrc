@@ -24,9 +24,9 @@
   "linkToUsage": true,
   "types": {
     "custom": {
-      "symbol": "",
-      "description": "",
-      "link": ""
+      "symbol":  null,
+      "description": null,
+      "link":  null
     }
   }
 }
