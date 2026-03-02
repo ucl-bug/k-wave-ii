@@ -37,9 +37,9 @@ jobs:
           npx all-contributors generate
 
       - name: Commit changes
-        run: |
+        run: |   
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
           git commit -m "docs: add contributor" || echo "No changes to commit"
-          git push
+          git push origin HEAD:${{ github.event.pull_request.base.ref }}
