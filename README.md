@@ -93,4 +93,4 @@ We also welcome further involvement by people wishing to review developers' code
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 <!-- markdownlint-disable -->
 
-The grid above is generated using [all-contributors](https://allcontributors.org/) using information from GitHub.
+The grid above is generated with [all-contributors](https://allcontributors.org/) using information from GitHub.
