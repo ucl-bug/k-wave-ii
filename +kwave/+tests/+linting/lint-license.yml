@@ -1,0 +1,35 @@
+# Nicolin, UCL ARC
+# 26/2/2026: Will check an new .m file for the agreement and if not present will ask the user to run the script to do this
+name: License HeaderFixer
+
+on:
+  pull_request:
+    paths:
+      - '**/*.m'
+
+jobs:
+  apply-license:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required to allow the bot to commit changes
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }} # Checkout the PR branch specifically
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Run License Fixer Script
+        run: |
+          # Run the script 
+          python docs/apply_license_mlab_check.py
+        
+      # This automates the process but uses a 3rd party action, so @Ben are you ok with this 
+      - name: Commit and Push Changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "style: automatically apply LGPL license headers to .m files"
+          file_pattern: '**/*.m'
