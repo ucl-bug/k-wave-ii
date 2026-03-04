@@ -4,14 +4,9 @@
     K‑Wave ii is currently under active development and not public yet.  
     Documentation, APIs, and features may change without notice.  
 
-
-[![License: LGPL v3](https://img.shields.io/badge/License-LGPL_v3-blue.svg)](LICENSE.md) [![codecov](https://codecov.io/gh/ucl-bug/k-wave-ii/graph/badge.svg?token=A8UMTDRF6T)](https://codecov.io/gh/ucl-bug/k-wave-ii) ![unit tests](https://github.com/ucl-bug/k-wave-ii/actions/workflows/tests.yml/badge.svg) ![code quality](https://github.com/ucl-bug/k-wave-ii/actions/workflows/
-code_quality.yml/badge.svg) ![build docs](https://github.com/ucl-bug/k-wave-ii/actions/workflows/docs.yml/badge.svg) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-11-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
+[![License: LGPL v3](https://img.shields.io/badge/License-LGPL_v3-blue.svg)](LICENSE.md) [![codecov](https://codecov.io/gh/ucl-bug/k-wave-ii/graph/badge.svg?token=A8UMTDRF6T)](https://codecov.io/gh/ucl-bug/k-wave-ii) ![unit tests](https://github.com/ucl-bug/k-wave-ii/actions/workflows/tests.yml/badge.svg) ![code quality](https://github.com/ucl-bug/k-wave-ii/actions/workflows/code_quality.yml/badge.svg) ![build docs](https://github.com/ucl-bug/k-wave-ii/actions/workflows/docs.yml/badge.svg)
 
 k\-Wave-II is an open\-source MATLAB toolbox used to solve partial differential equations, with a particular focus on wave problems in biomedical ultrasound. The unifying thread for the solvers is that spatial gradients are computed using a Fourier collocation spectral method. This has many advantages, including spectral convergence for smooth functions, and a known analytical form for the bandlimited interpolant, which is useful for implementing staircase free sources, for example.
-
 
 k-Wave-II is a major re-write of the original [k-Wave](https://github.com/ucl-bug/k-wave) Toolbox, developed
 
@@ -32,7 +27,6 @@ The current release is _XX.YY.ZZ (link to the Changelog/Release notes here)_.
 We aim to release a new version of the toolbox every May and November, with patches issued in-between as needed. If you want to use the latest features between releases, you can clone the [github repo](https://github.com/ucl-bug/k-wave-ii/tree/main) and use the `develop` branch. If you choose to do that, please keep in mind that those features might not be complete yet, and therefore we would appreciate your feedback and your patience.
 
 Every k-Wave-II release is tested with all releases of MATLAB after the minimum (see [Minimum requirements](#minimum-requirements)), until the latest one before the release was made.
-
 
 ## Getting started
 
