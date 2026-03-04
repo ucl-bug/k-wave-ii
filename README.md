@@ -1,6 +1,5 @@
 # k-Wave-II: A MATLAB toolbox for the simulation of acoustic wave fields
 
-
 !!! warning "Under Construction"
     K‑Wave ii is currently under active development and not public yet.  
     Documentation, APIs, and features may change without notice.  
@@ -52,8 +51,6 @@ For examples of how to use k-Wave-II, have a look at the  [tutorials](helpfilesw
 We are a very small team maintaining this toolbox, and we would like it to be community-driven and sustained as much as possible.
 
 If you would like to report a bug or request a new feature, first check the [existing issues](https://github.com/ucl-bug/k-wave-ii/issues) in the github repo and contribute to the discussion if it is already reported. If it is not, please open a new issue, using the appropriate template. And then, please consider contributing to the fix or improvement (see the section on [contributing](#contributing)).
-
-
 
 If you have a question or you need some help, please use the [discussions feature](https://github.com/ucl-bug/k-wave-ii/discussions) in the github repo. Hopefully someone from the community, either a maintainer, developer, or user will be able to assist you.
 
