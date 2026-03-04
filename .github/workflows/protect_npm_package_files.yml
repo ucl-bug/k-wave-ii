@@ -2,7 +2,9 @@ name: Lockfile integrity
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ develop ]
+  push:
+    branches: [ develop ] 
   workflow_dispatch:
 
 permissions:
