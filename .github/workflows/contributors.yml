@@ -72,11 +72,18 @@ jobs:
           done <<< "${{ steps.authors.outputs.list }}"
 
           npx all-contributors generate
-
-      - name: Commit and push changes
+ 
+      - name: Commit and push changes (if .all-contributorsrc changed)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add README.md .all-contributorsrc
-          git commit -m "docs: update contributors" || echo "No changes to commit"
+          git add .all-contributorsrc README.md
+
+          if git diff --cached --quiet -- .all-contributorsrc; then
+            echo "No changes in .all-contributorsrc."
+            exit 0
+          fi
+
+          echo "Changes detected — committing."
+          git commit -m "update contributors"
           git push origin HEAD:${{ github.event.pull_request.head.ref }}
