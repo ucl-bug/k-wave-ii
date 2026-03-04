@@ -1,0 +1,64 @@
+name: Lockfile integrity
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lockfile-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      # --- Policy check: lockfile should not change alone ---
+      - name: Ensure package-lock.json isn't edited without package.json
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          base="${{ github.event.pull_request.base.sha }}"
+          head="${{ github.event.pull_request.head.sha }}"
+
+          changed_lock=$(git diff --name-only "$base" "$head" -- package-lock.json | wc -l | tr -d ' ')
+          changed_pkg=$(git diff --name-only "$base" "$head" -- package.json | wc -l | tr -d ' ')
+
+          echo "Changed package-lock.json: $changed_lock"
+          echo "Changed package.json:      $changed_pkg"
+
+          if [ "$changed_lock" -gt 0 ] && [ "$changed_pkg" -eq 0 ]; then
+            echo "::error::package-lock.json changed but package.json did not. Don't hand-edit lockfiles; update dependencies via npm."
+            exit 1
+          fi
+
+      # --- Repro check: if we regenerate lockfile, it should match what's committed ---
+      - name: Install (from lockfile)
+        run: npm ci
+
+      - name: Regenerate lockfile and ensure no diff
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # Regenerate lockfile deterministically without changing node_modules meaningfully
+          npm install --package-lock-only --ignore-scripts
+
+          # Fail if regeneration changes committed lockfile
+          if ! git diff --exit-code -- package-lock.json; then
+            echo "::error::package-lock.json is not in sync / not reproducible. Regenerate locally with:"
+            echo "::error::  npm install --package-lock-only"
+            exit 1
+          fi
