@@ -84,4 +84,4 @@ We also welcome further involvement by people wishing to review developers' code
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 <!-- markdownlint-disable -->
 
-The grid above is generated with [all-contributors](https://allcontributors.org/) using information from GitHub. If you’d like to request a change contact b.cox@ucl.ac.uk.
+The grid above is generated with [all-contributors](https://allcontributors.org/) using information from GitHub. If you’d like to request a change contact [the maintainers](mailto:b.cox@ucl.ac.uk).
