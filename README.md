@@ -28,7 +28,6 @@ We aim to release a new version of the toolbox every May and November, with patc
 
 Every k-Wave-II release is tested with all releases of MATLAB after the minimum (see [Minimum requirements](#minimum-requirements)), until the latest one before the release was made.
 
-
 ## Getting started
 
 ### Minimum requirements
