@@ -125,9 +125,9 @@ def process_file(path):
 #==============================================================================
 # 3] Script Execution: Supports targeting a specific file or directory
 if __name__ == "__main__":
-    if VERBOSE: print("Starting license enforcement check (Help-First Order)...")
+    if VERBOSE: print("Starting license enforcement check")
 
-    target_path = sys.argv[1] if len(sys.argv) > 1 else "."
+    target_path = sys.argv[1] if len(sys.argv) > 1 else os.getcwd()
 
     if os.path.isfile(target_path):
         process_file(target_path)
