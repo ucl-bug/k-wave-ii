@@ -24,7 +24,8 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        run: npm ci || npm install
+        run: |
+          npm install --no-save all-contributors-cli
 
       - name: Collect unique PR authors + co-authors (GitHub usernames)
         id: authors

@@ -67,13 +67,13 @@ We also welcome further involvement by people wishing to review developers' code
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/ilectra"><img src="https://avatars.githubusercontent.com/u/22891967?v=4?s=100" width="100px;" alt="Ilektra Christidi"/><br /><sub><b>Ilektra Christidi</b></sub></a><br /><a href="#custom-ilectra" title=""></a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://www.davidstansby.com/"><img src="https://avatars.githubusercontent.com/u/6197628?v=4?s=100" width="100px;" alt="David Stansby"/><br /><sub><b>David Stansby</b></sub></a><br /><a href="#custom-dstansby" title=""></a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/astanziola"><img src="https://avatars.githubusercontent.com/u/3237202?v=4?s=100" width="100px;" alt="Antonio Stanziola"/><br /><sub><b>Antonio Stanziola</b></sub></a><br /><a href="#custom-astanziola" title=""></a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/arindamsaha1507"><img src="https://avatars.githubusercontent.com/u/25665512?v=4?s=100" width="100px;" alt="Arindam Saha"/><br /><sub><b>Arindam Saha</b></sub></a><br /><a href="#custom-arindamsaha1507" title=""></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/stellaprins"><img src="https://avatars.githubusercontent.com/u/30465823?v=4?s=100" width="100px;" alt="Stella Prins"/><br /><sub><b>Stella Prins</b></sub></a><br /><a href="#custom-stellaprins" title=""></a></td>
     </tr>
     <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/stellaprins"><img src="https://avatars.githubusercontent.com/u/30465823?v=4?s=100" width="100px;" alt="Stella Prins"/><br /><sub><b>Stella Prins</b></sub></a><br /><a href="#custom-stellaprins" title=""></a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://profiles.ucl.ac.uk/61652"><img src="https://avatars.githubusercontent.com/u/36169767?v=4?s=100" width="100px;" alt="Devaraj Gopinathan"/><br /><sub><b>Devaraj Gopinathan</b></sub></a><br /><a href="#custom-Devaraj-G" title=""></a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://qiuip.github.io/"><img src="https://avatars.githubusercontent.com/u/7360775?v=4?s=100" width="100px;" alt="Mashy Green"/><br /><sub><b>Mashy Green</b></sub></a><br /><a href="#custom-qiUip" title=""></a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/nicolin"><img src="https://avatars.githubusercontent.com/u/6137757?v=4?s=100" width="100px;" alt="nicolin"/><br /><sub><b>nicolin</b></sub></a><br /><a href="#custom-nicolin" title=""></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/arindamsaha1507"><img src="https://avatars.githubusercontent.com/u/25665512?v=4?s=100" width="100px;" alt="Arindam Saha"/><br /><sub><b>Arindam Saha</b></sub></a><br /><a href="#custom-arindamsaha1507" title=""></a></td>
     </tr>
   </tbody>
 </table>
