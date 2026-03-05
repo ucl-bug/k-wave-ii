@@ -68,6 +68,9 @@ To run pre-commit manually:
 ```bash
 pre-commit run
 ```
+
+By default, the pre-commit checks will be run only on the files that changed. If you want to run it on all files, use `pre-commit run -a` instead.
+
 ## AI and LLM Use
 
 AI tools can be valuable for learning, exploring ideas, and accelerating work. We welcome their thoughtful use. To ensure contributions remain meaningful and contributors continue to grow, we ask that you:
