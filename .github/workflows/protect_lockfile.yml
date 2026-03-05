@@ -32,11 +32,19 @@ jobs:
         run: |
           set -euo pipefail
 
-          base="${{ github.event.pull_request.base.sha }}"
-          head="${{ github.event.pull_request.head.sha }}"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            # Diff against the PR base branch
+            git fetch origin ${{ github.event.pull_request.base.ref }} --depth=1
+            base="origin/${{ github.event.pull_request.base.ref }}"
+            head="HEAD"
+          else
+            # Diff against the previous commit (push or workflow_dispatch)
+            base="HEAD^"
+            head="HEAD"
+          fi
 
-          changed_lock=$(git diff --name-only "$base" "$head" -- package-lock.json | wc -l | tr -d ' ')
-          changed_pkg=$(git diff --name-only "$base" "$head" -- package.json | wc -l | tr -d ' ')
+          changed_lock=$(git diff --name-only "$base"..."$head" -- package-lock.json | wc -l | tr -d ' ')
+          changed_pkg=$(git diff --name-only "$base"..."$head" -- package.json | wc -l | tr -d ' ')
 
           echo "Changed package-lock.json: $changed_lock"
           echo "Changed package.json:      $changed_pkg"
