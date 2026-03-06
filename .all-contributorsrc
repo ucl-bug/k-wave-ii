@@ -108,6 +108,15 @@
       "contributions": [
         "custom"
       ]
+    },
+    {
+      "login": "jarosjir",
+      "name": "Jiri Jaros",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4980903?v=4",
+      "profile": "http://www.fit.vutbr.cz/~jarosjir/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
@@ -118,5 +127,6 @@
       "description": "",
       "link": ""
     }
-  }
+  },
+  "commitType": "docs"
 }
