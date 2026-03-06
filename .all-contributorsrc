@@ -119,10 +119,19 @@
       ]
     },
     {
-      "login": "",
-      "name": "Eleanor S. Martin",
-      "avatar_url": "",
-      "profile": "",
+      "login": "ellwise",
+      "name": "ellwise",
+      "avatar_url": "https://avatars.githubusercontent.com/u/45689261?v=4",
+      "profile": "https://github.com/ellwise",
+      "contributions": [
+        "custom"
+      ]
+    },
+    {
+      "login": "ellymartin",
+      "name": "ellymartin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/62395290?v=4",
+      "profile": "https://github.com/ellymartin",
       "contributions": [
         "custom"
       ]
