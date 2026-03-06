@@ -122,11 +122,11 @@ classdef Materials < dynamicprops
         end
 
         function assignedIdx = addMaterial(obj, name, data)
-            %ADDMATERIAL  Add a new material to the Materials object.
-            %   assignedIdx = addMaterial(obj, name, data) adds a new material with the
-            %   given name and structure. If the structure does not contain an 'index'
-            %   field, the next available index in [0,255] is assigned. Returns the
-            %   assigned index value.
+            % ADDMATERIAL  Add a new material to the Materials object.
+            % assignedIdx = addMaterial(obj, name, data) adds a new material with the
+            % given name and structure. If the structure does not contain an 'index'
+            % field, the next available index in [0,255] is assigned. Returns the
+            % assigned index value.
 
             % Validate that 'name' is a string-like scalar
             if ~( (ischar(name) && isrow(name)) || (isstring(name) && isscalar(name)) )
@@ -204,14 +204,11 @@ classdef Materials < dynamicprops
                 assignedIdx = data.index;
             end
 
-            % Validate and convert each (remaining) field 
-            % (Index has already been validated; safe to validate others.)
+            % Validate and convert each field 
             dataFields = fieldnames(data);
             for f = dataFields'
                 fname = f{1};
                 if isfield(obj.FIELD_VALIDATORS, fname)
-                    % Avoid re-validating index (optional; harmless if you leave it)
-                    if strcmp(fname, 'index'), continue; end
                     data.(fname) = obj.FIELD_VALIDATORS.(fname)(data.(fname), fname);
                 end
             end

@@ -35,7 +35,7 @@ function executeTimeStep(obj, Nt, dt)
 
 arguments
     obj
-    Nt(1,1) uint64 {mustBeNonnegative, mustBeFinite}
+    Nt(1,1) uint32
     dt(1,1) {mustBeNumeric, mustBePositive, mustBeFinite}
 end
 

@@ -1,20 +1,17 @@
 %% TestMedium
 % *Package:* kwave.tests.unit
+% *Superclasses:* matlab.unittest.TestCase
 %
 % Unit tests for the kwave.toolbox.Medium class.
-% These tests use only the public API (Grid, Materials, Medium,
-% listMaterialIndices, listMaterials, and the virtual property
-% 'materialIndexGrid') and avoid any assumptions about internal
-% implementation details.
 
 classdef TestMedium < matlab.unittest.TestCase
 
     properties
-        kgrid      % kwave.toolbox.Grid
-        mats       % kwave.toolbox.Materials
-        medium     % kwave.toolbox.Medium
-        airIdx     % uint8 index for "air"
-        waterIdx   % uint8 index for "water"
+        kgrid
+        materials
+        medium
+        airIdx
+        waterIdx
         airC
         waterC
         airRho
@@ -22,203 +19,198 @@ classdef TestMedium < matlab.unittest.TestCase
     end
 
     methods (TestMethodSetup)
-        function makeFixtures(t)
+        function makeFixtures(testCase)
 
-            import kwave.toolbox.*
+            % Small 2D grid
+            testCase.kgrid = kwave.toolbox.Grid([6, 4], [1e-3, 1e-3]);
 
-            % --- Minimal 2D grid (6 x 4), metres ---
-            % The public Grid class takes grid size and spacing vectors.
-            t.kgrid = Grid([6, 4], [1e-3, 1e-3]);
+            % Materials with defaults ("water", "air")
+            testCase.materials = kwave.toolbox.Materials();
 
-            % --- Materials with defaults ("water", "air") ---
-            t.mats = Materials();
+            % Medium under test
+            testCase.medium = kwave.toolbox.Medium(testCase.kgrid, testCase.materials);
 
-            % Ensure we can locate "air" and "water" by name; if either is
-            % absent we add a sane default (not expected for default set).
-            t.airIdx   = t.getOrAddIndex("air",   struct('soundSpeed',343,  'density',1.2));
-            t.waterIdx = t.getOrAddIndex("water", struct('soundSpeed',1500, 'density',1000));
+            % Shorthands
+            testCase.airIdx   = testCase.materials.air.index;
+            testCase.waterIdx = testCase.materials.water.index;
+            testCase.airC     = testCase.materials.air.soundSpeed;
+            testCase.waterC   = testCase.materials.water.soundSpeed;
+            testCase.airRho   = testCase.materials.air.density;
+            testCase.waterRho = testCase.materials.water.density;
 
-            % Cache their physical values from the live object to drive
-            % truth tables in later assertions.
-            TM = t.mats.listMaterials();
-            t.airC   = TM.soundSpeed(TM.Name=="air");
-            t.waterC = TM.soundSpeed(TM.Name=="water");
-            t.airRho   = TM.density(TM.Name=="air");
-            t.waterRho = TM.density(TM.Name=="water");
-
-            % --- Medium under test ---
-            t.medium = Medium(t.kgrid, t.mats);
         end
     end
 
     methods (Test)
 
-        function setGet_materialIndexGrid_RoundTrip(t)
+        function setGet_materialIndexGrid(testCase)
 
             % Homogeneous water domain
-            idx = repmat(t.waterIdx, t.kgrid.Nx, t.kgrid.Ny);
-            t.medium.materialIndexGrid = idx;
+            idx = repmat(testCase.waterIdx, testCase.kgrid.Nx, testCase.kgrid.Ny);
+            testCase.medium.materialIndexGrid = idx;
 
-            got = t.medium.materialIndexGrid;
-            t.verifyClass(got, 'uint8');
-            t.verifySize(got, [t.kgrid.Nx, t.kgrid.Ny]);
-            t.verifyTrue(all(got(:) == t.waterIdx), 'Round-trip get/set failed.');
+            got = testCase.medium.materialIndexGrid;
+            testCase.assertClass(got, 'uint8', 'materialIndexGrid must always store uint8 indices.');
+            testCase.assertSize(got, [testCase.kgrid.Nx, testCase.kgrid.Ny], ...
+                'materialIndexGrid must preserve grid size.');
+            testCase.verifyTrue(all(got(:) == testCase.waterIdx), ...
+                'materialIndexGrid did not set/get the same index everywhere for a homogeneous water domain.');
+
         end
 
-        function sizeValidation_WrongSize_Errors(t)
+        function sizeValidation_WrongSize_Errors(testCase)
+
             % Assign something with the wrong size and confirm it errors.
-            bad = zeros(t.kgrid.Nx+1, t.kgrid.Ny, 'uint8');
+            bad = zeros(testCase.kgrid.Nx+1, testCase.kgrid.Ny, 'uint8');
             didError = false;
             try
-                t.medium.materialIndexGrid = bad; %#ok<NASGU>
+                testCase.medium.materialIndexGrid = bad;
             catch
                 didError = true;
             end
-            % We don't assert on the exact error identifier to remain robust
-            % to the implementation choice; we only test that it errors.
-            t.verifyTrue(didError, 'Assigning wrong-sized materialIndexGrid should error.');
+            testCase.verifyTrue(didError, 'Assigning wrong-sized materialIndexGrid should error.');
+
         end
 
-        function tryToAssignReadOnly(t)
+        function tryToAssignReadOnly(testCase)
+
             % Assign to a read-only medium property and confirm is errors.
             try
-                t.medium.soundSpeed = 1;
+                testCase.medium.soundSpeed = 1;
             catch
                 didError = true;
             end
-            t.verifyTrue(didError, 'Trying to assign to read-only medium properties should error.');
+            testCase.verifyTrue(didError, 'Trying to assign to read-only medium properties should error.');
 
         end
 
-        function checkRefreshWorks(t)
+        function checkRefreshWorks(testCase)
             passed = true;
             try
-                t.medium = refresh(t.medium);
+                testCase.medium = refresh(testCase.medium);
             catch
                 passed = false;
             end
-            t.verifyTrue(passed, 'refresh should not throw an error');
+            testCase.verifyTrue(passed, 'refresh should not throw an error');
 
         end
 
-        function derivedMaps_Homogeneous(t)
-            % Water everywhere
-            idx = repmat(t.waterIdx, t.kgrid.Nx, t.kgrid.Ny);
-            t.medium.materialIndexGrid = idx;
+        function derivedMaps_Homogeneous(testCase)
 
-            c = t.medium.soundSpeed;
-            rho = t.medium.density;
+            % Water, water everywhere
+            idx = repmat(testCase.waterIdx, testCase.kgrid.Nx, testCase.kgrid.Ny);
+            testCase.medium.materialIndexGrid = idx;
 
-            t.verifySize(c,   [t.kgrid.Nx, t.kgrid.Ny]);
-            t.verifySize(rho, [t.kgrid.Nx, t.kgrid.Ny]);
+            c = testCase.medium.soundSpeed;
+            rho = testCase.medium.density;
 
-            t.verifyTrue(all(c(:)   == t.waterC));
-            t.verifyTrue(all(rho(:) == t.waterRho));
+            testCase.verifySize(c,   [testCase.kgrid.Nx, testCase.kgrid.Ny]);
+            testCase.verifySize(rho, [testCase.kgrid.Nx, testCase.kgrid.Ny]);
+
+            testCase.verifyTrue(all(c(:)   == testCase.waterC));
+            testCase.verifyTrue(all(rho(:) == testCase.waterRho));
+
         end
 
-        function derivedMaps_Heterogeneous_TopAir_BottomWater(t)
+        function derivedMaps_Heterogeneous_TopAir_BottomWater(testCase)
+
             % Build a 2-material field: top-half air, bottom-half water
-            idx = repmat(t.waterIdx, t.kgrid.Nx, t.kgrid.Ny);
-            idx(1:floor(end/2), :) = t.airIdx;
-            t.medium.materialIndexGrid = idx;
+            idx = repmat(testCase.waterIdx, testCase.kgrid.Nx, testCase.kgrid.Ny);
+            idx(1:floor(end/2), :) = testCase.airIdx;
+            testCase.medium.materialIndexGrid = idx;
 
-            c = t.medium.soundSpeed;
-            rho = t.medium.density;
+            c = testCase.medium.soundSpeed;
+            rho = testCase.medium.density;
 
-            t.verifyTrue(all(c(1:end/2, :)      == t.airC,'all'));
-            t.verifyTrue(all(c(end/2+1:end, :)  == t.waterC,'all'));
-            t.verifyTrue(all(rho(1:end/2, :)    == t.airRho,'all'));
-            t.verifyTrue(all(rho(end/2+1:end,:) == t.waterRho,'all'));
+            testCase.verifyTrue(all(c(1:end/2, :)      == testCase.airC,'all'));
+            testCase.verifyTrue(all(c(end/2+1:end, :)  == testCase.waterC,'all'));
+            testCase.verifyTrue(all(rho(1:end/2, :)    == testCase.airRho,'all'));
+            testCase.verifyTrue(all(rho(end/2+1:end,:) == testCase.waterRho,'all'));
+
         end
 
-        function subsasgn_SlicedAssignment_Path(t)
+        function subsasgn_SlicedAssignment_Path(testCase)
+            
             % Exercise Medium's subsasgn path for its virtual property by
             % assigning only the top row to air and leave rest as water.
-            idx = repmat(t.waterIdx, t.kgrid.Nx, t.kgrid.Ny);
-            t.medium.materialIndexGrid = idx;
+            idx = repmat(testCase.waterIdx, testCase.kgrid.Nx, testCase.kgrid.Ny);
+            testCase.medium.materialIndexGrid = idx;
 
             % This must go through Medium's subsasgn (virtual property).
-            t.medium.materialIndexGrid(1, :) = t.airIdx;
+            testCase.medium.materialIndexGrid(1, :) = testCase.airIdx;
 
             % Verify mapping picked up for that slice only
-            c = t.medium.soundSpeed;
-            t.verifyTrue(all(c(1, :) == t.airC,'all'));
-            t.verifyTrue(all(c(2:end, :) == t.waterC,'all'));
+            c = testCase.medium.soundSpeed;
+            testCase.verifyTrue(all(c(1, :) == testCase.airC,'all'));
+            testCase.verifyTrue(all(c(2:end, :) == testCase.waterC,'all'));
+
         end
 
-        function materialsHandle_IsImmutable(t)
+        function materialsHandle_IsImmutable(testCase)
+
             % Attempting to reassign .materials should be prohibited
             didError = false;
             try
-                t.medium.materials = t.mats; %#ok<STRNU>
+                testCase.medium.materials = testCase.materials;
             catch ME
                 didError = true;
-                % Typical MATLAB id for SetAccess=immutable / SetProhibited
-                t.verifyEqual(ME.identifier, 'MATLAB:class:SetProhibited');
+                testCase.verifyEqual(ME.identifier, 'MATLAB:class:SetProhibited');
             end
-            t.verifyTrue(didError, 'Expected Medium.materials to be immutable.');
+            testCase.verifyTrue(didError, 'Expected Medium.materials to be immutable.');
+
         end
 
-        function display_DoesNotError(t)
-            % Smoke test custom display / propertyGroups
-            disp(t.medium);
-            t.verifyTrue(true);
+        function display_DoesNotError(testCase)
+
+            % Test custom display / propertyGroups
+            disp(testCase.medium);
+            testCase.verifyTrue(true);
+
         end
 
-        function derivativeMaps_SizeMatchesGrid_AfterReassignment(t)
+        function derivativeMaps_SizeMatchesGrid_AfterReassignment(testCase)
+
             % Reassign a new checkerboard pattern and confirm size stays consistent
-            idx = repmat(t.waterIdx, t.kgrid.Nx, t.kgrid.Ny);
-            idx(1:2:end, :) = t.airIdx;  % every second row is air
-            t.medium.materialIndexGrid = idx;
+            idx = repmat(testCase.waterIdx, testCase.kgrid.Nx, testCase.kgrid.Ny);
+            idx(1:2:end, :) = testCase.airIdx;  % every second row is air
+            testCase.medium.materialIndexGrid = idx;
 
-            c = t.medium.soundSpeed;
-            rho = t.medium.density;
+            c = testCase.medium.soundSpeed;
+            rho = testCase.medium.density;
 
-            t.verifySize(c,   [t.kgrid.Nx, t.kgrid.Ny]);
-            t.verifySize(rho, [t.kgrid.Nx, t.kgrid.Ny]);
+            testCase.verifySize(c,   [testCase.kgrid.Nx, testCase.kgrid.Ny]);
+            testCase.verifySize(rho, [testCase.kgrid.Nx, testCase.kgrid.Ny]);
 
             % Spot-check a few positions
-            t.verifyEqual(c(1,1),   t.airC);
-            t.verifyEqual(c(2,1),   t.waterC);
-            t.verifyEqual(rho(3,2), t.airRho);
+            testCase.verifyEqual(c(1,1),   testCase.airC);
+            testCase.verifyEqual(c(2,1),   testCase.waterC);
+            testCase.verifyEqual(rho(3,2), testCase.airRho);
+
         end
 
-
-        function testGridIndexExpansion(t)
+        function testGridIndexExpansion(testCase)
 
             % assigned properties should be gridSize
-            t.medium.materialIndexGrid = uint8(1);
-            no_dims = size(size(t.medium.soundSpeed),2);
-            t.verifyEqual(size(t.medium.soundSpeed),t.medium.gridSize(1:no_dims))
+            testCase.medium.materialIndexGrid = uint8(1);
+            no_dims = size(size(testCase.medium.soundSpeed),2);
+            testCase.verifyEqual(size(testCase.medium.soundSpeed),testCase.medium.gridSize(1:no_dims))
 
         end
 
-        function testAbsorptionPowerSetting(t)
+        function testAbsorptionPowerSetting(testCase)
 
-            idx = t.mats.addMaterial('testTissue',struct('soundSpeed',1500, 'density',1000));
-            t.medium.materialIndexGrid = idx;
-            t.verifyEqual(t.medium.absorptionPowerMap, single(NaN(t.kgrid.gridSize)))
+            % No absorption sets map to NaNs
+            idx = testCase.materials.addMaterial('testTissue',struct('soundSpeed',1500, 'density',1000));
+            testCase.medium.materialIndexGrid = idx;
+            testCase.verifyEqual(testCase.medium.absorptionPowerMap, single(NaN(testCase.kgrid.gridSize)))
 
-            t.medium.materialIndexGrid = uint8(0); % water
-            v = t.medium.absorptionPower;
-            t.verifyEqual(v, t.mats.water.absorptionPower)
+            % Should have absorption of water
+            testCase.medium.materialIndexGrid = uint8(0); % water
+            v = testCase.medium.absorptionPower;
+            testCase.verifyEqual(v, testCase.materials.water.absorptionPower)
 
         end
-
 
     end
 
-    methods (Access = private)
-        function idx = getOrAddIndex(t, matName, defaultStruct)
-            % Return the index for an existing material by name (preferred),
-            % otherwise add with the given defaults and return the new index.
-            T = t.mats.listMaterialIndices();
-            k = find(T.Name == string(matName), 1, 'first');
-            if ~isempty(k)
-                idx = T.Index(k);
-                return
-            end
-            [~, idx] = t.mats.addMaterial(char(matName), defaultStruct);
-        end
-    end
 end
