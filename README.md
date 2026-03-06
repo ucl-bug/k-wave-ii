@@ -74,6 +74,9 @@ We also welcome further involvement by people wishing to review developers' code
       <td align="center" valign="top" width="14.28%"><a href="https://qiuip.github.io/"><img src="https://avatars.githubusercontent.com/u/7360775?v=4?s=100" width="100px;" alt="Mashy Green"/><br /><sub><b>Mashy Green</b></sub></a><br /><a href="#custom-qiUip" title=""></a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/nicolin"><img src="https://avatars.githubusercontent.com/u/6137757?v=4?s=100" width="100px;" alt="nicolin"/><br /><sub><b>nicolin</b></sub></a><br /><a href="#custom-nicolin" title=""></a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/arindamsaha1507"><img src="https://avatars.githubusercontent.com/u/25665512?v=4?s=100" width="100px;" alt="Arindam Saha"/><br /><sub><b>Arindam Saha</b></sub></a><br /><a href="#custom-arindamsaha1507" title=""></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://www.fit.vutbr.cz/~jarosjir/"><img src="https://avatars.githubusercontent.com/u/4980903?v=4?s=100" width="100px;" alt="Jiri Jaros"/><br /><sub><b>Jiri Jaros</b></sub></a><br /><a href="#custom-jarosjir" title=""></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ellwise"><img src="https://avatars.githubusercontent.com/u/45689261?v=4?s=100" width="100px;" alt="ellwise"/><br /><sub><b>ellwise</b></sub></a><br /><a href="#custom-ellwise" title=""></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ellymartin"><img src="https://avatars.githubusercontent.com/u/62395290?v=4?s=100" width="100px;" alt="ellymartin"/><br /><sub><b>ellymartin</b></sub></a><br /><a href="#custom-ellymartin" title=""></a></td>
     </tr>
   </tbody>
 </table>
