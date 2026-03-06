@@ -108,6 +108,33 @@
       "contributions": [
         "custom"
       ]
+    },
+    {
+      "login": "jarosjir",
+      "name": "Jiri Jaros",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4980903?v=4",
+      "profile": "http://www.fit.vutbr.cz/~jarosjir/",
+      "contributions": [
+        "custom"
+      ]
+    },
+    {
+      "login": "ellwise",
+      "name": "ellwise",
+      "avatar_url": "https://avatars.githubusercontent.com/u/45689261?v=4",
+      "profile": "https://github.com/ellwise",
+      "contributions": [
+        "custom"
+      ]
+    },
+    {
+      "login": "ellymartin",
+      "name": "ellymartin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/62395290?v=4",
+      "profile": "https://github.com/ellymartin",
+      "contributions": [
+        "custom"
+      ]
     }
   ],
   "contributorsPerLine": 7,
@@ -118,5 +145,6 @@
       "description": "",
       "link": ""
     }
-  }
+  },
+  "commitType": "docs"
 }
