@@ -5,6 +5,7 @@
 +kwave/+tests/unit-test-artifacts
 docs/helpfiles/*
 docs/helpfilesweb/*
+node_modules/
 
 ######################
 # OS generated files #
