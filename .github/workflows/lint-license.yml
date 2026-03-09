@@ -4,8 +4,11 @@ name: License HeaderFixer
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - '**/*.m'
+  push:
+
 
 jobs:
   apply-license:
