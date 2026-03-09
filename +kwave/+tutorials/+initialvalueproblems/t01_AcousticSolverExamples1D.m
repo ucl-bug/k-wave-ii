@@ -112,10 +112,10 @@ solver.run(Nt=50, dt=dt1);
 % Following execution of run, the solver object will contain the following
 % output properties:
 %
-% * solver.pressure         % A grid-sized array
-% * solver.densitySplit     % A 4D gridfield vector
-% * solver.velocity         % A 4D gridfield vector
-% * solver.timeArray        % A vector of length (Nt+1)
+% * |solver.pressure|         : A grid-sized array
+% * |solver.densitySplit|     : A 4D gridfield vector
+% * |solver.velocity|         : A 4D gridfield vector
+% * |solver.timeArray|        : A vector of length (Nt+1)
 % 
 % These are, respectively:
 %

@@ -10,8 +10,8 @@
 %
 % See Also:
 %
-% * kwave.tutorials.initialvalueproblems.t01_AcousticSolverExamples1D
-% * kwave.tutorials.initialvalueproblems.t02_MoreAcousticSolverExamples1D
+% * |kwave.tutorials.initialvalueproblems.t01_AcousticSolverExamples1D|
+% * |kwave.tutorials.initialvalueproblems.t02_MoreAcousticSolverExamples1D|
 
 
 %% Preliminaries
