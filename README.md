@@ -55,7 +55,7 @@ The user community is very welcome to contribute to the code and open pull reque
 We also welcome further involvement by people wishing to review developers' code contributions and help the community of developers grow. Please contact the maintainers if you are interested in becoming a code reviewer.
 
 ## Development lead
-k‑Wave‑II builds on long‑standing collaborations and the contributions of many researchers, building on foundational work by Ben Cox, Brad Treeby, and Jiri Janoš. Its ongoing development is guided and maintained by [the UCL Biomedical Ultrasound Group](http://bug.medphys.ucl.ac.uk/), led by Ben Cox.
+k‑Wave‑II builds on long‑standing collaborations and the contributions of many researchers, building on foundational work by Bradley Treeby, Ben Cox, and Jiri Jaros. Its ongoing development is guided and maintained by [the UCL Biomedical Ultrasound Group](http://bug.medphys.ucl.ac.uk/).
 
 ## Contributors
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
