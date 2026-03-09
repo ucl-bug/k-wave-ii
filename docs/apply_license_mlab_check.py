@@ -1,6 +1,6 @@
 # Nicolin Govender, UCL ARC
 # 26/2/2026: License header enforcement for .m files (Issue #14)
-# replace "wrong" or outdated license blocks with Verbose output (we can disable after release)
+# replace "wrong" or outdated license blocks with Verbose output
 
 import os
 import sys

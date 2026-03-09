@@ -1,5 +1,5 @@
-# Nicolin, UCL ARC
-# 26/2/2026: Will check an new .m file for the agreement and if not present will ask the user to run the script to do this
+# Will check all .m files for the copyright statement and if not present will inject it
+# and commit the changes
 name: License HeaderFixer
 
 on:
@@ -27,7 +27,6 @@ jobs:
           # Run the script 
           python docs/apply_license_mlab_check.py
         
-      # This automates the process but uses a 3rd party action, so @Ben are you ok with this 
       - name: Commit and Push Changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
