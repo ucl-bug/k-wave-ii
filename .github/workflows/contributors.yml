@@ -1,0 +1,90 @@
+name: Update Contributors
+
+on:
+  pull_request:
+
+jobs:
+  all-contributors:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: |
+          npm install --no-save all-contributors-cli
+
+      - name: Collect unique PR authors + co-authors (GitHub usernames)
+        id: authors
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+
+          gh api "repos/${{ github.repository }}/pulls/${PR_NUMBER}/commits" --paginate > pr_commits.json
+
+          # 1) Commit authors (GitHub metadata)
+          AUTHOR_LOGINS=$(jq -r '.[].author.login // empty' pr_commits.json)
+
+          # 2) Co-authors (parse commit message trailers)
+          COAUTHOR_LOGINS=$(
+            jq -r '.[].commit.message // ""' pr_commits.json \
+            | awk 'BEGIN{IGNORECASE=1} /^co-authored-by:/{print}' \
+            | sed -nE 's/.*<([^>]+)>.*/\1/p' \
+            | sed -E 's/^([0-9]+\+)?([^@]+)@users\.noreply\.github\.com$/\2/I' \
+            | grep -v '@' || true
+          )
+
+          ALL=$(printf "%s\n%s\n" "$AUTHOR_LOGINS" "$COAUTHOR_LOGINS" \
+            | sed '/^$/d' \
+            | grep -viE '\[bot\]$' \
+            | sort -u)
+
+          echo "GitHub users found (authors + resolvable co-authors):"
+          echo "$ALL"
+
+          {
+            echo "list<<EOF"
+            echo "$ALL"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+           
+      - name: Add all commit authors as contributors
+        run: |
+          set -e
+          while IFS= read -r u; do
+            [ -z "$u" ] && continue
+            echo "Adding contributor: $u"
+            npx all-contributors add "$u" custom
+          done <<< "${{ steps.authors.outputs.list }}"
+
+          npx all-contributors generate
+ 
+      - name: Commit and push changes (if .all-contributorsrc changed)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .all-contributorsrc README.md
+
+          if git diff --cached --quiet -- .all-contributorsrc; then
+            echo "No changes in .all-contributorsrc."
+            exit 0
+          fi
+
+          echo "Changes detected — committing."
+          git commit -m "update contributors"
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
