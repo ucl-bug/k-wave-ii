@@ -1,7 +1,7 @@
 %% More Two-Dimensional Acoustic Solver examples
 %
 %% Overview
-% More 2D examples, following on from |t03_AcousticSolverExamples2D|.
+% More 2D examples, following on from `t03_AcousticSolverExamples2D`.
 %
 % * To open the file in the MATLAB Editor:
 % `edit('kwave.tutorials.initialvalueproblems.t04_MoreAcousticSolverExamples2D.m')`
