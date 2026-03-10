@@ -8,7 +8,7 @@ message: >-
   metadata from this file.
 type: software
 authors:
-  - given-names: 'Bradley '
+  - given-names: Bradley
     family-names: Treeby
   - given-names: Ben
     family-names: Cox
