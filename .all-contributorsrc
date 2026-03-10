@@ -46,15 +46,6 @@
         "custom"
       ]
     },
-      {
-      "login": "ellwise",
-      "name": "ellwise",
-      "avatar_url": "https://avatars.githubusercontent.com/u/45689261?v=4",
-      "profile": "https://github.com/ellwise",
-      "contributions": [
-        "custom"
-      ]
-    },
     {
       "login": "MatthewJohnKing",
       "name": "MatthewJohnKing",
@@ -69,6 +60,15 @@
       "name": "Antonio Stanziola",
       "avatar_url": "https://avatars.githubusercontent.com/u/3237202?v=4",
       "profile": "https://github.com/astanziola",
+      "contributions": [
+        "custom"
+      ]
+    },
+    {
+      "login": "ellwise",
+      "name": "ellwise",
+      "avatar_url": "https://avatars.githubusercontent.com/u/45689261?v=4",
+      "profile": "https://github.com/ellwise",
       "contributions": [
         "custom"
       ]
@@ -128,7 +128,7 @@
       "contributions": [
         "custom"
       ]
-    },
+    }
   ],
   "contributorsPerLine": 6,
   "linkToUsage": false,
