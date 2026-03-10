@@ -6,24 +6,24 @@
   "files": [
     "docs/README.md"
   ],
-  "imageSize": 100,
+  "imageSize": 80,
   "commit": false,
   "commitConvention": "angular",
   "contributors": [
-    {
-      "login": "bencox",
-      "name": "Ben Cox",
-      "avatar_url": "https://avatars.githubusercontent.com/u/5031946?v=4",
-      "profile": "https://github.com/bencox",
+      {
+      "login": "btreeby",
+      "name": "Bradley Treeby",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4980942?v=4",
+      "profile": "https://github.com/btreeby",
       "contributions": [
         "custom"
       ]
     },
     {
-      "login": "btreeby",
-      "name": "Bradley Treeby",
-      "avatar_url": "https://avatars.githubusercontent.com/u/4980942?v=4",
-      "profile": "https://github.com/btreeby",
+      "login": "bencox",
+      "name": "Ben Cox",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5031946?v=4",
+      "profile": "https://github.com/bencox",
       "contributions": [
         "custom"
       ]
@@ -137,7 +137,7 @@
       ]
     }
   ],
-  "contributorsPerLine": 7,
+  "contributorsPerLine": 6,
   "linkToUsage": false,
   "types": {
     "custom": {
