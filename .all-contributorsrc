@@ -10,7 +10,7 @@
   "commit": false,
   "commitConvention": "angular",
   "contributors": [
-      {
+    {
       "login": "btreeby",
       "name": "Bradley Treeby",
       "avatar_url": "https://avatars.githubusercontent.com/u/4980942?v=4",
