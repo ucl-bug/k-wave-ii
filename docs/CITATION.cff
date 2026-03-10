@@ -23,9 +23,9 @@ abstract: >-
   wave problems in biomedical ultrasound. 
 keywords:
   - ultrasound
-  - wave‑propagation
-  - nonlinear‑acoustics
-  - acoustic‑simulation
+  - wave propagation
+  - nonlinear acoustics
+  - acoustic simulation
   - photoacoustics
 license: LGPL-3.0
 preferred-citation:
