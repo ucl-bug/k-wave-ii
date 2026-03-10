@@ -29,10 +29,46 @@
       ]
     },
     {
+      "login": "jarosjir",
+      "name": "Jiri Jaros",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4980903?v=4",
+      "profile": "http://www.fit.vutbr.cz/~jarosjir/",
+      "contributions": [
+        "custom"
+      ]
+    },
+    {
+      "login": "ellymartin",
+      "name": "ellymartin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/62395290?v=4",
+      "profile": "https://github.com/ellymartin",
+      "contributions": [
+        "custom"
+      ]
+    },
+      {
+      "login": "ellwise",
+      "name": "ellwise",
+      "avatar_url": "https://avatars.githubusercontent.com/u/45689261?v=4",
+      "profile": "https://github.com/ellwise",
+      "contributions": [
+        "custom"
+      ]
+    },
+    {
       "login": "MatthewJohnKing",
       "name": "MatthewJohnKing",
       "avatar_url": "https://avatars.githubusercontent.com/u/137497118?v=4",
       "profile": "https://github.com/MatthewJohnKing",
+      "contributions": [
+        "custom"
+      ]
+    },
+    {
+      "login": "astanziola",
+      "name": "Antonio Stanziola",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3237202?v=4",
+      "profile": "https://github.com/astanziola",
       "contributions": [
         "custom"
       ]
@@ -55,15 +91,7 @@
         "custom"
       ]
     },
-    {
-      "login": "astanziola",
-      "name": "Antonio Stanziola",
-      "avatar_url": "https://avatars.githubusercontent.com/u/3237202?v=4",
-      "profile": "https://github.com/astanziola",
-      "contributions": [
-        "custom"
-      ]
-    },
+
     {
       "login": "stellaprins",
       "name": "Stella Prins",
@@ -73,11 +101,12 @@
         "custom"
       ]
     },
-    {
-      "login": "Devaraj-G",
-      "name": "Devaraj Gopinathan",
-      "avatar_url": "https://avatars.githubusercontent.com/u/36169767?v=4",
-      "profile": "https://profiles.ucl.ac.uk/61652",
+
+      {
+      "login": "arindamsaha1507",
+      "name": "Arindam Saha",
+      "avatar_url": "https://avatars.githubusercontent.com/u/25665512?v=4",
+      "profile": "https://github.com/arindamsaha1507",
       "contributions": [
         "custom"
       ]
@@ -100,42 +129,6 @@
         "custom"
       ]
     },
-    {
-      "login": "arindamsaha1507",
-      "name": "Arindam Saha",
-      "avatar_url": "https://avatars.githubusercontent.com/u/25665512?v=4",
-      "profile": "https://github.com/arindamsaha1507",
-      "contributions": [
-        "custom"
-      ]
-    },
-    {
-      "login": "jarosjir",
-      "name": "Jiri Jaros",
-      "avatar_url": "https://avatars.githubusercontent.com/u/4980903?v=4",
-      "profile": "http://www.fit.vutbr.cz/~jarosjir/",
-      "contributions": [
-        "custom"
-      ]
-    },
-    {
-      "login": "ellwise",
-      "name": "ellwise",
-      "avatar_url": "https://avatars.githubusercontent.com/u/45689261?v=4",
-      "profile": "https://github.com/ellwise",
-      "contributions": [
-        "custom"
-      ]
-    },
-    {
-      "login": "ellymartin",
-      "name": "ellymartin",
-      "avatar_url": "https://avatars.githubusercontent.com/u/62395290?v=4",
-      "profile": "https://github.com/ellymartin",
-      "contributions": [
-        "custom"
-      ]
-    }
   ],
   "contributorsPerLine": 6,
   "linkToUsage": false,
