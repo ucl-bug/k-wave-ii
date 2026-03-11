@@ -250,6 +250,7 @@ classdef Materials < dynamicprops
                 'VariableNames', varNames);
 
             % plain‑text output if no output is assigned
+            % this is done to avoid tables breaking the documentation generation (see #233 for context)
             if nargout == 0
                 fprintf('%s\n', evalc('disp(T)'));
                 clear T  
