@@ -175,11 +175,16 @@ classdef GenerateDocumentation
                 mFilenames(ind).title = kwave.devtools.parseTitle(fullfile(mFilenames(ind).folder, mFilenames(ind).name));
 
                 % Publish to html.
-                htmlFile = publish(filename, ...
+                htmlFile_tt = publish(filename, ...
                     'format', 'html', ...
                     'outputDir', obj.helpDirHtml, ...
                     'evalCode', options.evalCode, ...
                     'showCode', options.showCode);
+                
+                % Replace deprecated <tt> tags with <code> tags
+                htmlFile = strrep(htmlFile_tt, ...
+                ['<tt>', '</tt>'], ...
+                ['<code>','</code>']);
 
                 % Publish to md.
                 inputFunctionFullFileName = fullfile(mFilenames(ind).folder, mFilenames(ind).name);
@@ -260,12 +265,12 @@ classdef GenerateDocumentation
 
             % Replace links, and save to HTML file replacing
             % contents. The |methodName| syntax is published as
-            % <tt>methodName</tt>. The html flags are included
+            % <code>methodName</code>. The html flags are included
             % in the search to avoid adding links to code
             % snippets.
             fileContents = strrep(fileContents.', ...
-                ['<tt>' methodName '</tt>'], ...
-                ['<tt>' obj.generateLink(toObj.htmlFileName, methodName) '</tt>']);
+                ['<code>' methodName '</code>'], ...
+                ['<code>' obj.generateLink(toObj.htmlFileName, methodName) '</code>']);
             fid = fopen(htmlFile, 'w');
             fprintf(fid, '%s', fileContents.');
             fclose(fid);
