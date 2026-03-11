@@ -63,7 +63,7 @@ kgrid = Grid([Nx Ny], [dx dy], [pmlSizex pmlSizey]);
 % 
 %   materials.listMaterials()
 % 
-% Create a Materials object (essentially a database of material types)
+% The output should look like this:
 
 materials = Materials();
 
