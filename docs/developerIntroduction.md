@@ -49,10 +49,17 @@ Part of the success of k\-Wave can be attributed to the good documentation, both
 
 When adding a new class or function, examples should be added. If the code usage is relatively straightforward, examples can be included directly in the help documentation for that class or function. For more complex classes (e.g., the solver classes), longer tutorials or examples should be provided.
 
-1.  **Tutorials:** These are worked examples stored as `.m` files in the  `kwave.tutorials` name space. For tutorials, each block of code should be surrounded by a discussion guiding the user through the example. The discussion should be written using  [publishing markup](https://uk.mathworks.com/help/matlab/matlab_prog/marking-up-matlab-comments-for-publishing.html). Similar to k\-Wave I, concepts introduced in other tutorials do not need to be re\-introduced. Try and focus on a relatively small number of new concepts in each tutorial. The tutorial code should generally run fast on basic hardware (< 1 min).
+1.  **Tutorials:** These are worked examples stored as `.m` files in the  `kwave.tutorials` name space. For tutorials, each block of code should be surrounded by a discussion guiding the user through the example. The discussion should be written using [publishing markup](https://uk.mathworks.com/help/matlab/matlab_prog/marking-up-matlab-comments-for-publishing.html)[*](#note). Similar to k\-Wave I, concepts introduced in other tutorials do not need to be re\-introduced. Try and focus on a relatively small number of new concepts in each tutorial. The tutorial code should generally run fast on basic hardware (< 1 min).
 2. **Examples:** These are illustrative examples stored as `.m` files in the  `kwave.examples` name space. Examples have a wider scope than tutorials, and may demonstrate a real\-world simulation using realistic grid sizes for example (so do not necessarily need to run fast). Examples should contain a comprehensive description of what the example does in the description of the file, but does not need to have long step\-by\-step.
 
 Please remember to also add the new class, function or tutorial/example file in the appropriate section header file (`Toolbox_Functions.m`, `Tutorials.m` or `Utility_Functions.m`).
+
+<a name="note"></a>\* ***A note on publishing markup for tutorials and examples:***  
+According to the matlab documentation,
+
+> _Markup only works in comments that immediately follow a section break._
+
+This means that all the text within a section (starting with `%%`) has to come in one continuous area of `%`s in order for it to render. If executable code is interleaved with it, the rest of the text is not rendered. A workaround is to include the code we want to run in the comments area, and duplicate it after each block in order for it to run and produce the plots. Please have a look at the existing tutorials for examples.
 
 ### Building The Documentation
 
