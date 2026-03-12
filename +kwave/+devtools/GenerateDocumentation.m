@@ -175,16 +175,21 @@ classdef GenerateDocumentation
                 mFilenames(ind).title = kwave.devtools.parseTitle(fullfile(mFilenames(ind).folder, mFilenames(ind).name));
 
                 % Publish to html.
-                htmlFile_tt = publish(filename, ...
+                htmlFile = publish(filename, ...
                     'format', 'html', ...
                     'outputDir', obj.helpDirHtml, ...
                     'evalCode', options.evalCode, ...
                     'showCode', options.showCode);
                 
                 % Replace deprecated <tt> tags with <code> tags
-                htmlFile = strrep(htmlFile_tt, ...
-                ['<tt>', '</tt>'], ...
-                ['<code>','</code>']);
+                htmlFile_content = fileread(htmlFile);
+
+                htmlFile_content = strrep(htmlFile_content, '<tt>', '<code>');
+                htmlFile_content = strrep(htmlFile_content, '</tt>', '</code>');
+
+                htmlFile_handle = fopen(htmlFile, 'w');
+                fwrite(htmlFile_handle, htmlFile_content);
+                fclose(htmlFile_handle);
 
                 % Publish to md.
                 inputFunctionFullFileName = fullfile(mFilenames(ind).folder, mFilenames(ind).name);
