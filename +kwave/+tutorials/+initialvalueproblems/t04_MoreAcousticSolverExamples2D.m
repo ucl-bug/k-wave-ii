@@ -61,9 +61,8 @@ kgrid = Grid([Nx Ny], [dx dy], [pmlSizex pmlSizey]);
 % 
 % Show a table of all the materials currently stored
 % 
-%   materials.listMaterials()
-% 
-% The output should look like this:
+%   materials_table = materials.listMaterials();
+%   disp(materials_table);
 
 materials = Materials();
 
