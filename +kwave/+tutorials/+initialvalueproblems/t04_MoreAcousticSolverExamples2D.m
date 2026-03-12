@@ -48,7 +48,7 @@ pmlSizey = 20; % Thickness of the PML (Perfectly Matched Layer absorbing boundar
 % Create a Grid object
 kgrid = Grid([Nx Ny], [dx dy], [pmlSizex pmlSizey]); 
 
-%% Define properties of material types
+%% List materials
 %
 % Create a Materials object (essentially a database of material types)
 %
@@ -61,8 +61,21 @@ kgrid = Grid([Nx Ny], [dx dy], [pmlSizex pmlSizey]);
 % 
 % Show a table of all the materials currently stored
 % 
-%   materials.listMaterials()
-% 
+%   materials_table = materials.listMaterials();
+%   disp(materials_table);
+
+materials = Materials();
+
+% Add new materials to the Materials object 
+idx1 = materials.addMaterial('softTissue1', struct('soundSpeed',1540,'density',1100));
+idx2 = materials.addMaterial('softTissue2', struct('soundSpeed',1440,'density',990));
+
+% Show a table of all the materials currently stored
+materials_table = materials.listMaterials();
+disp(materials_table);
+
+%% Define properties of material types
+%
 % Create a Medium object
 % 
 %   medium = Medium(kgrid, materials); 
@@ -72,16 +85,6 @@ kgrid = Grid([Nx Ny], [dx dy], [pmlSizex pmlSizey]);
 %   medium.materialIndexGrid = zeros(medium.gridSize, 'uint8'); % water
 %   medium.materialIndexGrid(end/4:end/2,:) = idx1;             % softTissue1
 %   medium.materialIndexGrid(end/2+1:end,:) = idx2;             % softTissue2
-
-% Create a Materials object (essentially a database of material types)
-materials = Materials();
-
-% Add new materials to the Materials object 
-idx1 = materials.addMaterial('softTissue1', struct('soundSpeed',1540,'density',1100));
-idx2 = materials.addMaterial('softTissue2', struct('soundSpeed',1440,'density',990));
-
-% Show a table of all the materials currently stored
-materials.listMaterials()
 
 % Create a Medium object
 medium = Medium(kgrid, materials); 
