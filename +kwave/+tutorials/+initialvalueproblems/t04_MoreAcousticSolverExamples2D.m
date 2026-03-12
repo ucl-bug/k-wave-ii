@@ -72,7 +72,8 @@ idx1 = materials.addMaterial('softTissue1', struct('soundSpeed',1540,'density',1
 idx2 = materials.addMaterial('softTissue2', struct('soundSpeed',1440,'density',990));
 
 % Show a table of all the materials currently stored
-materials.listMaterials()
+materials_table = materials.listMaterials();
+disp(materials_table);
 
 %% Define properties of material types
 %

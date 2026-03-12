@@ -249,12 +249,6 @@ classdef Materials < dynamicprops
                 data(:,1), data(:,2), data(:,3), data(:,4), data(:,5), data(:,6), data(:,7), ...
                 'VariableNames', varNames);
 
-            % plain‑text output if no output is assigned
-            % this is done to avoid tables breaking the documentation generation (see #233 for context)
-            if nargout == 0
-                fprintf('%s\n', evalc('disp(T)'));
-                clear T  
-            end
         end
 
         function I = listMaterialIndices(obj)
