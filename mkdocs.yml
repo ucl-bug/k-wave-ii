@@ -14,7 +14,7 @@ extra_javascript:
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
   
 nav:
-  - Home: index.md
+  - Home: README.md
   - Contributor guidelines: CONTRIBUTING.md
   - Code of Conduct: codeOfConduct.md
   - Licence: LICENSE.md
