@@ -73,7 +73,7 @@ function run(obj, options)
     
     kwave.toolbox.Logger.info(['Calling ' class(obj) '.run...']);
     obj.kgrid.displayGridSize();
-    kwave.toolbox.Logger.info(['  dt: ' kwave.utilities.scaleSI(options.dt) 's, end time: ' kwave.utilities.scaleSI(options.dt * options.Nt) 's, time steps: ' num2str(options.Nt)]);
+    kwave.toolbox.Logger.info(['  dt: ' kwave.utilities.scaleSI(options.dt) 's, end time: ' kwave.utilities.scaleSI(options.dt * single(options.Nt)) 's, time steps: ' num2str(options.Nt)]);
     
     if (obj.timeStepsTaken==0)
         % Set initial conditions.
@@ -93,8 +93,8 @@ function run(obj, options)
     obj.prevTimeStep = options.dt;
     obj.timeStepsTaken = obj.timeStepsTaken + options.Nt;
     if isempty(obj.timeArray)
-        obj.timeArray = (0:(options.Nt)) * options.dt;
+        obj.timeArray = (0:(single(options.Nt))) * options.dt;
     else
-        obj.timeArray = [obj.timeArray, obj.timeArray(end) + (1:options.Nt) * options.dt];
+        obj.timeArray = [obj.timeArray, obj.timeArray(end) + (1:single(options.Nt)) * options.dt];
     end
 end
