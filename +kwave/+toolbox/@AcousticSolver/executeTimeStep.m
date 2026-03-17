@@ -35,7 +35,7 @@ function executeTimeStep(obj, Nt, dt)
 
 arguments
     obj
-    Nt(1,1) {mustBeInteger, mustBeNonnegative, mustBeFinite}
+    Nt(1,1) uint32
     dt(1,1) {mustBeNumeric, mustBePositive, mustBeFinite}
 end
 
@@ -62,6 +62,33 @@ pmlSG = @(x) obj.pml.applyPML(x, Staggered=true);
 gradient = @(x) obj.gradient(x, Staggering='forward');
 divergence = @(x) obj.divergenceSplit(x, Staggering='backward');
 
+
+% Build effective (NaN-safe) absorption inputs.
+    function [hasAbsorption, tauEff, etaEff, yEff] = buildAbsorptionOperators()
+
+        % Short-circuit if globally off
+        if strcmp(obj.absorptionType, 'off')
+            hasAbsorption = false; tauEff = []; etaEff = []; yEff = [];
+            return;
+        end
+
+        % Current design uses a scalar exponent
+        yScalar = obj.medium.absorptionPower;         % scalar, may be NaN
+
+        % Start from the padded operators (as built by setAbsorptionCoefficients)
+        tauEff = obj.absorbTauPadded;                 % may contain NaN where material missing
+        etaEff = obj.absorbEtaPadded;                 % may contain NaN where material missing
+
+        % Zero-out invalid voxels in the operators (lossless locally)
+        tauEff(~isfinite(tauEff)) = 0;
+        etaEff(~isfinite(etaEff)) = 0;
+
+        % Enable absorption only if something remains
+        hasAbsorption = any(tauEff(:) ~= 0 | etaEff(:) ~= 0);
+        yEff = yScalar;   % keep scalar exponent
+    end
+
+
 % Stagger the density, if required
 if length(obj.medium.densityPadded)~= 1
     densityPaddedStg=obj.stagger(obj.medium.densityPadded,Stagger='forward', Type='linInterpolate');
@@ -73,19 +100,19 @@ if (obj.settings.plotSimulation)
     fig = figure;
 end
 
-% 
-adj = 0;
+% no time index adjustment by default
+adj = uint64(0);
 
 if (obj.timeStepsTaken == 0)
-    % Adds a time step if initial conditions need applying.
+    % Adds a time step if initial conditions need to be applied.
     Nt  = Nt+1;
-    adj = 1;
+    adj = uint64(1);
 end
 
 if Nt~=0
     %If no time steps are taken for a system that has been run then the
     %original solution is passed back out.
-    for tIndex = 1:Nt
+    for tIndex = uint64(1:Nt)
 
         if (tIndex == 1)
             if (obj.timeStepsTaken == 0)
@@ -103,7 +130,7 @@ if Nt~=0
                     % stepping
                     obj.pressurePadded     = obj.pressurePadded + obj.source.initialPressurePadded;
                     obj.densitySplitPadded = obj.densitySplitPadded + obj.source.initialPressurePadded ./ (obj.dimensions * obj.medium.soundSpeedPadded.^2);
-                    
+
                     initialVelocityDimensional = zeros([obj.kgridPadded.gridSize,obj.kgrid.dimensions]) + obj.source.initialVelocityPadded;
                     for dim=1:obj.kgrid.dimensions
                         initialVelcoityStaggered = obj.stagger(initialVelocityDimensional(:,:,:,dim), Type='fourier');
@@ -131,11 +158,20 @@ if Nt~=0
                 % Pressure density relation.
                 obj.pressurePadded = obj.medium.soundSpeedPadded.^2 .* ( sum(obj.densitySplitPadded, 4));
 
-                % If absorptionPower declaired then add absorption terms
-                if ~strcmp(obj.absorptionType,'off')
-                    obj.pressurePadded = obj.pressurePadded  +  obj.medium.soundSpeedPadded.^2 .* ( ...
-                        obj.absorbTauPadded .* fracLaplacian(obj, obj.medium.densityPadded .* sum(divergence(obj.velocityPadded),4), obj.medium.absorptionPower/2 -1 ) + ...
-                        obj.absorbEtaPadded .* fracLaplacian(obj, sum(obj.densitySplitPadded,4), obj.medium.absorptionPower/2 -0.5 ) ) ;
+                % Add absorption terms if required
+                [doAbs, tauEff, etaEff, yEff] = buildAbsorptionOperators();
+                if doAbs
+                    obj.pressurePadded = obj.pressurePadded + ...
+                        obj.medium.soundSpeedPadded.^2 .* ( ...
+                        tauEff .* fracLaplacian( ...
+                        obj, ...
+                        obj.medium.densityPadded .* sum(divergence(obj.velocityPadded),4), ...
+                        (yEff/2 - 1) ) + ...
+                        etaEff .* fracLaplacian( ...
+                        obj, ...
+                        sum(obj.densitySplitPadded,4), ...
+                        (yEff/2 - 0.5) ) ...
+                        );
                 end
             end
         elseif (tIndex==2) && (obj.timeStepsTaken == 0) && ~isempty(obj.source.initialVelocity)
@@ -155,11 +191,20 @@ if Nt~=0
             % Pressure density relation.
             obj.pressurePadded = obj.medium.soundSpeedPadded.^2 .* ( sum(obj.densitySplitPadded, 4));
 
-            % If absorptionPower declared then add absorption terms
-            if ~strcmp(obj.absorptionType,'off')
-                obj.pressurePadded = obj.pressurePadded  +  obj.medium.soundSpeedPadded.^2 .* ( ...
-                    obj.absorbTauPadded .* fracLaplacian(obj, obj.medium.densityPadded .* sum(divergence(obj.velocityPadded),4), obj.medium.absorptionPower/2 -1 ) + ...
-                    obj.absorbEtaPadded .* fracLaplacian(obj, sum(obj.densitySplitPadded,4), obj.medium.absorptionPower/2 -0.5 ) ) ;
+            % If required add absorption terms
+            [doAbs, tauEff, etaEff, yEff] = buildAbsorptionOperators();
+            if doAbs
+                obj.pressurePadded = obj.pressurePadded + ...
+                    obj.medium.soundSpeedPadded.^2 .* ( ...
+                    tauEff .* fracLaplacian( ...
+                    obj, ...
+                    obj.medium.densityPadded .* sum(divergence(obj.velocityPadded),4), ...
+                    (yEff/2 - 1) ) + ...
+                    etaEff .* fracLaplacian( ...
+                    obj, ...
+                    sum(obj.densitySplitPadded,4), ...
+                    (yEff/2 - 0.5) ) ...
+                    );
             end
         else
 
@@ -174,20 +219,29 @@ if Nt~=0
             % Pressure density relation.
             obj.pressurePadded = obj.medium.soundSpeedPadded.^2 .* ( sum(obj.densitySplitPadded, 4));
 
-            % If absorptionPower declared then add absorption terms
-            if ~strcmp(obj.absorptionType,'off')
-                obj.pressurePadded = obj.pressurePadded  +  obj.medium.soundSpeedPadded.^2 .* ( ...
-                    obj.absorbTauPadded .* fracLaplacian(obj, obj.medium.densityPadded .* sum(divergence(obj.velocityPadded),4), obj.medium.absorptionPower/2 -1 ) + ...
-                    obj.absorbEtaPadded .* fracLaplacian(obj, sum(obj.densitySplitPadded,4), obj.medium.absorptionPower/2 -0.5 ) ) ;
+            % If required add absorption terms
+            [doAbs, tauEff, etaEff, yEff] = buildAbsorptionOperators();
+            if doAbs
+                obj.pressurePadded = obj.pressurePadded + ...
+                    obj.medium.soundSpeedPadded.^2 .* ( ...
+                    tauEff .* fracLaplacian( ...
+                    obj, ...
+                    obj.medium.densityPadded .* sum(divergence(obj.velocityPadded),4), ...
+                    (yEff/2 - 1) ) + ...
+                    etaEff .* fracLaplacian( ...
+                    obj, ...
+                    sum(obj.densitySplitPadded,4), ...
+                    (yEff/2 - 0.5) ) ...
+                    );
             end
         end
 
-        % 
+        %
         if ~isempty(obj.sensor) && rem(tIndex-adj, obj.sensor.timeSteps) == 0
             if ~isempty(obj.timeArray)
-                obj.timePoint = obj.timeArray(end)+(tIndex-adj)*dt;
+                obj.timePoint = obj.timeArray(end) + dt*single(tIndex-adj);
             else
-                obj.timePoint = (tIndex-adj)*dt;
+                obj.timePoint = dt * single(tIndex-adj);
             end
             obj.sensor.sensorIndex=obj.sensor.sensorIndex+1;
             obj.sensor.recordSensorData(obj,obj.sensor.sensorIndex);
