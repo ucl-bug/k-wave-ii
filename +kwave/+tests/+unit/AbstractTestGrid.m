@@ -22,17 +22,17 @@
 %    classdef TestMyClass < kwave.tests.unit.AbstractTestGrid
 %        methods(Test, ParameterCombination="sequential")
 %            function testSomething(testCase)
-% 
+%  %
 %                import matlab.unittest.constraints.IsEqualTo
 %                import kwave.toolbox.*
-% 
+%  %
 %                % Assign actual and reference solutions.
 %                testCase.actualSolution = testCase.kgrid.xVec;
 %                testCase.referenceSolution = testCase.kgrid.yVec;
-% 
+%  %
 %                % Compare with tolerance.
 %                testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));
-% 
+%  %
 %            end
 %        end
 %    end

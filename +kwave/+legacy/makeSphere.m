@@ -77,7 +77,7 @@ else
     sphere = zeros(Nx, Ny, Nz);
 end
 
-% create a guide circle from which the individal radii can be extracted
+% create a guide circle from which the individual radii can be extracted
 guide_circle = makeCircle(Ny, Nx, cy, cx, radius);
 
 % step through the guide circle points and create partially filled discs

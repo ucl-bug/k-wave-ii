@@ -27,7 +27,7 @@
 %
 %% Examples
 % Calculate the gradient of a scalar field in 2D, and compare with the
-% MATLAB |<matlab:doc('gradient') gradient>| function.
+% MATLAB |<https://uk.mathworks.com/help/matlab/ref/gradient.html Gradient>| function.
 %
 %   % Define input field.
 %   [x, y] = meshgrid(-2:.2:2, -2:.2:2);
@@ -98,9 +98,11 @@
 %% Methods
 % * |divergence|
 % * |divergenceSplit|
+% * |fracLaplacian|
 % * |gradient|
 % * |plotField|
 % * |sinc|
+% * |stagger|
 
 % Copyright (C) 2022- University College London.
 %
@@ -147,6 +149,14 @@ classdef FourierCollocation < handle
         ddxShiftNeg single
         ddyShiftNeg single
         ddzShiftNeg single
+
+        xShiftPos single
+        yShiftPos single
+        zShiftPos single
+
+        xShiftNeg single
+        yShiftNeg single
+        zShiftNeg single
     end
 
     % k-Space correction term.
@@ -181,6 +191,13 @@ classdef FourierCollocation < handle
             obj.ddyShiftNeg = reshape(ifftshift(1i * obj.kgridPadded.kyVec .* exp(-1i.*obj.kgridPadded.kyVec * obj.kgridPadded.dy/2)), 1, [], 1);
             obj.ddzShiftNeg = reshape(ifftshift(1i * obj.kgridPadded.kzVec .* exp(-1i.*obj.kgridPadded.kzVec * obj.kgridPadded.dz/2)), 1, 1, []);
 
+            obj.xShiftPos = reshape(ifftshift( exp( 1i.*obj.kgridPadded.kxVec * obj.kgridPadded.dx/2)), [], 1, 1);
+            obj.yShiftPos = reshape(ifftshift( exp( 1i.*obj.kgridPadded.kyVec * obj.kgridPadded.dy/2)), 1, [], 1);
+            obj.zShiftPos = reshape(ifftshift( exp( 1i.*obj.kgridPadded.kzVec * obj.kgridPadded.dz/2)), 1, 1, []);
+
+            obj.xShiftNeg = reshape(ifftshift( exp(-1i.*obj.kgridPadded.kxVec * obj.kgridPadded.dx/2)), [], 1, 1);
+            obj.yShiftNeg = reshape(ifftshift( exp(-1i.*obj.kgridPadded.kyVec * obj.kgridPadded.dy/2)), 1, [], 1);
+            obj.zShiftNeg = reshape(ifftshift( exp(-1i.*obj.kgridPadded.kzVec * obj.kgridPadded.dz/2)), 1, 1, []);
         end
     end
 
@@ -197,8 +214,10 @@ classdef FourierCollocation < handle
     % General class methods with a concrete implementation.
     methods
         f = divergence(obj, f, varargin);
-        f = divergenceSplit(obj, f, options)
+        f = divergenceSplit(obj, f, options);
+        f= stagger(obj,f,options);
         out = gradient(obj, f, options);
+        out = fracLaplacian(obj, f,y, options);
         plotField(obj, f);
     end
 

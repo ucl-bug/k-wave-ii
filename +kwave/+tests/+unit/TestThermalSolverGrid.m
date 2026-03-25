@@ -7,6 +7,7 @@
 %
 %% Description
 % Runs the following tests for the ThermalSolver:
+%
 % * Verifies simulations in homogeneous media match exact solution
 
 classdef TestThermalSolverGrid < kwave.tests.unit.AbstractTestGrid
@@ -15,7 +16,7 @@ classdef TestThermalSolverGrid < kwave.tests.unit.AbstractTestGrid
     methods(Test, ParameterCombination="sequential")
 
         % Compare 1D, 2D, 3D initial value problem in homogeneous media
-        % against exact solution.
+        % against exact solution, with both medium types.
         function initialValueProblemHomog(testCase)
 
             import matlab.unittest.constraints.IsEqualTo
@@ -23,9 +24,13 @@ classdef TestThermalSolverGrid < kwave.tests.unit.AbstractTestGrid
             
             % Medium.
             medium = ThermalMedium(testCase.kgrid);
-            medium.thermalConductivity = 0.52;
-            medium.specificHeat = 3540;
+            medium.thermalConductivity = 0.58;
+            medium.specificHeat = 4181;
             medium.density = 1000;
+
+            materials = Materials();
+            medium2 = Medium(testCase.kgrid,materials);
+            medium2.materialIndexGrid = uint8(0);
             
             % Source.
             source = ThermalSource(testCase.kgrid);
@@ -51,18 +56,24 @@ classdef TestThermalSolverGrid < kwave.tests.unit.AbstractTestGrid
             settings.plotSimulation = 'off';
             
             % Solve using two steps.
-            solver = ThermalSolver(testCase.kgrid, medium, source, [], settings);
+            solver  = ThermalSolver(testCase.kgrid, medium, source, [], settings);
+            solver1 = ThermalSolver(testCase.kgrid, medium2, source, [], settings);
             Nt = 500;
             dt = 1;
             solver.run(Nt=Nt/2, dt=dt);
             solver.run(Nt=Nt/2, dt=dt);
+            solver1.run(Nt=Nt, dt=dt);
+
             testCase.actualSolution = solver.temperaturePadded;
 
             % Compute exact Green's function solution.
             D = medium.thermalConductivityPadded / (medium.densityPadded * medium.specificHeatPadded);
-            testCase.referenceSolution = kwave.legacy.bioheatExact(source.initialTemperaturePadded, 0, [D, 0, 0], testCase.kgrid.dx, (Nt - 1) * dt);
+            testCase.referenceSolution = kwave.legacy.bioheatExact(source.initialTemperaturePadded, 0, [D, 0, 0], testCase.kgrid.dx, Nt * dt);
 
             % Compare with tolerance.
+            testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));
+            
+            testCase.actualSolution = solver1.temperaturePadded; 
             testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));
 
             % Take a step using auto-calculated Nt and dt.

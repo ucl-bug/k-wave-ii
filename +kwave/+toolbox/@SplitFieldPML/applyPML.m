@@ -1,4 +1,4 @@
-%% applyPML
+%% Apply PML
 % *Package:* kwave.toolbox
 % *Class:* kwave.toolbox.SplitFieldPML
 %

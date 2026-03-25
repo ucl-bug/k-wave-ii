@@ -17,9 +17,9 @@
 % the pairs does not matter.
 %
 % * |Classes| - (cell array) Valid data types passed to
-%   <matlab:doc('validateattributes') validateattributes>.
+%   <https://uk.mathworks.com/help/matlab/ref/validateattributes.html validateattributes>.
 % * |Attributes| - (cell array) Valid attributes passed to
-%   <matlab:doc('validateattributes') validateattributes>.
+%   <https://uk.mathworks.com/help/matlab/ref/validateattributes.html validateattributes>.
 % * |ExpansionValue| - (cell array) Scalar value to use in the matrix
 %   expansion passed to |kwave.toolbox.expandMatrix|.
 %

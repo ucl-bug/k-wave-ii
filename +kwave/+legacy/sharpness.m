@@ -7,7 +7,7 @@ function s = sharpness(im, metric)
 %     the Brenner gradient which returns the sum of the centered
 %     finite-difference at each matrix element in each Cartesian direction.
 %     Metrics calculated using the Sobel operator or the normalised
-%     variance can also be returned by setting the input paramater metric.
+%     variance can also be returned by setting the input parameter metric.
 %
 %     For further details, see B. E. Treeby, T. K. Varslot, E. Z. Zhang,
 %     J. G. Laufer, and P. C. Beard, "Automatic sound speed selection in

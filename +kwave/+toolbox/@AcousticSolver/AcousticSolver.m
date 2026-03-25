@@ -14,6 +14,10 @@
 %
 % $$p = c_0^2 \rho$$
 %
+% When absorption y is declared as a medium property
+%
+% $$p= c_0^2 \rho + \tau (-\nabla^2)^(y/2 -1)\frac{\partial \rho}{\partial t} + \eta (-\nabla^2)^((y-1)/2)\rho$$
+%
 % where $p$ is the acoustic pressure, $\vec{u}$ is the acoustic particle
 % velocity, $\rho$ is the acoustic density, $\rho_0$ is the ambient
 % density, $c_0$ is the sound speed, and $t$ is time.
@@ -81,7 +85,8 @@
 %   medium properties.
 % * |source| - (kwave.toolbox.AcousticSource) Object which defines the
 %   source properties.
-% * |sensor| - ...Not yet implemented...
+% * |sensor| - (kwave.toolbox.AcousticSensor) Object which defines the
+%   sensor properties.
 % * |settings| - (kwave.toolbox.Settings) Object which defines the
 %   simulation settings.
 %
@@ -91,6 +96,18 @@
 %   of the acoustic density [kg/m^3].
 % * |velocity| - (numeric) Vector field of the acoustic particle velocity
 %   [m/s]
+% * |absorptionType|- (string) Must be a member of { 'on', 'off',
+% 'noAbsorption', 'noDispersion'} defaults to 'off'. Switch to include to
+% exclude each of the absorption terms within the equation of state.
+%
+%% Methods
+% * |autoComputeTimeStep|
+% * |executeTimeStep|
+% * |kappaSplitCorrection|
+% * |setAbsorptionCoefficients|
+% * |setInitialConditions|
+% * |setkSpaceCorrection|
+
 
 % Copyright (C) 2024- The k-Wave Authors.
 %
@@ -124,25 +141,46 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
         velocityPadded single
         pml kwave.toolbox.SplitFieldPML
     end
+    
+    properties(SetAccess=public,Hidden=false)
+        absorptionType char {mustBeMember( absorptionType, {'off','on', 'noAbsorption', 'noDispersion'})} = 'off'
+    end
+
+    properties(SetAccess=private, Hidden=true)
+        absorbTauPadded single
+        absorbEtaPadded single
+        kappaSplit single
+
+        timePoint = 0;
+    end
 
     % Constructor.
     methods
         function obj = AcousticSolver(kgrid, medium, source, sensor, settings)
+
             arguments
-                kgrid(1,1) kwave.toolbox.Grid
-                medium(1,1) kwave.toolbox.AcousticMedium
-                source(1,1) kwave.toolbox.AcousticSource
-                sensor
+                kgrid(1,1)    kwave.toolbox.Grid
+                medium(1,1)   kwave.toolbox.GridInput
+                source(1,1)   kwave.toolbox.AcousticSource
+                sensor        
                 settings(1,1) kwave.toolbox.Settings = kwave.toolbox.Settings
+            end
+            
+            %  Check medium and sensor inputs are of the right class
+            if ~(isa(medium, 'kwave.toolbox.Medium') || isa(medium, 'kwave.toolbox.AcousticMedium'))
+                error('AcousticSolver:InvalidMediumType',...
+                    'medium must be an object of Medium or AcousticMedium class.');
+            end
+            if ~(isempty(sensor) || isa(sensor, 'kwave.toolbox.AcousticSensor'))
+                error('AcousticSolver:InvalidSensorType',...
+                    'sensor must be an AcousticSensor object or be left empty [].');
             end
 
             % Pass input arguments to superclass constructor. This calls
             % setInitialConditions.
             obj@kwave.toolbox.TimeDomainSolver(kgrid, medium, source, sensor, settings);
-
             % Initialise PML object.
             obj.pml = kwave.toolbox.SplitFieldPML(obj.kgrid);
-
         end
     end
 
@@ -158,12 +196,14 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
             velocity = obj.kgrid.returnWithoutGridPadding(obj.velocityPadded);
         end
     end
-
-    % Override inherited methods.
+    
+    % Override inherited methods and add specific methods.
     methods(Access=protected)
         setInitialConditions(obj)
         executeTimeStep(obj, Nt, dt)
         [Nt, dt] = autoComputeTimeStep(obj, CFL, EndTime)
+        setAbsorptionCoefficients(obj)
+        setkSpaceCorrection(obj, dt);
+        fCorrected = kappaSplitCorrection(obj, f);
     end
-
 end

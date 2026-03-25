@@ -89,7 +89,7 @@ if rem(accuracy_order, 2)
     error('Input for accuracy_order must be an integer multiple of 2.');
 end
 
-% compute the size of the FD stencil width needed for the given accuarcy
+% compute the size of the FD stencil width needed for the given accuracy
 % and derivative order
 stencil_width = accuracy_order + (deriv_order + rem(deriv_order, 2)) - 1;
 

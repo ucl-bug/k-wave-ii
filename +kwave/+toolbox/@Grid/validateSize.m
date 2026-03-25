@@ -1,4 +1,4 @@
-%% validateSize
+%% Validate Size
 % *Class:* kwave.toolbox.Grid
 % *Package:* kwave.toolbox
 %
@@ -10,7 +10,7 @@
 %
 %% Description
 % Checks if the size of an input matrix matches the |gridSize| property of
-% a |Grid| object using <matlab:doc('validateattributes')
+% a |Grid| object using <https://uk.mathworks.com/help/matlab/ref/validateattributes.html
 % |validateattributes|>. By default, the grid size not including padding is
 % used. To include padding, set |IncludePadding=true|. If the input matrix
 % is a scalar, the check is skipped.
@@ -82,7 +82,7 @@ switch (options.Type)
 end
 
 validateattributes(matrix, ...
-    {'numeric'}, ...
+    {'numeric','logical'}, ...
     {'size', expectedGridSize}, ...
     options.FunctionName, ...
     options.VariableName);

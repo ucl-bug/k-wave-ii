@@ -184,7 +184,7 @@ elseif ~isempty(varargin)
                 
             case 'MovieType'
                 
-                % display warning for depracated input
+                % display warning for deprecated input
                 disp('  WARNING: Optional input ''MovieType'' is no longer supported.');
                 
             case 'MovieProfile'

@@ -16,6 +16,18 @@ classdef TestThermalMedium < kwave.tests.unit.AbstractTestGridInput
     end
 
     methods(Test)
+
+        %Verify error when acousti medium used in Thermal Solver
+        function testMissingProperties(testCase)
+            import kwave.toolbox.*
+            kgrid = Grid([10, 10, 10], 1e-3);
+            medium = AcousticMedium(kgrid);
+             medium.soundSpeed  = 1500;
+             medium.density  = 1000;
+             source = ThermalSource(kgrid);
+            testCase.verifyError(@() ThermalSolver(kgrid, medium, source, []), 'ThermalSolver:InvalidMediumType');
+        end
+
     end
 
 end
