@@ -1,14 +1,16 @@
 name: Run MATLAB tests
 on:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
   push:
     branches:
       - main
 
 jobs:
   matlab-tests:
-    name: Run unit tests
-    runs-on: Windows
+    name: Run unit tests (skipped on draft PRs)
+    runs-on: custom-windows-with-matlab
+    if: github.event_name == 'push' || github.event.pull_request.draft == false
     steps:
       - name: Check out repository
         uses: actions/checkout@v3

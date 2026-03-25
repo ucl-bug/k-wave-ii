@@ -85,8 +85,8 @@
 %   shown alongside the log message. Defaults to false.
 %
 %% See Also
-% * |<matlab:doc('warning') warning>|
-% * |<matlab:doc('error') error>|
+% * |<https://uk.mathworks.com/help/matlab/ref/warning.html warning>|
+% * |<https://uk.mathworks.com/help/matlab/ref/error.html error>|
 % * |kwave.toolbox.LogLevels|
 
 classdef Logger < handle

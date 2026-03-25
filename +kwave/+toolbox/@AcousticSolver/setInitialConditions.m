@@ -1,4 +1,4 @@
-%% setInitialConditions
+%% set Initial Conditions
 % *Class:* kwave.toolbox.AcousticSolver
 % *Package:* kwave.toolbox
 %
@@ -39,7 +39,7 @@ function setInitialConditions(obj)
 
 % Assign the reference sound speed if not provided.
 if isempty(obj.medium.soundSpeedReference)
-    obj.medium.soundSpeedReference = max(obj.medium.soundSpeed(:));
+    obj.medium.soundSpeedReference =max(max(max(obj.medium.soundSpeedPadded)));
 end
 
 % Initialise acoustic variables. The pressure is a scalar

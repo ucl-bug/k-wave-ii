@@ -120,7 +120,7 @@ function [R, b] = computeLinearTransform2D(arc_pos, radius, focus_pos)
 %COMPUTELINEARTRANSFORM Compute a linear transformation.
 %
 % DESCRIPTION:
-%     computeLinearTransform calculates a rotation matrix to tranform the
+%     computeLinearTransform calculates a rotation matrix to transform the
 %     computed arc points to the orientation specified by the arc and focus
 %     positions.
 %     

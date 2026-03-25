@@ -79,6 +79,11 @@
 %
 %% Properties
 % * |temperature| - (numeric) Temperature field [degC].
+%
+%% Methods
+% * |autoComputeTimeStep|
+% * |executeTimeStep|
+% * |setInitialConditions|
 
 % Copyright (C) 2022- University College London.
 %
@@ -113,10 +118,15 @@ classdef ThermalSolver < kwave.toolbox.TimeDomainSolver
         function obj = ThermalSolver(kgrid, medium, source, sensor, settings)
             arguments
                 kgrid(1,1) kwave.toolbox.Grid
-                medium(1,1) kwave.toolbox.ThermalMedium
+                medium(1,1) kwave.toolbox.GridInput
                 source(1,1) kwave.toolbox.ThermalSource
                 sensor
                 settings(1,1) kwave.toolbox.Settings = kwave.toolbox.Settings
+            end
+
+            if ~(isa(medium, 'kwave.toolbox.Medium') || isa(medium, 'kwave.toolbox.ThermalMedium'))
+                error('ThermalSolver:InvalidMediumType',...
+                        'medium must be an object of Medium OR ThermalMedium.');
             end
 
             % Pass input arguments to superclass constructor.
@@ -125,6 +135,7 @@ classdef ThermalSolver < kwave.toolbox.TimeDomainSolver
         end
     end
 
+    
     % Get methods for PDE variables on non-padded grid.
     methods
         function temperature = get.temperature(obj)

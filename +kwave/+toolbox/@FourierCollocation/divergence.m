@@ -1,4 +1,4 @@
-%% divergence
+%% Divergence
 % *Class:* kwave.toolbox.FourierCollocation
 % *Package:* kwave.toolbox
 %
@@ -18,8 +18,8 @@
 % have size (Nx, Ny). This is to allow codes to implement multi-dimensional
 % support by always looping over the fourth dimension.
 %
-% If obj.kappa is defined, a k-space correction is applied as part of the
-% divergence calulation. If kappa is a scalar (single frequency correction)
+% If |obj.kappa| is defined, a k-space correction is applied as part of the
+% divergence calculation. If kappa is a scalar (single frequency correction)
 % or empty, the contributions to the divergence for each of the Cartesian
 % coordinates are calculated using 1D FFTs. If kappa is a matrix, they are
 % calculated using ND FFTs, and kappa is applied in the Fourier domain.
@@ -40,7 +40,7 @@
 %
 % * |Staggering| - ('none', 'forward', 'backward') Option to return the
 %   output staggered by half a grid point in the specified direction.
-%   Defatult = 'none'.
+%   Default = 'none'.
 %
 %% Output Arguments
 % * |df| - (numeric) Divergence of f.

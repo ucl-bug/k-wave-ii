@@ -1,4 +1,4 @@
-%% mustBeEqualSize
+%% Must Be Equal Size
 % *Package:* kwave.utilities
 %
 % Validate that two inputs are the same size.

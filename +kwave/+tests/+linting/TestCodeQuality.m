@@ -5,7 +5,7 @@
 % Code quality tests for the k-wave II code base.
 %
 %% Description
-% The following tests are performed for all .m files in +kwave/+toolbox:
+% The following tests are performed for all .m files in |+kwave/+toolbox|:
 %
 % # |codeIssues| is called to make sure there are no code quality
 % errors in the files.
@@ -73,7 +73,7 @@ classdef TestCodeQuality < matlab.unittest.TestCase
         function testCyclomaticComplexity(~)
 
             % Get list of changed files.
-            changedFiles = kwave.utilities.gitChangedFiles(true);
+            changedFiles = kwave.devtools.gitChangedFiles(true);
 
             % Exclude any files not in the toolbox folder.
             changedFiles(~contains(changedFiles, '+toolbox')) = [];

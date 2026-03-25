@@ -1,5 +1,5 @@
-%% gitChangedFiles
-% *Package:* kwave.utilities
+%% git Changed Files
+% *Package:* kwave.devtools
 %
 % Return a list of files changed on current git branch.
 %
@@ -10,7 +10,7 @@
 %% Description
 % Returns a cell array of file names that have been modified between the
 % current git branch and main. By default, file names are given with
-% paths relative to the k-Wave root directoy. To return absolute file
+% paths relative to the k-Wave root directory. To return absolute file
 % paths, call |gitChangedFiles(true)|.
 %
 %% Input Arguments

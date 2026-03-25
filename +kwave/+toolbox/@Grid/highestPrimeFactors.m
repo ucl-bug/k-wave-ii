@@ -1,4 +1,4 @@
-%% highestPrimeFactors
+%% Highest Prime Factors
 % *Class:* kwave.toolbox.Grid
 % *Package:* kwave.toolbox
 %
@@ -17,7 +17,6 @@
 %     kgrid.highestPrimeFactors
 %     
 %     ans =
-%    
 %          2    31     1
 %
 %% Output Arguments

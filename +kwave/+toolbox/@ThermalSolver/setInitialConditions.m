@@ -1,4 +1,4 @@
-%% setInitialConditions
+%% Set Initial Conditions
 % *Class:* kwave.toolbox.ThermalSolver
 % *Package:* kwave.toolbox
 %
@@ -34,8 +34,8 @@ function setInitialConditions(obj)
 % maximum value means the scheme will be unconditionally stable when the
 % medium is lossless.
 if isempty(obj.medium.diffusionReference)
-    diffusion = obj.medium.thermalConductivity ./ (obj.medium.density .* obj.medium.specificHeat);
-    obj.medium.diffusionReference = max(diffusion, [], 'all');
+    diffusionPadded = obj.medium.thermalConductivityPadded ./ (obj.medium.densityPadded .* obj.medium.specificHeatPadded);
+    obj.medium.diffusionReference = max(diffusionPadded, [], 'all');
 end
 
 % Initialise thermal variables.

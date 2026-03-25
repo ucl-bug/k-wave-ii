@@ -54,7 +54,7 @@ else
     
 end
 
-% catch trinagulation error
+% catch triangulation error
 if isempty(tri)
     error('Data cannot be triangulated.');
 end
