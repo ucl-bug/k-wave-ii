@@ -196,6 +196,16 @@ classdef GenerateDocumentation
                     'outputDir', obj.helpDirHtml, ...
                     'evalCode', options.evalCode, ...
                     'showCode', options.showCode);
+                
+                % Replace deprecated <tt> tags with <code> tags
+                htmlFile_content = fileread(htmlFile);
+
+                htmlFile_content = strrep(htmlFile_content, '<tt>', '<code>');
+                htmlFile_content = strrep(htmlFile_content, '</tt>', '</code>');
+
+                htmlFile_handle = fopen(htmlFile, 'w');
+                fwrite(htmlFile_handle, htmlFile_content);
+                fclose(htmlFile_handle);
 
                 % Publish to md.
                 inputFunctionFullFileName = fullfile(mFilenames(ind).folder, mFilenames(ind).name);
@@ -276,12 +286,12 @@ classdef GenerateDocumentation
 
             % Replace links, and save to HTML file replacing
             % contents. The |methodName| syntax is published as
-            % <tt>methodName</tt>. The html flags are included
+            % <code>methodName</code>. The html flags are included
             % in the search to avoid adding links to code
             % snippets.
             fileContents = strrep(fileContents.', ...
-                ['<tt>' methodName '</tt>'], ...
-                ['<tt>' obj.generateLink(toObj.htmlFileName, methodName) '</tt>']);
+                ['<code>' methodName '</code>'], ...
+                ['<code>' obj.generateLink(toObj.htmlFileName, methodName) '</code>']);
             fid = fopen(htmlFile, 'w');
             fprintf(fid, '%s', fileContents.');
             fclose(fid);

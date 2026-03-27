@@ -1,33 +1,15 @@
-%% Two-Dimensional Acoustic Solver examples
+%% More Two-Dimensional Acoustic Solver examples
 %
 %% Overview
-% This example demonstrates the AcousticSolver with 2D examples.
+% More 2D examples, following on from |t03_AcousticSolverExamples2D|.
 %
 % * To open the file in the MATLAB Editor:
-% |edit('kwave.tutorials.initialvalueproblems.t03_AcousticSolverExamples2D.m')|
+% |edit('kwave.tutorials.initialvalueproblems.t04_MoreAcousticSolverExamples2D.m')|
 % * To run the file in MATLAB:
-% |run('kwave.tutorials.initialvalueproblems.t03_AcousticSolverExamples2D.m')|
+% |run('kwave.tutorials.initialvalueproblems.t04_MoreAcousticSolverExamples2D.m')|
 %
 % See Also:
-%
-% * |kwave.tutorials.initialvalueproblems.t01_AcousticSolverExamples1D|
-% * |kwave.tutorials.initialvalueproblems.t02_MoreAcousticSolverExamples1D|
-
-% Copyright (C) 2024- The k-Wave Authors.
-%
-% This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
-% software: you can redistribute it and/or modify it under the terms of the
-% GNU Lesser General Public License as published by the Free Software
-% Foundation, either version 3 of the License, or (at your option) any
-% later version.
-% 
-% k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
-% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-% FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
-% License for more details.
-% 
-% You should have received a copy of the GNU Lesser General Public License
-% along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
+% * kwave.tutorials.initialvalueproblems.t03_MoreAcousticSolverExamples2D
 
 
 %% Preliminaries
@@ -42,7 +24,6 @@
 
 clearvars;             % Clear the workspace of old variables
 import kwave.toolbox.* % Import the k-Wave-II toolbox
-
 
 %% Define a 2D grid
 %
@@ -67,48 +48,88 @@ pmlSizey = 20; % Thickness of the PML (Perfectly Matched Layer absorbing boundar
 % Create a Grid object
 kgrid = Grid([Nx Ny], [dx dy], [pmlSizex pmlSizey]); 
 
-
-%% Define acoustic properties, and include acoustic absorption
-% 
-% Create an AcousticMedium object
+%% List materials
 %
-%   medium = AcousticMedium(kgrid); 
-% 
-% Define a spatially-varying sound speed (here a step change)
+% Create a Materials object (essentially a database of material types)
 %
-%   c0 = 1500*ones(medium.gridSize);
-%   c0(1:end/2,:) = 2200;
-%   medium.soundSpeed = c0; % [m/s]
+%   materials = Materials();
 % 
-% Define a spatially-varying ambient density (also a step change)
+% Add new materials to the Materials object 
 %
-%   rho0 = 1000*ones(medium.gridSize);
-%   rho0(1:end/2,:)  = 1500;
-%   medium.density = rho0;  % [kg/m^3]
+%   idx1 = materials.addMaterial('softTissue1', struct('soundSpeed',1540,'density',1100));
+%   idx2 = materials.addMaterial('softTissue2', struct('soundSpeed',1440,'density',990));
 % 
-% Define the acoustic absorption coefficient prefactor, the value for
-% alpha0 in the expression for the absorption coefficient:
-% alpha = alpha0 * f^y, where f is the frequency in MHz and y is the power
-% law exponent (absorptionPower, which must be scalar).
+% Show a table of all the materials currently stored
 % 
-%   medium.absorptionCoeff = 0.5;   % [dB/cm/MHz^y]
-%   medium.absorptionPower = 1.9;
+%   materials_table = materials.listMaterials();
+%   disp(materials_table);
 
-medium = AcousticMedium(kgrid); 
+materials = Materials();
 
-% Define sound speed
-c0 = 1500*ones(medium.gridSize);
-c0(1:end/2,:) = 2200;
-medium.soundSpeed = c0; % [m/s]
+% Add new materials to the Materials object 
+idx1 = materials.addMaterial('softTissue1', struct('soundSpeed',1540,'density',1100));
+idx2 = materials.addMaterial('softTissue2', struct('soundSpeed',1440,'density',990));
 
-% Define ambient density
-rho0 = 1000*ones(medium.gridSize);
-rho0(1:end/2,:)  = 1500;
-medium.density = rho0;  % [kg/m^3]
+% Show a table of all the materials currently stored
+materials_table = materials.listMaterials();
+disp(materials_table);
 
-% Define the acoustic absorption
-medium.absorptionCoeff = 0.5;   % [dB/cm/MHz^y]
-medium.absorptionPower = 1.9;
+%% Define properties of material types
+%
+% Create a Medium object
+% 
+%   medium = Medium(kgrid, materials); 
+% 
+% Define map of material type indices (uint8)
+%
+%   medium.materialIndexGrid = zeros(medium.gridSize, 'uint8'); % water
+%   medium.materialIndexGrid(end/4:end/2,:) = idx1;             % softTissue1
+%   medium.materialIndexGrid(end/2+1:end,:) = idx2;             % softTissue2
+
+% Create a Medium object
+medium = Medium(kgrid, materials); 
+
+% Define map of material type indices (uint8)
+medium.materialIndexGrid = zeros(medium.gridSize, 'uint8'); % water
+medium.materialIndexGrid(end/4:end/2,:) = idx1;             % softTissue1
+medium.materialIndexGrid(end/2+1:end,:) = idx2;             % softTissue2
+
+
+%% Visualize the sound speed and density maps
+% 
+% Extract the sound speed and density maps
+% 
+%   c_map   = medium.soundSpeed;          % [m/s]
+%   rho_map = medium.density;             % [kg/m^3]
+% 
+% Plot the sound speed and density maps
+%
+%   figure;
+%   subplot(1, 2, 1);
+%   imagesc(c_map);
+%   colorbar;
+%   title('Sound Speed Map (m/s)');
+%   axis image;
+%   subplot(1, 2, 2);
+%   imagesc(rho_map);
+%   colorbar;
+%   title('Density Map (kg/m^3)');
+%   axis image;
+
+c_map   = medium.soundSpeed;          % [m/s]
+rho_map = medium.density;             % [kg/m^3]
+
+figure;
+subplot(1, 2, 1);
+imagesc(c_map);
+colorbar;
+title('Sound Speed Map (m/s)');
+axis image;
+subplot(1, 2, 2);
+imagesc(rho_map);
+colorbar;
+title('Density Map (kg/m^3)');
+axis image;
 
 
 %% Define an acoustic source
@@ -128,7 +149,6 @@ offset = 0.25*kgrid.dx*Nx;
 r = hypot(kgrid.x - offset,kgrid.y);  % radial coordinate
 source.initialPressure = exp( -r.^2 / (10*kgrid.dx^2) );
 
-
 %% Define an acoustic sensor
 %
 % Create an AcousticSensor object
@@ -141,50 +161,43 @@ source.initialPressure = exp( -r.^2 / (10*kgrid.dx^2) );
 %   sensor.mask = zeros(kgrid.gridSize);
 %   sensor.mask(end - floor(Nx/8),:) = 1;
 
+% Create an AcousticSensor object
 sensor = AcousticSensor(kgrid);
 
-% Define a binary mask
+% Define a binary mask. The solver will return the field variables at the
+% grid locations marked by 1 in the mask, here a line array
 sensor.mask = zeros(kgrid.gridSize);
 sensor.mask(end - floor(Nx/8),:) = 1;
-
 
 %% Run the simulation
 %
 % Create an AcousticSolver object
-%
-%   solver = AcousticSolver(kgrid,medium,source,sensor); 
 % 
-% Turn on the absorption
-%
-%   solver.absorptionType='on';
+%   solver = AcousticSolver(kgrid,medium,source,sensor); 
 % 
 % Define the CFL (Courant-Friedrichs-Lewy) number and endTime allow the
 % timestep to be chosen automatically 
-%
+% 
 %   cfl = 0.2;
-%   endTime = 0.5 * kgrid.dx*kgrid.Nx / min(medium.soundSpeed(:));
+%   endTime = 0.75 * kgrid.dx*kgrid.Nx / min(medium.soundSpeed(:));
 % 
 % Run the solver
-%
+% 
 %   solver.run(CFL=cfl, EndTime=endTime);
 
 solver = AcousticSolver(kgrid,medium,source,sensor); 
 
-% Turn on the absorption
-solver.absorptionType='on';
-
-% Define timestep automatically 
-cfl = 0.2; 
-endTime = 0.5 * kgrid.dx*kgrid.Nx / min(medium.soundSpeed(:));
+% Define the timestep automatically 
+cfl = 0.2;
+endTime = 0.75 * kgrid.dx*kgrid.Nx / min(medium.soundSpeed(:));
 
 % Run the solver
 solver.run(CFL=cfl, EndTime=endTime);
 
-
 %% Visualisations
-%
+% 
 %   figure
-%
+% 
 %   subplot(2,2,1)
 %   imagesc(medium.soundSpeed)
 %   axis equal
@@ -218,7 +231,7 @@ solver.run(CFL=cfl, EndTime=endTime);
 %   title('Final acoustic pressure')
 % 
 %   figure
-%
+% 
 %   imagesc(sensor.pressure)
 %   xlabel('time steps')
 %   ylabel('sensor position')

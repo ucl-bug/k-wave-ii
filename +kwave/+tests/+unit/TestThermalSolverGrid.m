@@ -40,12 +40,13 @@ classdef TestThermalSolverGrid < kwave.tests.unit.AbstractTestGrid
             
             % Medium.
             medium = ThermalMedium(testCase.kgrid);
-            medium.thermalConductivity = 0.52;
-            medium.specificHeat = 3540;
+            medium.thermalConductivity = 0.58;
+            medium.specificHeat = 4181;
             medium.density = 1000;
 
-            medium2 = Medium(testCase.kgrid);
-            medium2.materialIDGrid=1;
+            materials = Materials();
+            medium2 = Medium(testCase.kgrid,materials);
+            medium2.materialIndexGrid = uint8(0);
             
             % Source.
             source = ThermalSource(testCase.kgrid);
@@ -71,7 +72,7 @@ classdef TestThermalSolverGrid < kwave.tests.unit.AbstractTestGrid
             settings.plotSimulation = 'off';
             
             % Solve using two steps.
-            solver = ThermalSolver(testCase.kgrid, medium, source, [], settings);
+            solver  = ThermalSolver(testCase.kgrid, medium, source, [], settings);
             solver1 = ThermalSolver(testCase.kgrid, medium2, source, [], settings);
             Nt = 500;
             dt = 1;
@@ -83,7 +84,7 @@ classdef TestThermalSolverGrid < kwave.tests.unit.AbstractTestGrid
 
             % Compute exact Green's function solution.
             D = medium.thermalConductivityPadded / (medium.densityPadded * medium.specificHeatPadded);
-            testCase.referenceSolution = kwave.legacy.bioheatExact(source.initialTemperaturePadded, 0, [D, 0, 0], testCase.kgrid.dx, (Nt) * dt);
+            testCase.referenceSolution = kwave.legacy.bioheatExact(source.initialTemperaturePadded, 0, [D, 0, 0], testCase.kgrid.dx, Nt * dt);
 
             % Compare with tolerance.
             testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));

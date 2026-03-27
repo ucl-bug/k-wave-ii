@@ -2,6 +2,7 @@
 % * |t01_AcousticSolverExamples1D|
 % * |t02_MoreAcousticSolverExamples1D|
 % * |t03_AcousticSolverExamples2D|
+% * |t04_MoreAcousticSolverExamples2D|
 
 % Copyright (C) 2024- The k-Wave Authors.
 %

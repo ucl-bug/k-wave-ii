@@ -627,10 +627,10 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             Nax     = 256;
             Nlat    = 16;
             dx      = 4e-3;
-            c0      = 1500;
+            c0      = 1480;
             rho0    = 1000;
-            alpha0  =10;
-            alphay  =1.9;
+            alpha0  = 0.5;
+            alphay  = 2;
             pmlSize = 20;
             CFL     = 0.25;
             Nt      = 150;
@@ -644,9 +644,10 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             medium1D.absorptionPower = alphay;
             medium1D.absorptionCoeff = alpha0;
             % Construct Medium
-            mediumMaterial1D = Medium(kgrid1D);
-            mediumMaterial1D.materialIDGrid = 1;
-            %
+            materials = Materials();
+            mediumMaterial1D = Medium(kgrid1D,materials);
+            mediumMaterial1D.materialIndexGrid = uint8(0);
+
             source1D = AcousticSource(kgrid1D);
             source1D.initialPressure = exp( -(kgrid1D.xVec - 25e-3).^2 ./ (5 * kgrid1D.dx).^2 );
             settings = Settings;
@@ -670,8 +671,8 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             medium2Dx.absorptionPower = alphay;
             medium2Dx.absorptionCoeff = alpha0;
             % Construct Medium
-            mediumMaterial2Dx=Medium(kgrid2Dx);
-            mediumMaterial2Dx.materialIDGrid = 1;
+            mediumMaterial2Dx=Medium(kgrid2Dx,materials);
+            mediumMaterial2Dx.materialIndexGrid = uint8(0);
             %
             solver2DxA = AcousticSolver(kgrid2Dx, medium2Dx, source2Dx, [], settings);
             solver2DxB = AcousticSolver(kgrid2Dx, mediumMaterial2Dx, source2Dx, [], settings);
@@ -691,8 +692,8 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             medium2Dy.absorptionPower = alphay;
             medium2Dy.absorptionCoeff = alpha0;
             % Construct Medium
-            mediumMaterial2Dy = Medium(kgrid2Dy);
-            mediumMaterial2Dy.materialIDGrid = 1;
+            mediumMaterial2Dy = Medium(kgrid2Dy,materials);
+            mediumMaterial2Dy.materialIndexGrid = uint8(0);
             %
             solver2DyA = AcousticSolver(kgrid2Dy, medium2Dy, source2Dy, [], settings);
             solver2DyB = AcousticSolver(kgrid2Dy, mediumMaterial2Dy, source2Dy, [], settings);
@@ -712,8 +713,8 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             medium3Dx.absorptionPower=alphay;
             medium3Dx.absorptionCoeff=alpha0;
             % Construct Medium
-            mediumMaterial3Dx=Medium(kgrid3Dx);
-            mediumMaterial3Dx.materialIDGrid = 1;
+            mediumMaterial3Dx=Medium(kgrid3Dx,materials);
+            mediumMaterial3Dx.materialIndexGrid = uint8(0);
             %
             solver3DxA = AcousticSolver(kgrid3Dx, medium3Dx, source3Dx, [], settings);
             solver3DxB = AcousticSolver(kgrid3Dx, mediumMaterial3Dx, source3Dx, [], settings);
@@ -733,8 +734,8 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             medium3Dy.absorptionPower = alphay;
             medium3Dy.absorptionCoeff = alpha0;
             % Construct Medium
-            mediumMaterial3Dy = Medium(kgrid3Dy);
-            mediumMaterial3Dy.materialIDGrid = ones(kgrid3Dy.gridSize);
+            mediumMaterial3Dy = Medium(kgrid3Dy,materials);
+            mediumMaterial3Dy.materialIndexGrid = uint8(0);
             %
             solver3DyA = AcousticSolver(kgrid3Dy, medium3Dy, source3Dy, [], settings);
             solver3DyB = AcousticSolver(kgrid3Dy, mediumMaterial3Dy, source3Dy, [], settings);
@@ -748,14 +749,12 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             % Construct Acoustic Medium
             medium3Dz = AcousticMedium(kgrid3Dz);
             medium3Dz.soundSpeed = c0*ones(kgrid3Dz.gridSize);
-            medium3Dz.soundSpeed(:,:,ceil(Nax/2):end) = c0/0.9;
             medium3Dz.density = rho0;
             medium3Dz.absorptionPower = alphay;
             medium3Dz.absorptionCoeff = alpha0;
             % Construct Medium
-            mediumMaterial3Dz = Medium(kgrid3Dz);
-            mediumMaterial3Dz.materialIDGrid = ones(kgrid3Dz.gridSize);
-            mediumMaterial3Dz.materialIDGrid(:,:,ceil(Nax/2):end) = 2;
+            mediumMaterial3Dz = Medium(kgrid3Dz, materials);
+            mediumMaterial3Dz.materialIndexGrid = uint8(0);
             %
             solver3DzA = AcousticSolver(kgrid3Dz, medium3Dz, source3Dz, [], settings);
             solver3DzB = AcousticSolver(kgrid3Dz, mediumMaterial3Dz, source3Dz, [], settings);
@@ -1058,7 +1057,6 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             p0 = exp( -(kgrid.x.^2+kgrid.y.^2) ./ (5 * kgrid.dx).^2 );
             v0 = repmat(p0./ (c0*rho0), 1, 1, 1, 2); % dims [Nax Nay 1 2]
             source.initialPressure = p0;
-%            source.initialVelocity = v0;
             sensor = AcousticSensor(kgrid);
             sensor.mask = ones(Nax, Nay);
             sensor.pressureSensor = 'on';
