@@ -38,7 +38,7 @@
 % * |CFL| - (numeric) Courant-Friedrichs-Lewy (CFL) number.
 % * |EndTime| - (numeric) Simulation time [s].
 
-% Copyright (C) 2022- University College London.
+% Copyright (C) 2024- The k-Wave Authors.
 %
 % This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
 % software: you can redistribute it and/or modify it under the terms of the
@@ -53,6 +53,7 @@
 % 
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
+
 
 function run(obj, options)
 
