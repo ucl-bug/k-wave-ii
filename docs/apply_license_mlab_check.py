@@ -1,6 +1,5 @@
-# Nicolin Govender, UCL ARC
-# 26/2/2026: License header enforcement for .m files (Issue #14)
-# replace "wrong" or outdated license blocks with Verbose output
+# This script enforces a license header for .m files by
+# replacing "wrong" or outdated license blocks
 
 import os
 import sys
@@ -133,9 +132,14 @@ if __name__ == "__main__":
         process_file(target_path)
     else:
         for root, _, files in os.walk(target_path):
-            if any(part.startswith('.') for part in root.split(os.sep)) or "scripts" in root:
+            if ((any(part.startswith('.') for part in root.split(os.sep))) or
+               ("+legacy" in root) or
+               "scripts" in root):
+                print("Skipping ", root)
                 continue
             for file in files:
+                print("Will process ", root)
+                continue
                 process_file(os.path.join(root, file))
 
     if VERBOSE: print("\nLicense enforcement check complete.")
