@@ -28,14 +28,14 @@ LICENSE_TEXT = """% Copyright (C) 2024- The k-Wave Authors.
 
 #==============================================================================
 # 1] Unique strings to identify the boundaries of the license block
-START_ID = "% Copyright (C) 2024- The k-Wave Authors."
+START_ID = "% Copyright (C)"
 END_ID = "along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>."
 #==============================================================================
 
 #==============================================================================
 # 2] Core logic: If license is missing or wrong, it will replace/add the block
 def process_file(path):
-    """Checks and fixes a single .m file. Prioritizes Help-First order."""
+    """Checks and fixes a single .m file. Follows Help-First order."""
     if not path.lower().endswith(".m"):
         return
 
@@ -50,6 +50,7 @@ def process_file(path):
 
     # Check if the exact current license is already there
     if LICENSE_TEXT in content:
+        if VERBOSE: print(f"Licence already there, skipping {path}")
         return
 
     if VERBOSE: print(f"\n>>> Processing: {path}")
@@ -71,7 +72,7 @@ def process_file(path):
         print(f"  [+] No valid license found. Preparing fresh insertion.")
 
     # -------------------------------------------------------------------------
-    # Help-First Insertion Logic: (NG: Normal license first is convention but the issue says helps first)
+    # Help-First Insertion Logic:
     # 1. Skip the function/classdef line (if it exists)
     # 2. Skip the first contiguous block of comments (Help text)
     # 3. Insert license there
@@ -132,14 +133,12 @@ if __name__ == "__main__":
         process_file(target_path)
     else:
         for root, _, files in os.walk(target_path):
-            if ((any(part.startswith('.') for part in root.split(os.sep))) or
-               ("+legacy" in root) or
-               "scripts" in root):
-                print("Skipping ", root)
+            if ((any(part.startswith('.') for part in root.split(os.sep))) or # skip dot files
+               ("+legacy" in root) or # skip +legacy folder
+               "scripts" in root): # skip scripts folder
+                if VERBOSE: print(f"Skipping {root}")
                 continue
             for file in files:
-                print("Will process ", root)
-                continue
                 process_file(os.path.join(root, file))
 
     if VERBOSE: print("\nLicense enforcement check complete.")
