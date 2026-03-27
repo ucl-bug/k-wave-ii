@@ -65,7 +65,7 @@ This means that all the text within a section (starting with `%%`) has to come i
 
 _MATLAB R2023b or later is required to build the documentation._
 
-General and developer documentation that is static and does not have to be automatically generated from the code, should be written in markdown (`.md`) files inside the `/docs` folder. The in-code documentation is written in the `.m` files and can be automatically compiled by calling `kwave.devtools.GenerateDocumentation` in the root folder. This utility compiles the documentation into two formats:
+General and developer documentation that is static and does not have to be automatically generated from the code, should be written in markdown (`.md`) files inside the `/docs` folder. The in-code documentation is written in the `.m` files and can be automatically compiled by calling `kwave.devtools.GenerateDocumentation` inside MATLAB from the project root. This utility compiles the documentation into two formats:
 
 - `.html`, using [`publish`](https://uk.mathworks.com/help/matlab/ref/publish.html). After compiling, the `html` documentation can be found in `docs/helpfiles` and can be viewed by opening the MATLAB help browser and selecting **k-Wave II** from the list of supplemental software.
 - `.md`, using [`export`](https://uk.mathworks.com/help/matlab/ref/export.html). After compiling, the `md` documentation can be found in `docs/helpfilesweb` and can be further processed with `mkdocs` to produce a standalone webpage in `readthedocs` style.
