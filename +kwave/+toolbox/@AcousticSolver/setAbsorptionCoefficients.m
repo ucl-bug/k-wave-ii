@@ -1,25 +1,23 @@
-%% SetAbsorptionCoefficients
-% *Class:* kwave.toolbox.AcosticSolver
+%% Set Absorption Coefficients
+% *Class:* kwave.toolbox.AcousticSolver
 % *Package:* kwave.toolbox
 %
-% Compute and assign the coefficents tau and eta in the fractional laplacian loss.
+% Compute and assign the coefficients tau and eta in the fractional laplacian loss.
 %
 %% Syntax
-%   setabsorptioncoefficients(obj)
+%   setAbsorptionCoefficients(obj)
 %
 %% Description
-% Compute and assign the coefficents tau and eta in the fractional,
+% Compute and assign the coefficients tau and eta in the fractional,
 % assigns values as given by the formula in: 
-% Treeby, Bradley E., and Ben T. Cox. 
-%    "Modeling power law absorption and dispersion for acoustic propagation using the fractional Laplacian." 
+%
+%  Treeby, Bradley E., and Ben T. Cox. 
+%     "Modeling power law absorption and dispersion for acoustic propagation using the fractional Laplacian." 
 %     The Journal of the Acoustical Society of America 127.5 (2010): 2741-2748.
 %
-% If no dispersion, problem reduces with eta=0
-% If no absorption, problem reduces with tau=0
-% 'noDispersion' or 'noAbsorption' or 'on' must be declaired by setting 
-% AcousticSolver.absorptionType
-%
-% If absorptionPower=0, 2, problem reduces.
+% If no dispersion, problem reduces with eta=0. If no absorption, problem
+% reduces with tau=0. 'noDispersion' or 'noAbsorption' or 'on' must be declared by setting 
+% |AcousticSolver.absorptionType|. If absorptionPower=0, 2, problem reduces.
 %
 % |obj.prevTimeStep|, the k-space correction is adjusted to account for the
 % change in time step.
@@ -27,7 +25,8 @@
 %% Input Arguments
 % None
 %
-% Copyright (C) 2024- The k-Wave-II Authors.
+
+% Copyright (C) 2024- The k-Wave Authors.
 %
 % This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
 % software: you can redistribute it and/or modify it under the terms of the
@@ -42,8 +41,8 @@
 % 
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
+
 %
-%% ========================================================================
 
 function setAbsorptionCoefficients(obj)
 

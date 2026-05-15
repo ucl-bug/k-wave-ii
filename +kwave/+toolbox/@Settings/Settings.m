@@ -14,7 +14,7 @@
 %
 %% Properties
 % * |colorMap| - (numeric) Color map used for 2D plots (see
-%   <matlab:doc('colormap') colormap>). Default is the k-Wave color map.
+%   <https://uk.mathworks.com/help/matlab/ref/colormap.html colormap>). Default is the k-Wave color map.
 % * |plotFrequency| - (integer) The number of iterations which must pass 
 %   before the simulation plot is updated. Default = 10.
 % * |plotScale| - (numeric) [min, max] values used to control the scaling
@@ -24,7 +24,7 @@
 % * |simulationDataType| - ('single', 'double') Data-type used for
 %   simulation calculations. Default = 'single'.
 
-% Copyright (C) 2022- University College London.
+% Copyright (C) 2024- The k-Wave Authors.
 %
 % This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
 % software: you can redistribute it and/or modify it under the terms of the
@@ -39,6 +39,7 @@
 % 
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
+
 
 classdef Settings < handle
     properties

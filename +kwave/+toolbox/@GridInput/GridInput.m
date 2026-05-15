@@ -23,6 +23,7 @@
 % simpler and more intuitive interface to the user.
 %
 % Features of the class include:
+%
 % * Dynamic property management: This class uses dynamic properties
 %   to efficiently handle grid field properties, automatically taking care
 %   of grid padding.
@@ -44,7 +45,7 @@
 %
 %   obj.(propertyName)
 %
-% where propertyName is a char holding the property name. This ensures
+% where |propertyName| is a char holding the property name. This ensures
 % consistent access to the properties, considering the custom behaviors
 % introduced by the overloaded subsref method.
 %
@@ -86,13 +87,11 @@
 %    size(medium.myProperty)
 %    
 %    ans =
-%    
 %       128   128
 %    
 %    size(medium.myPropertyPadded)
 %    
 %    ans =
-%    
 %       148   148
 %
 %% Input Arguments
@@ -119,6 +118,22 @@
 %   properties defined in |gridFields| are correctly padded.
 % * |subsref| - Overloaded method for accessing properties. It returns the
 %   properties defined in |gridFields| without padding.
+
+% Copyright (C) 2024- The k-Wave Authors.
+%
+% This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
+% software: you can redistribute it and/or modify it under the terms of the
+% GNU Lesser General Public License as published by the Free Software
+% Foundation, either version 3 of the License, or (at your option) any
+% later version.
+% 
+% k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
+% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+% FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+% License for more details.
+% 
+% You should have received a copy of the GNU Lesser General Public License
+% along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
 classdef(Abstract) GridInput < dynamicprops & matlab.mixin.CustomDisplay
 

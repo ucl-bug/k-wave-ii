@@ -2,11 +2,11 @@
 % *Package:* kwave.tests.unit
 % *Superclasses:* matlab.unittest.TestCase
 %
-% Superclass for medium unit tests.
+% Superclass for GridInput unit tests.
 %
 %% Description
-% Abstract test class for testing medium property classes derived from
-% |GridInput|. Derived classes must define four abstract properties. The
+% Abstract test class for testing property classes derived from
+% |GridInput|. Derived classes must define six abstract properties. The  
 % first defines the medium class name, and the others define cell arrays of
 % the medium properties names for the class under test:
 %
@@ -28,7 +28,7 @@
 %   {'soundSpeedReference'}|.
 % * |inputPropertiesVectorField| - Cell array of property names for values that
 %   must be vector fields. For example, |inputPropertiesScalar =
-%   {'initialElectricField'}|.
+%   {'initialVelocity'}|.
 %
 % Derived classes must also contain a test methods block (which can be
 % empty) so that the tests run:
@@ -39,6 +39,22 @@
 % The test class then automatically tests homogeneous and heterogeneous
 % property assignment, padded and non-padded size checks, and error states
 % for grid sizes in 1D, 2D, and 3D.
+
+% Copyright (C) 2024- The k-Wave Authors.
+%
+% This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
+% software: you can redistribute it and/or modify it under the terms of the
+% GNU Lesser General Public License as published by the Free Software
+% Foundation, either version 3 of the License, or (at your option) any
+% later version.
+% 
+% k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
+% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+% FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+% License for more details.
+% 
+% You should have received a copy of the GNU Lesser General Public License
+% along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
 classdef(Abstract) AbstractTestGridInput < matlab.unittest.TestCase
 

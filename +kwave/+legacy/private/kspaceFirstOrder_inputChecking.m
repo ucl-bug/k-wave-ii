@@ -1223,7 +1223,7 @@ end
 % CHECK KGRID TIME INPUTS
 % =========================================================================
 
-% check kgrid for t_array existance, and create if not defined
+% check kgrid for t_array existence, and create if not defined
 if strcmp(kgrid.t_array, 'auto')
     
     % check for time reversal mode
@@ -1355,7 +1355,7 @@ if ~user_medium_density_input && flags.nonlinear
     error('medium.density must be explicitly defined if medium.BonA is specified.');
 end
 
-% check sensor compatability options for flags.compute_directivity
+% check sensor compatibility options for flags.compute_directivity
 if flags.use_sensor && kgrid.dim == 2 && flags.compute_directivity && ~flags.binary_sensor_mask && strcmp(cartesian_interp, 'linear')
     error('sensor directivity fields are only compatible with binary sensor masks or ''CartInterp'' set to ''nearest''.');
 end
@@ -1404,7 +1404,7 @@ if flags.axisymmetric && ~strcmp(radial_symmetry, 'WSWA') && ischar(flags.save_t
     
     % display a warning only if using WSWS symmetry (not WSWA-FFT)
     if strncmp(radial_symmetry, 'WSWS', 4)
-        disp('  WARNING: Optional input ''RadialSymmetry'' changed to ''WSWA'' for compatability with ''SaveToDisk''.');
+        disp('  WARNING: Optional input ''RadialSymmetry'' changed to ''WSWA'' for compatibility with ''SaveToDisk''.');
     end
     
     % update setting

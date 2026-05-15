@@ -1,0 +1,48 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: k-Wave-II
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Bradley
+    family-names: Treeby
+  - given-names: Ben
+    family-names: Cox
+identifiers:
+  - type: doi
+    value: 10.1121/1.4712021 
+repository-code: 'https://github.com/ucl-bug/k-wave-ii'
+url: 'https://ucl-bug.github.io/k-wave-ii/'
+abstract: >-
+  k-Wave-II is an open-source MATLAB toolbox used to solve
+  partial differential equations, with a particular focus on
+  wave problems in biomedical ultrasound. 
+keywords:
+  - ultrasound
+  - wave propagation
+  - nonlinear acoustics
+  - acoustic simulation
+  - photoacoustics
+license: LGPL-3.0
+preferred-citation:
+  type: article
+  authors:
+    - family-names: Treeby
+      given-names: B. E.
+    - family-names: Jaros
+      given-names: J.
+    - family-names: Rendell
+      given-names: A. P.
+    - family-names: Cox
+      given-names: B. T.
+  title: "Modeling nonlinear ultrasound propagation in heterogeneous media with power law absorption using a k-space pseudospectral method"
+  journal: The Journal of the Acoustical Society of America
+  volume: "131"
+  issue: "6"
+  pages: "4324–4336"
+  year: 2012
+  doi: 10.1121/1.4712021
