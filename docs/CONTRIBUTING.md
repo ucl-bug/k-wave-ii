@@ -17,7 +17,7 @@ git clone https://github.com/YOUR-USER-NAME/k-wave-ii
 git checkout 62-implement-pml-class
 git switch -c 75-implement-pml-class-getters
 ```
-Note that, in this case, your development refers to a different issue (`75` in this fictional example), that should ideally be a [sub-issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/adding-sub-issues) of the larger feature issue (`62` in this example).  
+Note that, in this case, your development refers to a different issue (`75` in this fictional example), that should ideally be a [sub-issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/adding-sub-issues) of the larger feature issue (`62` in this example).
 If you want to work on the parent issue directly, use its number instead, together with something that identifies you in the name of the branch, e.g.
 ```
 git switch -c 62-implement-pml-class-YOUR_USER_NAME
@@ -105,5 +105,3 @@ For more information on why this is necessary and how ownership works in open so
 
 * [Open source development - An introduction to ownership and licensing issues](http://oss-watch.ac.uk/resources/iprguide)
 * [Contributor Licence Agreements (CLAs)](http://oss-watch.ac.uk/resources/cla)
-
-

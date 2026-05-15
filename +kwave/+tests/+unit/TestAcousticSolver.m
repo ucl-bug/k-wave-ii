@@ -30,12 +30,12 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
@@ -660,7 +660,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             solver1DB = AcousticSolver(kgrid1D, mediumMaterial1D, source1D, [], settings);
             solver1DB.run(Nt=Nt, dt=dt);
             testCase.verifyThat(solver1DA.pressure, IsEqualTo(solver1DB.pressure, "Within", tol));
-            
+
             kgrid2Dx  = Grid([Nax,Nlat], dx, [pmlSize,0]);
             source2Dx = AcousticSource(kgrid2Dx);
             source2Dx.initialPressure = repmat(source1D.initialPressure, [1, Nlat]);
@@ -918,7 +918,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             density2Dy  = reshape(squeeze(solver2Dy.densitySplit(end/2, :, 1, 2)), [], 1);
             velocity2Dy = reshape(squeeze(solver2Dy.velocity(end/2, :, 1, 2)), [], 1);
 
-            solver3Dx = AcousticSolver(kgrid3Dx, medium3Dx, source3Dx, [], settings); 
+            solver3Dx = AcousticSolver(kgrid3Dx, medium3Dx, source3Dx, [], settings);
             solver3Dx.absorptionType=absorptionType;
             solver3Dx.run(Nt=Nt, dt=dt);
             pressure3Dx = squeeze(solver3Dx.pressure(:, end/2, end/2));
@@ -984,38 +984,38 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             medium.density    = rho0;
             medium.absorptionPower = alphay;
             medium.absorptionCoeff = alpha0;
-            
+
             source = AcousticSource(kgrid);
             p0 = @(x) exp( -(x.^2) ./ (5 * kgrid.dx).^2 );
             source.initialPressure = p0(kgrid.x);
 
             sensor = AcousticSensor(kgrid);
             sensor.mask = ones(Nax,1);
-            sensor.pressureSensor = 'on';            
-            sensor.densitySensor  = 'on';            
-            sensor.velocitySensor = 'ongrid';            
+            sensor.pressureSensor = 'on';
+            sensor.densitySensor  = 'on';
+            sensor.velocitySensor = 'ongrid';
 
             settings = Settings;
             settings.plotSimulation = 'off';
 
             % Compute dt and Nt as in autoComputeTimeStep.m
-            CFL     = 0.3;              
-            endTime = Nax .* dx ./ c0;  
+            CFL     = 0.3;
+            endTime = Nax .* dx ./ c0;
             dtTemp  = CFL .* dx ./ c0;
             NtExpected = ceil( endTime ./ dtTemp);
             dtExpected = single(endTime / NtExpected);
 
-            % Test when just CFL is defined    
+            % Test when just CFL is defined
             solver = AcousticSolver(kgrid, medium, source, sensor, settings);
-            solver.absorptionType='on';            
+            solver.absorptionType='on';
             solver.run(CFL=CFL);
             dt = solver.timeArray(2) - solver.timeArray(1);
             Nt = length(solver.timeArray) - 1; % timeArray has length Nt+1 as it includes time 0
-            
+
             testCase.verifyThat(Nt, IsEqualTo(NtExpected, "Within", tolNt));
             testCase.verifyThat(dt, IsEqualTo(dtExpected, "Within", toldt));
 
-            % Test when just EndTime is defined    
+            % Test when just EndTime is defined
             solver = AcousticSolver(kgrid, medium, source, [], settings);
             solver.run(EndTime=endTime);
             dt = solver.timeArray(2) - solver.timeArray(1);
@@ -1024,15 +1024,15 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             testCase.verifyThat(Nt, IsEqualTo(NtExpected, "Within", tolNt));
             testCase.verifyThat(dt, IsEqualTo(dtExpected, "Within", toldt));
 
-            % Test when both CFL and EndTime are defined    
+            % Test when both CFL and EndTime are defined
             solver = AcousticSolver(kgrid, medium, source, [], settings);
             solver.run(CFL=CFL,EndTime=endTime);
             dt = solver.timeArray(2) - solver.timeArray(1);
             Nt = length(solver.timeArray) - 1; % timeArray has length Nt+1 as it includes time 0;
-            
+
             testCase.verifyThat(Nt, IsEqualTo(NtExpected, "Within", tolNt));
             testCase.verifyThat(dt, IsEqualTo(dtExpected, "Within", toldt));
-            
+
         end
 
         %Test sensorData is initialised when a sensor is defined
@@ -1043,7 +1043,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             tol = matlab.unittest.constraints.AbsoluteTolerance(single(1e-6));
 
             Nax     = 32;
-            Nay     = 32;            
+            Nay     = 32;
             dx      = 4e-3;
             c0      = 1500;
             rho0    = 1000;
@@ -1105,7 +1105,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             % test for source grid
             fh = @() AcousticSolver(kgrid, medium, source, sensor);
             testCase.verifyError(fh, "Solver:gridMismatch");
-            
+
             medium = AcousticMedium(kgrid);
             source = AcousticSource(kgrid);
             sensor = AcousticSensor(kgrid2);
@@ -1114,7 +1114,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             fh = @() AcousticSolver(kgrid, medium, source, sensor);
             testCase.verifyError(fh, "Solver:gridMismatch");
 
-            
+
         end
 
         %Test that an error is thrown when medium is a GridInput object but
@@ -1138,7 +1138,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             source = AcousticSource(kgrid);
             medium = AcousticMedium(kgrid);
             sensor = source; % not AcousticSensor class object
-            
+
             % test for sensor being wrong type
             fh = @() AcousticSolver(kgrid, medium, source, sensor);
             testCase.verifyError(fh, "AcousticSolver:InvalidSensorType");
@@ -1150,4 +1150,3 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
     end
 
 end
-

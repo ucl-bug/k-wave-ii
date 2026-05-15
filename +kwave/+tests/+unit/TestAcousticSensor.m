@@ -15,12 +15,12 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
@@ -33,13 +33,13 @@ classdef TestAcousticSensor < matlab.unittest.TestCase
 
     methods (TestMethodSetup)
         function createGridAndSensor(testCase)
-            
+
             % 2D grid; small for quick tests.
             testCase.grid = kwave.toolbox.Grid([8, 7], [1, 1]);
 
             % Underlying Sensor constructor typically accepts the grid.
             testCase.sensor = kwave.toolbox.AcousticSensor(testCase.grid);
-            
+
             % Define a sparse mask with a known number of points.
             mask = false(testCase.grid.gridSize);
             mask(1,1) = true;
@@ -51,7 +51,7 @@ classdef TestAcousticSensor < matlab.unittest.TestCase
     end
 
     methods (Test)
-        
+
         function defaults_are_as_documented(testCase)
             s = testCase.sensor;
             testCase.verifyEqual(s.pressureSensor, 'on');   % default
@@ -147,17 +147,17 @@ classdef TestAcousticSensor < matlab.unittest.TestCase
         %     % to be honored; if the class isn't case-normalizing, it may fail and surface
         %     % the inconsistency.
         %     testCase.assumeTrue(true); % set to false if you want to skip for now
-        % 
+        %
         %     s = testCase.sensor;
         %     s.pressureSensor = 'off';
         %     s.velocitySensor = 'ongrid';   % per validator
         %     s = s.initialiseSensorData(3);
-        % 
+        %
         %     spy = kwave.tests.unit.support.AcousticSensorSpy(s); % see helper class below
-        % 
+        %
         %     fake = kwave.tests.unit.support.FakeSolver(testCase.grid);
         %     fake.timePoint = 1.23;
-        % 
+        %
         %     spy = spy.recordSensorData(fake, 1);
         %     testCase.verifySize(spy.velocity, [spy.totalSensorPoints, spy.kgrid.dimensions, size(spy.velocity,3)]);
         %     testCase.verifyEqual(spy.times(1), fake.timePoint);

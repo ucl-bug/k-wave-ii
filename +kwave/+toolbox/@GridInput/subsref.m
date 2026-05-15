@@ -21,7 +21,7 @@
 %% Input Arguments
 % * |obj| - (kwave.toolbox.GridInput) Instance of the GridInput class.
 % * |S| - (struct) MATLAB structure specifying the target property or
-%   method and type of referencing. 
+%   method and type of referencing.
 %
 %% Output Arguments
 % * |value| - (various) The retrieved data or method output. If the target
@@ -35,12 +35,12 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 

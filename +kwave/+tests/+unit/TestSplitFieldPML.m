@@ -16,12 +16,12 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
@@ -34,7 +34,7 @@ classdef TestSplitFieldPML < kwave.tests.unit.AbstractTestGrid
 
     % Setup PML for each test.
     methods(TestMethodSetup, ParameterCombination="sequential")
-        function createPML(testCase)           
+        function createPML(testCase)
             testCase.pml = kwave.toolbox.SplitFieldPML(testCase.kgrid);
             testCase.pml.setupQuarticPML(1, 1500);
         end
@@ -94,7 +94,7 @@ classdef TestSplitFieldPML < kwave.tests.unit.AbstractTestGrid
             import matlab.unittest.constraints.IsEqualTo
 
             % Create test field.
-            vectorField = rand([testCase.kgridPadded.gridSize, testCase.kgridPadded.dimensions]);            
+            vectorField = rand([testCase.kgridPadded.gridSize, testCase.kgridPadded.dimensions]);
 
             % Apply PML.
             vectorFieldAtten = testCase.pml.applyPML(vectorField, Staggered=true);

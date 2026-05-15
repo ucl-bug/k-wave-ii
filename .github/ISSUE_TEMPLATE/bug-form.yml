@@ -25,7 +25,7 @@ body:
     id: reproduce
     attributes:
       label: How Can We Reproduce?
-      description: Give detailed step-by-step instructions (including examples and/or code snippets) how the bug or error can be reproduced. We encourage you to try, as much as possible, to reduce your problem to the minimal example that still reproduces the issue. 
+      description: Give detailed step-by-step instructions (including examples and/or code snippets) how the bug or error can be reproduced. We encourage you to try, as much as possible, to reduce your problem to the minimal example that still reproduces the issue.
       placeholder: How to reproduce.
     validations:
       required: true
@@ -39,7 +39,7 @@ body:
         - Linux
         - Mac
     validations:
-      required: true      
+      required: true
   - type: textarea
     id: kwave-version
     attributes:

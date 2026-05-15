@@ -12,23 +12,23 @@ markdown_extensions:
 extra_javascript:
   - https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
-  
+
 nav:
   - Home: README.md
   - Contributor guidelines: CONTRIBUTING.md
   - Code of Conduct: codeOfConduct.md
   - Licence: LICENSE.md
   - How to:
-    - Tutorials: helpfilesweb/Tutorials/
+      - Tutorials: helpfilesweb/Tutorials/
   - Code reference:
-    - Toolbox Functions: helpfilesweb/Toolbox_Functions/
-    - Utility Functions: helpfilesweb/Utility_Functions/
+      - Toolbox Functions: helpfilesweb/Toolbox_Functions/
+      - Utility Functions: helpfilesweb/Utility_Functions/
   - Developer docs:
-    - Developer intro: developerIntroduction.md
-    - Coding Standard: codingStandard.md
-    - Template Class: helpfilesweb/classDocsExample.md
-    - Maintainer guidelines: maintainerDocs.md
-    - Test Functions: helpfilesweb/Test_Functions/
-    - Developer Tools : helpfilesweb/Developer_Tools/
-  
+      - Developer intro: developerIntroduction.md
+      - Coding Standard: codingStandard.md
+      - Template Class: helpfilesweb/classDocsExample.md
+      - Maintainer guidelines: maintainerDocs.md
+      - Test Functions: helpfilesweb/Test_Functions/
+      - Developer Tools: helpfilesweb/Developer_Tools/
+
 theme: readthedocs

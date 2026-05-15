@@ -45,12 +45,12 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
@@ -64,18 +64,18 @@ function run(obj, options)
         options.CFL {mustBeScalarOrEmpty, mustBeNumeric, mustBePositive, mustBeFinite} = []
         options.EndTime {mustBeScalarOrEmpty, mustBeNumeric, mustBePositive, mustBeFinite} = []
     end
-    
+
     kwave.utilities.mustBeAllOrNoneEmpty(options.Nt, options.dt)
     if isempty(options.Nt)
         [options.Nt, options.dt] = obj.autoComputeTimeStep(options.CFL, options.EndTime);
     end
-    
+
     startTime = datetime('now');
-    
+
     kwave.toolbox.Logger.info(['Calling ' class(obj) '.run...']);
     obj.kgrid.displayGridSize();
     kwave.toolbox.Logger.info(['  dt: ' kwave.utilities.scaleSI(options.dt) 's, end time: ' kwave.utilities.scaleSI(options.dt * single(options.Nt)) 's, time steps: ' num2str(options.Nt)]);
-    
+
     if (obj.timeStepsTaken==0)
         % Set initial conditions.
         obj.setInitialConditions;
@@ -83,13 +83,13 @@ function run(obj, options)
             obj.sensor.initialiseSensorData(options.Nt);
         end
     end
-    
+
     % Take time steps
     obj.executeTimeStep(options.Nt, options.dt);
-    
+
     elapsedTime = between(startTime, datetime('now'));
     kwave.toolbox.Logger.info(['  run completed in ' kwave.utilities.formatDuration(elapsedTime)]);
-    
+
     % Update time variables.
     obj.prevTimeStep = options.dt;
     obj.timeStepsTaken = obj.timeStepsTaken + options.Nt;

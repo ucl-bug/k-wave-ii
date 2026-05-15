@@ -11,17 +11,17 @@
 %% Description
 % Calculates the staggered function of a scalar field in 1D, 2D, or 3D using a
 % Fourier method, staggering in each grid spacing individually.
-% 
+%
 % The vector components of the staggered field are stacked in the 4th dimension of
-% the output. Staggering only in one dimension each. 
+% the output. Staggering only in one dimension each.
 % For example, if calling stagger on a matrix of dimensions
 % (10, 10), the output will be of size (10, 10, 1, 2). This is to allow
 % codes to implement multi-dimensional support by always looping over the
 % fourth dimension.
-% 
-% The stagger operations are defined on the padded grid. Thus, the inputs 
-% to this function must also be defined on the padded grid. The output can 
-% be returned on a spatially staggered grid by setting the optional |Staggering| 
+%
+% The stagger operations are defined on the padded grid. Thus, the inputs
+% to this function must also be defined on the padded grid. The output can
+% be returned on a spatially staggered grid by setting the optional |Staggering|
 % argument.
 %
 %% Input Arguments
@@ -48,12 +48,12 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
@@ -86,7 +86,7 @@ switch options.Type
         f_k = fftn(f);
         for dimInd = 1:obj.dimensions
             switch dimInd
-                case 1 
+                case 1
                     fstg(:, :, :, 1) = ifftn(xshift .* f_k, 'symmetric');
                 case 2
                     fstg(:, :, :, 2) = ifftn(yshift .* f_k, 'symmetric');

@@ -17,7 +17,7 @@ classdef TestElasticSource < kwave.tests.unit.AbstractTestGridInput
     end
 
     methods(Test)
-        
+
         % Tests nested sub-references work, for example:
         % source.initialPressure.method.something(:, 1).other
         function testSubrefs(testCase)
