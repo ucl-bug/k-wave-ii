@@ -18,12 +18,12 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
@@ -49,10 +49,10 @@ import kwave.toolbox.* % Import the k-Wave-II toolbox
 %   dy = 1e-3;     % Grid spacing in y-direction [m]
 %   pmlSizex = 20; % Thickness of the PML (Perfectly Matched Layer absorbing boundary)
 %   pmlSizey = 20; % Thickness of the PML (Perfectly Matched Layer absorbing boundary)
-% 
+%
 % Create a Grid object
 %
-%   kgrid = Grid([Nx Ny], [dx dy], [pmlSizex pmlSizey]); 
+%   kgrid = Grid([Nx Ny], [dx dy], [pmlSizex pmlSizey]);
 
 Nx = 128;      % Number of grid points in x-direction
 Ny = 128;      % Number of grid points in y-direction
@@ -62,27 +62,27 @@ pmlSizex = 20; % Thickness of the PML (Perfectly Matched Layer absorbing boundar
 pmlSizey = 20; % Thickness of the PML (Perfectly Matched Layer absorbing boundary)
 
 % Create a Grid object
-kgrid = Grid([Nx Ny], [dx dy], [pmlSizex pmlSizey]); 
+kgrid = Grid([Nx Ny], [dx dy], [pmlSizex pmlSizey]);
 
 %% List materials
 %
 % Create a Materials object (essentially a database of material types)
 %
 %   materials = Materials();
-% 
-% Add new materials to the Materials object 
+%
+% Add new materials to the Materials object
 %
 %   idx1 = materials.addMaterial('softTissue1', struct('soundSpeed',1540,'density',1100));
 %   idx2 = materials.addMaterial('softTissue2', struct('soundSpeed',1440,'density',990));
-% 
+%
 % Show a table of all the materials currently stored
-% 
+%
 %   materials_table = materials.listMaterials();
 %   disp(materials_table);
 
 materials = Materials();
 
-% Add new materials to the Materials object 
+% Add new materials to the Materials object
 idx1 = materials.addMaterial('softTissue1', struct('soundSpeed',1540,'density',1100));
 idx2 = materials.addMaterial('softTissue2', struct('soundSpeed',1440,'density',990));
 
@@ -93,9 +93,9 @@ disp(materials_table);
 %% Define properties of material types
 %
 % Create a Medium object
-% 
-%   medium = Medium(kgrid, materials); 
-% 
+%
+%   medium = Medium(kgrid, materials);
+%
 % Define map of material type indices (uint8)
 %
 %   medium.materialIndexGrid = zeros(medium.gridSize, 'uint8'); % water
@@ -103,7 +103,7 @@ disp(materials_table);
 %   medium.materialIndexGrid(end/2+1:end,:) = idx2;             % softTissue2
 
 % Create a Medium object
-medium = Medium(kgrid, materials); 
+medium = Medium(kgrid, materials);
 
 % Define map of material type indices (uint8)
 medium.materialIndexGrid = zeros(medium.gridSize, 'uint8'); % water
@@ -112,12 +112,12 @@ medium.materialIndexGrid(end/2+1:end,:) = idx2;             % softTissue2
 
 
 %% Visualize the sound speed and density maps
-% 
+%
 % Extract the sound speed and density maps
-% 
+%
 %   c_map   = medium.soundSpeed;          % [m/s]
 %   rho_map = medium.density;             % [kg/m^3]
-% 
+%
 % Plot the sound speed and density maps
 %
 %   figure;
@@ -149,18 +149,18 @@ axis image;
 
 
 %% Define an acoustic source
-% 
+%
 % Create an AcousticSource object
 %
-%   source = AcousticSource(kgrid); 
-% 
+%   source = AcousticSource(kgrid);
+%
 % Define an initial acoustic pressure distribution
 %
 %   offset = 0.25*kgrid.dx*Nx;
 %   r = hypot(kgrid.x - offset,kgrid.y);  % radial coordinate
 %   source.initialPressure = exp( -r.^2 / (10*kgrid.dx^2) );
 
-source = AcousticSource(kgrid); 
+source = AcousticSource(kgrid);
 offset = 0.25*kgrid.dx*Nx;
 r = hypot(kgrid.x - offset,kgrid.y);  % radial coordinate
 source.initialPressure = exp( -r.^2 / (10*kgrid.dx^2) );
@@ -170,7 +170,7 @@ source.initialPressure = exp( -r.^2 / (10*kgrid.dx^2) );
 % Create an AcousticSensor object
 %
 %   sensor = AcousticSensor(kgrid);
-% 
+%
 % Define a binary mask. The solver will return the field variables at the
 % grid locations marked by 1 in the mask, here a line array
 %
@@ -188,22 +188,22 @@ sensor.mask(end - floor(Nx/8),:) = 1;
 %% Run the simulation
 %
 % Create an AcousticSolver object
-% 
-%   solver = AcousticSolver(kgrid,medium,source,sensor); 
-% 
+%
+%   solver = AcousticSolver(kgrid,medium,source,sensor);
+%
 % Define the CFL (Courant-Friedrichs-Lewy) number and endTime allow the
-% timestep to be chosen automatically 
-% 
+% timestep to be chosen automatically
+%
 %   cfl = 0.2;
 %   endTime = 0.75 * kgrid.dx*kgrid.Nx / min(medium.soundSpeed(:));
-% 
+%
 % Run the solver
-% 
+%
 %   solver.run(CFL=cfl, EndTime=endTime);
 
-solver = AcousticSolver(kgrid,medium,source,sensor); 
+solver = AcousticSolver(kgrid,medium,source,sensor);
 
-% Define the timestep automatically 
+% Define the timestep automatically
 cfl = 0.2;
 endTime = 0.75 * kgrid.dx*kgrid.Nx / min(medium.soundSpeed(:));
 
@@ -211,9 +211,9 @@ endTime = 0.75 * kgrid.dx*kgrid.Nx / min(medium.soundSpeed(:));
 solver.run(CFL=cfl, EndTime=endTime);
 
 %% Visualisations
-% 
+%
 %   figure
-% 
+%
 %   subplot(2,2,1)
 %   imagesc(medium.soundSpeed)
 %   axis equal
@@ -221,7 +221,7 @@ solver.run(CFL=cfl, EndTime=endTime);
 %   xlabel('x [m]')
 %   ylabel('y [m]')
 %   title('Sound speed [m/s]')
-% 
+%
 %   subplot(2,2,2)
 %   imagesc(medium.density)
 %   axis equal
@@ -229,7 +229,7 @@ solver.run(CFL=cfl, EndTime=endTime);
 %   xlabel('x [m]')
 %   ylabel('y [m]')
 %   title('Density [kg/m^3]')
-% 
+%
 %   subplot(2,2,3)
 %   imagesc(source.initialPressure)
 %   axis equal
@@ -237,7 +237,7 @@ solver.run(CFL=cfl, EndTime=endTime);
 %   xlabel('x [m]')
 %   ylabel('y [m]')
 %   title('Initial acoustic pressure')
-% 
+%
 %   subplot(2,2,4)
 %   imagesc(solver.pressure)
 %   axis equal
@@ -245,9 +245,9 @@ solver.run(CFL=cfl, EndTime=endTime);
 %   xlabel('x [m]')
 %   ylabel('y [m]')
 %   title('Final acoustic pressure')
-% 
+%
 %   figure
-% 
+%
 %   imagesc(sensor.pressure)
 %   xlabel('time steps')
 %   ylabel('sensor position')

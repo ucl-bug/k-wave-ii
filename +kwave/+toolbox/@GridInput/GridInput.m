@@ -85,12 +85,12 @@
 %    medium.myProperty = rand(medium.gridSize);
 %    medium.checkRequiredProperties;
 %    size(medium.myProperty)
-%    
+%
 %    ans =
 %       128   128
-%    
+%
 %    size(medium.myPropertyPadded)
-%    
+%
 %    ans =
 %       148   148
 %
@@ -102,7 +102,7 @@
 % * |kgrid| - (kwave.toolbox.Grid) Handle for |Grid| object.
 % * |gridSize| - (double) Number of grid points in each Cartesian direction
 %   [grid points]. Convenience property that returns kgrid.gridSize.
-% * |requiredProperties| - (cell array) List of properties that must be 
+% * |requiredProperties| - (cell array) List of properties that must be
 %   set for the simulation. Defined in derived classes.
 % * |gridFields| - (containers.Map) Map containing a
 %   |kwave.toolbox.GridField| for each virtual property.
@@ -126,12 +126,12 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 

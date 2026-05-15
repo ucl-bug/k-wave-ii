@@ -20,7 +20,7 @@
 % documentation for further details.
 %
 % The constructor calls the |checkRequiredProperties| method for the input
-% medium, source, and sensor objects. 
+% medium, source, and sensor objects.
 %
 % Classes derived from |Solver| should define padded variants of
 % any PDE variables that can be accessed by the user, and implement set and
@@ -28,15 +28,15 @@
 %
 %% Input Arguments
 % * |kgrid|    - (kwave.toolbox.Grid) Object which defines the simulation
-%                grid size. 
+%                grid size.
 % * |medium|   - (kwave.toolbox.GridInput) Object which defines the medium
-%                properties. 
+%                properties.
 % * |source|   - (kwave.toolbox.GridInput) Object which defines the source
-%                properties. 
+%                properties.
 % * |sensor|   - (kwave.toolbox.sensor) Object which defines the sensor
-%                properties. 
+%                properties.
 % * |settings| - (kwave.toolbox.Settings) Object which defines the
-%                simulation settings. 
+%                simulation settings.
 %
 %% Properties
 % Input objects:
@@ -63,12 +63,12 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 

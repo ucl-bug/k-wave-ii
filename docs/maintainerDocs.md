@@ -9,7 +9,7 @@ Toolbox releases distributed via Matlab are built from the `main` branch (`maste
 
 ## Before coding
 
-Maintainers should review issues regularly and place them appropriately in the repo [project board](https://github.com/orgs/ucl-bug/projects/3/views/1), to be worked on immediately or in the future. Any issues to be worked on should have corresponding feature or bugfix branches opened. 
+Maintainers should review issues regularly and place them appropriately in the repo [project board](https://github.com/orgs/ucl-bug/projects/3/views/1), to be worked on immediately or in the future. Any issues to be worked on should have corresponding feature or bugfix branches opened.
 
 Feature branches should branch off `develop` and bugfix branches off whichever is the most stable branch the bug is found in.
 
@@ -30,7 +30,7 @@ You should also review the code changes themselves. Please be constructive and r
 
 *If you think you need to take over development on someone else's PR, always ask them first.*
 
-Only maintainers can merge PRs into the feature branch. Merges need at least one approving review and all the automated tests to pass. You should also make sure that you have ticked all the checkboxes on the template. Once all this is done you can merge, using [squash merge](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/about-pull-request-merges#squash-and-merge-your-commits). Individual commits will still be accessible on GitHub in the (now closed) PR. 
+Only maintainers can merge PRs into the feature branch. Merges need at least one approving review and all the automated tests to pass. You should also make sure that you have ticked all the checkboxes on the template. Once all this is done you can merge, using [squash merge](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/about-pull-request-merges#squash-and-merge-your-commits). Individual commits will still be accessible on GitHub in the (now closed) PR.
 
 <Maintainers can override that protection, but they are strongly advised not to. This measure is there only for emergencies, not to be abused.>
 
@@ -48,4 +48,4 @@ The same workflow described above applies to bug fixes. However, the fix should 
 
 When the time comes to prepare a new release, open a new release branch from `develop`. From that point on, no extra feature developments should go into the release branch, only bugfixes. Any extra tests needed for a release should be run on the release branch (e.g. compatibility with the newest and all previous Matlab releases we want to support), and the Changelog, documentation, and release notes for the website updated accordingly.
 
-Once the maintainers are satisfied with the release branch, squash merge it into the `main` branch, and add a new tag. You should also merge it back into `develop`, and any bugfixes into the affected feature branches as well. 
+Once the maintainers are satisfied with the release branch, squash merge it into the `main` branch, and add a new tag. You should also merge it back into `develop`, and any bugfixes into the affected feature branches as well.

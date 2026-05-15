@@ -6,9 +6,8 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     paths:
-      - '**/*.m'
+      - "**/*.m"
   push:
-
 
 jobs:
   apply-license:
@@ -23,15 +22,15 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: "3.x"
 
       - name: Run License Fixer Script
         run: |
-          # Run the script 
+          # Run the script
           python docs/apply_license_mlab_check.py
-        
+
       - name: Commit and Push Changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "style: automatically apply LGPL license headers to .m files"
-          file_pattern: '**/*.m'
+          file_pattern: "**/*.m"

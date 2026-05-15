@@ -17,12 +17,12 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
@@ -37,7 +37,7 @@ classdef TestThermalSolverGrid < kwave.tests.unit.AbstractTestGrid
 
             import matlab.unittest.constraints.IsEqualTo
             import kwave.toolbox.*
-            
+
             % Medium.
             medium = ThermalMedium(testCase.kgrid);
             medium.thermalConductivity = 0.58;
@@ -47,7 +47,7 @@ classdef TestThermalSolverGrid < kwave.tests.unit.AbstractTestGrid
             materials = Materials();
             medium2 = Medium(testCase.kgrid,materials);
             medium2.materialIndexGrid = uint8(0);
-            
+
             % Source.
             source = ThermalSource(testCase.kgrid);
             variance = (3 * testCase.kgrid.dx)^2;
@@ -70,7 +70,7 @@ classdef TestThermalSolverGrid < kwave.tests.unit.AbstractTestGrid
             % Settings.
             settings = Settings;
             settings.plotSimulation = 'off';
-            
+
             % Solve using two steps.
             solver  = ThermalSolver(testCase.kgrid, medium, source, [], settings);
             solver1 = ThermalSolver(testCase.kgrid, medium2, source, [], settings);
@@ -88,8 +88,8 @@ classdef TestThermalSolverGrid < kwave.tests.unit.AbstractTestGrid
 
             % Compare with tolerance.
             testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));
-            
-            testCase.actualSolution = solver1.temperaturePadded; 
+
+            testCase.actualSolution = solver1.temperaturePadded;
             testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));
 
             % Take a step using auto-calculated Nt and dt.

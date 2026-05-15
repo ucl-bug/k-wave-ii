@@ -2,7 +2,7 @@
 %
 %% Overview
 % This simple starter example demonstrates how to construct and run
-% one-dimensional acoustic simulations using AcousticSolver. 
+% one-dimensional acoustic simulations using AcousticSolver.
 %
 % * To open the file in the MATLAB Editor:
 % |edit('kwave.tutorials.initialvalueproblems.t01_AcousticSolverExamples1D.m')|
@@ -20,12 +20,12 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
@@ -63,11 +63,11 @@ medium = AcousticMedium(kgrid); % Create an AcousticMedium object
 medium.soundSpeed = 1500;       % Set a constant sound speed [m/s]
 medium.density    = 1000;       % Set a constant density [kg/m^3]
 
-%% Define an acoustic source 
+%% Define an acoustic source
 %
 % Create an AcousticSource object
 %
-%   source = AcousticSource(kgrid); 
+%   source = AcousticSource(kgrid);
 %
 % In this example, an initial condition will be used to instigate the
 % acoustic wave. Initial conditions are defined in the AcousticSource
@@ -77,7 +77,7 @@ medium.density    = 1000;       % Set a constant density [kg/m^3]
 %
 %   source.initialPressure = exp( -kgrid.x.^2 / (10*kgrid.dx^2) );
 
-source = AcousticSource(kgrid); 
+source = AcousticSource(kgrid);
 source.initialPressure = exp( -kgrid.x.^2 / (10*kgrid.dx^2) );
 
 %% Run the simulation
@@ -87,7 +87,7 @@ source.initialPressure = exp( -kgrid.x.^2 / (10*kgrid.dx^2) );
 % the fourth input, but if there are no sensors then it can be omitted, as
 % here.)
 %
-%   solver = AcousticSolver(kgrid,medium,source,[]); 
+%   solver = AcousticSolver(kgrid,medium,source,[]);
 %
 % Define the time variables
 %
@@ -132,7 +132,7 @@ solver.run(Nt=50, dt=dt1);
 % * |solver.densitySplit|     : A 4D gridfield vector
 % * |solver.velocity|         : A 4D gridfield vector
 % * |solver.timeArray|        : A vector of length (Nt+1)
-% 
+%
 % These are, respectively:
 %
 % * The acoustic pressure field on the grid points at the end time Nt*dt.
@@ -151,12 +151,12 @@ solver.run(Nt=50, dt=dt1);
 %   plot(kgrid.xVec*1e3,source.initialPressure)
 %   xlabel('x [mm]')
 %   title('Initial acoustic pressure')
-% 
+%
 %   subplot(3,1,2)
 %   plot(kgrid.xVec*1e3,solver.pressure)
 %   xlabel('x [mm]')
 %   title('Acoustic pressure at time Nt*dt')
-% 
+%
 %   subplot(3,1,3)
 %   plot(kgrid.xVec*1e3,solver.velocity)
 %   xlabel('x [mm]')
@@ -177,4 +177,3 @@ subplot(3,1,3)
 plot(kgrid.xVec*1e3,solver.velocity)
 xlabel('x [mm]')
 title('Particle velocity at time Nt*dt')
-

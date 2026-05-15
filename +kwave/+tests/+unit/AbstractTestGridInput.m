@@ -6,7 +6,7 @@
 %
 %% Description
 % Abstract test class for testing property classes derived from
-% |GridInput|. Derived classes must define six abstract properties. The  
+% |GridInput|. Derived classes must define six abstract properties. The
 % first defines the medium class name, and the others define cell arrays of
 % the medium properties names for the class under test:
 %
@@ -47,12 +47,12 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
@@ -94,7 +94,7 @@ classdef(Abstract) AbstractTestGridInput < matlab.unittest.TestCase
 
     methods
 
-        % Checks if a property must be complex, to e.g. help setting test 
+        % Checks if a property must be complex, to e.g. help setting test
         % values.
         function isComplex = mustBeComplex(testCase, propertyName)
             isComplex = ismember(propertyName, testCase.inputPropertiesComplex);
@@ -115,7 +115,7 @@ classdef(Abstract) AbstractTestGridInput < matlab.unittest.TestCase
 
             isComplex = testCase.mustBeComplex(propertyName);
             if gridSize == 1
-                val = rand + 1i .* rand .* isComplex; 
+                val = rand + 1i .* rand .* isComplex;
             else
                 if testCase.isVectorField(propertyName)
                     gridSize(4) = testCase.kgrid.dimensions;
@@ -123,7 +123,7 @@ classdef(Abstract) AbstractTestGridInput < matlab.unittest.TestCase
                 val = rand(gridSize) + 1i .* isComplex;
             end
          end
-    
+
     end
 
     methods(Test)

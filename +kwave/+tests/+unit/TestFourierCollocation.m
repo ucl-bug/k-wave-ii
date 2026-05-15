@@ -17,12 +17,12 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
@@ -108,7 +108,7 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
             import matlab.unittest.constraints.IsEqualTo
 
             switch testCase.kgridPadded.dimensions
-                case 1            
+                case 1
 
                     % Test to check incorrect number of dimensions gives exception
                     f = rand(testCase.kgridPadded.Nx,1);
@@ -121,7 +121,7 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
                     testCase.verifyError(@() testCase.solver.curl(f), 'FourierCollocation:not3DVectorField');
 
                 case 3
-        
+
                     % No staggering.
                     [f, testCase.referenceSolution] = testCase.getPeriodicVectorFunctionCurl;
                     testCase.actualSolution = testCase.solver.curl(f);
@@ -131,12 +131,12 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
                     [f, testCase.referenceSolution] = testCase.getPeriodicVectorFunctionCurl("forward");
                     testCase.actualSolution = testCase.solver.curl(f, Staggering="forward");
                     testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));
-        
+
                     % Backward staggering.
                     [f, testCase.referenceSolution] = testCase.getPeriodicVectorFunctionCurl("backward");
                     testCase.actualSolution = testCase.solver.curl(f, Staggering="backward");
                     testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));
-        
+
                     % Scalar kappa.
                     testCase.solver.kappa = 2;
                     [f, testCase.referenceSolution] = testCase.getPeriodicVectorFunctionCurl;
@@ -159,11 +159,11 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
 
             % For this test, the tolerance was changed to 1e-5, instead of
             % the default 1e-6, because round-off error accumulates quickly
-            % when taking Fourier derivatives. The error is large because 
+            % when taking Fourier derivatives. The error is large because
             % ddxNoShift etc are defined in the FourierCollocation class
             % as single precision.
             temporaryTolerance = matlab.unittest.constraints.AbsoluteTolerance(single(1e-5));
-            
+
             if testCase.kgridPadded.dimensions == 3
 
                     % No staggering.
@@ -171,7 +171,7 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
                     testCase.referenceSolution = zeros(testCase.kgridPadded.gridSize);
                     testCase.actualSolution = testCase.solver.divergence(testCase.solver.curl(f));
                     testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", temporaryTolerance));
-        
+
                     % Forward staggering.
                     [f, ~] = testCase.getPeriodicVectorFunctionCurl("forward");
                     testCase.referenceSolution = zeros(testCase.kgridPadded.gridSize);
@@ -183,7 +183,7 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
                     testCase.referenceSolution = zeros(testCase.kgridPadded.gridSize);
                     testCase.actualSolution = testCase.solver.divergence(testCase.solver.curl(f, Staggering="backward"), Staggering="backward");
                     testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", temporaryTolerance));
-                    
+
             end
 
         end
@@ -195,11 +195,11 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
 
             % For this test, the tolerance was changed to 1e-3, instead of
             % the default 1e-6, because round-off error accumulates quickly
-            % when taking Fourier derivatives. The error is large because 
+            % when taking Fourier derivatives. The error is large because
             % ddxNoShift etc are defined in the FourierCollocation class
             % as single precision.
             temporaryTolerance = matlab.unittest.constraints.AbsoluteTolerance(single(1e-3));
-            
+
             if testCase.kgridPadded.dimensions == 3
 
                     % No staggering.
@@ -252,7 +252,7 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
             [f, testCase.referenceSolution] = testCase.getPeriodicVectorFunctionLap("backward");
             testCase.actualSolution = -testCase.solver.fracLaplacian(f,1, Staggering="backward");
             testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));
-            
+
         end
 
         function testStagger(testCase)
@@ -298,9 +298,9 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
                     testCase.actualSolution=testCase.actualSolution(2:end-1,2:end-1,2:end-1,:);
             end
             testCase.verifyThat(testCase.actualSolution, IsEqualTo(testCase.referenceSolution, "Within", testCase.tol));
-            
+
         end
-        
+
     end
 
     % Test utilities.
@@ -343,9 +343,9 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
 
                     [X, Y] = ndgrid(obj.kgridPadded.xVec, obj.kgridPadded.yVec);
                     [Xsg, Ysg] = ndgrid(xSg, ySg);
-                    
+
                     F = sin(kx .* X) .* sin(ky .* Y) ./ kx;
-                    
+
                     gradF = zeros([size(F), 1, 2]);
                     gradF(:, :, :, 1) = cos(kx .* Xsg) .* sin(ky .* Y);
                     gradF(:, :, :, 2) = sin(kx .* X)   .* cos(ky .* Ysg) .* (ky ./ kx);
@@ -353,12 +353,12 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
                     kx = (2*pi ./ obj.kgridPadded.xSize);
                     ky = (2*pi ./ obj.kgridPadded.ySize);
                     kz = (2*pi ./ obj.kgridPadded.zSize);
-                    
+
                     [X, Y, Z] = ndgrid(obj.kgridPadded.xVec, obj.kgridPadded.yVec, obj.kgridPadded.zVec);
                     [Xsg, Ysg, Zsg] = ndgrid(xSg, ySg, zSg);
-                    
+
                     F = sin(kx .* X) .* sin(ky .* Y) .* sin(kz .* Z) ./ kx;
-                    
+
                     gradF = zeros([size(F), 3]);
                     gradF(:, :, :, 1) = cos(kx .* Xsg) .* sin(ky .* Y)   .* sin(kz .* Z);
                     gradF(:, :, :, 2) = sin(kx .* X)   .* cos(ky .* Ysg) .* sin(kz .* Z)   .* (ky ./ kx);
@@ -400,40 +400,40 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
                 case 2
                     kx = (2*pi ./ obj.kgridPadded.xSize);
                     ky = (2*pi ./ obj.kgridPadded.ySize);
-                    
+
                     [X, Y] = ndgrid(obj.kgridPadded.xVec, obj.kgridPadded.yVec);
                     [Xsg, Ysg] = ndgrid(xSg, ySg);
-                    
+
                     Fx = sin(kx .* X) ./ kx;
                     Fy = sin(ky .* Y) ./ ky;
-                    
+
                     F = cat(4, Fx, Fy);
-                    
+
                     divF = cos(kx .* Xsg) + cos(ky .* Ysg);
                 case 3
                     kx = (2*pi ./ obj.kgridPadded.xSize);
                     ky = (2*pi ./ obj.kgridPadded.ySize);
                     kz = (2*pi ./ obj.kgridPadded.zSize);
-                    
+
                     [X, Y, Z] = ndgrid(obj.kgridPadded.xVec, obj.kgridPadded.yVec, obj.kgridPadded.zVec);
                     [Xsg, Ysg, Zsg] = ndgrid(xSg, ySg, zSg);
-                    
+
                     Fx = sin(kx .* X) ./ kx;
                     Fy = sin(ky .* Y) ./ ky;
                     Fz = sin(kz .* Z) ./ kz;
-                    
+
                     F = cat(4, Fx, Fy, Fz);
-                    
+
                     divF = cos(kx .* Xsg) + cos(ky .* Ysg) + cos(kz .* Zsg);
             end
         end
-        
+
         % Define a periodic scalar function and its analytic laplacian on
         % the grid specified by obj.kgridPadded. The function is normalised
         % so the maximum of the gradient is approximately 1. The Laplacian
         % can also be returned on a staggered grid.
          function [F, LapF] = getPeriodicVectorFunctionLap(obj, staggering)
-         
+
          arguments
                 obj
                 staggering(1,:) char {mustBeMember(staggering, {'none', 'forward', 'backward'})} = 'none'
@@ -452,7 +452,7 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
                      ySg = obj.kgridPadded.yVec - obj.kgridPadded.dy/2;
                      zSg = obj.kgridPadded.zVec - obj.kgridPadded.dz/2;
             end
-            
+
             switch obj.kgridPadded.dimensions
                 case 1
                     kx = (2*pi ./ obj.kgridPadded.xSize);
@@ -465,7 +465,7 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
                     [Xsg, Ysg] = ndgrid(xSg, ySg);
                     Fx = sin(kx .* X) ./ (kx);
                     Fy = sin(ky .* Y) ./ (ky);
-                    F = Fx.*Fy; 
+                    F = Fx.*Fy;
                     Fx = sin(kx .* Xsg) ./ (kx);
                     Fy = sin(ky .* Ysg) ./ (ky);
                     LapF = -(kx^2+ky.^2).*Fx.*Fy;
@@ -485,8 +485,8 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
                     LapF = -(kx^2+ky.^2+kz.^2).*Fx.*Fy.*Fz;
             end
          end
-         
-        % Define a periodic scalar function on the grid specified by obj.kgridPadded. 
+
+        % Define a periodic scalar function on the grid specified by obj.kgridPadded.
         % The function is normalised and staggered, suitable for returning stagger
         % by Fourier Methods.
          function [F,FStg]= getPeriodicVectorFunctionStg(obj, staggering)
@@ -541,7 +541,7 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
             end
          end
 
-        % Define a linear scalar function on the grid specified by obj.kgridPadded. 
+        % Define a linear scalar function on the grid specified by obj.kgridPadded.
         % The function is exact for linear interpolation to perform grid staggering.
          function [F,FStg]= getLinearVectorFunctionStg(obj, staggering)
              arguments
@@ -595,7 +595,7 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
                     FStg(:,:,:,3)=(Fx+Fy+FSgz)/3;
             end
      end
-     
+
         % Define a periodic vector function and its analytic curl on
         % the grid specified by obj.kgridPadded. The function is normalized so
         % the maximum of the curl is approximately 1. The curl
@@ -620,20 +620,20 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
                      ySg = obj.kgridPadded.yVec - obj.kgridPadded.dy/2;
                      zSg = obj.kgridPadded.zVec - obj.kgridPadded.dz/2;
             end
-            
+
             % Only need the 3D case here as curl is only defined for the 3D case
             % Choose wavenumbers to make function periodic on padded grid
             kx = (2*pi ./ obj.kgridPadded.xSize);
             ky = (2*pi ./ obj.kgridPadded.ySize);
             kz = (2*pi ./ obj.kgridPadded.zSize);
-            
+
             [X, Y, Z] = ndgrid(obj.kgridPadded.xVec, obj.kgridPadded.yVec, obj.kgridPadded.zVec);
             [Xsg, Ysg, Zsg] = ndgrid(xSg, ySg, zSg);
 
             % Define a periodic vector function (on a staggered Yee cell)
-            F(:,:,:,1) = ( sin(ky .* Y)/ky ) .* ( sin(kz .* Z)/kz ); 
-            F(:,:,:,2) = ( sin(kx .* X)/kx ) .* ( sin(kz .* Z)/kz ); 
-            F(:,:,:,3) = ( sin(kx .* X)/kx ) .* ( sin(ky .* Y)/ky ); 
+            F(:,:,:,1) = ( sin(ky .* Y)/ky ) .* ( sin(kz .* Z)/kz );
+            F(:,:,:,2) = ( sin(kx .* X)/kx ) .* ( sin(kz .* Z)/kz );
+            F(:,:,:,3) = ( sin(kx .* X)/kx ) .* ( sin(ky .* Y)/ky );
 
             % Calculate the components of the analytical curl of F
             dFxdy =   cos(ky .* Ysg)      .* ( sin(kz .* Z  )/kz );
@@ -645,7 +645,7 @@ classdef TestFourierCollocation < kwave.tests.unit.AbstractTestGrid
 
             % Construct the analytical curl of F
             curlF(:,:,:,1) = dFzdy - dFydz;
-            curlF(:,:,:,2) = dFxdz - dFzdx;      
+            curlF(:,:,:,2) = dFxdz - dFzdx;
             curlF(:,:,:,3) = dFydx - dFxdy;
 
         end

@@ -12,7 +12,7 @@
 % Calculates the split components (e.g., dfx/dx, dfy/dy) of the divergence
 % of a vector field in 1D, 2D, or 3D using a Fourier collocation spectral
 % method. This is equivalent to the diagonal of the vector gradient.
-% 
+%
 % The vector components of the input field, and the split components of the
 % divergence, are stacked in the 4th dimension. For example, if calling
 % divergence on a vector field in 2D, the input should have dimensions (Nx,
@@ -54,12 +54,12 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 

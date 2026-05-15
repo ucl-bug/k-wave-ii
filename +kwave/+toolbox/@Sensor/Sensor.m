@@ -2,11 +2,11 @@
 % *Package:* kwave.toolbox
 % *Superclasses:* kwave.toolbox.GridInput
 %
-% Superclass of all kwave.toolbox sensor classes. 
+% Superclass of all kwave.toolbox sensor classes.
 %
 %% Description
 % Abstract class used to define sensors. All sensor classes should be
-% derived from this class. 
+% derived from this class.
 %
 %% Properties
 % * |mask|           - Binary mask the size of the grid with 1s indicated
@@ -24,12 +24,12 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
@@ -40,7 +40,7 @@ classdef Sensor < kwave.toolbox.GridInput
         requiredProperties = {'mask'};
 
         gridFields = kwave.toolbox.GridField.createGridFieldsMap([
-            kwave.toolbox.GridField('mask', Classes={'logical','numeric'},... 
+            kwave.toolbox.GridField('mask', Classes={'logical','numeric'},...
             Attributes={'binary'})]);
     end
 

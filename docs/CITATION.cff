@@ -14,13 +14,13 @@ authors:
     family-names: Cox
 identifiers:
   - type: doi
-    value: 10.1121/1.4712021 
-repository-code: 'https://github.com/ucl-bug/k-wave-ii'
-url: 'https://ucl-bug.github.io/k-wave-ii/'
+    value: 10.1121/1.4712021
+repository-code: "https://github.com/ucl-bug/k-wave-ii"
+url: "https://ucl-bug.github.io/k-wave-ii/"
 abstract: >-
   k-Wave-II is an open-source MATLAB toolbox used to solve
   partial differential equations, with a particular focus on
-  wave problems in biomedical ultrasound. 
+  wave problems in biomedical ultrasound.
 keywords:
   - ultrasound
   - wave propagation

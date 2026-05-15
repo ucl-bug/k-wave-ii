@@ -18,12 +18,12 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
@@ -61,7 +61,7 @@ function printGridSize(gridString, gridSize, gridSpacing, dimensions)
                 num2str(gridSize(3)) ' grid points (' ...
                 num2str(gridSizeScaled(1)) ' by ' ...
                 num2str(gridSizeScaled(2)) ' by ' ...
-                num2str(gridSizeScaled(3)) prefix 'm)']); 
+                num2str(gridSizeScaled(3)) prefix 'm)']);
     end
 
 end
