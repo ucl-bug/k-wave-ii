@@ -85,7 +85,8 @@
 %   medium properties.
 % * |source| - (kwave.toolbox.AcousticSource) Object which defines the
 %   source properties.
-% * |sensor| - ...Not yet implemented...
+% * |sensor| - (kwave.toolbox.AcousticSensor) Object which defines the
+%   sensor properties.
 % * |settings| - (kwave.toolbox.Settings) Object which defines the
 %   simulation settings.
 %
@@ -100,10 +101,14 @@
 % exclude each of the absorption terms within the equation of state.
 %
 %% Methods
-% * |setkSpaceCorrection|
-% * |setAbsorptionCoefficients|
+% * |autoComputeTimeStep|
+% * |executeTimeStep|
 % * |kappaSplitCorrection|
-%
+% * |setAbsorptionCoefficients|
+% * |setInitialConditions|
+% * |setkSpaceCorrection|
+
+
 % Copyright (C) 2024- The k-Wave Authors.
 %
 % This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
@@ -145,29 +150,37 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
         absorbTauPadded single
         absorbEtaPadded single
         kappaSplit single
+
+        timePoint = 0;
     end
 
     % Constructor.
     methods
         function obj = AcousticSolver(kgrid, medium, source, sensor, settings)
+
             arguments
-                kgrid(1,1) kwave.toolbox.Grid
-                medium(1,1) kwave.toolbox.GridInput
-                source(1,1) kwave.toolbox.AcousticSource
-                sensor
+                kgrid(1,1)    kwave.toolbox.Grid
+                medium(1,1)   kwave.toolbox.GridInput
+                source(1,1)   kwave.toolbox.AcousticSource
+                sensor        
                 settings(1,1) kwave.toolbox.Settings = kwave.toolbox.Settings
             end
             
-                if ~(isa(medium, 'kwave.toolbox.Medium') || isa(medium, 'kwave.toolbox.AcousticMedium'))
-                    error('AcousticSolver:InvalidMediumType',...
-                        'medium must be an object of Medium OR AcousticMedium.');
-                end
+            %  Check medium and sensor inputs are of the right class
+            if ~(isa(medium, 'kwave.toolbox.Medium') || isa(medium, 'kwave.toolbox.AcousticMedium'))
+                error('AcousticSolver:InvalidMediumType',...
+                    'medium must be an object of Medium or AcousticMedium class.');
+            end
+            if ~(isempty(sensor) || isa(sensor, 'kwave.toolbox.AcousticSensor'))
+                error('AcousticSolver:InvalidSensorType',...
+                    'sensor must be an AcousticSensor object or be left empty [].');
+            end
 
             % Pass input arguments to superclass constructor. This calls
-                % setInitialConditions.
-                obj@kwave.toolbox.TimeDomainSolver(kgrid, medium, source, sensor, settings);
-                % Initialise PML object.
-                obj.pml = kwave.toolbox.SplitFieldPML(obj.kgrid);
+            % setInitialConditions.
+            obj@kwave.toolbox.TimeDomainSolver(kgrid, medium, source, sensor, settings);
+            % Initialise PML object.
+            obj.pml = kwave.toolbox.SplitFieldPML(obj.kgrid);
         end
     end
 

@@ -72,7 +72,7 @@
 %
 % METHODS - MAKETIME:
 %     makeTime automatically specifies Nt, dt, and t_array based on the
-%     Courant-Friedrichs-Lewy (CFL) number and the grid size. The sytax is:
+%     Courant-Friedrichs-Lewy (CFL) number and the grid size. The syntax is:
 %
 %         .makeTime(sound_speed)
 %         .makeTime(sound_speed, cfl)
@@ -520,7 +520,7 @@ classdef kWaveGrid < handle
             z_size = obj.Nz .* obj.dz;
         end     
         
-        % calulate t_array based on Nt and dt
+        % calculate t_array based on Nt and dt
         function t_array = get.t_array(obj)
             if strcmp(obj.Nt, 'auto') || strcmp(obj.dt, 'auto')
                 t_array = 'auto';
@@ -663,7 +663,7 @@ classdef kWaveGrid < handle
             % note, this produces a circular assignment, where the makeTime
             % method creates t_array, which is then copied to the t_array
             % of the same object, however, this allows backwards
-            % compatability
+            % compatibility
             if nargout == 2
                 t_array = obj.t_array;
                 dt = obj.dt;

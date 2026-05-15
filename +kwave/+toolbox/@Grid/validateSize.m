@@ -1,4 +1,4 @@
-%% validateSize
+%% Validate Size
 % *Class:* kwave.toolbox.Grid
 % *Package:* kwave.toolbox
 %
@@ -10,7 +10,7 @@
 %
 %% Description
 % Checks if the size of an input matrix matches the |gridSize| property of
-% a |Grid| object using <matlab:doc('validateattributes')
+% a |Grid| object using <https://uk.mathworks.com/help/matlab/ref/validateattributes.html
 % |validateattributes|>. By default, the grid size not including padding is
 % used. To include padding, set |IncludePadding=true|. If the input matrix
 % is a scalar, the check is skipped.
@@ -49,6 +49,22 @@
 % * |VariableName| - (char) Name of the matrix variable. Used to add
 %   information to any error message thrown. Default = ''.
 
+% Copyright (C) 2024- The k-Wave Authors.
+%
+% This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
+% software: you can redistribute it and/or modify it under the terms of the
+% GNU Lesser General Public License as published by the Free Software
+% Foundation, either version 3 of the License, or (at your option) any
+% later version.
+% 
+% k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
+% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+% FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+% License for more details.
+% 
+% You should have received a copy of the GNU Lesser General Public License
+% along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
+
 function validateSize(obj, matrix, options)
 
 arguments
@@ -82,7 +98,7 @@ switch (options.Type)
 end
 
 validateattributes(matrix, ...
-    {'numeric'}, ...
+    {'numeric','logical'}, ...
     {'size', expectedGridSize}, ...
     options.FunctionName, ...
     options.VariableName);

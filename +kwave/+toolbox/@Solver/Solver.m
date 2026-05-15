@@ -17,7 +17,7 @@
 % The |Solver| class is derived from |kwave.toolbox.FourierCollocation|.
 % This superclass implements common methods to calculate differential
 % operators using the Fourier collocation spectral method. See class
-% documentation for futher details.
+% documentation for further details.
 %
 % The constructor calls the |checkRequiredProperties| method for the input
 % medium, source, and sensor objects. 
@@ -27,22 +27,23 @@
 % get methods that add and remove the grid padding.
 %
 %% Input Arguments
-% * |kgrid| - (kwave.toolbox.Grid) Object which defines the simulation grid
-%   size. 
-% * |medium| - (kwave.toolbox.GridInput) Object which defines the medium
-%   properties. 
-% * |source| - (kwave.toolbox.GridInput) Object which defines the source
-%   properties. 
-% * |sensor| - ...Not yet implemented...
+% * |kgrid|    - (kwave.toolbox.Grid) Object which defines the simulation
+%                grid size. 
+% * |medium|   - (kwave.toolbox.GridInput) Object which defines the medium
+%                properties. 
+% * |source|   - (kwave.toolbox.GridInput) Object which defines the source
+%                properties. 
+% * |sensor|   - (kwave.toolbox.sensor) Object which defines the sensor
+%                properties. 
 % * |settings| - (kwave.toolbox.Settings) Object which defines the
-%   simulation settings.
+%                simulation settings. 
 %
 %% Properties
 % Input objects:
 %
-% * |medium| - (kwave.toolbox.GridInput) Handle for medium object.
-% * |source| - (kwave.toolbox.GridInput) Handle for source object.
-% * |sensor| - ...Not yet implemented...
+% * |medium|   - (kwave.toolbox.GridInput) Handle for medium object.
+% * |source|   - (kwave.toolbox.GridInput) Handle for source object.
+% * |sensor|   - (kwave.toolbox.sensor) Handle for sensor object.
 % * |settings| - (kwave.toolbox.Settings) Handle for settings object.
 %
 %% Template Methods
@@ -52,6 +53,7 @@
 % * |kwave.toolbox.FourierCollocation|
 % * |kwave.toolbox.Grid|
 % * |kwave.toolbox.GridInput|
+% * |kwave.toolbox.Sensor|
 % * |kwave.toolbox.Settings|
 
 % Copyright (C) 2024- The k-Wave Authors.
@@ -100,6 +102,11 @@ classdef(Abstract) Solver < kwave.toolbox.FourierCollocation
             end
             if (source.kgrid ~= kgrid)
                 kwave.toolbox.Logger.error('Solver:gridMismatch', 'The source input references a different Grid object to the kgrid input.');
+            end
+            if isprop(sensor,'kgrid')
+                if (sensor.kgrid ~= kgrid)
+                    kwave.toolbox.Logger.error('Solver:gridMismatch', 'The source input references a different Grid object to the kgrid input.');
+                end
             end
 
             % Check the required input properties have been defined.

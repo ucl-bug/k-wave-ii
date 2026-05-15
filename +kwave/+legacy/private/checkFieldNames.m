@@ -1,5 +1,5 @@
 function checkFieldNames(structure, field_names)
-%CHECKFIELDNAMES Checks structure field names for existance.
+%CHECKFIELDNAMES Checks structure field names for existence.
 %
 % DESCRIPTION:
 %     checkFieldNames checks the field names of a MATLAB structure against

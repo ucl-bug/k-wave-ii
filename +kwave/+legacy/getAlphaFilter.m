@@ -98,7 +98,7 @@ else
     end
 end
 
-% extract the maximium sound speed
+% extract the maximum sound speed
 c = max(medium.sound_speed(:));
 
 % calculate the alpha_filter size in the z direction for 3D data

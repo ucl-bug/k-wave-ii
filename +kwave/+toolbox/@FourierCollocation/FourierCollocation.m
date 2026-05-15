@@ -27,7 +27,7 @@
 %
 %% Examples
 % Calculate the gradient of a scalar field in 2D, and compare with the
-% MATLAB |<matlab:doc('gradient') gradient>| function.
+% MATLAB |<https://uk.mathworks.com/help/matlab/ref/gradient.html Gradient>| function.
 %
 %   % Define input field.
 %   [x, y] = meshgrid(-2:.2:2, -2:.2:2);
@@ -98,13 +98,13 @@
 %% Methods
 % * |divergence|
 % * |divergenceSplit|
+% * |fracLaplacian|
 % * |gradient|
-% * |fractionalLaplacian|
-% * |stagger|
 % * |plotField|
 % * |sinc|
+% * |stagger|
 
-% Copyright (C) 2022- University College London.
+% Copyright (C) 2024- The k-Wave Authors.
 %
 % This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
 % software: you can redistribute it and/or modify it under the terms of the
@@ -119,6 +119,7 @@
 % 
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
+
 
 classdef FourierCollocation < handle
 

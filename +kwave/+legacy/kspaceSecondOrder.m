@@ -34,7 +34,7 @@ function sensor_data = kspaceSecondOrder(kgrid, medium, source, sensor, varargin
 %     Compared to the first-order simulation functions kspaceFirstOrder1D,
 %     kspaceFirstOrder2D, and kspaceFirstOrder3D, kspaceSecondOrder is
 %     restricted to homogeneous media and has less functionality. However,
-%     it is exact for a homogenous absorbing medium, is more
+%     it is exact for a homogeneous absorbing medium, is more
 %     computationally efficient, and allows an initial pressure gradient to
 %     be specified.
 %

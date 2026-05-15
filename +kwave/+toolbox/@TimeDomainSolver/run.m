@@ -1,4 +1,4 @@
-%% run
+%% The Run Method
 % *Class:* kwave.toolbox.TimeDomainSolver
 % *Package:* kwave.toolbox
 %
@@ -38,7 +38,7 @@
 % * |CFL| - (numeric) Courant-Friedrichs-Lewy (CFL) number.
 % * |EndTime| - (numeric) Simulation time [s].
 
-% Copyright (C) 2022- University College London.
+% Copyright (C) 2024- The k-Wave Authors.
 %
 % This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
 % software: you can redistribute it and/or modify it under the terms of the
@@ -54,43 +54,48 @@
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
+
 function run(obj, options)
 
-arguments
-    obj
-    options.Nt {mustBeScalarOrEmpty, mustBeInteger, mustBeNonnegative, mustBeFinite} = []
-    options.dt {mustBeScalarOrEmpty, mustBeNumeric, mustBePositive, mustBeFinite} = []
-    options.CFL {mustBeScalarOrEmpty, mustBeNumeric, mustBePositive, mustBeFinite} = []
-    options.EndTime {mustBeScalarOrEmpty, mustBeNumeric, mustBePositive, mustBeFinite} = []
-end
-
-kwave.utilities.mustBeAllOrNoneEmpty(options.Nt, options.dt)
-if isempty(options.Nt)
-    [options.Nt, options.dt] = obj.autoComputeTimeStep(options.CFL, options.EndTime);
-end
-
-startTime = datetime('now');
-
-kwave.toolbox.Logger.info(['Calling ' class(obj) '.run...']);
-obj.kgrid.displayGridSize();
-kwave.toolbox.Logger.info(['  dt: ' kwave.utilities.scaleSI(options.dt) 's, end time: ' kwave.utilities.scaleSI(options.dt * options.Nt) 's, time steps: ' num2str(options.Nt)]);
-
-if (obj.timeStepsTaken==0)
-    % Set initial conditions.
-    obj.setInitialConditions;
-end
-
-obj.executeTimeStep(options.Nt, options.dt);
-
-elapsedTime = between(startTime, datetime('now'));
-kwave.toolbox.Logger.info(['  run completed in ' kwave.utilities.formatDuration(elapsedTime)]);
-
-% Update time variables.
-obj.prevTimeStep = options.dt;
-obj.timeStepsTaken = obj.timeStepsTaken + options.Nt;
-if isempty(obj.timeArray)
-    obj.timeArray = (0:(options.Nt)) * options.dt;
-else
-    obj.timeArray = [obj.timeArray, obj.timeArray(end) + (1:options.Nt) * options.dt];
-end
+    arguments
+        obj
+        options.Nt {mustBeScalarOrEmpty, mustBeInteger, mustBeNonnegative, mustBeFinite} = []
+        options.dt {mustBeScalarOrEmpty, mustBeNumeric, mustBePositive, mustBeFinite} = []
+        options.CFL {mustBeScalarOrEmpty, mustBeNumeric, mustBePositive, mustBeFinite} = []
+        options.EndTime {mustBeScalarOrEmpty, mustBeNumeric, mustBePositive, mustBeFinite} = []
+    end
+    
+    kwave.utilities.mustBeAllOrNoneEmpty(options.Nt, options.dt)
+    if isempty(options.Nt)
+        [options.Nt, options.dt] = obj.autoComputeTimeStep(options.CFL, options.EndTime);
+    end
+    
+    startTime = datetime('now');
+    
+    kwave.toolbox.Logger.info(['Calling ' class(obj) '.run...']);
+    obj.kgrid.displayGridSize();
+    kwave.toolbox.Logger.info(['  dt: ' kwave.utilities.scaleSI(options.dt) 's, end time: ' kwave.utilities.scaleSI(options.dt * single(options.Nt)) 's, time steps: ' num2str(options.Nt)]);
+    
+    if (obj.timeStepsTaken==0)
+        % Set initial conditions.
+        obj.setInitialConditions;
+        if ~isempty(obj.sensor)
+            obj.sensor.initialiseSensorData(options.Nt);
+        end
+    end
+    
+    % Take time steps
+    obj.executeTimeStep(options.Nt, options.dt);
+    
+    elapsedTime = between(startTime, datetime('now'));
+    kwave.toolbox.Logger.info(['  run completed in ' kwave.utilities.formatDuration(elapsedTime)]);
+    
+    % Update time variables.
+    obj.prevTimeStep = options.dt;
+    obj.timeStepsTaken = obj.timeStepsTaken + options.Nt;
+    if isempty(obj.timeArray)
+        obj.timeArray = (0:(single(options.Nt))) * options.dt;
+    else
+        obj.timeArray = [obj.timeArray, obj.timeArray(end) + (1:single(options.Nt)) * options.dt];
+    end
 end
