@@ -13,7 +13,7 @@
 % conditions for a photoacoustic source defined by |source.initialPressure|
 % are setup in |kwave.toolbox.AcousticSolver.executeTimeStep| as this
 % relies on the time step size.
-% 
+%
 % The reference sound speed |obj.medium.soundSpeedReference| is also
 % assigned if not provided. The value is set to maximum value in
 % |obj.medium.soundSpeed| which means the scheme will be unconditionally
@@ -26,12 +26,12 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 

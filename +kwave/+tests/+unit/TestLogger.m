@@ -11,21 +11,21 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
 classdef TestLogger < matlab.unittest.TestCase
-    
+
     properties
         logFileName = 'testLogFile.txt';
     end
-    
+
     methods (TestClassSetup)
 
         % Create an empty log file.
@@ -35,34 +35,34 @@ classdef TestLogger < matlab.unittest.TestCase
         end
 
     end
-    
+
     methods (TestClassTeardown)
 
         % Delete the log file.
         function deleteLogFile(testCase)
             kwave.toolbox.Logger.reset;
             delete(testCase.logFileName);
-        end     
+        end
 
     end
-    
+
     methods (Test)
-        
+
         % Smoke test for the debug log method.
         function testLoggerDebugMethod(~)
             kwave.toolbox.Logger.debug('Debug message.');
         end
-        
+
         % Smoke test for the info log method.
         function testLoggerInfoMethod(~)
             kwave.toolbox.Logger.info('Information message.');
         end
-        
+
         % Smoke test for the warning log method.
         function testLoggerWarningMethod(~)
             kwave.toolbox.Logger.warning('Warning message.');
         end
-        
+
         % Test the error log method.
         function testLoggerErrorMethod(testCase)
             testCase.verifyError(@() kwave.toolbox.Logger.error('TestClass:CustomErrorID', 'Error message.'), 'TestClass:CustomErrorID');
@@ -73,10 +73,10 @@ classdef TestLogger < matlab.unittest.TestCase
             kwave.toolbox.Logger.setLogToFile(testCase.logFileName);
             message = 'Message written to a file.';
             kwave.toolbox.Logger.info(message);
-            
+
             fileContent = fileread(testCase.logFileName);
             testCase.verifyNotEmpty(strfind(fileContent, message));
-        end        
+        end
 
         % Test setting the log level and verify the line is not added.
         function testSetLogLevel(testCase)
@@ -84,7 +84,7 @@ classdef TestLogger < matlab.unittest.TestCase
             kwave.toolbox.Logger.setLogToFile(testCase.logFileName);
             message = 'This message should not appear.';
             kwave.toolbox.Logger.debug(message);
-            
+
             fileContent = fileread(testCase.logFileName);
             testCase.verifyEmpty(strfind(fileContent, message));
         end
@@ -106,7 +106,7 @@ classdef TestLogger < matlab.unittest.TestCase
             kwave.toolbox.Logger.setLogToCommandLine();
             kwave.toolbox.Logger.info('Message written to command line.');
         end
-        
+
     end
-    
+
 end

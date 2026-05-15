@@ -11,7 +11,7 @@
 % |Grid| is the grid class used across the k-Wave Toolbox. An object
 % of the |Grid| class defines the grid coordinates and spatial
 % frequency (wavevector) matrices for a particular simulation.
-% 
+%
 % The grid is assumed to be a regular Cartesian grid with grid spacing
 % given by |gridSpacing|. The spatial grid matrices are indexed as: (x, 1)
 % in 1D; (x, y) in 2D; and (x, y, z) in 3D. Typically the grid spacing in
@@ -103,26 +103,26 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
 classdef Grid < handle
-    
+
     % Properties set by constructor.
     properties(SetAccess=immutable)
-        
+
         % Number of dimensions.
-        dimensions(1,1) double {mustBeLessThanOrEqual(dimensions,3)} = 0;   
+        dimensions(1,1) double {mustBeLessThanOrEqual(dimensions,3)} = 0;
 
         % Grid size [grid points].
         gridSize(1,3) double {mustBeInteger, mustBePositive, mustBeFinite} = [1, 1, 1];
-        
+
         % Grid point spacing [m].
       	gridSpacing(1,3) double {mustBeNonnegative, mustBeFinite} = [0, 0, 0];
 
@@ -130,16 +130,16 @@ classdef Grid < handle
         gridPadding(1,3) double {mustBeInteger, mustBeNonnegative, mustBeFinite} = [0, 0, 0];
 
     end
-    
+
     % Dependent properties without set methods. These parameters are not
     % stored but re-computed each time they are needed.
     properties(Dependent=true, GetAccess=public, SetAccess=private)
-        
+
         % Grid size in each direction [grid points].
         Nx;
         Ny;
         Nz;
-        
+
         % Grid point spacing in each direction [m].
       	dx;
         dy;
@@ -148,19 +148,19 @@ classdef Grid < handle
         % 1D vector of grid coordinates [m].
         xVec;
         yVec;
-        zVec;    
-        
+        zVec;
+
         % Nx by Ny by Nz matrix containing repeated copies of the grid
         % coordinates [m].
         x;
         y;
         z;
-        
+
         % Physical size of grid [m].
         xSize;
         ySize;
         zSize;
-        
+
         % Total number of grid points.
         totalGridPoints;
 
@@ -179,7 +179,7 @@ classdef Grid < handle
         kxMax;
         kyMax;
         kzMax;
-        
+
         % Nx by Ny by Nz matrix of scalar wavenumber [rad/m].
         k;
 
@@ -187,11 +187,11 @@ classdef Grid < handle
         kMax;
 
     end
-    
+
     % Constructor.
     methods
         function obj = Grid(gridSize, gridSpacing, gridPadding)
-            
+
             % Set grid dimensions based on length of gridSize vector.
             obj.dimensions = numel(gridSize);
 
@@ -212,10 +212,10 @@ classdef Grid < handle
 
         end
     end
-    
+
     % Get methods for dependent properties.
     methods
-        
+
         % Grid size and spacing in each direction.
         function Nx = get.Nx(obj)
             Nx = obj.gridSize(1);
@@ -301,7 +301,7 @@ classdef Grid < handle
         function zSize = get.zSize(obj)
             zSize = obj.Nz .* obj.dz;
         end
-                
+
         % Total number of grid points.
         function N = get.totalGridPoints(obj)
             N = prod(obj.gridSize);
@@ -361,7 +361,7 @@ classdef Grid < handle
                 case 3
                     ky = repmat(obj.kyVec.', [obj.Nx, 1, obj.Nz]);
             end
-        end   
+        end
 
         function kz = get.kz(obj)
             switch obj.dimensions
@@ -373,7 +373,7 @@ classdef Grid < handle
                     kz = repmat(permute(obj.kzVec, [2 3 1]), [obj.Nx, obj.Ny, 1]);
             end
         end
-  
+
         % Maximum supported frequency.
         function kxMax = get.kxMax(obj)
             kxMax = max(abs(obj.kxVec(:)));
@@ -392,9 +392,9 @@ classdef Grid < handle
             kMaxVec(kMaxVec == 0) = [];
             kMax = min(kMaxVec);
         end
-        
+
     end
-       
+
     % General class methods.
     methods
         highestPrimeFactors = highestPrimeFactors(obj);
@@ -403,9 +403,9 @@ classdef Grid < handle
         matrix = assignWithGridPadding(obj, matrix, edgeValues);
         matrix = returnWithoutGridPadding(obj, matrix);
     end
-    
+
     % Methods that can only be accessed by class members.
-    methods (Access='protected', Static=true, Hidden=true) 
+    methods (Access='protected', Static=true, Hidden=true)
         kVec = getWavenumbers(Nx, dx)
     end
 end

@@ -26,20 +26,20 @@
 %
 %% Input Arguments
 % * |kgrid|    - (kwave.toolbox.Grid) Object which defines the simulation
-%                grid size. 
+%                grid size.
 % * |medium|   - (kwave.toolbox.GridInput) Object which defines the medium
-%                properties. 
+%                properties.
 % * |source|   - (kwave.toolbox.GridInput) Object which defines the source
-%                properties. 
+%                properties.
 % * |sensor|   - (kwave.toolbox.sensor) Object which defines the sensor
-%                properties. 
+%                properties.
 % * |settings| - (kwave.toolbox.Settings) Object which defines the
-%                simulation settings. 
+%                simulation settings.
 %
 %% Properties
 % * |prevTimeStep|   - (single) Size of the time step used in the last call
 %                      to |run|. Set to an empty array if |run| hasn't been
-%                      called. 
+%                      called.
 % * |timeArray|      - (single) Time points at which update steps were taken.
 % * |timeStepsTaken| - (integer) Number of time steps taken.
 %
@@ -59,12 +59,12 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 

@@ -12,16 +12,16 @@
 % Calculates the correction to the usual kspace corrected temporal
 % derivative for using an varied time stepping by considering a first
 % order interpolation.
-% 
-% The vector components of the correction are stacked in the 4th dimension 
+%
+% The vector components of the correction are stacked in the 4th dimension
 % as with the gradient. For example, if calling gradient on a matrix of dimensions
 % (10, 10), the output will be of size (10, 10, 1, 2). This is to allow
 % codes to implement multi-dimensional support by always looping over the
 % fourth dimension.
 %
-% The components are calculated using 1D FFTs, and kappa2 is applied in the 
+% The components are calculated using 1D FFTs, and kappa2 is applied in the
 % Fourier domain. before inverting the Fourier Transform.
-% 
+%
 %
 %% Input Arguments
 % * |f| - (numeric) Scalar field that is to be corrected using.
@@ -36,12 +36,12 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 

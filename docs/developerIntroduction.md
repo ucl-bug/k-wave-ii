@@ -54,7 +54,7 @@ When adding a new class or function, examples should be added. If the code usage
 
 Please remember to also add the new class, function or tutorial/example file in the appropriate section header file (`Toolbox_Functions.m`, `Tutorials.m` or `Utility_Functions.m`).
 
-<a name="note"></a>\* ***A note on publishing markup for tutorials and examples:***  
+<a name="note"></a>\* ***A note on publishing markup for tutorials and examples:***
 According to the matlab documentation,
 
 > _Markup only works in comments that immediately follow a section break._
@@ -91,16 +91,16 @@ If considering using other external code or libraries (e.g., from the file excha
 
 k\-Wave uses the [class\-based unit testing framework](https://uk.mathworks.com/help/matlab/class-based-unit-tests.html). There are several test levels (defined in `kwave.tests.TestType`), each of which lives in its own namespace:
 
--  **`+unit`:** Unit tests validate individual components of a function or class in isolation. 
--  **`+linting`:** Linting checks assess code for stylistic and syntactical correctness. 
--  **`+legacy`:** Legacy tests are regression tests against k\-Wave I to ensure existing functionality remains unaffected by changes. 
+-  **`+unit`:** Unit tests validate individual components of a function or class in isolation.
+-  **`+linting`:** Linting checks assess code for stylistic and syntactical correctness.
+-  **`+legacy`:** Legacy tests are regression tests against k\-Wave I to ensure existing functionality remains unaffected by changes.
 
 Each top level class or function should have at least one corresponding unit test. Unit tests should have 100% line coverage. Tests should inherit from one of the following:
 
--  `kwave.tests.unit.AbstractTestGridInput` for testing classes that derive from `kwave.toolbox.GridInput`. 
--  `kwave.tests.unit.AbstractTestGrid` for tests that need to iterate over different sized grids. 
--  `matlab.unittest.TestCase` for general tests. 
--  `matlab.perftest.TestCase` for performance tests. 
+-  `kwave.tests.unit.AbstractTestGridInput` for testing classes that derive from `kwave.toolbox.GridInput`.
+-  `kwave.tests.unit.AbstractTestGrid` for tests that need to iterate over different sized grids.
+-  `matlab.unittest.TestCase` for general tests.
+-  `matlab.perftest.TestCase` for performance tests.
 
 The filenames for all tests should start with `Test`. Unit tests should be named `TestClassName` or `TestFunctionName`. Other tests should be given sensible descriptive names.
 
@@ -111,4 +111,3 @@ To run the tests locally, call:
 
 - `kwave.tests.runTests(TestType=kwave.tests.TestType.unit)`
 - `kwave.tests.runTests(TestType=kwave.tests.TestType.linting)`
-

@@ -9,14 +9,14 @@
 %
 %% Description
 % Compute and assign the coefficients tau and eta in the fractional,
-% assigns values as given by the formula in: 
+% assigns values as given by the formula in:
 %
-%  Treeby, Bradley E., and Ben T. Cox. 
-%     "Modeling power law absorption and dispersion for acoustic propagation using the fractional Laplacian." 
+%  Treeby, Bradley E., and Ben T. Cox.
+%     "Modeling power law absorption and dispersion for acoustic propagation using the fractional Laplacian."
 %     The Journal of the Acoustical Society of America 127.5 (2010): 2741-2748.
 %
 % If no dispersion, problem reduces with eta=0. If no absorption, problem
-% reduces with tau=0. 'noDispersion' or 'noAbsorption' or 'on' must be declared by setting 
+% reduces with tau=0. 'noDispersion' or 'noAbsorption' or 'on' must be declared by setting
 % |AcousticSolver.absorptionType|. If absorptionPower=0, 2, problem reduces.
 %
 % |obj.prevTimeStep|, the k-space correction is adjusted to account for the
@@ -33,12 +33,12 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
@@ -69,5 +69,3 @@ else
 end
 
 end
-
-

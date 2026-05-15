@@ -37,17 +37,17 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
 classdef ComplexSource < kwave.toolbox.GridInput
-  
+
     properties(Dependent=true)
         sourceFieldMagnitude
         sourceFieldPhase
@@ -72,7 +72,7 @@ classdef ComplexSource < kwave.toolbox.GridInput
         function sourceFieldPhase = get.sourceFieldPhase(obj)
             sourceFieldPhase = angle(obj.subsref(struct('type', '.', 'subs', 'sourceField')));
         end
-    
+
     end
 
 end

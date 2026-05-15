@@ -32,18 +32,18 @@
 %   % Define input field.
 %   [x, y] = meshgrid(-2:.2:2, -2:.2:2);
 %   z = x .* exp(-x.^2 - y.^2);
-%   
+%
 %   % Define input field.
 %   kgrid = kwave.toolbox.Grid([40, 40], 0.2);
 %   f = kgrid.x .* exp(-kgrid.x.^2 - kgrid.y.^2);
-%   
+%
 %   % Compute gradient using k-Wave.
 %   fourierDiffOps = kwave.toolbox.FourierCollocation(kgrid);
 %   gradf = fourierDiffOps.gradient(f);
-%   
+%
 %   % Compute gradient using finite differences with MATLAB gradient function.
 %   [fy, fx] = gradient(f, kgrid.dx);
-%   
+%
 %   % Plot.
 %   figure;
 %   subplot(2, 3, 1);
@@ -51,31 +51,31 @@
 %   colorbar;
 %   axis image;
 %   title('k-Wave \partialf/\partialx');
-%   
+%
 %   subplot(2, 3, 2);
 %   imagesc(fx);
 %   colorbar;
 %   axis image;
 %   title('Finite Difference \partialf/\partialx');
-%   
+%
 %   subplot(2, 3, 3);
 %   imagesc(abs(gradf(:, :, :, 1) - fx));
 %   colorbar;
 %   axis image;
 %   title('Difference');
-%   
+%
 %   subplot(2, 3, 4);
 %   imagesc(gradf(:, :, :, 2));
 %   colorbar;
 %   axis image;
 %   title('k-Wave \partialf/\partialy');
-%   
+%
 %   subplot(2, 3, 5);
 %   imagesc(fy);
 %   colorbar;
 %   axis image;
 %   title('Finite Difference \partialf/\partialy');
-%   
+%
 %   subplot(2, 3, 6);
 %   imagesc(abs(gradf(:, :, :, 2) - fy));
 %   colorbar;
@@ -111,12 +111,12 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
@@ -183,7 +183,7 @@ classdef FourierCollocation < handle
             obj.ddxNoShift = reshape(ifftshift(1i * obj.kgridPadded.kxVec), [], 1, 1);
             obj.ddyNoShift = reshape(ifftshift(1i * obj.kgridPadded.kyVec), 1, [], 1);
             obj.ddzNoShift = reshape(ifftshift(1i * obj.kgridPadded.kzVec), 1, 1, []);
-            
+
             obj.ddxShiftPos = reshape(ifftshift(1i * obj.kgridPadded.kxVec .* exp( 1i.*obj.kgridPadded.kxVec * obj.kgridPadded.dx/2)), [], 1, 1);
             obj.ddyShiftPos = reshape(ifftshift(1i * obj.kgridPadded.kyVec .* exp( 1i.*obj.kgridPadded.kyVec * obj.kgridPadded.dy/2)), 1, [], 1);
             obj.ddzShiftPos = reshape(ifftshift(1i * obj.kgridPadded.kzVec .* exp( 1i.*obj.kgridPadded.kzVec * obj.kgridPadded.dz/2)), 1, 1, []);
