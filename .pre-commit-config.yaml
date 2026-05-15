@@ -1,10 +1,12 @@
-exclude: ^\+kwave/\+legacy/
+exclude: ^(\+kwave/\+legacy/|\+kwave/site/)
 
 repos:
   - repo: https://github.com/rbubley/mirrors-prettier
     rev: v3.8.1
     hooks:
       - id: prettier
+        exclude: ^\+kwave/docs
+        exclude_types: [markdown]
         args:
           - --quote-props=as-needed
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -23,7 +25,6 @@ repos:
           - --branch=main
           - --branch=develop
       - id: trailing-whitespace
-        exclude_types: [markdown]
   - repo: https://github.com/codespell-project/codespell
     rev: v2.4.1
     hooks:
