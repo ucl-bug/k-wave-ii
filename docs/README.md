@@ -19,6 +19,20 @@ Every k-Wave-II release is tested with all releases of MATLAB after the minimum 
 
 ## Getting started
 
+### Installation
+
+- From the [k-Wave-II GitHub page](https://github.com/ucl-bug/k-wave-ii), find the green Code button and either [clone the repo](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) or download a zip file of the current version of the codebase.
+- Open Matlab.
+- Add the location of the k-wave files to the Matlab path, eg. using `addpath(<path-to-kwave>)` on the Matlab command line, or the Set Path button on the Home tab.
+- Generate the help files, if required, from the Matlab command line. This can take several minutes to run but only needs to be done once as the help files documentation will then be stored.
+```
+>> kwave.devtools.GenerateDocumentation
+``` 
+- Import the kwave namespace. This avoids having to prepend all function calls with `kwave.toolbox`, eg. `kgrid = Grid(Nx,dx)` rather than `kgrid = kwave.toolbox.Grid(Nx,dx)`.
+```
+>> import kwave.toolbox.*
+```
+
 ### Minimum requirements
 
 - k-Wave-II requires MATLAB 2022b or later.
