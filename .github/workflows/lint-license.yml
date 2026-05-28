@@ -1,0 +1,36 @@
+# Will check all .m files for the copyright statement and if not present will inject it
+# and commit the changes
+name: License HeaderFixer
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - "**/*.m"
+  push:
+
+jobs:
+  apply-license:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required to allow the bot to commit changes
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }} # Checkout the PR branch specifically
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Run License Fixer Script
+        run: |
+          # Run the script
+          python docs/apply_license_mlab_check.py
+
+      - name: Commit and Push Changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "style: automatically apply LGPL license headers to .m files"
+          file_pattern: "**/*.m"

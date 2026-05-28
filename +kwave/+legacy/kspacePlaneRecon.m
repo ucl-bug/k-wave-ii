@@ -212,7 +212,7 @@ p = p( ((Nt + 1) / 2):Nt, :, :);
 % data (first approximation to correcting the limited view problem) (p_zxy)
 p = 2 * 2 * p ./ c;
 
-% enfore positivity condition (p_zxy)
+% enforce positivity condition (p_zxy)
 if positivity_cond
     disp('  applying positivity condition...');
     p(p < 0) = 0;

@@ -44,29 +44,29 @@
 %
 %   clearvars;
 %   import kwave.toolbox.*
-%   
+%
 %   % Grid.
 %   kgrid = Grid(128, 1e-3, 20);
-%   
+%
 %   % Medium.
 %   medium = AcousticMedium(kgrid);
 %   medium.soundSpeed = 1500;
 %   medium.density = 1000;
-%   
+%
 %   % Source.
 %   source = AcousticSource(kgrid);
 %   source.initialPressure = exp( -kgrid.xVec.^2 ./ (10 * kgrid.dx).^2 );
-%   
+%
 %   % Settings.
 %   settings = Settings;
 %   settings.plotFrequency = 1;
-%   
+%
 %   % Solve.
 %   solver = AcousticSolver(kgrid, medium, source, [], settings);
 %   CFL = 0.5;
 %   dt = CFL * kgrid.dx / medium.soundSpeed;
 %   solver.run(Nt=80, dt=dt);
-%   
+%
 %   % Plot.
 %   figure;
 %   plot(1e3 * kgrid.xVec, source.initialPressure);
@@ -85,7 +85,8 @@
 %   medium properties.
 % * |source| - (kwave.toolbox.AcousticSource) Object which defines the
 %   source properties.
-% * |sensor| - ...Not yet implemented...
+% * |sensor| - (kwave.toolbox.AcousticSensor) Object which defines the
+%   sensor properties.
 % * |settings| - (kwave.toolbox.Settings) Object which defines the
 %   simulation settings.
 %
@@ -100,10 +101,14 @@
 % exclude each of the absorption terms within the equation of state.
 %
 %% Methods
-% * |setkSpaceCorrection|
-% * |setAbsorptionCoefficients|
+% * |autoComputeTimeStep|
+% * |executeTimeStep|
 % * |kappaSplitCorrection|
-%
+% * |setAbsorptionCoefficients|
+% * |setInitialConditions|
+% * |setkSpaceCorrection|
+
+
 % Copyright (C) 2024- The k-Wave Authors.
 %
 % This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
@@ -111,12 +116,12 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
@@ -136,7 +141,7 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
         velocityPadded single
         pml kwave.toolbox.SplitFieldPML
     end
-    
+
     properties(SetAccess=public,Hidden=false)
         absorptionType char {mustBeMember( absorptionType, {'off','on', 'noAbsorption', 'noDispersion'})} = 'off'
     end
@@ -145,29 +150,37 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
         absorbTauPadded single
         absorbEtaPadded single
         kappaSplit single
+
+        timePoint = 0;
     end
 
     % Constructor.
     methods
         function obj = AcousticSolver(kgrid, medium, source, sensor, settings)
+
             arguments
-                kgrid(1,1) kwave.toolbox.Grid
-                medium(1,1) kwave.toolbox.GridInput
-                source(1,1) kwave.toolbox.AcousticSource
+                kgrid(1,1)    kwave.toolbox.Grid
+                medium(1,1)   kwave.toolbox.GridInput
+                source(1,1)   kwave.toolbox.AcousticSource
                 sensor
                 settings(1,1) kwave.toolbox.Settings = kwave.toolbox.Settings
             end
-            
-                if ~(isa(medium, 'kwave.toolbox.Medium') || isa(medium, 'kwave.toolbox.AcousticMedium'))
-                    error('AcousticSolver:InvalidMediumType',...
-                        'medium must be an object of Medium OR AcousticMedium.');
-                end
+
+            %  Check medium and sensor inputs are of the right class
+            if ~(isa(medium, 'kwave.toolbox.Medium') || isa(medium, 'kwave.toolbox.AcousticMedium'))
+                error('AcousticSolver:InvalidMediumType',...
+                    'medium must be an object of Medium or AcousticMedium class.');
+            end
+            if ~(isempty(sensor) || isa(sensor, 'kwave.toolbox.AcousticSensor'))
+                error('AcousticSolver:InvalidSensorType',...
+                    'sensor must be an AcousticSensor object or be left empty [].');
+            end
 
             % Pass input arguments to superclass constructor. This calls
-                % setInitialConditions.
-                obj@kwave.toolbox.TimeDomainSolver(kgrid, medium, source, sensor, settings);
-                % Initialise PML object.
-                obj.pml = kwave.toolbox.SplitFieldPML(obj.kgrid);
+            % setInitialConditions.
+            obj@kwave.toolbox.TimeDomainSolver(kgrid, medium, source, sensor, settings);
+            % Initialise PML object.
+            obj.pml = kwave.toolbox.SplitFieldPML(obj.kgrid);
         end
     end
 
@@ -183,7 +196,7 @@ classdef AcousticSolver < kwave.toolbox.TimeDomainSolver
             velocity = obj.kgrid.returnWithoutGridPadding(obj.velocityPadded);
         end
     end
-    
+
     % Override inherited methods and add specific methods.
     methods(Access=protected)
         setInitialConditions(obj)

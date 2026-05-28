@@ -1,4 +1,4 @@
-%% setupQuarticPML
+%% Setup Quartic PML
 % *Package:* kwave.toolbox
 % *Class:* kwave.toolbox.SplitFieldPML
 %
@@ -28,12 +28,12 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
@@ -64,7 +64,7 @@ if (obj.kgrid.dimensions > 1)
         obj.kgrid.Ny + 2 * pmlSize(2), obj.kgrid.dy, ...
         timeStep, soundSpeed, ...
         Dimension=2, PMLSize=pmlSize(2), PMLAlpha=obj.pmlAlpha(2));
-    
+
     obj.pmlYStaggered = obj.getQuarticPMLProfile(...
         obj.kgrid.Ny + 2 * pmlSize(2), obj.kgrid.dy, ...
         timeStep, soundSpeed, ...
@@ -77,7 +77,7 @@ if (obj.kgrid.dimensions > 2)
         obj.kgrid.Nz + 2 * pmlSize(3), obj.kgrid.dz, ...
         timeStep, soundSpeed, ...
         Dimension=3, PMLSize=pmlSize(3), PMLAlpha=obj.pmlAlpha(3));
-    
+
     obj.pmlZStaggered = obj.getQuarticPMLProfile(...
         obj.kgrid.Nz + 2 * pmlSize(3), obj.kgrid.dz, ...
         timeStep, soundSpeed, ...

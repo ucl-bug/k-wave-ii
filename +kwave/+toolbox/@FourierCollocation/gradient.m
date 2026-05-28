@@ -1,4 +1,4 @@
-%% gradient
+%% The Gradient
 % *Class:* kwave.toolbox.FourierCollocation
 % *Package:* kwave.toolbox
 %
@@ -11,19 +11,19 @@
 %% Description
 % Calculates the gradient of a scalar field in 1D, 2D, or 3D using a
 % Fourier collocation spectral method.
-% 
+%
 % The vector components of the gradient are stacked in the 4th dimension of
 % the output. For example, if calling gradient on a matrix of dimensions
 % (10, 10), the output will be of size (10, 10, 1, 2). This is to allow
 % codes to implement multi-dimensional support by always looping over the
 % fourth dimension.
 %
-% If obj.kappa is defined, a k-space correction is applied as part of the
-% gradient calulation. If kappa is a scalar (single frequency correction)
+% If |obj.kappa| is defined, a k-space correction is applied as part of the
+% gradient calculation. If kappa is a scalar (single frequency correction)
 % or empty, the gradient components are calculated using 1D FFTs. If kappa
 % is a matrix, the gradient components are calculated using ND FFTs, and
 % kappa is applied in the Fourier domain.
-% 
+%
 % The gradient operations (and kappa if defined) are defined on the padded
 % grid. Thus, the inputs to this function must also be defined on the
 % padded grid. The output can be returned on a spatially staggered grid by
@@ -40,26 +40,27 @@
 %
 % * |Staggering| - ('none', 'forward', 'backward') Option to return the
 %   output staggered by half a grid point in the specified direction.
-%   Defatult = 'none'.
+%   Default = 'none'.
 %
 %% Output Arguments
 % * |df| - (numeric) Gradient of f.
 
-% Copyright (C) 2022- University College London.
+% Copyright (C) 2024- The k-Wave Authors.
 %
 % This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
 % software: you can redistribute it and/or modify it under the terms of the
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
+
 
 function df = gradient(obj, f, options)
 

@@ -1,4 +1,4 @@
-%% getWavenumbers
+%% Get Wavenumbers
 % *Class:* kwave.toolbox.Grid
 % *Package:* kwave.toolbox
 %
@@ -11,7 +11,7 @@
 % Creates the vector of wavenumbers (spatial frequencies) for use with the
 % MATLAB fft functions. Internally, MATLAB uses FFTW, so the frequency bins
 % match those used by FFTW. The DC component is returned in the centre of
-% the spectrum. Use |<matlab:doc('ifftshift') ifftshift>| to transform this
+% the spectrum. Use |<https://uk.mathworks.com/help/matlab/ref/ifftshift.html ifftshift>| to transform this
 % so the DC component is the first element.
 %
 %% Input Arguments
@@ -20,6 +20,22 @@
 %
 %% Output Arguments
 % * |kVec| - (double) Wavenumber vector.
+
+% Copyright (C) 2024- The k-Wave Authors.
+%
+% This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
+% software: you can redistribute it and/or modify it under the terms of the
+% GNU Lesser General Public License as published by the Free Software
+% Foundation, either version 3 of the License, or (at your option) any
+% later version.
+%
+% k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
+% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+% FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+% License for more details.
+%
+% You should have received a copy of the GNU Lesser General Public License
+% along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
 function kVec = getWavenumbers(numGridPoints, gridSpacing)
 
@@ -53,4 +69,4 @@ end
 nx(floor(numGridPoints/2) + 1) = 0;
 
 % Define the wavenumber vector components.
-kVec = (2*pi/gridSpacing) .* nx;       
+kVec = (2*pi/gridSpacing) .* nx;

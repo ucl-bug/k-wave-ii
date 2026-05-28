@@ -1,4 +1,4 @@
-%% expandMatrix
+%% Expand Matrix
 % *Package:* kwave.toolbox
 %
 % Enlarge a matrix by extending the edge values.
@@ -18,17 +18,13 @@
 %% Examples
 %
 %   matrix = magic(3)
-%
 %   matrix =
-%     
 %        8     1     6
 %        3     5     7
 %        4     9     2
 %
 %   kwave.toolbox.expandMatrix(matrix, 1)
-%
 %   ans =
-%     
 %        8     8     1     6     6
 %        8     8     1     6     6
 %        3     3     5     7     7
@@ -36,9 +32,7 @@
 %        4     4     9     2     2
 %
 %   kwave.toolbox.expandMatrix(matrix, [2 0 1 0], 0)
-%
 %   ans =
-%     
 %        0     0     0     0
 %        0     0     0     0
 %        0     8     1     6
@@ -46,6 +40,7 @@
 %        0     4     9     2
 %
 %% Input Arguments
+%
 % * |matrix| - (numeric) A 1D, 2D, or 3D matrix to expand.
 % * |expansionSize| - (integer) The expansion size. There are several ways
 %   to specify the size. If a scalar value is given, this expansion is
@@ -59,7 +54,24 @@
 %   expansion.
 %
 %% Output Arguments
+%
 % * |matrixExpanded| - (numeric) Expanded matrix.
+
+% Copyright (C) 2024- The k-Wave Authors.
+%
+% This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
+% software: you can redistribute it and/or modify it under the terms of the
+% GNU Lesser General Public License as published by the Free Software
+% Foundation, either version 3 of the License, or (at your option) any
+% later version.
+%
+% k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
+% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+% FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+% License for more details.
+%
+% You should have received a copy of the GNU Lesser General Public License
+% along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
 function matrixExpanded = expandMatrix(matrix, expansionSize, expansionValue)
 
@@ -86,18 +98,18 @@ if islogical(matrix)
 end
 
 if isvector(matrix) % 1D vector
-    
+
     % Extract expansion sizes.
     if length(expansionSize) == 2
         x1Expansion = expansionSize(1);
         x2Expansion = expansionSize(2);
-    elseif isscalar(expansionSize) 
+    elseif isscalar(expansionSize)
         x1Expansion = expansionSize(1);
         x2Expansion = expansionSize(1);
     else
         kwave.toolbox.Logger.error('expandMatrix:incorrectInputSize', 'For 1D matrices, expansionSize must be given as [exp] or [xStartExp, xEndExp].');
     end
-           
+
     % Create expanded matrix.
     xSize = length(matrix) + x1Expansion + x2Expansion;
     if isrow(matrix)
@@ -115,7 +127,7 @@ if isvector(matrix) % 1D vector
     % if specified.
     if extendEdges
         matrixExpanded(1:(x1 - 1)) = matrix(1);
-        matrixExpanded((x2 + 1):end) = matrix(end); 
+        matrixExpanded((x2 + 1):end) = matrix(end);
     else
         matrixExpanded(:) = expansionValue;
     end
@@ -124,7 +136,7 @@ if isvector(matrix) % 1D vector
     matrixExpanded(x1:x2) = matrix;
 
 elseif ismatrix(matrix) % 2D matrix
-    
+
     % Extract expansion sizes.
     if length(expansionSize) == 4
         x1Expansion = expansionSize(1);
@@ -135,7 +147,7 @@ elseif ismatrix(matrix) % 2D matrix
         x1Expansion = expansionSize(1);
         x2Expansion = expansionSize(1);
         y1Expansion = expansionSize(2);
-        y2Expansion = expansionSize(2);    
+        y2Expansion = expansionSize(2);
     elseif isscalar(expansionSize)
         x1Expansion = expansionSize;
         x2Expansion = expansionSize;
@@ -166,7 +178,7 @@ elseif ismatrix(matrix) % 2D matrix
         matrixExpanded(x2+1:end, y1:y2) = repmat(matrix(end, :), x2Expansion, 1);
         matrixExpanded(x1:x2, 1:y1-1) = repmat(matrix(:, 1), 1, y1Expansion);
         matrixExpanded(x1:x2, y2+1:end) = repmat(matrix(:, end), 1, y2Expansion);
-        
+
         % Extend corner values.
         matrixExpanded(1:x1-1, 1:y1-1) = matrix(1, 1) * ones(x1Expansion, y1Expansion, dataType);
         matrixExpanded(1:x1-1, y2+1:end) = matrix(1, end) * ones(x1Expansion, y2Expansion, dataType);
@@ -187,21 +199,21 @@ else % 3D matrix
         x1Expansion = expansionSize(1);
         x2Expansion = expansionSize(2);
         y1Expansion = expansionSize(3);
-        y2Expansion = expansionSize(4);            
+        y2Expansion = expansionSize(4);
         z1Expansion = expansionSize(5);
         z2Expansion = expansionSize(6);
     elseif length(expansionSize) == 3
         x1Expansion = expansionSize(1);
         x2Expansion = expansionSize(1);
         y1Expansion = expansionSize(2);
-        y2Expansion = expansionSize(2);              
+        y2Expansion = expansionSize(2);
         z1Expansion = expansionSize(3);
         z2Expansion = expansionSize(3);
     elseif isscalar(expansionSize)
         x1Expansion = expansionSize;
         x2Expansion = expansionSize;
         y1Expansion = expansionSize;
-        y2Expansion = expansionSize;            
+        y2Expansion = expansionSize;
         z1Expansion = expansionSize;
         z2Expansion = expansionSize;
     else
@@ -219,7 +231,7 @@ else % 3D matrix
     x1 = 1 + x1Expansion;
     x2 = xSize - x2Expansion;
     y1 = 1 + y1Expansion;
-    y2 = ySize - y2Expansion;        
+    y2 = ySize - y2Expansion;
     z1 = 1 + z1Expansion;
     z2 = zSize - z2Expansion;
 
@@ -233,8 +245,8 @@ else % 3D matrix
         matrixExpanded(x1:x2, 1:y1-1, z1:z2) = repmat(matrix(:, 1, :), [1, y1Expansion, 1]);
         matrixExpanded(x1:x2, y2+1:end, z1:z2) = repmat(matrix(:, end, :), [1, y2Expansion, 1]);
         matrixExpanded(x1:x2, y1:y2, 1:z1-1) = repmat(matrix(:, :, 1), [1, 1, z1Expansion]);
-        matrixExpanded(x1:x2, y1:y2, z2+1:end) = repmat(matrix(:, :, end), [1, 1, z2Expansion]);            
-        
+        matrixExpanded(x1:x2, y1:y2, z2+1:end) = repmat(matrix(:, :, end), [1, 1, z2Expansion]);
+
         % Extend edge values.
         matrixExpanded(1:x1-1, 1:y1-1, z1:z2) = repmat(matrix(1, 1, :), [x1Expansion, y1Expansion, 1]);
         matrixExpanded(1:x1-1, y2+1:end, z1:z2) = repmat(matrix(1, end, :), [x1Expansion, y2Expansion, 1]);
@@ -248,7 +260,7 @@ else % 3D matrix
         matrixExpanded(x1:x2, y2+1:end, 1:z1-1) = repmat(matrix(:, end, 1), [1, y2Expansion, z1Expansion]);
         matrixExpanded(x1:x2, 1:y1-1, z2+1:end) = repmat(matrix(:, 1, end), [1, y1Expansion, z2Expansion]);
         matrixExpanded(x1:x2, y2+1:end, z2+1:end) = repmat(matrix(:, end, end), [1, y2Expansion, z2Expansion]);
-        
+
         % Extend corner values.
         matrixExpanded(1:x1-1, 1:y1-1, 1:z1-1) = matrix(1, 1, 1)*ones(x1Expansion, y1Expansion, z1Expansion, dataType);
         matrixExpanded(1:x1-1, y2+1:end, 1:z1-1) = matrix(1, end, 1)*ones(x1Expansion, y2Expansion, z1Expansion, dataType);

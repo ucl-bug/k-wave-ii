@@ -1,4 +1,4 @@
-%% stagger
+%% The Stagger Operation
 % *Class:* kwave.toolbox.FourierCollocation
 % *Package:* kwave.toolbox
 %
@@ -11,17 +11,17 @@
 %% Description
 % Calculates the staggered function of a scalar field in 1D, 2D, or 3D using a
 % Fourier method, staggering in each grid spacing individually.
-% 
+%
 % The vector components of the staggered field are stacked in the 4th dimension of
-% the output. Staggering only in one dimension each. 
+% the output. Staggering only in one dimension each.
 % For example, if calling stagger on a matrix of dimensions
 % (10, 10), the output will be of size (10, 10, 1, 2). This is to allow
 % codes to implement multi-dimensional support by always looping over the
 % fourth dimension.
-% 
-% The stagger operations are defined on the padded grid. Thus, the inputs 
-% to this function must also be defined on the padded grid. The output can 
-% be returned on a spatially staggered grid by setting the optional |Staggering| 
+%
+% The stagger operations are defined on the padded grid. Thus, the inputs
+% to this function must also be defined on the padded grid. The output can
+% be returned on a spatially staggered grid by setting the optional |Staggering|
 % argument.
 %
 %% Input Arguments
@@ -35,13 +35,13 @@
 %
 % * |Staggering| - ('forward', 'backward') Option to return the
 %   output staggered by half a grid point in the specified direction.
-%   Defatult = 'forward'.
+%   Default = 'forward'.
 % * |Type| - ('fourier', 'linInterpolate')
 %
 %% Output Arguments
-% * |f| - (numeric) f but staggered in each co-ordinate direction.
+% * |f| - (numeric) f but staggered in each coordinate direction.
 
-% Copyright (C) 2024- University College London.
+% Copyright (C) 2024- The k-Wave Authors.
 %
 % This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
 % software: you can redistribute it and/or modify it under the terms of the
@@ -56,6 +56,7 @@
 %
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
+
 
 function fstg = stagger(obj, f, options)
 
@@ -85,7 +86,7 @@ switch options.Type
         f_k = fftn(f);
         for dimInd = 1:obj.dimensions
             switch dimInd
-                case 1 
+                case 1
                     fstg(:, :, :, 1) = ifftn(xshift .* f_k, 'symmetric');
                 case 2
                     fstg(:, :, :, 2) = ifftn(yshift .* f_k, 'symmetric');

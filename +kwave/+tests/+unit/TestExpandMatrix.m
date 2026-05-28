@@ -4,6 +4,22 @@
 %
 % Unit tests for the expandMatrix function.
 
+% Copyright (C) 2024- The k-Wave Authors.
+%
+% This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
+% software: you can redistribute it and/or modify it under the terms of the
+% GNU Lesser General Public License as published by the Free Software
+% Foundation, either version 3 of the License, or (at your option) any
+% later version.
+%
+% k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
+% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+% FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+% License for more details.
+%
+% You should have received a copy of the GNU Lesser General Public License
+% along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
+
 classdef TestExpandMatrix < matlab.unittest.TestCase
 
     properties(TestParameter)
@@ -18,9 +34,9 @@ classdef TestExpandMatrix < matlab.unittest.TestCase
     % Parameterized tests.
     methods(Test, ParameterCombination="sequential")
 
-        % Expand using edge values. 
+        % Expand using edge values.
         function testOutputSize(testCase, gridSize, expansionSize, expectedSize, expectedSum, contractionIndices)
-         
+
             import kwave.toolbox.*;
 
             % Create matrix with integers and expand using edge values.
@@ -43,9 +59,9 @@ classdef TestExpandMatrix < matlab.unittest.TestCase
 
         end
 
-        % Expand using specified value. 
+        % Expand using specified value.
         function testExpansionValue(testCase, gridSize, expansionSize, expectedZeros, contractionIndices)
-         
+
             import kwave.toolbox.*;
 
             % Create matrix with integers and expand using zeros.
@@ -68,7 +84,7 @@ classdef TestExpandMatrix < matlab.unittest.TestCase
         % Test expansion of logical matrices.
         function testLogicalMatrix(testCase, gridSize, expansionSize, expectedZeros)
             import kwave.toolbox.*;
-            
+
             matrix = true(gridSize);
             expandedMatrix = expandMatrix(matrix, expansionSize, false);
 

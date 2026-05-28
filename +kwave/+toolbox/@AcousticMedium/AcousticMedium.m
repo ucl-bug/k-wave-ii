@@ -27,22 +27,41 @@
 %    medium.absorptionPower = rand();
 %
 %% Properties
+%
 % * |soundSpeed| - (single) Compressional sound speed [m/s].
 % * |soundSpeedReference| - (single) Reference compressional sound speed
 %   used in the k-space correction [m/s]. Automatically defined in
 %   kWaveAcoustic if not defined by the user.
 % * |density| - (single) Mass density [kg/m^2].
 % * |absorptionCoeff| - (single) Power law attenuation coefficient
-%   [dB/(MHz^y cm)]. 
+%   [dB/(MHz^y cm)].
 % * |absorptionPower| - (single scalar) Power law attenuation power.
 % * |BonA| - (single) Parameter of nonlinearity.
 %
 % In order to model absorption both absorptionCoeff, and absorptionPower
-% must be defiened, and solver.absorptionType must be set for the acoustic
+% must be defined, and solver.absorptionType must be set for the acoustic
 % solver
+%
 %% See Also
+%
 % * |GridInput|
 % * |AcousticSolver|
+
+% Copyright (C) 2024- The k-Wave Authors.
+%
+% This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
+% software: you can redistribute it and/or modify it under the terms of the
+% GNU Lesser General Public License as published by the Free Software
+% Foundation, either version 3 of the License, or (at your option) any
+% later version.
+%
+% k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
+% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+% FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+% License for more details.
+%
+% You should have received a copy of the GNU Lesser General Public License
+% along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
 classdef AcousticMedium < kwave.toolbox.GridInput
 

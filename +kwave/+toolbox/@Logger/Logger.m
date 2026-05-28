@@ -85,18 +85,34 @@
 %   shown alongside the log message. Defaults to false.
 %
 %% See Also
-% * |<matlab:doc('warning') warning>|
-% * |<matlab:doc('error') error>|
+% * |<https://uk.mathworks.com/help/matlab/ref/warning.html warning>|
+% * |<https://uk.mathworks.com/help/matlab/ref/error.html error>|
 % * |kwave.toolbox.LogLevels|
 
+% Copyright (C) 2024- The k-Wave Authors.
+%
+% This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
+% software: you can redistribute it and/or modify it under the terms of the
+% GNU Lesser General Public License as published by the Free Software
+% Foundation, either version 3 of the License, or (at your option) any
+% later version.
+%
+% k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
+% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+% FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+% License for more details.
+%
+% You should have received a copy of the GNU Lesser General Public License
+% along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
+
 classdef Logger < handle
-    
+
     properties (Access = private)
         logLevel (1,1) kwave.toolbox.LogLevels;
         logFile char;
         displayTimeStamp (1,1) logical
     end
-    
+
     methods (Access = private)
 
         % Constructor.
@@ -105,7 +121,7 @@ classdef Logger < handle
             obj.logFile = '';
             obj.displayTimeStamp = false;
         end
-        
+
         % Method to log messages with different log levels.
         function logMessage(obj, level, message)
             if level >= obj.logLevel
@@ -113,7 +129,7 @@ classdef Logger < handle
                 formattedMessage = message;
                 if obj.displayTimeStamp
                     timestamp = datetime('now', 'Format', 'yyyy-MM-dd HH:mm:ss');
-                    formattedMessage = sprintf('%s - %s: %s', timestamp, char(level), formattedMessage);  
+                    formattedMessage = sprintf('%s - %s: %s', timestamp, char(level), formattedMessage);
                 end
 
                 if isempty(obj.logFile)
@@ -128,7 +144,7 @@ classdef Logger < handle
         end
 
     end
-    
+
     methods (Static, Hidden=true)
 
         % Static method to access the singleton instance.
@@ -144,13 +160,13 @@ classdef Logger < handle
             end
             singleInstance = instance;
         end
-        
+
         % Static method to log messages.
         function log(level, message)
             logger = kwave.toolbox.Logger.getInstance();
             logger.logMessage(level, message);
         end
-        
+
     end
 
     methods (Static)
@@ -158,20 +174,20 @@ classdef Logger < handle
         % Method to reset the Logger instance.
         function reset()
             kwave.toolbox.Logger.getInstance(true);
-        end  
+        end
 
         % Static method to set the log level.
         function setLogLevel(level)
             logger = kwave.toolbox.Logger.getInstance();
             logger.logLevel = level;
         end
-        
+
         % Static method to set the output to a file.
         function setLogToFile(fileName)
             logger = kwave.toolbox.Logger.getInstance();
             logger.logFile = fileName;
         end
-        
+
         % Static method to set the output to the command window.
         function setLogToCommandLine()
             logger = kwave.toolbox.Logger.getInstance();
@@ -183,23 +199,23 @@ classdef Logger < handle
             logger = kwave.toolbox.Logger.getInstance();
             logger.displayTimeStamp = value;
         end
-        
+
         % Static method to log debug messages.
         function debug(message)
             kwave.toolbox.Logger.log(kwave.toolbox.LogLevels.Debug, message);
         end
-        
+
         % Static method to log info messages.
         function info(message)
             kwave.toolbox.Logger.log(kwave.toolbox.LogLevels.Info, message);
         end
-        
+
         % Static method to log warning messages and call warning.
         function warning(message)
             kwave.toolbox.Logger.log(kwave.toolbox.LogLevels.Warning, message);
             warning(message);
         end
-        
+
         % Static method to log error messages and throw an exception.
         function error(errID, errorMessage)
             kwave.toolbox.Logger.log(kwave.toolbox.LogLevels.Error, errorMessage);
