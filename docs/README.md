@@ -11,12 +11,6 @@ k\-Wave-II is an open\-source MATLAB toolbox used to solve partial differential 
 
 k-Wave-II is a major re-write of the original [k-Wave](https://github.com/ucl-bug/k-wave) Toolbox, developed with the aim of making k-Wave sustainable in the long term. The specific objectives are to re-engineer the code base leveraging object orientated programming, to improve the development and release process to incorporate best practice, and to facilitate greater engagement of the user and contributor communities in its development.
 
-## Releases
-
-k-Wave-II is currently in a pre-release state. We aim, in due course, to release a new version of the toolbox every six months, with patches issued in-between as needed. To use the latest features between releases, you can clone the [github repo](https://github.com/ucl-bug/k-wave-ii/tree/develop) and use the `develop` branch. Please bear in mind that features on the `develop` branch may not be complete yet, and, in that context, we appreciate your feedback, contributions, and patience.
-
-Every k-Wave-II release is tested with all releases of MATLAB after the minimum (see [Minimum requirements](#minimum-requirements)), until the latest one before the release was made.
-
 ## Getting started
 
 ### Installation
@@ -28,20 +22,23 @@ Every k-Wave-II release is tested with all releases of MATLAB after the minimum 
 ```
 >> kwave.devtools.GenerateDocumentation
 ``` 
-- Import the kwave namespace. This avoids having to prepend all function calls with `kwave.toolbox`, eg. `kgrid = Grid(Nx,dx)` rather than `kgrid = kwave.toolbox.Grid(Nx,dx)`.
+- Import the kwave namespace. This avoids having to prepend all function calls with `kwave.toolbox`, eg. `kgrid = Grid(Nx,dx)` rather than `kgrid = kwave.toolbox.Grid(Nx,dx)`. (If you do this, ensure k-Wave-I is not on the Matlab path to avoid naming conflicts.)
 ```
 >> import kwave.toolbox.*
 ```
+- For examples of how to use k-Wave-II, and templates to build upon, see the tutorials in `kwave/tutorials`. 
+
 
 ### Minimum requirements
 
 - k-Wave-II requires MATLAB 2022b or later.
 - No MATLAB toolboxes are required to use k-Wave-II. However, running the unit tests requires the signal processing toolbox for the reference `sinc` function.
-- When importing the k-Wave-II namespace (`import kwave.toolbox.*`) it is recommended that k-Wave-I is NOT on the MATLAB path in order to avoid naming conflicts.
 
-### Using k-Wave-II
+## Releases
 
-For examples of how to use k-Wave-II, see the [tutorials](helpfilesweb/Tutorials/SUMMARY.md) and the [toolbox classes documentation](helpfilesweb/Toolbox_Functions/SUMMARY.md).
+k-Wave-II is currently in a pre-release state. We aim, in due course, to release a new version of the toolbox every six months, with patches issued in-between as needed. To use the latest features between releases, you can clone the [github repo](https://github.com/ucl-bug/k-wave-ii/tree/develop) and use the `develop` branch. Please bear in mind that features on the `develop` branch may not be complete yet, and, in that context, we appreciate your feedback, contributions, and patience.
+
+Every k-Wave-II release is tested with all releases of MATLAB after the minimum (see [Minimum requirements](#minimum-requirements)), until the latest one before the release was made.
 
 ## Getting help
 
@@ -58,7 +55,7 @@ Users are encouraged to contribute to the code and open pull requests for new fe
 We also encourage involvement by those able to review developers' code contributions. Please contact the maintainers if you are interested in becoming a code reviewer.
 
 ## Development lead
-k‑Wave‑II builds on long‑standing collaborations and the contributions of many researchers, building on foundational work by Bradley Treeby, Ben Cox, and Jiri Jaros. Its ongoing development is guided and maintained by [the UCL Biomedical Ultrasound Group](http://bug.medphys.ucl.ac.uk/).
+k‑Wave‑II builds on long‑standing collaborations and the contributions of many researchers to k-Wave-I, including foundational work by Bradley Treeby, Ben Cox, and Jiri Jaros. Its ongoing development is guided and maintained by [the UCL Biomedical Ultrasound Group](http://bug.medphys.ucl.ac.uk/).
 
 ## Contributors
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
