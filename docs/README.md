@@ -13,7 +13,7 @@ k-Wave-II is a major re-write of the original [k-Wave](https://github.com/ucl-bu
 
 ## Releases
 
-k-Wave-II is currently in a pre-release state. We aim, in due course, to release a new version of the toolbox every six months, with patches issued in-between as needed. To use the latest features between releases, you can clone the [github repo](https://github.com/ucl-bug/k-wave-ii/tree/main) and use the `develop` branch. Please bear in mind that features on the `develop` branch may not be complete yet, and, in that context, we appreciate your feedback, contributions, and patience.
+k-Wave-II is currently in a pre-release state. We aim, in due course, to release a new version of the toolbox every six months, with patches issued in-between as needed. To use the latest features between releases, you can clone the [github repo](https://github.com/ucl-bug/k-wave-ii/tree/develop) and use the `develop` branch. Please bear in mind that features on the `develop` branch may not be complete yet, and, in that context, we appreciate your feedback, contributions, and patience.
 
 Every k-Wave-II release is tested with all releases of MATLAB after the minimum (see [Minimum requirements](#minimum-requirements)), until the latest one before the release was made.
 
