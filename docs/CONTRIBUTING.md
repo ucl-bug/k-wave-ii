@@ -109,9 +109,9 @@ pre-commit run -a
 
 Only the k-Wave-II maintainers can merge PRs into any of the branches of the upstream repo. The pull request template will guide you through the requirements to get your changes approved and merged by the maintainers. For reference, those are
 
-- For new features (functions or classes), please add appropriate tests. See the [developer docs](../developerIntroduction#testing-framework) for more details.
+- For new features (functions or classes), please add appropriate tests. See the [developer docs](developerIntroduction.md) for more details.
 - All tests should pass. Running tests locally is encouraged but not required as CI will run them automatically when you open a pull request.
-- [Update the documentation](../developerIntroduction#writing-and-building-the-documentation) and make sure it builds and looks right.
+- [Update the documentation](developerIntroduction.md#writing-and-building-the-documentation) and make sure it builds and looks right.
 - Add examples and/or tutorials for substantial new functionality.
 - One approving code review from a maintainer is required.
 
