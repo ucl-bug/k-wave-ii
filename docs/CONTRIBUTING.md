@@ -17,7 +17,7 @@ If you are unsure whether something is a suitable contribution, please open an i
 Before beginning work on a substantial contribution, please read these Contributor Guidelines and:
 
 * [developerIntroduction.md](developerIntroduction.md)
-* [coding standard.md](codingStandard.md)
+* [codingStandard.md](codingStandard.md)
 
 ## Development Workflow
 
