@@ -1,6 +1,6 @@
 # Coding Standard
 
-MATLAB coding standard used for k\-Wave II.
+MATLAB coding standard used for k-Wave-II.
 
 ## Naming
 
