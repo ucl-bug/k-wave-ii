@@ -12,15 +12,15 @@
 % The documentation is generated in several stages:
 %
 % # The |.m| files in specified directories are converted directly to |.html|
-%   using the MATLAB <https://uk.mathworks.com/help/matlab/ref/publish.html publish> 
-%   function and to |.md| using the <https://uk.mathworks.com/help/matlab/ref/export.html export> 
+%   using the MATLAB <https://uk.mathworks.com/help/matlab/ref/publish.html publish>
+%   function and to |.md| using the <https://uk.mathworks.com/help/matlab/ref/export.html export>
 %   function. Text should be written using MATLAB publishing markup, which is parsed as headings,
 %   code, etc.
 % # The generated |.html| and |.md| files are modified to add links between
 %   related functions and classes.
 % # A |helptoc.xml| file is automatically created, adding links to the
 %   generated |.html| files. Similarly, the appropriate |SUMMARY.md| files
-%   are generated in the appropriate file tree structure that contains the 
+%   are generated in the appropriate file tree structure that contains the
 %   markdown files (ready to be turned into GitHub pages with <https://www.mkdocs.org/ mkdocs>)
 % # The documentation search database is created using
 %   <https://uk.mathworks.com/help/matlab/ref/builddocsearchdb.html builddocsearchdb>.
@@ -39,12 +39,12 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
@@ -196,7 +196,7 @@ classdef GenerateDocumentation
                     'outputDir', obj.helpDirHtml, ...
                     'evalCode', options.evalCode, ...
                     'showCode', options.showCode);
-                
+
                 % Replace deprecated <tt> tags with <code> tags
                 htmlFile_content = fileread(htmlFile);
 
@@ -266,7 +266,7 @@ classdef GenerateDocumentation
 
         % Given a source filename object "fromObj" that contains references
         % to other files, and a filename destination object "toObj" that
-        % contains the file that is referred to, add a relative link to the 
+        % contains the file that is referred to, add a relative link to the
         % destination file from the source file in both html and md.
         % This function is used to fix links in documentation between
         % classes and their methods, among other things.
@@ -365,7 +365,7 @@ classdef GenerateDocumentation
                 heading
                 options.addHeader = true;
             end
-            
+
             if options.addHeader
                 obj.addToXML(['<tocitem target="' strrep(heading,' ','_') '.html">' heading]);
             end
@@ -391,14 +391,14 @@ classdef GenerateDocumentation
             writelines(line, filename, 'WriteMode','append');
         end
 
-        % Create SUMMARY.md toc for the markdown versions of the files, 
+        % Create SUMMARY.md toc for the markdown versions of the files,
         % excluding class methods by default.
         function tocMd(obj, mFilenames, mdSubFolder, options)
             arguments
-                obj 
-                mFilenames 
-                mdSubFolder 
-                options.excludeClassMethods = true; 
+                obj
+                mFilenames
+                mdSubFolder
+                options.excludeClassMethods = true;
             end
             outputFullFolderName = fullfile(obj.helpDirMd,mdSubFolder);
             filename = fullfile(outputFullFolderName, 'SUMMARY.md');

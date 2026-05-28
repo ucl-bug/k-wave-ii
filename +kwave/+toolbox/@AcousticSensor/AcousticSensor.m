@@ -10,7 +10,7 @@
 %% Description
 % This class is used to define acoustic sensors. The constructor
 % takes an object of the |kwave.toolbox.Sensor| class, which defines the
-% grid size. 
+% grid size.
 %
 %% Examples
 % Define the grid and sensor objects, and a binary sensor mask containing a
@@ -21,7 +21,7 @@
 %    sensor.pressureSensor = 'on';
 %    sensor.mask = zeros(sensor.gridSize);
 %    sensor.mask(1, :) = 1;
-% 
+%
 %    kgrid = kwave.toolbox.Grid([128, 128], 1e-3);
 %    sensor = kwave.toolbox.AcousticSensor(kgrid);
 %    sensor.pressureSensor = 'off';
@@ -38,7 +38,7 @@
 %                      velocity is returned on the staggered grid and at
 %                      staggered times. The 'ongrid' option returns it on
 %                      the grid (same grid as the pressure) but still at
-%                      staggered times. Default 'off'. 
+%                      staggered times. Default 'off'.
 % * |densitySensor|  - Sets the acoustic density to be recorded ('on' /
 %                      'off'). Default 'off'.
 % * |mask|           - Binary mask the size of the grid with 1s indicated
@@ -46,9 +46,9 @@
 % * |timeStepSpacing| - Number of timesteps separating recording events. If
 %                       this is 1 then the sensors record at every
 %                       timestep. If 2 then at every other timestep, etc.
-%                       
+%
 %% Properties (post-simulation)
-% 
+%
 % * |pressure| - Matrix (number of sensor points x number of time points)
 %                containing the values of the acoustic pressure at the
 %                sensor positions at the times given in |times|. The sensor
@@ -56,9 +56,9 @@
 % * |velocity| - Matrix of values of the acoustic particle velocity at the
 %                sensor positions at the times given in |times|.
 % * |density|  - Matrix of values of the acoustic density at the sensor
-%                positions at the times given in |times|. 
+%                positions at the times given in |times|.
 % * |times|    - Vector of recording times.
-% 
+%
 %% See Also
 % * |Sensor|, |GridInput|
 
@@ -69,18 +69,18 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
 classdef AcousticSensor < kwave.toolbox.Sensor
 
-    properties 
+    properties
         pressureSensor char {mustBeMember( pressureSensor, {'on','off'})} = 'on'
         velocitySensor char {mustBeMember( velocitySensor, {'on','off','ongrid'})} = 'off'
         densitySensor  char {mustBeMember( densitySensor,  {'on','off'})} = 'off'
@@ -148,7 +148,7 @@ classdef AcousticSensor < kwave.toolbox.Sensor
 
             end
         end
-    
+
         % Assign the acoustic variables to the sensors
         function obj = recordSensorData(obj,solver,n)
 

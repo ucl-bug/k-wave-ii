@@ -20,12 +20,12 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
@@ -40,13 +40,13 @@ classdef TestAcousticSolverGrid < kwave.tests.unit.AbstractTestGrid
 
             import kwave.toolbox.*
             import matlab.unittest.constraints.IsEqualTo
- 
+
             % Medium.
             medium = AcousticMedium(testCase.kgrid);
             c0 = 1500;
             medium.soundSpeed = c0;
             medium.density = 1000;
-            
+
             % Source.
             source = AcousticSource(testCase.kgrid);
             variance = (1 * testCase.kgrid.dx)^2;
@@ -69,7 +69,7 @@ classdef TestAcousticSolverGrid < kwave.tests.unit.AbstractTestGrid
             % Settings.
             settings = Settings;
             settings.plotSimulation = 'off';
-            
+
             % Solve.
             solver = AcousticSolver(testCase.kgrid, medium, source, [], settings);
             Nt = 25;
@@ -162,7 +162,7 @@ classdef TestAcousticSolverGrid < kwave.tests.unit.AbstractTestGrid
             testCase.verifyThat(solver.velocity, IsEqualTo(solver1.velocity, "Within", testCase.tol));
             testCase.verifyThat(solver2.pressure, IsEqualTo(solver1.pressure, "Within", testCase.tol));
             testCase.verifyThat(solver2.velocity, IsEqualTo(solver1.velocity, "Within", testCase.tol));
-            
+
             medium.absorptionPower=1.9;
             medium.absorptionCoeff=0.5;
             solver2 = AcousticSolver(testCase.kgrid, medium, source2, [], settings);

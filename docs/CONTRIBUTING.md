@@ -17,19 +17,59 @@ git clone https://github.com/YOUR-USER-NAME/k-wave-ii
 git checkout 62-implement-pml-class
 git switch -c 75-implement-pml-class-getters
 ```
-Note that, in this case, your development refers to a different issue (`75` in this fictional example), that should ideally be a [sub-issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/adding-sub-issues) of the larger feature issue (`62` in this example).  
+Note that, in this case, your development refers to a different issue (`75` in this fictional example), that should ideally be a [sub-issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/adding-sub-issues) of the larger feature issue (`62` in this example).
 If you want to work on the parent issue directly, use its number instead, together with something that identifies you in the name of the branch, e.g.
 ```
 git switch -c 62-implement-pml-class-YOUR_USER_NAME
 ```
 
-**Now that you are ready to code, please read the [developers intro](developerIntroduction.md) and [coding standard](codingStandard.md)!**
-
+- [Set up a development environment](#setting-up-a-development-environment). This is not needed for the matlab code to run, but for the various tools you will need for development.
+- **Now that you are ready to code, please read the [developers intro](developerIntroduction.md) and [coding standard](codingStandard.md)!**
 - Commit to that branch locally and regularly push your work to the same named branch on the fork.
 - Label commit messages with the issue number, e.g., `git commit -m "#62: Basic class structure"`
 - If you need feedback or help but your branch is not ready to merge, open a draft pull request (PR) from your branch in your fork, to the feature branch in the upstream repo. Likewise, when you think the branch is ready for merging, open a (normal) PR, or convert your draft one to a normal PR, and request a code review.
 
 For experienced git users, `git rebase` should be avoided if multiple people might be contributing to a branch (use `git merge` instead).
+
+## Setting up a Development Environment
+
+**1. Create and activate an environment**
+Use an environment manager to create and activate a python environment.
+
+For example, with [conda](https://docs.conda.io/projects/conda/en/latest/index.html):
+
+```bash
+conda create -n kwave
+conda activate kwave
+```
+
+**2. Install dependencies**
+Install packages defined in `requirements.txt`:
+
+```
+pip install -r requirements.txt
+```
+
+This installs [`mkdocs`](https://www.mkdocs.org/) used to build the documentation (see [Writing and Building the Documentation](developerIntroduction.md#writing-and-building-the-documentation)).
+
+If you want to skip the pre-commit checks when you commit a change, you can use `git commit --no-verify`. However, the same tests will be run automatically on the CI when you push your changes to GitHub, and they will fail at that point if they identify any required fixes. We strongly suggest you fix any issues identified by pre-commit locally, before committing and pushing to the repository.
+
+**3. Install pre-commit**
+We use [pre-commit](https://pre-commit.com/) which runs automated checks (formatting, spelling, line endings, etc.) on every `git commit` to keep the codebase consistent.
+
+Install and enable it with:
+
+```bash
+pre-commit install
+```
+
+To run pre-commit manually:
+
+```bash
+pre-commit run
+```
+
+By default, the pre-commit checks will be run only on the files that changed. If you want to run it on all files, use `pre-commit run -a` instead.
 
 ## AI and LLM Use
 
@@ -65,5 +105,3 @@ For more information on why this is necessary and how ownership works in open so
 
 * [Open source development - An introduction to ownership and licensing issues](http://oss-watch.ac.uk/resources/iprguide)
 * [Contributor Licence Agreements (CLAs)](http://oss-watch.ac.uk/resources/cla)
-
-

@@ -1,31 +1,26 @@
-%% AcousticSource
+%% ElasticSource
 % *Package:* kwave.toolbox
 % *Superclasses:* kwave.toolbox.GridInput
 %
-% Class used to define acoustic sources.
+% Class used to define the elastic sources for a simulation.
 %
 %% Syntax
-%   source = AcousticSource(kgrid);
+%   source = ElasticSource(kgrid);
 %
 %% Description
-% This class is used to define the acoustic source terms (which includes
-% initial conditions). The constructor takes an object of the
-% |kwave.toolbox.Grid| class, which defines the grid size.
+% This class is used to define the elastic source terms. The constructor
+% takes an object of the |kwave.toolbox.Grid| class which defines the grid
+% size. Source matrices must match the grid size defined by kgrid.
 %
 %% Examples
 % Define the grid and source objects, and assign the initial pressure.
 %
 %    kgrid = kwave.toolbox.Grid([128, 128], 1e-3);
-%    source = kwave.toolbox.AcousticSource(kgrid);
+%    source = kwave.toolbox.ElasticSource(kgrid);
 %    source.initialPressure = rand(source.gridSize);
 %
-%% Required Properties
-% * |initialPressure| - Initial acoustic pressure distribution [Pa].
-%
-%% Optional Properties
-% * |initialVelocity| - Initial acoustic particle velocity distribution [m/s].
-%                       If this is not defined, it is assumed to be zero.
-%
+%% Properties
+% * |initialPressure| - (numeric) Initial pressure distribution [Pa].
 %% See Also
 % * |GridInput|
 
@@ -45,17 +40,13 @@
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
-classdef AcousticSource < kwave.toolbox.GridInput
+classdef ElasticSource < kwave.toolbox.GridInput
 
     properties(Constant, Hidden=true)
-
-        requiredProperties = {'initialPressure'};
-
+        requiredProperties = {};
         gridFields = kwave.toolbox.GridField.createGridFieldsMap([
             kwave.toolbox.GridField('initialPressure', Attributes={'real', 'finite'})
-            kwave.toolbox.GridField('initialVelocity', Attributes={'real', 'finite'}, Type=kwave.toolbox.GridFieldType.VectorField)
         ]);
-
     end
 
 end

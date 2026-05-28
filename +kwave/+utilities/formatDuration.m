@@ -46,12 +46,12 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
@@ -68,7 +68,7 @@ function formattedDuration = formatDuration(elapsedTime)
     end
 
     [H, M, S] = hms(elapsedTime);
-    
+
     formattedDuration = [num2str(S) 's'];
     if (M ~= 0)
         formattedDuration = [num2str(M) 'm ' formattedDuration];
@@ -76,5 +76,5 @@ function formattedDuration = formatDuration(elapsedTime)
     if (H ~= 0)
         formattedDuration = [num2str(H) 'h ' formattedDuration];
     end
-    
+
 end

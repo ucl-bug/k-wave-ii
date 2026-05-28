@@ -15,12 +15,12 @@ LICENSE_TEXT = """% Copyright (C) 2024- The k-Wave Authors.
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 """
@@ -45,7 +45,7 @@ def process_file(path):
     except Exception as e:
         if VERBOSE: print(f"  [!] Skip {path}: {e}")
         return
-    
+
     content = "".join(lines)
 
     # Check if the exact current license is already there
@@ -63,7 +63,7 @@ def process_file(path):
             start_idx = i
         if END_ID in line:
             end_idx = i
-            break 
+            break
 
     if start_idx != -1 and end_idx != -1:
         if VERBOSE: print(f"  [-] Removing outdated/wrong license (Lines {start_idx+1}-{end_idx+1})")
@@ -82,18 +82,18 @@ def process_file(path):
 
     for i, line in enumerate(lines):
         stripped = line.strip()
-        
+
         # Skip function or classdef at the very top
         if i == 0 and (stripped.startswith('function') or stripped.startswith('classdef')):
             insert_idx = i + 1
             continue
-            
+
         # If we hit a comment, we are in the help block
         if stripped.startswith('%'):
             in_help_block = True
             insert_idx = i + 1
         else:
-            # If we hit an empty line or code AFTER having seen comments, 
+            # If we hit an empty line or code AFTER having seen comments,
             # the help block is over.
             if in_help_block:
                 break
@@ -105,17 +105,17 @@ def process_file(path):
 
     # Assemble new content
     new_lines = lines[:insert_idx]
-    
+
     # Add spacing for readability
     if insert_idx > 0 and not new_lines[-1].isspace():
         new_lines.append("\n")
-    
+
     new_lines.append(LICENSE_TEXT)
-    
+
     # Add spacing after if code follows
     if insert_idx < len(lines) and not lines[insert_idx].isspace():
         new_lines.append("\n")
-        
+
     new_lines.extend(lines[insert_idx:])
 
     with open(path, 'w', encoding='utf-8') as f:

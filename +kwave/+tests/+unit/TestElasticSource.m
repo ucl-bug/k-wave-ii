@@ -1,8 +1,8 @@
-%% TestAcousticSource
+%% TestElasticSource
 % *Package:* kwave.tests.unit
 % *Superclasses:* kwave.tests.unit.AbstractTestGridInput
 %
-% Unit tests for the AcousticSource class using the AbstractTestGridInput
+% Unit tests for the ElasticSource class using the AbstractTestGridInput
 % class.
 
 % Copyright (C) 2024- The k-Wave Authors.
@@ -21,15 +21,15 @@
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
-classdef TestAcousticSource < kwave.tests.unit.AbstractTestGridInput
+classdef TestElasticSource < kwave.tests.unit.AbstractTestGridInput
 
     properties
-        inputClass = 'AcousticSource'
+        inputClass = 'ElasticSource'
         inputProperties = {'initialPressure'}
         inputPropertiesPadded = {'initialPressurePadded'}
         inputPropertiesScalar = {}
         inputPropertiesComplex = {}
-        inputPropertiesVectorField = {'initialVelocity','initialVelocityPadded'}
+        inputPropertiesVectorField = {}
     end
 
     methods(Test)
@@ -40,7 +40,7 @@ classdef TestAcousticSource < kwave.tests.unit.AbstractTestGridInput
 
             % Initialize source object.
             grid = kwave.toolbox.Grid([64,64,], [0.5,0.5]);
-            source = kwave.toolbox.AcousticSource(grid);
+            source = kwave.toolbox.ElasticSource(grid);
             source.initialPressure = rand(source.gridSize);
 
             % Check slicing.
@@ -56,7 +56,7 @@ classdef TestAcousticSource < kwave.tests.unit.AbstractTestGridInput
             kgrid = kwave.toolbox.Grid([64,64,], [0.5,0.5]);
             randValue = rand(kgrid.gridSize);
 
-            source = kwave.toolbox.AcousticSource(kgrid);
+            source = kwave.toolbox.ElasticSource(kgrid);
             source.initialPressure = randValue;
             source.initialPressure(1:kgrid.Nx/4, :) = 2000;
 
@@ -67,37 +67,6 @@ classdef TestAcousticSource < kwave.tests.unit.AbstractTestGridInput
 
         end
 
-        % repeats tests for the Velocity
-        function testVelSubrefs(testCase)
-
-            % Initialize source object.
-            grid = kwave.toolbox.Grid([64,64,], [0.5,0.5]);
-            source = kwave.toolbox.AcousticSource(grid);
-            source.initialVelocity = rand([source.gridSize,grid.dimensions]);
-
-            % Check slicing.
-            testCase.verifyEqual(size(source.initialVelocity(1,:,:,:)), [1, 64,1,2]);
-
-        end
-
-        % Tests nested sub-assignments work, for example:
-        % source.initialPressure(idx) = val
-        function testVelSubasgn(testCase)
-
-            % Initialize source object.
-            kgrid = kwave.toolbox.Grid([64,64,], [0.5,0.5]);
-            randValue = rand([kgrid.gridSize,kgrid.dimensions]);
-
-            source = kwave.toolbox.AcousticSource(kgrid);
-            source.initialVelocity = randValue;
-            source.initialVelocity(1:kgrid.Nx/4, :,:) = 2000;
-
-            randValue(1:kgrid.Nx/4, :,:) = 2000;
-
-            % Check assignment
-            testCase.verifyEqual(source.initialVelocity, randValue);
-
-        end
     end
 
 end
