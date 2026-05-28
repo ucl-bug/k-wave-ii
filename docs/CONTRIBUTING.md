@@ -23,7 +23,7 @@ Before beginning work on a substantial contribution, please read these Contribut
 
 The k-Wave-II development workflow follows a git-flow style organisation (main/develop/feature branches), adapted for open-source development using forks. The `main` branch is reserved for releases. Code development typically takes place via feature branches that are eventually merged back into the `develop` branch. For more details, see the [maintainer guidelines](maintainerDocs.md)
 
-### Getting started (minimal workflow)
+### Getting started as a contributor
 
 For most contributions, the simplest workflow is:
 
