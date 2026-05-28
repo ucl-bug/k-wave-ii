@@ -1,4 +1,4 @@
-%% subsasgn
+%% The subsasgn Method
 % *Class:* kwave.toolbox.GridInput
 % *Package:* kwave.toolbox
 %
@@ -24,7 +24,7 @@
 %% Input Arguments
 % * |obj| - (kwave.toolbox.GridInput) Instance of the GridInput class.
 % * |S| - (struct) MATLAB structure specifying the target property and type
-%   of assignment. 
+%   of assignment.
 % * |value| - (various) The data to be assigned. Its attributes are
 %   validated if the target is a virtual property.
 %
@@ -33,6 +33,22 @@
 %   updated with the new assignment, whether it was to a virtual or a
 %   standard property.
 
+% Copyright (C) 2024- The k-Wave Authors.
+%
+% This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
+% software: you can redistribute it and/or modify it under the terms of the
+% GNU Lesser General Public License as published by the Free Software
+% Foundation, either version 3 of the License, or (at your option) any
+% later version.
+%
+% k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
+% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+% FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+% License for more details.
+%
+% You should have received a copy of the GNU Lesser General Public License
+% along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
+
 function obj = subsasgn(obj, S, value)
 
 if (S(1).type == '.') && (obj.gridFields.isKey(S(1).subs))
@@ -40,7 +56,7 @@ if (S(1).type == '.') && (obj.gridFields.isKey(S(1).subs))
     % If there's more than a single assignment, it means that something is
     % being done to the referenced variable. So we first do it and then
     % assign the value.
-    if length(S) > 1 
+    if length(S) > 1
         unpaddedArray = obj.subsref(S(1));
         S2 = S(2:end);
         value = builtin('subsasgn', unpaddedArray, S2, value);

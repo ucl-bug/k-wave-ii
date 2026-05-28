@@ -1,4 +1,4 @@
-%% mustBeAllOrNoneEmpty
+%% Must Be All Or None Empty
 % *Package:* kwave.utilities
 %
 % Validate that multiple inputs are either all empty, or none of them are
@@ -22,12 +22,12 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
@@ -35,10 +35,10 @@ function mustBeAllOrNoneEmpty(varargin)
 
     % Check if any input is empty.
     anyEmptyInput = any(cellfun(@isempty, varargin));
-    
+
     % Check if all inputs are empty.
     allEmptyInputs = all(cellfun(@isempty, varargin));
-    
+
     % Throw an error if some inputs are empty while others are non-empty.
     if anyEmptyInput && ~allEmptyInputs
         eid = 'Validators:mustBeAllOrNoneEmpty';

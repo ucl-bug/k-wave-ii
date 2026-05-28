@@ -5,12 +5,28 @@
 % Code quality tests for the k-wave II code base.
 %
 %% Description
-% The following tests are performed for all .m files in +kwave/+toolbox:
+% The following tests are performed for all .m files in |+kwave/+toolbox|:
 %
 % # |codeIssues| is called to make sure there are no code quality
 % errors in the files.
 % # A dependency check is performed to make sure the files don't depend on
 % any MATLAB toolboxes.
+
+% Copyright (C) 2024- The k-Wave Authors.
+%
+% This file is part of k-Wave-II (http://www.k-wave.org). k-Wave-II is free
+% software: you can redistribute it and/or modify it under the terms of the
+% GNU Lesser General Public License as published by the Free Software
+% Foundation, either version 3 of the License, or (at your option) any
+% later version.
+%
+% k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
+% ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+% FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+% License for more details.
+%
+% You should have received a copy of the GNU Lesser General Public License
+% along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
 classdef TestCodeQuality < matlab.unittest.TestCase
 
@@ -73,7 +89,7 @@ classdef TestCodeQuality < matlab.unittest.TestCase
         function testCyclomaticComplexity(~)
 
             % Get list of changed files.
-            changedFiles = kwave.utilities.gitChangedFiles(true);
+            changedFiles = kwave.devtools.gitChangedFiles(true);
 
             % Exclude any files not in the toolbox folder.
             changedFiles(~contains(changedFiles, '+toolbox')) = [];
@@ -98,7 +114,7 @@ classdef TestCodeQuality < matlab.unittest.TestCase
 
                 % Calculate complexity.
                 msg = strtrim(checkcode(changedFiles{ind}, "-cyc", '-string'));
-                
+
                 % Append the message to the file.
                 fprintf(fid, '%s\n', msg);
 

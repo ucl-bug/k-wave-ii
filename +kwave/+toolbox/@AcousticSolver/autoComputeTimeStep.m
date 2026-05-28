@@ -1,4 +1,4 @@
-%% autoComputeTimeStep
+%% autoCompute Time Step
 % *Class:* kwave.toolbox.AcousticSolver
 % *Package:* kwave.toolbox
 %
@@ -26,12 +26,12 @@
 % GNU Lesser General Public License as published by the Free Software
 % Foundation, either version 3 of the License, or (at your option) any
 % later version.
-% 
+%
 % k-Wave-II is distributed in the hope that it will be useful, but WITHOUT
 % ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 % FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
 % License for more details.
-% 
+%
 % You should have received a copy of the GNU Lesser General Public License
 % along with k-Wave-II. If not, see <http://www.gnu.org/licenses/>.
 
@@ -39,7 +39,7 @@ function [Nt, dt] = autoComputeTimeStep(obj, CFL, endTime)
 
 arguments
     obj
-    CFL {mustBeScalarOrEmpty, mustBePositive, mustBeFinite}
+    CFL     {mustBeScalarOrEmpty, mustBePositive, mustBeFinite}
     endTime {mustBeScalarOrEmpty, mustBePositive, mustBeFinite}
 end
 
@@ -63,7 +63,7 @@ dx = min(obj.kgrid.gridSpacing(1:obj.kgrid.dimensions));
 dt = CFL .* dx ./ soundSpeedMax;
 
 % Compute Nt based on EndTime.
-Nt = ceil(endTime / dt);
+Nt = uint64(ceil(endTime / dt));
 
 % Recompute dt to ensure that EndTime is exactly reached.
-dt = endTime / Nt;
+dt = endTime / single(Nt);
