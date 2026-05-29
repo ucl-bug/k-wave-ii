@@ -31,7 +31,7 @@ k-Wave-II is a major re-write of the original [k-Wave](https://github.com/ucl-bu
 
 ### Minimum requirements
 
-- k-Wave-II requires MATLAB 2022b or later.
+- k-Wave-II requires MATLAB R2023b or later.
 - No MATLAB toolboxes are required to use k-Wave-II. However, running the unit tests requires the signal processing toolbox for the reference `sinc` function.
 
 ## Releases
