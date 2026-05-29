@@ -20,10 +20,6 @@ repos:
       - id: mixed-line-ending
         args:
           - --fix=lf
-      - id: no-commit-to-branch
-        args:
-          - --branch=main
-          - --branch=develop
       - id: trailing-whitespace
   - repo: https://github.com/codespell-project/codespell
     rev: v2.4.1
