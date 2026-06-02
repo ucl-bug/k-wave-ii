@@ -1,4 +1,4 @@
-exclude: ^(\+kwave/\+legacy/|\+kwave/site/)
+exclude: ^(\+kwave/\+legacy/|\+kwave/site/|\.all-contributorsrc$)
 
 repos:
   - repo: https://github.com/rbubley/mirrors-prettier
