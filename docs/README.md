@@ -21,12 +21,12 @@ k-Wave-II is a major re-write of the original [k-Wave](https://github.com/ucl-bu
 - Generate the help files, if required, from the Matlab command line. This can take several minutes to run but only needs to be done once as the help files documentation will then be stored.
 ```
 >> kwave.devtools.GenerateDocumentation
-``` 
+```
 - Import the kwave namespace. This avoids having to prepend all function calls with `kwave.toolbox`, eg. `kgrid = Grid(Nx,dx)` rather than `kgrid = kwave.toolbox.Grid(Nx,dx)`. (If you do this, ensure k-Wave-I is not on the Matlab path to avoid naming conflicts.)
 ```
 >> import kwave.toolbox.*
 ```
-- For examples of how to use k-Wave-II, and templates to build upon, see the tutorials in `kwave/tutorials`. 
+- For examples of how to use k-Wave-II, and templates to build upon, see the tutorials in `kwave/tutorials`.
 
 
 ### Minimum requirements

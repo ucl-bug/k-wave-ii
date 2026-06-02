@@ -1,6 +1,6 @@
 # Contributor guidelines
 
-We welcome contributions from users with all levels of experience. 
+We welcome contributions from users with all levels of experience.
 
 Our aim with k-Wave-II is to keep the barriers to contributing as low as possible while maintaining a tidy and functioning codebase. If something in this guide feels like overkill for your contribution, please feel free to proceed in the simplest way that works and ask for help if needed; the maintainers are happy to guide you. For larger or more complex contributions, following the workflow described here will be important.
 
@@ -41,7 +41,7 @@ git switch -c <issue-number-short-descriptive-name>
 ```
 * Make the changes and open a pull request to the upstream repository.
 
-### Issues and feature branches 
+### Issues and feature branches
 
 - For anything beyond a trivial fix, please link your work to an existing issue. If there is no suitable issue, please open an issue in the upstream repo.
 - For larger or coordinated features, maintainers will organise work using shared feature branches. Please check to see if the relevant feature branch already exists for your issue:
