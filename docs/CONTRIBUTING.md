@@ -43,7 +43,7 @@ git switch -c <issue-number-short-descriptive-name>
 
 ### Issues and feature branches 
 
-- For anything beyond a trivial fix, please link your work to an existing issue. If there is no suitable issue, please [open an issue](../#getting-help) in the upstream repo.
+- For anything beyond a trivial fix, please link your work to an existing issue. If there is no suitable issue, please open an issue in the upstream repo.
 - For larger or coordinated features, maintainers will organise work using shared feature branches. Please check to see if the relevant feature branch already exists for your issue:
 ```
 git branch -r
@@ -96,7 +96,7 @@ git commit --no-verify
 ```
 However, the same tests will be run automatically during Continuous Integration (CI) when you push your changes to GitHub, and they will fail if any fixes are required. For this reason, we recommend fixing any issues identified by pre-commit locally before committing and pushing to the repository.
 
-To run pre-commit manually on the files that have changed use:
+To run pre-commit locally before committing files, it will first have to be installed (see above). To run pre-commit manually on the files that have changed use:
 
 ```bash
 pre-commit run
@@ -105,6 +105,7 @@ or to run it on all files, use
 ```
 pre-commit run -a
 ```
+
 ### Conditions for merging a PR
 
 Only the k-Wave-II maintainers can merge PRs into any of the branches of the upstream repo. The pull request template will guide you through the requirements to get your changes approved and merged by the maintainers. For reference, those are
