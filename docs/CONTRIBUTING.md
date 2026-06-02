@@ -76,35 +76,40 @@ For small contributions (e.g., documentation updates, minor fixes), you may not 
 
 #### 1. Create and activate an environment
 
-Use an environment manager to create and activate an environment. For example, with [conda](https://docs.conda.io/projects/conda/en/latest/index.html):
+Use an environment manager to create and activate an environment. This provides an isoloated workspace, preventing conflicts with other projects or installed packages on your machine. [conda](https://docs.conda.io/projects/conda/en/latest/index.html) is a popular way to set up an environment. To create an environment from the terminal use:
 
-```bash
+```
 conda create -n kwave
 conda activate kwave
 ```
+Environments are not tied to any particular folder or repository. The environment (here `kwave`) will remain active until you deactivate it (`conda deactivate`) or close the terminal.
+
 
 #### 2. Install dependencies
 
-Install packages defined in `requirements.txt`, which contain tools used for documentation and development:
+Once your clean environment is activated, install packages defined in `requirements.txt`, which contain tools used for documentation and development:
 ```
 pip install -r requirements.txt
 ```
+This will only need to be done the first time. For subsequent sessions, just activate the environment (`conda activate kwave`) and the packages will be there.
 
-k-Wave-II uses [pre-commit](https://pre-commit.com/) to run automated checks (formatting, spelling, line endings, etc.) on every `git commit` to keep the codebase consistent. If you want to skip the pre-commit checks when you commit a change, you can use 
+#### 3. Pre-commit
+
+k-Wave-II uses [pre-commit](https://pre-commit.com/) to run automated checks (formatting, spelling, line endings, etc.) on every `git commit` to keep the codebase consistent. (It is one of the packages installed above.) It is a good idea to run pre-commit locally before committing files. To run pre-commit manually on the files that have changed use:
+
 ```
-git commit --no-verify
-```
-However, the same tests will be run automatically during Continuous Integration (CI) when you push your changes to GitHub, and they will fail if any fixes are required. For this reason, we recommend fixing any issues identified by pre-commit locally before committing and pushing to the repository.
-
-To run pre-commit locally before committing files, it will first have to be installed (see above). To run pre-commit manually on the files that have changed use:
-
-```bash
 pre-commit run
 ```
 or to run it on all files, use
 ```
 pre-commit run -a
 ```
+
+If you want to skip the pre-commit checks when you commit a change, you can use 
+```
+git commit --no-verify
+```
+However, the same tests will be run automatically during Continuous Integration (CI) when you push your changes to GitHub, and they will fail if any fixes are required. For this reason, we recommend fixing any issues identified by pre-commit locally before committing and pushing to the repository.
 
 ### Conditions for merging a PR
 
