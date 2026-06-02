@@ -95,7 +95,9 @@ Installing the dependencies will only need to be done once. For subsequent sessi
 
 #### 3. Pre-commit
 
-k-Wave-II uses [pre-commit](https://pre-commit.com/) to run automated checks (formatting, spelling, line endings, etc.) on every `git commit` to keep the codebase consistent. (It is one of the packages installed above.) It is a good idea to run pre-commit locally before committing files. To run pre-commit manually on the files that have changed use:
+k-Wave-II uses [pre-commit](https://pre-commit.com/) to run automated checks (formatting, spelling, line endings, etc.) on every `git commit` to keep the codebase consistent. It also runs automatically as part of the Continuous Integration (CI) when changes are pushed to GitHub (e.g. on push or pull request). Running `pre-commit` locally allows you to catch and fix issues early, such as trailing whitespace, that would otherwise cause the CI checks to fail.
+
+To run pre-commit manually on the files that have changed use:
 
 ```
 pre-commit run
@@ -104,12 +106,7 @@ or to run it on all files, use
 ```
 pre-commit run -a
 ```
-
-If you want to skip the pre-commit checks when you commit a change, you can use 
-```
-git commit --no-verify
-```
-However, the same tests will be run automatically during Continuous Integration (CI) when you push your changes to GitHub, and they will fail if any fixes are required. For this reason, we recommend fixing any issues identified by pre-commit locally before committing and pushing to the repository.
+If you want to skip the pre-commit checks when you commit a change you can use `git commit --no-verify`, but this is not recommended as the same tests will be run automatically in CI when you push your changes to GitHub, and they will fail if any issues remain.
 
 ### Conditions for merging a PR
 
