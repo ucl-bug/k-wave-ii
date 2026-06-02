@@ -7,7 +7,7 @@ Introduction to k-Wave-II for developers.
 k-Wave-II is an open\-source MATLAB toolbox used to solve differential equations, with a particular focus on wave problems in acoustics. The unifying thread for the solvers is that spatial gradients are computed using a Fourier collocation spectral method. This has many advantages, including spectral convergence for smooth functions, and a known analytical form for the band\-limited interpolant, which is useful for implementing stair\-case free sources, for example.
 
 
-The main components of the toolbox are written using an object-orientated programming design approach, primarily using `handle` classes. Sets of functionality (such as medium inputs for a particular solver) are grouped into classes. Base classes are used for common functionality that needs to be re-used multiple times. This adheres to the don't repeat yourself (DRY) software development principle. Some additional helper functions with limited scope are written as standalone functions.
+The main components of the toolbox are written using an object-orientated programming design approach, primarily using `handle` classes. Sets of functionality (such as medium inputs for a particular solver) are grouped into classes. Base classes are used for common functionality that needs to be reused multiple times. This adheres to the don't repeat yourself (DRY) software development principle. Some additional helper functions with limited scope are written as standalone functions.
 
 
 The software is written with the following four guiding principles, in decreasing order of importance:
