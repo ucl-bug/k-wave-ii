@@ -97,7 +97,8 @@ Installing the dependencies will only need to be done once. For subsequent sessi
 
 k-Wave-II uses [pre-commit](https://pre-commit.com/) to run automated checks (formatting, spelling, line endings, etc.) on every `git commit` to keep the codebase consistent. It also runs automatically as part of the Continuous Integration (CI) when changes are pushed to GitHub (e.g. on push or pull request). Running `pre-commit` locally allows you to catch and fix issues early, such as trailing whitespace, that would otherwise cause the CI checks to fail.
 
-To run pre-commit manually on the files that have changed use:
+To enable `pre-commit`, first install it:
+
 
 ```
 pre-commit run
