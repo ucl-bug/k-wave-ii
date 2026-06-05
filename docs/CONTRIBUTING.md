@@ -89,7 +89,7 @@ Once your clean environment is activated, install the packages listed in `requir
 ```
 pip install -r requirements.txt
 ```
-Installing these dependencies will only need to be done once. For subsequent sessions, just activate the environment (`conda activate kwave`) and the packages will be there.
+(although on a mac you may have to run `conda install pip` first). Installing these dependencies will only need to be done once. For subsequent sessions, just activate the environment (`conda activate kwave`) and the packages will be there.
 
 #### 3. Pre-commit
 
