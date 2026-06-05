@@ -6,11 +6,10 @@ Our aim with k-Wave-II is to keep the barriers to contributing as low as possibl
 
 If you would like to contribute but are new to it, these are some good ways to get started:
 
-- Improve documentation (clarifications, typos, missing explanations)
 - Add or refine examples and tutorials
-- Suggest small usability improvements
-- Improve error messages or warnings
 - Help answer or triage issues
+- Improve documentation (clarifications, typos, missing explanations)
+- Suggest small usability improvements
 
 If you are unsure whether something is a suitable contribution, please open an issue or a draft pull request. We are happy to discuss ideas and help you get started.
 
@@ -21,7 +20,7 @@ Before beginning work on a substantial contribution, please read these Contribut
 
 ## Development Workflow
 
-The k-Wave-II development workflow follows a git-flow style organisation (`main`/`develop`/`feature` branches), adapted for open-source development using forks. The `main` branch is reserved for releases. Code development typically takes place via feature branches that are eventually merged back into the `develop` branch. For more details, see the [maintainer guidelines](maintainerDocs.md)
+The k-Wave-II development workflow follows a git-flow style organisation (`main`/`develop`/`feature` branches), adapted for open-source development using forks. The default branch is `develop`. The `main` branch is reserved for releases. Code development typically takes place via feature branches that are eventually merged back into the `develop` branch. For more details, see the [maintainer guidelines](maintainerDocs.md)
 
 ### Getting started as a contributor
 
@@ -61,23 +60,22 @@ git switch -c 62-implement-a-new-feature-<your-username>
 
 ### Development good practice
 
-- Commit to your branch locally and regularly push your work to the same named branch on the fork.
-- Label commit messages with the issue number, e.g.,
+- To make it easier for a reviewer to see what changes you have made to the code, commit to your branch locally, labelling commit messages with the issue number, e.g.,
 ```
 git commit -m "#62: Basic class structure"`
 ```
+- Regularly push your work to the same named branch on the fork.
 - If you need feedback or help but your branch is not ready to merge, open a draft pull request (PR).
-- When your branch is ready for merging, open a (normal) PR, or convert your draft one to one, and request a code review.
+- When your branch is ready for merging, open a (normal) PR, or convert your draft to one, and request a code review.
 - Please avoid rebasing branches that are shared with other contributors. For shared work we recommend using `git merge` instead to avoid disrupting others.
 
 ### Setting up a Development Environment
 
-For small contributions (e.g., documentation updates, minor fixes), you may not need a full development environment. For more substantial development work, we recommend the following setup:
+For very small contributions (e.g., documentation updates, minor fixes), you may not need a full development environment. For more substantial development work, we recommend the following setup:
 
 #### 1. Create and activate an environment
 
-Use an environment manager to create and activate an environment. This provides an isoloated workspace, preventing conflicts with other projects or installed packages on your machine. [conda](https://docs.conda.io/projects/conda/en/latest/index.html) is a popular way to set up an environment. To create an environment from the terminal use:
-
+Using an environment manager to create and activate an environment provides an isoloated workspace, preventing conflicts with other projects or installed packages on your machine. [conda](https://docs.conda.io/projects/conda/en/latest/index.html) is a popular way to set up an environment. To create an environment from the terminal use:
 ```
 conda create -n kwave
 conda activate kwave
@@ -87,23 +85,21 @@ Environments are not tied to any particular folder or repository. The environmen
 
 #### 2. Install dependencies
 
-Once your clean environment is activated, install packages defined in `requirements.txt`, which contain tools used for documentation and development:
+Once your clean environment is activated, install the packages listed in `requirements.txt`, which contain tools (dependencies) used for documentation and development. This can be done in one step:
 ```
 pip install -r requirements.txt
 ```
-Installing the dependencies will only need to be done once. For subsequent sessions, just activate the environment (`conda activate kwave`) and the packages will be there.
+Installing these dependencies will only need to be done once. For subsequent sessions, just activate the environment (`conda activate kwave`) and the packages will be there.
 
 #### 3. Pre-commit
 
-k-Wave-II uses [pre-commit](https://pre-commit.com/) to run automated checks (formatting, spelling, line endings, etc.) on every `git commit` to keep the codebase consistent. It also runs automatically as part of the Continuous Integration (CI) when changes are pushed to GitHub (e.g. on push or pull request). Running `pre-commit` locally allows you to catch and fix issues early, such as trailing whitespace, that would otherwise cause the CI checks to fail.
+One of the dependencies installed above is [pre-commit](https://pre-commit.com/). k-Wave-II uses `pre-commit` to run automated checks (formatting, spelling, line endings, etc.) on every `git commit` to keep the codebase consistent. It also runs automatically as part of the Continuous Integration (CI) when changes are pushed to GitHub (e.g. on push or pull request). Running `pre-commit` locally allows you to catch and fix issues early, such as trailing whitespace, that would otherwise cause the CI checks to fail.
 
-To enable `pre-commit`, first install it:
-
-
+To run pre-commit on just the files you changed use 
 ```
 pre-commit run
 ```
-or to run it on all files, use
+or to run it on all files use
 ```
 pre-commit run -a
 ```
