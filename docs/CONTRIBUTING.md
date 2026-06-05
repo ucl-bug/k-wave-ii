@@ -34,7 +34,7 @@ git clone <your-fork-url>
 
 ### 2. Set up a development environment
 
-For very small contributions (e.g., documentation updates, minor fixes), you may not need a full development environment. However, a development environment provides an isolated workspace, preventing conflicts with other projects or installed packages on your machine. [conda](https://docs.conda.io/projects/conda/en/latest/index.html) is a popular way to set up an environment. 
+For very small contributions (e.g., documentation updates, minor fixes), you may not need a full development environment. However, a development environment provides an isolated workspace, preventing conflicts with other projects or installed packages on your machine. [conda](https://docs.conda.io/projects/conda/en/latest/index.html) is a popular way to set up an environment.
 * To create an environment from the terminal use:
 ```
 conda create -n kwave
@@ -53,7 +53,7 @@ pip install -r requirements.txt
 ### 4. Create a branch
 
 * If your fork is not newly created, make sure your fork is up to date with the upstream repository (`k-wave-ii`).
-* Create a new branch from `develop`, choosing a descriptive name. For anything beyond a trivial fix, please use the number of the issue you are working on at the start of the branch name. If there is no suitable issue, please open an issue in the upstream repo. 
+* Create a new branch from `develop`, choosing a descriptive name. For anything beyond a trivial fix, please use the number of the issue you are working on at the start of the branch name. If there is no suitable issue, please open an issue in the upstream repo.
 ```
 git checkout develop
 git switch -c <issue-number-short-descriptive-name>
@@ -99,7 +99,7 @@ git push -u origin <my-branch>
 
 ### 8. Pull request
 
-* When your branch is ready for merging, go to GitHub `k-wave-ii` and open a pull request (new pull request →  compare across forks) to merge your changes into the `develop` branch of the upstream `k-wave-ii` repository. 
+* When your branch is ready for merging, go to GitHub `k-wave-ii` and open a pull request (new pull request →  compare across forks) to merge your changes into the `develop` branch of the upstream `k-wave-ii` repository.
 
 The most likely cause of CI test failure for small changes is `pre-commit`; see below how to fix these failures before you commit. If you need feedback or help but your branch is not ready to merge, open a draft pull request (PR). Please avoid rebasing branches that are shared with other contributors. For shared work we recommend using `git merge` instead to avoid disrupting others.
 
