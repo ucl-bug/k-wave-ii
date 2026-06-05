@@ -7,9 +7,14 @@
 [![All Contributors](https://img.shields.io/badge/all_contributors-14-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-k\-Wave-II is an open\-source MATLAB toolbox used to solve partial differential equations, with a particular focus on wave problems in biomedical ultrasound. The unifying thread for the solvers is that spatial gradients are computed using a Fourier collocation spectral method. This has many advantages, including spectral convergence for smooth functions and a known analytical form for the bandlimited interpolant, which is useful for implementing staircase-free sources, for example.
+k\-Wave-II is an open\-source MATLAB toolbox used to solve partial differential equations, with a particular focus on wave problems in biomedical ultrasound. The principal solvers are based on the k-space-corrected pseudospectral time domain method.
 
-k-Wave-II is a major re-write of the original [k-Wave](https://github.com/ucl-bug/k-wave) Toolbox, developed with the aim of making k-Wave sustainable in the long term. The specific objectives are to re-engineer the code base leveraging object orientated programming, to improve the development and release process to incorporate best practice, and to facilitate greater engagement of the user and contributor communities in its development.
+k-Wave-II is a major re-write of the original [k-Wave](https://github.com/ucl-bug/k-wave) Toolbox, developed with the aim of making k-Wave sustainable in the long term. The specific objectives are:
+- to re-engineer the code base leveraging object orientated programming,
+- to retain the ease-of-use and low barrier-to-entry of k-Wave-I,
+- to facilitate greater engagement of the user and contributor communities in code development,
+- to improve the development and release process to incorporate best practice,
+- and to make k-Wave easier for AI-agents to interact with, eg. for generating training datasets.
 
 ## Getting started
 
@@ -32,11 +37,11 @@ k-Wave-II is a major re-write of the original [k-Wave](https://github.com/ucl-bu
 ### Minimum requirements
 
 - k-Wave-II requires MATLAB R2023b or later.
-- No MATLAB toolboxes are required to use k-Wave-II. However, running the unit tests requires the signal processing toolbox for the reference `sinc` function.
+- No MATLAB toolboxes are required to use k-Wave-II. (Although note that if you want to run the unit tests locally you will require the signal processing toolbox for the reference `sinc` function.)
 
 ## Releases
 
-k-Wave-II is currently in a pre-release state. We aim, in due course, to release a new version of the toolbox every six months, with patches issued in-between as needed. To use the latest features between releases, you can clone the [github repo](https://github.com/ucl-bug/k-wave-ii/tree/develop) and use the `develop` branch. Please bear in mind that features on the `develop` branch may not be complete yet, and, in that context, we appreciate your feedback, contributions, and patience.
+k-Wave-II is currently in a pre-release state. We aim, in due course, to release a new version of the toolbox every six months, with patches issued in-between as needed. To use the latest features between releases, you can clone the [github repo](https://github.com/ucl-bug/k-wave-ii/tree/develop) and use the default `develop` branch. Please bear in mind that features on the `develop` branch may not be complete yet, and, in that context, we appreciate your feedback, contributions, and patience.
 
 Every k-Wave-II release is tested with all releases of MATLAB after the minimum (see [Minimum requirements](#minimum-requirements)), until the latest one before the release was made.
 
