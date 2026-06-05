@@ -95,7 +95,7 @@ pip install -r requirements.txt
 
 One of the dependencies installed above is [pre-commit](https://pre-commit.com/). k-Wave-II uses `pre-commit` to run automated checks (formatting, spelling, line endings, etc.) on every `git commit` to keep the codebase consistent. It also runs automatically as part of the Continuous Integration (CI) when changes are pushed to GitHub (e.g. on push or pull request). Running `pre-commit` locally allows you to catch and fix issues early, such as trailing whitespace, that would otherwise cause the CI checks to fail.
 
-To run pre-commit on just the files you changed use 
+To run pre-commit on just the files you changed use
 ```
 pre-commit run
 ```
