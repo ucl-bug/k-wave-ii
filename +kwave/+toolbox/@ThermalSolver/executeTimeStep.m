@@ -1,4 +1,4 @@
-%% Execute Time Step
+%% executeTimeStep
 % *Class:* kwave.toolbox.ThermalSolver
 % *Package:* kwave.toolbox
 %

@@ -1,4 +1,4 @@
-%% Grid
+%% grid
 % *Package:* kwave.toolbox
 %
 % Class used to define the spatial grid for a simulation.

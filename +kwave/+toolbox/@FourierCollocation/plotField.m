@@ -1,4 +1,4 @@
-%% Plot Field
+%% plotField
 % *Class:* kwave.toolbox.FourierCollocation
 % *Package:* kwave.toolbox
 %

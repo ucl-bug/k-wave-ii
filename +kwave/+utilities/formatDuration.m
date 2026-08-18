@@ -1,4 +1,4 @@
-%% Format Duration
+%% formatDuration
 % Package: kwave.utilities
 %
 % Format calendarDuration object into string containing hours, minutes, and

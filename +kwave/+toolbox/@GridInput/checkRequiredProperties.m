@@ -1,4 +1,4 @@
-%% Check Required Properties
+%% checkRequiredProperties
 % *Class:* kwave.toolbox.GridInput
 % *Package:* kwave.toolbox
 %

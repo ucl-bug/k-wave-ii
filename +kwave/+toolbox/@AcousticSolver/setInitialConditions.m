@@ -1,4 +1,4 @@
-%% set Initial Conditions
+%% setInitialConditions
 % *Class:* kwave.toolbox.AcousticSolver
 % *Package:* kwave.toolbox
 %

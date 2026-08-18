@@ -1,4 +1,4 @@
-%% Plot Fields Diff
+%% plotFieldsDiff
 % *Package:* kwave.utilities
 %
 % Plots two fields and the difference between them.

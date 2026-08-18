@@ -1,4 +1,4 @@
-%% Display Grid Size
+%% displayGridSize
 % *Class:* kwave.toolbox.Grid
 % *Package:* kwave.toolbox
 %

@@ -1,4 +1,4 @@
-%% Validate Size
+%% validateSize
 % *Class:* kwave.toolbox.Grid
 % *Package:* kwave.toolbox
 %

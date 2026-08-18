@@ -1,4 +1,4 @@
-%% set kSpace Correction
+%% setkSpaceCorrection
 % *Class:* kwave.toolbox.AcousticSolver
 % *Package:* kwave.toolbox
 %
