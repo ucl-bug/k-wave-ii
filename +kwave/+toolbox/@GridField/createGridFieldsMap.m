@@ -1,4 +1,4 @@
-%% Create Grid Fields Map
+%% createGridFieldsMap
 % *Class:* kwave.toolbox.GridField
 % *Package:* kwave.toolbox
 %

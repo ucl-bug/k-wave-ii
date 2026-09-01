@@ -1,4 +1,4 @@
-%% Set Absorption Coefficients
+%% setAbsorptionCoefficients
 % *Class:* kwave.toolbox.AcousticSolver
 % *Package:* kwave.toolbox
 %

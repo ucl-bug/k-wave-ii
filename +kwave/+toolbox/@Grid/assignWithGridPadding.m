@@ -1,4 +1,4 @@
-%% Assign With Grid Padding
+%% assignWithGridPadding
 % *Class:* kwave.toolbox.Grid
 % *Package:* kwave.toolbox
 %

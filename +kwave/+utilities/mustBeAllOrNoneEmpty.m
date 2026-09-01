@@ -1,4 +1,4 @@
-%% Must Be All Or None Empty
+%% mustBeAllOrNoneEmpty
 % *Package:* kwave.utilities
 %
 % Validate that multiple inputs are either all empty, or none of them are

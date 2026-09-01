@@ -1,4 +1,4 @@
-%% autoCompute Time Step
+%% autoComputeTimeStep
 % *Class:* kwave.toolbox.ThermalSolver
 % *Package:* kwave.toolbox
 %

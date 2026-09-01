@@ -1,4 +1,4 @@
-%% Return Without Grid Padding
+%% returnWithoutPadding
 % *Class:* kwave.toolbox.Grid
 % *Package:* kwave.toolbox
 %

@@ -1,4 +1,4 @@
-%% Highest Prime Factors
+%% highestPrimeFactors
 % *Class:* kwave.toolbox.Grid
 % *Package:* kwave.toolbox
 %

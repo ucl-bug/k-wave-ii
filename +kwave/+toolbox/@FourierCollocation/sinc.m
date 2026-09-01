@@ -1,4 +1,4 @@
-%% The Sinc Function
+%% sinc
 % *Class:* kwave.toolbox.FourierCollocation
 % *Package:* kwave.toolbox
 %

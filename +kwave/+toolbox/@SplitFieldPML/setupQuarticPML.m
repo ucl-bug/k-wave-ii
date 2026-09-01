@@ -1,4 +1,4 @@
-%% Setup Quartic PML
+%% setupQuadraticPML
 % *Package:* kwave.toolbox
 % *Class:* kwave.toolbox.SplitFieldPML
 %

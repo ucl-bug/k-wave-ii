@@ -1,4 +1,4 @@
-%% Get Property Groups
+%% getPropertyGroups
 % *Class:* kwave.toolbox.GridInput
 % *Package:* kwave.toolbox
 %

@@ -1,4 +1,4 @@
-%% The Gradient
+%% gradient
 % *Class:* kwave.toolbox.FourierCollocation
 % *Package:* kwave.toolbox
 %

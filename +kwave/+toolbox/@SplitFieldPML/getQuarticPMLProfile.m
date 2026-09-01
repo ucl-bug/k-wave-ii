@@ -1,4 +1,4 @@
-%% Get Quartic PML profile
+%% getQuadraticPMLProfile
 % *Package:* kwave.toolbox
 % *Class:* kwave.toolbox.SplitFieldPML
 %

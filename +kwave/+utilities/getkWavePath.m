@@ -1,4 +1,4 @@
-%% Get kWave Path
+%% getkWavePath
 % *Package:* kwave.utilities
 %
 % Return the path to the root k-Wave folder.

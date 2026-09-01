@@ -1,4 +1,4 @@
-%% execute Time Step
+%% executeTimeStep
 % *Class:* kwave.toolbox.AcousticSolver
 % *Package:* kwave.toolbox
 %

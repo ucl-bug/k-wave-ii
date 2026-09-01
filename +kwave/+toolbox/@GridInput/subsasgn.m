@@ -1,4 +1,4 @@
-%% The subsasgn Method
+%% subasgn
 % *Class:* kwave.toolbox.GridInput
 % *Package:* kwave.toolbox
 %

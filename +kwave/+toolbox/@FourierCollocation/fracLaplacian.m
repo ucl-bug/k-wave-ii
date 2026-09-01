@@ -1,4 +1,4 @@
-%% Fractional Laplacian
+%% fracLaplacian
 % *Class:* kwave.toolbox.FourierCollocation
 % *Package:* kwave.toolbox
 %
