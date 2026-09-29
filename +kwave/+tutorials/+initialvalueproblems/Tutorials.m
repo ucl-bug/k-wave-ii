@@ -3,6 +3,7 @@
 % * |t02_MoreAcousticSolverExamples1D|
 % * |t03_AcousticSolverExamples2D|
 % * |t04_MoreAcousticSolverExamples2D|
+% * |t05_RecordingParticleVelocity2D|
 
 % Copyright (C) 2024- The k-Wave Authors.
 %
