@@ -78,7 +78,7 @@ git switch -c 62-implement-a-new-feature-<your-username>
 
 ### 6. Run pre-commit checks
 
-One of the dependencies installed above is [pre-commit](https://pre-commit.com/). k-Wave-II uses `pre-commit` to run automated checks (formatting, spelling, line endings, etc.) on every `git commit` to keep the codebase consistent. It also runs automatically as part of the Continuous Integration (CI) when pull requests are made. Running `pre-commit` locally allows small issues, such as trailing whitespace, to be fixed. These would otherwise cause the CI checks to fail.
+k-Wave-II uses [pre-commit](https://pre-commit.com/) to check formatting, spelling, and line endings. Run `pre-commit install` once to enable these checks on local commits. [pre-commit.ci](https://pre-commit.ci/) runs the same hooks on pull requests and commits automatic fixes to the PR branch. Pull any fix commits before continuing locally; remaining check failures need to be fixed manually.
 
 * To run pre-commit on all files use
 ```

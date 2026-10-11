@@ -4,7 +4,7 @@
     k‑Wave-II is currently under active development. Documentation, APIs, and features may change without notice.
 
 [![License: LGPL v3](https://img.shields.io/badge/License-LGPL_v3-blue.svg)](LICENSE.md) [![codecov](https://codecov.io/gh/ucl-bug/k-wave-ii/graph/badge.svg?token=A8UMTDRF6T)](https://codecov.io/gh/ucl-bug/k-wave-ii) ![unit tests](https://github.com/ucl-bug/k-wave-ii/actions/workflows/tests.yml/badge.svg) ![code quality](https://github.com/ucl-bug/k-wave-ii/actions/workflows/code_quality.yml/badge.svg) ![build docs](https://github.com/ucl-bug/k-wave-ii/actions/workflows/docs.yml/badge.svg)<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-14-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-15-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 k\-Wave-II is an open\-source MATLAB toolbox used to solve partial differential equations, with a particular focus on wave problems in biomedical ultrasound. The principal solvers are based on the k-space-corrected pseudospectral time domain method.
@@ -87,6 +87,7 @@ k‑Wave‑II builds on long‑standing collaborations and the contributions of 
     <tr>
       <td align="center" valign="top" width="16.66%"><a href="https://qiuip.github.io/"><img src="https://avatars.githubusercontent.com/u/7360775?v=4?s=80" width="80px;" alt="Mashy Green"/><br /><sub><b>Mashy Green</b></sub></a><br /><a href="#custom-qiUip" title=""></a></td>
       <td align="center" valign="top" width="16.66%"><a href="https://github.com/nicolin"><img src="https://avatars.githubusercontent.com/u/6137757?v=4?s=80" width="80px;" alt="nicolin"/><br /><sub><b>nicolin</b></sub></a><br /><a href="#custom-nicolin" title=""></a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/parfenovma"><img src="https://avatars.githubusercontent.com/u/184916458?v=4?s=80" width="80px;" alt="Mikhail"/><br /><sub><b>Mikhail</b></sub></a><br /><a href="#custom-parfenovma" title=""></a></td>
     </tr>
   </tbody>
 </table>

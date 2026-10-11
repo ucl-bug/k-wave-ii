@@ -1,5 +1,9 @@
 exclude: ^(\+kwave/\+legacy/|\+kwave/site/|\.all-contributorsrc$)
 
+ci:
+  autofix_prs: true
+  autoupdate_branch: develop
+
 repos:
   - repo: https://github.com/rbubley/mirrors-prettier
     rev: v3.8.1
