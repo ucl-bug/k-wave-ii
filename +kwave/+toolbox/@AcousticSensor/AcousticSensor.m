@@ -59,6 +59,15 @@
 %                positions at the times given in |times|.
 % * |times|    - Vector of recording times.
 %
+%% Methods
+% * |initialiseSensorData(Nt, stepsTaken)| - Allocate storage for the
+%   recording events in the next |Nt| time steps, given that the solver has
+%   already taken |stepsTaken| time steps. When |stepsTaken| is 0 (the
+%   default), existing sensor data is cleared and an extra recording event
+%   is allocated for the initial conditions. Called by the solver.
+% * |recordSensorData(solver, n)| - Store the current fields from |solver|
+%   as recording event |n|. Called by the solver.
+%
 %% See Also
 % * |Sensor|, |GridInput|
 
@@ -84,7 +93,6 @@ classdef AcousticSensor < kwave.toolbox.Sensor
         pressureSensor char {mustBeMember( pressureSensor, {'on','off'})} = 'on'
         velocitySensor char {mustBeMember( velocitySensor, {'on','off','ongrid'})} = 'off'
         densitySensor  char {mustBeMember( densitySensor,  {'on','off'})} = 'off'
-        timeStepSpacing (1,1) {mustBeInteger} = 1
 
         pressure = [];
         velocity = [];
@@ -94,62 +102,56 @@ classdef AcousticSensor < kwave.toolbox.Sensor
 
     methods(Access=public)
 
-        function obj=initialiseSensorData(obj,Nt)
-            id=0;
-            if Nt==0
-                 if strcmp(obj.pressureSensor,'on') && isempty(obj.pressure)
-                    id=1;
-                    obj.pressure = single(zeros(obj.totalSensorPoints,1));
-                 end
-                 if strcmp(obj.densitySensor,'on') && isempty(obj.density)
-                    id=1;
-                    obj.density = single(zeros(obj.totalSensorPoints,1));
-                 end
-                 if (strcmp(obj.velocitySensor,'on') || strcmp(obj.velocitySensor,'ongrid')) && isempty(obj.velocity)
-                    id=1;
-                    obj.velocity = single(zeros(obj.totalSensorPoints,obj.kgrid.dimensions,1));
-                 end
-                 if id==1
-                    obj.times=0;
-                 end
+        function obj = initialiseSensorData(obj, Nt, stepsTaken)
+            % Allocate storage for the recording events in the next Nt
+            % time steps. stepsTaken is the number of time steps the
+            % solver has already taken. When it is 0, a new simulation is
+            % starting, so any existing sensor data is cleared and an
+            % extra recording event is allocated for the initial
+            % conditions at time step 0. Otherwise the existing data is
+            % extended. Recording events occur at time steps that are
+            % multiples of timeStepSpacing, counted from the start of the
+            % simulation.
+            arguments
+                obj
+                Nt(1,1)         {mustBeInteger, mustBeNonnegative, mustBeFinite}
+                stepsTaken(1,1) {mustBeInteger, mustBeNonnegative, mustBeFinite} = 0
+            end
+
+            Nt         = double(Nt);
+            stepsTaken = double(stepsTaken);
+            spacing    = double(obj.timeStepSpacing);
+
+            if stepsTaken == 0
+
+                % Start of a new simulation, including time step 0.
+                numRecords = floor(Nt ./ spacing) + 1;
+                obj.pressure    = [];
+                obj.density     = [];
+                obj.velocity    = [];
+                obj.times       = [];
+                obj.sensorIndex = 0;
+
             else
-                 if strcmp(obj.pressureSensor,'on')
-                     if isempty(obj.pressure)
-                         id=1;
-                         obj.pressure=[zeros(obj.totalSensorPoints,floor(Nt/obj.timeStepSpacing)+1)];
-                     else
-                         id=2;
-                         obj.pressure=[obj.pressure,zeros(obj.totalSensorPoints,floor(Nt/obj.timeStepSpacing))];
-                     end
-                end
-                if strcmp(obj.densitySensor,'on')
-                     if isempty(obj.density)
-                         id=1;
-                         obj.density=[zeros(obj.totalSensorPoints,floor(Nt/obj.timeStepSpacing)+1)];
-                     else
-                         id=2;
-                         obj.density=[obj.density,zeros(obj.totalSensorPoints,floor(Nt/obj.timeStepSpacing))];
-                     end
-                end
-                if strcmp(obj.velocitySensor,'on') || strcmp(obj.velocitySensor,'ongrid')
-                     if isempty(obj.velocity)
-                        id=1;
-                        obj.velocity=[zeros(obj.totalSensorPoints,obj.kgrid.dimensions,floor(Nt/obj.timeStepSpacing)+1)];
-                     else
-                         id=2;
-                         obj.velocity=cat(3,obj.velocity,zeros(obj.totalSensorPoints,obj.kgrid.dimensions,floor(Nt/obj.timeStepSpacing)));
-                     end
-                end
-                if id==1
-                    obj.times=zeros(1,floor(Nt/obj.timeStepSpacing)+1);
-                elseif id==2
-                    obj.times=[obj.times,zeros(1,floor(Nt/obj.timeStepSpacing))];
-                end
+
+                % Continuation of a simulation.
+                numRecords = floor((stepsTaken + Nt) ./ spacing) - floor(stepsTaken ./ spacing);
 
             end
+
+            numPoints = obj.totalSensorPoints;
+            if strcmp(obj.pressureSensor, 'on')
+                obj.pressure = [obj.pressure, zeros(numPoints, numRecords, 'single')];
+            end
+            if strcmp(obj.densitySensor, 'on')
+                obj.density = [obj.density, zeros(numPoints, numRecords, 'single')];
+            end
+            if any(strcmp(obj.velocitySensor, {'on', 'ongrid'}))
+                obj.velocity = cat(3, obj.velocity, zeros(numPoints, obj.kgrid.dimensions, numRecords, 'single'));
+            end
+            obj.times = [obj.times, zeros(1, numRecords)];
         end
 
-        % Assign the acoustic variables to the sensors
         function obj = recordSensorData(obj,solver,n)
 
             import kwave.toolbox.FourierCollocation

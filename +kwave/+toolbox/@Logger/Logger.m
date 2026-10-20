@@ -8,6 +8,7 @@
 %   Logger.debug(message)
 %   Logger.info(message)
 %   Logger.warning(message)
+%   Logger.warning(message, warnID)
 %   Logger.error(errID, errorMessage)
 %
 %% Description
@@ -25,6 +26,10 @@
 % by calling |kwave.toolbox.Logger.setLogToFile("logFile.txt")|. The time
 % stamp can also be printed alongside the message by calling
 % |kwave.toolbox.Logger.showTimeStamp(true)|.
+%
+% |Logger.warning| accepts an optional warning identifier, |warnID|, in the
+% form |ClassName:warningIdentifier|. This allows the warning to be
+% suppressed with |warning('off', warnID)| or checked in unit tests.
 %
 % The class implementation uses a singleton design so that the same log
 % settings can be used across the k-Wave toolbox. The class methods are
@@ -210,10 +215,15 @@ classdef Logger < handle
             kwave.toolbox.Logger.log(kwave.toolbox.LogLevels.Info, message);
         end
 
-        % Static method to log warning messages and call warning.
-        function warning(message)
+        % Static method to log warning messages and call warning. An
+        % optional warning identifier can be given as the second input.
+        function warning(message, warnID)
             kwave.toolbox.Logger.log(kwave.toolbox.LogLevels.Warning, message);
-            warning(message);
+            if nargin < 2
+                warning(message);
+            else
+                warning(warnID, '%s', message);
+            end
         end
 
         % Static method to log error messages and throw an exception.

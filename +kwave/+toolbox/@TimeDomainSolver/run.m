@@ -27,6 +27,15 @@
 % calculation method for |CFL| and |EndTime| are specified within the
 % |autoComputeTimeStep| method of derived classes.
 %
+% |run| can be called more than once to continue a simulation, and the
+% time step can be changed between calls. If a sensor is defined, storage
+% for its data is allocated at the start of each call. Recording events
+% occur at time steps that are multiples of the sensor's
+% |timeStepSpacing|, counted from the start of the simulation, so the
+% spacing is preserved when a simulation is continued. The first call
+% also records the initial conditions at time step 0, and clears any data
+% already held by the sensor.
+%
 %% Name-Value Arguments
 % Specify optional pairs of arguments as |Name1=Value1,...,NameN=ValueN|,
 % where |Name| is the argument name and |Value| is the corresponding value.
@@ -76,12 +85,14 @@ function run(obj, options)
     obj.kgrid.displayGridSize();
     kwave.toolbox.Logger.info(['  dt: ' kwave.utilities.scaleSI(options.dt) 's, end time: ' kwave.utilities.scaleSI(options.dt * single(options.Nt)) 's, time steps: ' num2str(options.Nt)]);
 
+    % Set initial conditions.
     if (obj.timeStepsTaken==0)
-        % Set initial conditions.
         obj.setInitialConditions;
-        if ~isempty(obj.sensor)
-            obj.sensor.initialiseSensorData(options.Nt);
-        end
+    end
+
+    % Allocate storage for the sensor data recorded during this run.
+    if ~isempty(obj.sensor)
+        obj.sensor.initialiseSensorData(options.Nt, obj.timeStepsTaken);
     end
 
     % Take time steps

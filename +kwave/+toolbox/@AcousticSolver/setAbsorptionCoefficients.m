@@ -19,6 +19,16 @@
 % reduces with tau=0. 'noDispersion' or 'noAbsorption' or 'on' must be declared by setting
 % |AcousticSolver.absorptionType|. If absorptionPower=0, 2, problem reduces.
 %
+% The dispersion term contains tan(pi*y/2), which is singular for
+% absorptionPower = 1. An error is thrown in this case unless
+% |absorptionType| is 'noDispersion'.
+%
+% The solver uses a single absorptionPower everywhere. If the medium is a
+% |kwave.toolbox.Medium| containing absorbing materials with different
+% values of absorptionPower, a warning is given
+% (|AcousticSolver:multipleAbsorptionPowers|) and the most common value
+% is used.
+%
 % |obj.prevTimeStep|, the k-space correction is adjusted to account for the
 % change in time step.
 %
@@ -50,6 +60,31 @@ arguments
     obj
 end
 validateattributes( obj.medium.absorptionPower, {'single'}, {'scalar'})
+
+% The solver uses a single power law exponent everywhere. Warn if a
+% material-based medium contains absorbing materials with different
+% exponents, as only the most common one will be used.
+if isa(obj.medium, 'kwave.toolbox.Medium')
+    powers = obj.medium.absorptionPowerMap;
+    coeffs = obj.medium.absorptionCoeff;
+    powers = unique(powers(isfinite(powers) & isfinite(coeffs) & (coeffs > 0)));
+    if numel(powers) > 1
+        kwave.toolbox.Logger.warning( ...
+            ['The medium contains absorbing materials with different ' ...
+            'absorptionPower values (' strtrim(num2str(powers(:).', '%g ')) '). ' ...
+            'The solver supports a single value, so absorptionPower = ' ...
+            num2str(obj.medium.absorptionPower) ' will be used everywhere.'], ...
+            'AcousticSolver:multipleAbsorptionPowers');
+    end
+end
+
+% The dispersion term contains tan(pi*y/2), which is singular for y = 1.
+if (obj.medium.absorptionPower == 1) && ~strcmp(obj.absorptionType, 'noDispersion')
+    kwave.toolbox.Logger.error('AcousticSolver:invalidAbsorptionPower', ...
+        ['The power law dispersion term is not valid for absorptionPower = 1. ' ...
+        'Choose a power law exponent close to, but not exactly, 1, or set ' ...
+        'absorptionType to ''noDispersion'' if dispersion is not important.']);
+end
 
 % convert the absorption coefficient to nepers.(rad/s)^-y.m^-1
 alphaCoeffPadded = 5 * obj.medium.absorptionCoeffPadded * (((1e-6)/(2*pi) )^obj.medium.absorptionPower ) / (log10(exp(1)));

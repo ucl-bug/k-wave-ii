@@ -237,8 +237,10 @@ if Nt~=0
             end
         end
 
-        %
-        if ~isempty(obj.sensor) && rem(tIndex-adj, obj.sensor.timeSteps) == 0
+        % Record sensor data. Recording events occur at time steps that
+        % are multiples of timeStepSpacing, counted from the start of the
+        % simulation so that the spacing is preserved across restarts.
+        if ~isempty(obj.sensor) && (rem(obj.timeStepsTaken + tIndex - adj, obj.sensor.timeStepSpacing) == 0)
             if ~isempty(obj.timeArray)
                 obj.timePoint = obj.timeArray(end) + dt*single(tIndex-adj);
             else
