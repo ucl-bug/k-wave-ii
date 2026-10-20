@@ -59,6 +59,15 @@
 %                positions at the times given in |times|.
 % * |times|    - Vector of recording times.
 %
+%% Methods
+% * |initialiseSensorData(Nt, stepsTaken)| - Allocate storage for the
+%   recording events in the next |Nt| time steps, given that the solver has
+%   already taken |stepsTaken| time steps. When |stepsTaken| is 0 (the
+%   default), existing sensor data is cleared and an extra recording event
+%   is allocated for the initial conditions. Called by the solver.
+% * |recordSensorData(solver, n)| - Store the current fields from |solver|
+%   as recording event |n|. Called by the solver.
+%
 %% See Also
 % * |Sensor|, |GridInput|
 

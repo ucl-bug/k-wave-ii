@@ -46,7 +46,8 @@ classdef TestAcousticSensor < matlab.unittest.TestCase
             mask(3,5) = true;
             mask(8,7) = true;
             testCase.sensor.mask = mask; % totalSensorPoints should be nnz(mask)
-            % Leave timeStepSpacing at default (1) unless a test changes it.
+            % Leave timeStepSpacing at default (1) unless a test changes
+            % it.
         end
     end
 

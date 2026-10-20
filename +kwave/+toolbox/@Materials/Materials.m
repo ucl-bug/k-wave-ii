@@ -88,8 +88,8 @@ classdef Materials < dynamicprops
                 mustBeFinite(value);
                 mustBeNonnegative(value);
             catch
-                error('Materials:NotNonNegativeScalar', ...
-                    'Field "%s" must be a non-negative real scalar.', fieldName);
+                kwave.toolbox.Logger.error('Materials:NotNonNegativeScalar', ...
+                    sprintf('Field "%s" must be a non-negative real scalar.', fieldName));
             end
 
             % Enforce single
@@ -100,8 +100,8 @@ classdef Materials < dynamicprops
         function out = validateIndexField(value, fieldName)
             if ~(isnumeric(value) && isscalar(value) && ...
                     value >= 0 && value <= 255 && value == floor(value))
-                error('Materials:InvalidIndexField',...
-                    'Field "%s" must be an integer scalar in the range [0, 255].', fieldName);
+                kwave.toolbox.Logger.error('Materials:InvalidIndexField', ...
+                    sprintf('Field "%s" must be an integer scalar in the range [0, 255].', fieldName));
             end
 
             % Enforce uint8 type

@@ -19,6 +19,16 @@
 % reduces with tau=0. 'noDispersion' or 'noAbsorption' or 'on' must be declared by setting
 % |AcousticSolver.absorptionType|. If absorptionPower=0, 2, problem reduces.
 %
+% The dispersion term contains tan(pi*y/2), which is singular for
+% absorptionPower = 1. An error is thrown in this case unless
+% |absorptionType| is 'noDispersion'.
+%
+% The solver uses a single absorptionPower everywhere. If the medium is a
+% |kwave.toolbox.Medium| containing absorbing materials with different
+% values of absorptionPower, a warning is given
+% (|AcousticSolver:multipleAbsorptionPowers|) and the most common value
+% is used.
+%
 % |obj.prevTimeStep|, the k-space correction is adjusted to account for the
 % change in time step.
 %
