@@ -193,6 +193,36 @@ classdef TestMaterials < matlab.unittest.TestCase
 
         end
 
+        function testValidatorErrorMessagesNameField(testCase)
+
+            % The error message should name the offending field, and not
+            % contain an unformatted placeholder.
+            try
+                testCase.materials.addMaterial('testTissue', struct('soundSpeed', -1500, 'density', 1000));
+                testCase.verifyFail('Expected an error for a negative sound speed.');
+            catch err
+                testCase.verifyEqual(err.message, 'Field "soundSpeed" must be a non-negative real scalar.');
+            end
+            try
+                testCase.materials.addMaterial('testTissue', struct('index', 300, 'soundSpeed', 1500, 'density', 1000));
+                testCase.verifyFail('Expected an error for an out of range index.');
+            catch err
+                testCase.verifyEqual(err.message, 'Field "index" must be an integer scalar in the range [0, 255].');
+            end
+
+        end
+
+        function testWaterAbsorptionIsPhysical(testCase)
+
+            % Water absorbs approximately 2.2e-3 dB/(MHz^2 cm) at room
+            % temperature, with a frequency power law exponent of 2.
+            water = testCase.materials.water;
+            testCase.verifyEqual(water.absorptionPower, single(2));
+            testCase.verifyGreaterThan(water.absorptionCoeff, single(1.5e-3));
+            testCase.verifyLessThan(water.absorptionCoeff, single(3e-3));
+
+        end
+
         function testListMaterials(testCase)
 
             testCase.verifyWarningFree(@() testCase.materials.listMaterials());

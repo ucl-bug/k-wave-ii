@@ -89,7 +89,7 @@ classdef Materials < dynamicprops
                 mustBeNonnegative(value);
             catch
                 error('Materials:NotNonNegativeScalar', ...
-                    ['Field "%s" must be a non-negative real scalar.', fieldName]);
+                    'Field "%s" must be a non-negative real scalar.', fieldName);
             end
 
             % Enforce single
@@ -101,7 +101,7 @@ classdef Materials < dynamicprops
             if ~(isnumeric(value) && isscalar(value) && ...
                     value >= 0 && value <= 255 && value == floor(value))
                 error('Materials:InvalidIndexField',...
-                    ['Field "%s" must be an integer scalar in the range [0, 255].', fieldName]);
+                    'Field "%s" must be an integer scalar in the range [0, 255].', fieldName);
             end
 
             % Enforce uint8 type
@@ -119,7 +119,7 @@ classdef Materials < dynamicprops
                 'index',               0, ... % uint8 limits the number of materials to 256
                 'soundSpeed',          1480, ...     % m/s @ ~20°C
                 'density',             1000, ...     % kg/m^3
-                'absorptionCoeff',     0.5, ...      % dB/cm/MHz^y
+                'absorptionCoeff',     2.17e-3, ...  % dB/cm/MHz^y @ ~20°C (Pinkerton, 1949)
                 'absorptionPower',     2, ...        % (y) dimensionless
                 'BonA',                5, ...        % dimensionless
                 'specificHeat',        4181, ...     % J/(kg·K)

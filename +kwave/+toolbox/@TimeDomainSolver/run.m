@@ -76,12 +76,14 @@ function run(obj, options)
     obj.kgrid.displayGridSize();
     kwave.toolbox.Logger.info(['  dt: ' kwave.utilities.scaleSI(options.dt) 's, end time: ' kwave.utilities.scaleSI(options.dt * single(options.Nt)) 's, time steps: ' num2str(options.Nt)]);
 
+    % Set initial conditions.
     if (obj.timeStepsTaken==0)
-        % Set initial conditions.
         obj.setInitialConditions;
-        if ~isempty(obj.sensor)
-            obj.sensor.initialiseSensorData(options.Nt);
-        end
+    end
+
+    % Allocate storage for the sensor data recorded during this run.
+    if ~isempty(obj.sensor)
+        obj.sensor.initialiseSensorData(options.Nt, obj.timeStepsTaken);
     end
 
     % Take time steps

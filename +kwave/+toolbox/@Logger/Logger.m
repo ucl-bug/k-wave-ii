@@ -210,10 +210,15 @@ classdef Logger < handle
             kwave.toolbox.Logger.log(kwave.toolbox.LogLevels.Info, message);
         end
 
-        % Static method to log warning messages and call warning.
-        function warning(message)
+        % Static method to log warning messages and call warning. An
+        % optional warning identifier can be given as the second input.
+        function warning(message, warnID)
             kwave.toolbox.Logger.log(kwave.toolbox.LogLevels.Warning, message);
-            warning(message);
+            if nargin < 2
+                warning(message);
+            else
+                warning(warnID, '%s', message);
+            end
         end
 
         % Static method to log error messages and throw an exception.

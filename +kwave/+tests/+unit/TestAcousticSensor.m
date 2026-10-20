@@ -46,7 +46,7 @@ classdef TestAcousticSensor < matlab.unittest.TestCase
             mask(3,5) = true;
             mask(8,7) = true;
             testCase.sensor.mask = mask; % totalSensorPoints should be nnz(mask)
-            % Leave timeSteps at default (1) unless a test changes it.
+            % Leave timeStepSpacing at default (1) unless a test changes it.
         end
     end
 
@@ -57,7 +57,7 @@ classdef TestAcousticSensor < matlab.unittest.TestCase
             testCase.verifyEqual(s.pressureSensor, 'on');   % default
             testCase.verifyEqual(s.velocitySensor, 'off');  % default
             testCase.verifyEqual(s.densitySensor,  'off');  % default
-            testCase.verifyEqual(s.timeSteps, 1);           % default
+            testCase.verifyEqual(s.timeStepSpacing, 1);     % default
         end
 
         function validators_reject_invalid_members(testCase)
@@ -126,16 +126,58 @@ classdef TestAcousticSensor < matlab.unittest.TestCase
         end
 
         function initialise_extend_buffers_on_subsequent_calls(testCase)
-            % First call allocates; second call should extend by floor(Nt/timeSteps).
+            % First call allocates; a continuation after 4 steps should
+            % extend by the number of multiples of timeStepSpacing in
+            % steps 5 to 8, i.e., 2.
             s = testCase.sensor;
             s.pressureSensor  = 'on';
             s.timeStepSpacing = 2;
-            s = s.initialiseSensorData(4);  % nCols = 3
-            s = s.initialiseSensorData(4);  % extend by floor(4/2)=2 -> total 5
+            s = s.initialiseSensorData(4);     % nCols = 3
+            s = s.initialiseSensorData(4, 4);  % extend by 2 -> total 5
             nCols = 5;
             nPts  = s.totalSensorPoints;
             testCase.verifySize(s.pressure, [nPts, nCols]);
             testCase.verifySize(s.times,    [1,   nCols]);
+        end
+
+        function initialise_continuation_counts_from_simulation_start(testCase)
+            % After 5 steps with spacing 2, the next 5 steps (6 to 10)
+            % contain recording events at steps 6, 8 and 10.
+            s = testCase.sensor;
+            s.pressureSensor  = 'on';
+            s.timeStepSpacing = 2;
+            s = s.initialiseSensorData(5);     % steps 0, 2, 4
+            s = s.initialiseSensorData(5, 5);  % steps 6, 8, 10
+            testCase.verifySize(s.pressure, [s.totalSensorPoints, 6]);
+            testCase.verifySize(s.times,    [1, 6]);
+        end
+
+        function initialise_new_simulation_clears_existing_data(testCase)
+            s = testCase.sensor;
+            s.pressureSensor = 'on';
+            s = s.initialiseSensorData(9);
+            s.sensorIndex = 3;
+            s = s.initialiseSensorData(2);
+            testCase.verifySize(s.pressure, [s.totalSensorPoints, 3]);
+            testCase.verifyEqual(s.sensorIndex, single(0));
+        end
+
+        function initialise_allocates_single_precision(testCase)
+            s = testCase.sensor;
+            s.pressureSensor = 'on';
+            s.densitySensor  = 'on';
+            s.velocitySensor = 'on';
+            s = s.initialiseSensorData(4);
+            testCase.verifyClass(s.pressure, 'single');
+            testCase.verifyClass(s.density,  'single');
+            testCase.verifyClass(s.velocity, 'single');
+        end
+
+        function timeStepSpacing_rejects_invalid_values(testCase)
+            s = testCase.sensor;
+            testCase.verifyError(@() setSpacing(s, 0),   'MATLAB:validators:mustBePositive');
+            testCase.verifyError(@() setSpacing(s, 1.5), 'MATLAB:validators:mustBeInteger');
+            function setSpacing(obj, val), obj.timeStepSpacing = val; end
         end
 
         % function record_velocity_on_grid_branch_respected(testCase)

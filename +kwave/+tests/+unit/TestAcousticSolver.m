@@ -629,7 +629,7 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
             dx      = 4e-3;
             c0      = 1480;
             rho0    = 1000;
-            alpha0  = 0.5;
+            alpha0  = 2.17e-3;
             alphay  = 2;
             pmlSize = 20;
             CFL     = 0.25;
@@ -1146,6 +1146,126 @@ classdef TestAcousticSolver < matlab.unittest.TestCase
 
         end
 
+        % Test that the sensor records at the requested time step spacing,
+        % both in a single run and when the simulation is restarted.
+        function testSensorTimeStepSpacing(testCase)
+
+            import kwave.toolbox.*
+            import matlab.unittest.constraints.IsEqualTo
+            tol = matlab.unittest.constraints.AbsoluteTolerance(single(1e-6));
+
+            Nx = 64;
+            dx = 1e-3;
+            c0 = 1500;
+            Nt = 20;
+            dt = 0.3 .* dx ./ c0;
+
+            kgrid  = Grid(Nx, dx, 10);
+            medium = AcousticMedium(kgrid);
+            medium.soundSpeed = c0;
+            medium.density    = 1000;
+            source = AcousticSource(kgrid);
+            source.initialPressure = exp(-kgrid.xVec.^2 ./ (3 * dx).^2);
+
+            settings = Settings;
+            settings.plotSimulation = 'off';
+
+            % Reference: record at every time step.
+            sensorRef = AcousticSensor(kgrid);
+            sensorRef.mask = ones(Nx, 1);
+            solverRef = AcousticSolver(kgrid, medium, source, sensorRef, settings);
+            solverRef.run(Nt=Nt, dt=dt);
+
+            % Record at every third time step in a single run.
+            sensor = AcousticSensor(kgrid);
+            sensor.mask = ones(Nx, 1);
+            sensor.timeStepSpacing = 3;
+            solver = AcousticSolver(kgrid, medium, source, sensor, settings);
+            solver.run(Nt=Nt, dt=dt);
+
+            expectedCols = 1:3:(Nt + 1);
+            testCase.verifySize(sensor.pressure, [Nx, numel(expectedCols)]);
+            testCase.verifyThat(sensor.pressure, IsEqualTo(sensorRef.pressure(:, expectedCols), "Within", tol));
+            testCase.verifyEqual(sensor.times, sensorRef.times(expectedCols), 'AbsTol', 1e-10);
+
+            % Record at every third time step across two runs, where the
+            % first run does not end on a recording event.
+            sensorRestart = AcousticSensor(kgrid);
+            sensorRestart.mask = ones(Nx, 1);
+            sensorRestart.timeStepSpacing = 3;
+            solverRestart = AcousticSolver(kgrid, medium, source, sensorRestart, settings);
+            solverRestart.run(Nt=7, dt=dt);
+            solverRestart.run(Nt=Nt - 7, dt=dt);
+
+            testCase.verifySize(sensorRestart.pressure, [Nx, numel(expectedCols)]);
+            testCase.verifyThat(sensorRestart.pressure, IsEqualTo(sensorRef.pressure(:, expectedCols), "Within", tol));
+            testCase.verifyEqual(sensorRestart.times, sensorRef.times(expectedCols), 'AbsTol', 1e-10);
+
+        end
+
+        % Test that an absorption power of exactly 1 is rejected unless
+        % dispersion is switched off, as the dispersion term is singular.
+        function testAbsorptionPowerOne(testCase)
+
+            import kwave.toolbox.*
+
+            kgrid  = Grid(32, 1e-3, 8);
+            medium = AcousticMedium(kgrid);
+            medium.soundSpeed      = 1500;
+            medium.density         = 1000;
+            medium.absorptionCoeff = 0.5;
+            medium.absorptionPower = 1;
+            source = AcousticSource(kgrid);
+            source.initialPressure = exp(-kgrid.xVec.^2 ./ (3e-3).^2);
+            settings = Settings;
+            settings.plotSimulation = 'off';
+
+            for absorptionType = {'on', 'noAbsorption'}
+                solver = AcousticSolver(kgrid, medium, source, [], settings);
+                solver.absorptionType = absorptionType{1};
+                testCase.verifyError(@() solver.run(Nt=2, dt=1e-7), 'AcousticSolver:invalidAbsorptionPower');
+            end
+
+            solver = AcousticSolver(kgrid, medium, source, [], settings);
+            solver.absorptionType = 'noDispersion';
+            solver.run(Nt=2, dt=1e-7);
+            testCase.verifyTrue(all(isfinite(solver.pressure)));
+
+        end
+
+        % Test that a warning is given when a material-based medium
+        % contains absorbing materials with different power law exponents.
+        function testMultipleAbsorptionPowersWarning(testCase)
+
+            import kwave.toolbox.*
+
+            kgrid = Grid(32, 1e-3, 8);
+            source = AcousticSource(kgrid);
+            source.initialPressure = exp(-kgrid.xVec.^2 ./ (3e-3).^2);
+            settings = Settings;
+            settings.plotSimulation = 'off';
+
+            materials = Materials();
+            idx = materials.addMaterial('tissue', struct('soundSpeed', 1540, 'density', 1050, ...
+                'absorptionCoeff', 0.75, 'absorptionPower', 1.5));
+
+            % Water (y = 2) and tissue (y = 1.5).
+            medium = Medium(kgrid, materials);
+            indexGrid = zeros(kgrid.Nx, 1, 'uint8');
+            indexGrid(1:10) = idx;
+            medium.materialIndexGrid = indexGrid;
+            solver = AcousticSolver(kgrid, medium, source, [], settings);
+            solver.absorptionType = 'on';
+            testCase.verifyWarning(@() solver.run(Nt=2, dt=1e-7), 'AcousticSolver:multipleAbsorptionPowers');
+
+            % Tissue only.
+            mediumSingle = Medium(kgrid, materials);
+            mediumSingle.materialIndexGrid = repmat(idx, kgrid.Nx, 1);
+            solver = AcousticSolver(kgrid, mediumSingle, source, [], settings);
+            solver.absorptionType = 'on';
+            testCase.verifyWarningFree(@() solver.run(Nt=2, dt=1e-7));
+
+        end
 
     end
 

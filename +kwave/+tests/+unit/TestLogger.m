@@ -63,6 +63,11 @@ classdef TestLogger < matlab.unittest.TestCase
             kwave.toolbox.Logger.warning('Warning message.');
         end
 
+        % Test the warning log method with a warning identifier.
+        function testLoggerWarningMethodWithID(testCase)
+            testCase.verifyWarning(@() kwave.toolbox.Logger.warning('Warning message 100%.', 'TestClass:CustomWarningID'), 'TestClass:CustomWarningID');
+        end
+
         % Test the error log method.
         function testLoggerErrorMethod(testCase)
             testCase.verifyError(@() kwave.toolbox.Logger.error('TestClass:CustomErrorID', 'Error message.'), 'TestClass:CustomErrorID');

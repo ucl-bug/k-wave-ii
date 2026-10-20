@@ -58,7 +58,10 @@
 % updates to the maps (i.e., not auto-overwritten).
 %
 % Note: The acoustic solver uses the single scalar value |absorptionPower|
-% at all voxels (algorithmic constraint).
+% at all voxels (algorithmic constraint). If the absorbing materials in
+% the grid have different power law exponents, |absorptionPower| is the
+% exponent found at the most grid points, and the acoustic solver gives a
+% warning when absorption is switched on.
 %
 %% See Also
 % * |Grid|

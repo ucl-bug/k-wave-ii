@@ -9,8 +9,12 @@
 % derived from this class.
 %
 %% Properties
-% * |mask|           - Binary mask the size of the grid with 1s indicated
-%                      sensor positions.
+% * |mask|            - Binary mask the size of the grid with 1s indicated
+%                       sensor positions.
+% * |timeStepSpacing| - Number of time steps separating recording events.
+%                       If this is 1 then the sensors record at every time
+%                       step. If 2 then at every other time step, etc.
+%                       Default 1.
 %
 %% See Also
 % * |kwave.toolbox.AcousticSensor|
@@ -45,7 +49,7 @@ classdef Sensor < kwave.toolbox.GridInput
     end
 
     properties
-        timeSteps(1,1) {mustBeInteger, mustBeFinite, mustBePositive} = 1;
+        timeStepSpacing(1,1) {mustBeInteger, mustBeFinite, mustBePositive} = 1
     end
 
     properties(Hidden)
