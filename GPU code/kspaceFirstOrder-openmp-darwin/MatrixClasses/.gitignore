@@ -1,0 +1,4 @@
+*.o
+kspaceFirstOrder-OMP
+*.idea
+*.xml
